@@ -1,6 +1,60 @@
-import type { Competitor } from "@shared/schema";
+import type { Competitor, PlaceResult } from "@shared/schema";
 
 const API_KEY = process.env.GOOGLE_API_KEY;
+
+export function hasGoogleApiKey(): boolean {
+  return !!API_KEY;
+}
+
+export async function searchPlacesByAddress(query: string): Promise<PlaceResult[]> {
+  if (!API_KEY) {
+    console.log("Google API Key not configured, returning empty results");
+    return [];
+  }
+
+  try {
+    const response = await fetch(
+      "https://places.googleapis.com/v1/places:searchText",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Goog-Api-Key": API_KEY,
+          "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.types,places.location",
+        },
+        body: JSON.stringify({
+          textQuery: query,
+          maxResultCount: 10,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      console.error("Google Places API error:", response.statusText);
+      return [];
+    }
+
+    const data = await response.json();
+
+    if (!data.places || data.places.length === 0) {
+      return [];
+    }
+
+    return data.places.map((place: any) => ({
+      placeId: place.id || "",
+      name: place.displayName?.text || "Unknown",
+      address: place.formattedAddress || "",
+      latitude: place.location?.latitude || 0,
+      longitude: place.location?.longitude || 0,
+      rating: place.rating,
+      userRatingsTotal: place.userRatingCount,
+      types: place.types,
+    }));
+  } catch (error) {
+    console.error("Error searching places:", error);
+    return [];
+  }
+}
 
 export async function searchNearby(
   lat: number,

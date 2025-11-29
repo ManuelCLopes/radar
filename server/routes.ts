@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { runReportForBusiness } from "./reports";
 import { startScheduler, getSchedulerStatus, runScheduledReports } from "./scheduler";
+import { searchPlacesByAddress, hasGoogleApiKey } from "./googlePlaces";
 import { insertBusinessSchema } from "@shared/schema";
 
 export async function registerRoutes(
@@ -139,6 +140,30 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Error running scheduled reports:", error);
       res.status(500).json({ error: "Failed to run scheduled reports" });
+    }
+  });
+
+  app.get("/api/places/search", async (req, res) => {
+    try {
+      const query = req.query.q as string;
+      
+      if (!query || query.trim().length === 0) {
+        return res.status(400).json({ error: "Search query is required" });
+      }
+
+      if (!hasGoogleApiKey()) {
+        return res.json({ 
+          results: [], 
+          apiKeyMissing: true,
+          message: "Google API key not configured. Manual address entry required." 
+        });
+      }
+
+      const results = await searchPlacesByAddress(query);
+      res.json({ results, apiKeyMissing: false });
+    } catch (error) {
+      console.error("Error searching places:", error);
+      res.status(500).json({ error: "Failed to search places" });
     }
   });
 

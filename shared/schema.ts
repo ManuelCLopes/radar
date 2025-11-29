@@ -42,7 +42,29 @@ export const insertBusinessSchema = createInsertSchema(businesses).omit({
   name: z.string().min(1, "Business name is required").max(100),
   latitude: z.number().min(-90).max(90),
   longitude: z.number().min(-180).max(180),
-  address: z.string().optional(),
+  address: z.string().min(1, "Address is required"),
+});
+
+export interface PlaceResult {
+  placeId: string;
+  name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  rating?: number;
+  userRatingsTotal?: number;
+  types?: string[];
+}
+
+export const placeResultSchema = z.object({
+  placeId: z.string(),
+  name: z.string(),
+  address: z.string(),
+  latitude: z.number(),
+  longitude: z.number(),
+  rating: z.number().optional(),
+  userRatingsTotal: z.number().optional(),
+  types: z.array(z.string()).optional(),
 });
 
 export type InsertBusiness = z.infer<typeof insertBusinessSchema>;
