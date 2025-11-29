@@ -32,7 +32,37 @@ export async function registerRoutes(
         });
       }
 
-      const business = await storage.addBusiness(validationResult.data);
+      const data = validationResult.data;
+      
+      const lat = data.latitude;
+      const lng = data.longitude;
+      
+      if (lat === undefined || lat === null || lng === undefined || lng === null) {
+        return res.status(400).json({ 
+          error: "Location coordinates are required for competitor analysis. Please verify your address or use your current location." 
+        });
+      }
+      
+      if (typeof lat !== 'number' || typeof lng !== 'number' || 
+          !Number.isFinite(lat) || !Number.isFinite(lng)) {
+        return res.status(400).json({ 
+          error: "Invalid coordinate format. Please try verifying your address again." 
+        });
+      }
+      
+      if (lat === 0 && lng === 0) {
+        return res.status(400).json({ 
+          error: "Valid location coordinates are required. Please verify your address or use your current location." 
+        });
+      }
+      
+      if (Math.abs(lat) > 90 || Math.abs(lng) > 180) {
+        return res.status(400).json({ 
+          error: "Coordinates are out of valid range. Please check your location and try again." 
+        });
+      }
+
+      const business = await storage.addBusiness(data);
       res.status(201).json(business);
     } catch (error) {
       console.error("Error creating business:", error);

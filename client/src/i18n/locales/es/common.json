@@ -30,8 +30,8 @@
       "latitudePlaceholder": "ej., 40.4168",
       "longitude": "Longitud",
       "longitudePlaceholder": "ej., -3.7038",
-      "address": "Dirección (Opcional)",
-      "addressPlaceholder": "Dirección",
+      "address": "Dirección",
+      "addressPlaceholder": "Introduce la dirección de tu negocio",
       "submit": "Registrar Negocio",
       "submitting": "Registrando..."
     },
@@ -144,5 +144,40 @@
     "light": "Claro",
     "dark": "Oscuro",
     "system": "Sistema"
+  },
+  "common": {
+    "cancel": "Cancelar"
+  },
+  "addressSearch": {
+    "enterAddress": "Por favor, ingresa una dirección para buscar",
+    "searchFailed": "Error al buscar dirección. Por favor, intenta de nuevo.",
+    "placeSelected": "Dirección verificada",
+    "addressVerified": "Dirección verificada y ubicación confirmada",
+    "usingCurrentLocation": "Usando tu ubicación actual",
+    "useCurrentLocation": "Usar Ubicación Actual",
+    "locationObtained": "Ubicación obtenida",
+    "locationObtainedDesc": "Tu ubicación actual ha sido capturada con éxito.",
+    "locationFailed": "No se pudo obtener tu ubicación. Por favor, verifica la configuración de tu navegador e intenta de nuevo.",
+    "locationDenied": "Se denegó el acceso a la ubicación. Por favor, habilita los permisos de ubicación en la configuración de tu navegador.",
+    "coordinatesRequired": "Se requieren coordenadas válidas para el análisis de competencia.",
+    "multipleResults": {
+      "title": "Múltiples Ubicaciones Encontradas",
+      "description": "Encontramos varios negocios en esta dirección. Por favor, selecciona el correcto:"
+    },
+    "suggestion": {
+      "title": "Dirección Encontrada",
+      "description": "Encontramos un negocio coincidente con una dirección más completa. ¿Te gustaría usarla?",
+      "useThis": "Usar Esta Dirección",
+      "keepOriginal": "Mantener Mi Dirección"
+    },
+    "noResults": {
+      "title": "Dirección No Encontrada",
+      "description": "No pudimos verificar esta dirección. Si estás en la ubicación de tu negocio, haz clic en 'Usar Ubicación Actual' para obtener las coordenadas de tu dispositivo. De lo contrario, intenta con una dirección más específica incluyendo ciudad y país.",
+      "editAddress": "Editar Dirección"
+    },
+    "apiKeyMissing": {
+      "title": "Validación de Dirección No Disponible",
+      "description": "La validación de direcciones está temporalmente no disponible. Si estás en la ubicación de tu negocio, haz clic en 'Usar Ubicación Actual' para obtener las coordenadas. Asegúrate de permitir el acceso a la ubicación cuando se solicite."
+    }
   }
 }

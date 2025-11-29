@@ -30,8 +30,8 @@
       "latitudePlaceholder": "ex., 48.8566",
       "longitude": "Longitude",
       "longitudePlaceholder": "ex., 2.3522",
-      "address": "Adresse (Optionnel)",
-      "addressPlaceholder": "Adresse",
+      "address": "Adresse",
+      "addressPlaceholder": "Entrez l'adresse de votre entreprise",
       "submit": "Enregistrer l'Entreprise",
       "submitting": "Enregistrement..."
     },
@@ -144,5 +144,40 @@
     "light": "Clair",
     "dark": "Sombre",
     "system": "Système"
+  },
+  "common": {
+    "cancel": "Annuler"
+  },
+  "addressSearch": {
+    "enterAddress": "Veuillez entrer une adresse à rechercher",
+    "searchFailed": "Échec de la recherche d'adresse. Veuillez réessayer.",
+    "placeSelected": "Adresse vérifiée",
+    "addressVerified": "Adresse vérifiée et emplacement confirmé",
+    "usingCurrentLocation": "Utilisation de votre position actuelle",
+    "useCurrentLocation": "Utiliser Ma Position",
+    "locationObtained": "Position obtenue",
+    "locationObtainedDesc": "Votre position actuelle a été capturée avec succès.",
+    "locationFailed": "Impossible d'obtenir votre position. Veuillez vérifier les paramètres de votre navigateur et réessayer.",
+    "locationDenied": "L'accès à la localisation a été refusé. Veuillez activer les autorisations de localisation dans les paramètres de votre navigateur.",
+    "coordinatesRequired": "Des coordonnées valides sont requises pour l'analyse de la concurrence.",
+    "multipleResults": {
+      "title": "Plusieurs Emplacements Trouvés",
+      "description": "Nous avons trouvé plusieurs entreprises à cette adresse. Veuillez sélectionner la bonne:"
+    },
+    "suggestion": {
+      "title": "Adresse Trouvée",
+      "description": "Nous avons trouvé une entreprise correspondante avec une adresse plus complète. Souhaitez-vous l'utiliser?",
+      "useThis": "Utiliser Cette Adresse",
+      "keepOriginal": "Garder Mon Adresse"
+    },
+    "noResults": {
+      "title": "Adresse Non Trouvée",
+      "description": "Nous n'avons pas pu vérifier cette adresse. Si vous êtes à l'emplacement de votre entreprise, cliquez sur 'Utiliser Ma Position' pour obtenir les coordonnées de votre appareil. Sinon, essayez une adresse plus spécifique incluant la ville et le pays.",
+      "editAddress": "Modifier l'Adresse"
+    },
+    "apiKeyMissing": {
+      "title": "Validation d'Adresse Indisponible",
+      "description": "La validation d'adresse est temporairement indisponible. Si vous êtes à l'emplacement de votre entreprise, cliquez sur 'Utiliser Ma Position' pour obtenir les coordonnées. Assurez-vous d'autoriser l'accès à la localisation lorsqu'on vous le demande."
+    }
   }
 }

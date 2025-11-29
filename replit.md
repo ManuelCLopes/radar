@@ -118,6 +118,15 @@ shared/
 - Status endpoint to monitor scheduler health
 
 ## Recent Changes
+- 2025-11-29: Address-driven registration with geolocation fallback
+  - Replaced manual lat/lng entry with address search powered by Google Places API
+  - Added interactive address validation with multiple result selection modal
+  - When Places API unavailable, browser geolocation provides valid coordinates
+  - Backend enforces coordinate validation (valid ranges, non-zero, finite numbers)
+  - Clear error messages and guidance when location methods fail
+  - All 16 business types properly translated across 5 languages
+  - Note: If both address validation and geolocation fail, users must retry with a more specific address or enable location permissions
+
 - 2025-11-29: Multi-language support (i18n) implementation
   - Added react-i18next for internationalization
   - Created translation files for 5 languages (EN, PT, ES, FR, DE)

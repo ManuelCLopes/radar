@@ -30,8 +30,8 @@
       "latitudePlaceholder": "ex., 38.7223",
       "longitude": "Longitude",
       "longitudePlaceholder": "ex., -9.1393",
-      "address": "Morada (Opcional)",
-      "addressPlaceholder": "Endereço",
+      "address": "Morada",
+      "addressPlaceholder": "Introduza a morada do seu negócio",
       "submit": "Registar Negócio",
       "submitting": "A registar..."
     },
@@ -144,5 +144,40 @@
     "light": "Claro",
     "dark": "Escuro",
     "system": "Sistema"
+  },
+  "common": {
+    "cancel": "Cancelar"
+  },
+  "addressSearch": {
+    "enterAddress": "Por favor, introduza uma morada para pesquisar",
+    "searchFailed": "Falha ao pesquisar morada. Por favor, tente novamente.",
+    "placeSelected": "Morada verificada",
+    "addressVerified": "Morada verificada e localização confirmada",
+    "usingCurrentLocation": "A usar a sua localização atual",
+    "useCurrentLocation": "Usar Localização Atual",
+    "locationObtained": "Localização obtida",
+    "locationObtainedDesc": "A sua localização atual foi capturada com sucesso.",
+    "locationFailed": "Não foi possível obter a sua localização. Por favor, verifique as definições do navegador e tente novamente.",
+    "locationDenied": "O acesso à localização foi negado. Por favor, ative as permissões de localização nas definições do seu navegador.",
+    "coordinatesRequired": "São necessárias coordenadas válidas para a análise de concorrência.",
+    "multipleResults": {
+      "title": "Vários Locais Encontrados",
+      "description": "Encontrámos vários negócios nesta morada. Por favor, selecione o correto:"
+    },
+    "suggestion": {
+      "title": "Morada Encontrada",
+      "description": "Encontrámos um negócio correspondente com uma morada mais completa. Gostaria de a usar?",
+      "useThis": "Usar Esta Morada",
+      "keepOriginal": "Manter a Minha Morada"
+    },
+    "noResults": {
+      "title": "Morada Não Encontrada",
+      "description": "Não conseguimos verificar esta morada. Se estiver na localização do seu negócio, clique em 'Usar Localização Atual' para obter as coordenadas do seu dispositivo. Caso contrário, tente uma morada mais específica incluindo cidade e país.",
+      "editAddress": "Editar Morada"
+    },
+    "apiKeyMissing": {
+      "title": "Validação de Morada Indisponível",
+      "description": "A validação de morada está temporariamente indisponível. Se estiver na localização do seu negócio, clique em 'Usar Localização Atual' para obter as coordenadas. Certifique-se de permitir o acesso à localização quando solicitado."
+    }
   }
 }

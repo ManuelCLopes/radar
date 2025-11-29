@@ -30,8 +30,8 @@
       "latitudePlaceholder": "z.B., 52.5200",
       "longitude": "Längengrad",
       "longitudePlaceholder": "z.B., 13.4050",
-      "address": "Adresse (Optional)",
-      "addressPlaceholder": "Adresse",
+      "address": "Adresse",
+      "addressPlaceholder": "Geben Sie die Adresse Ihres Unternehmens ein",
       "submit": "Unternehmen Registrieren",
       "submitting": "Registrierung..."
     },
@@ -144,5 +144,40 @@
     "light": "Hell",
     "dark": "Dunkel",
     "system": "System"
+  },
+  "common": {
+    "cancel": "Abbrechen"
+  },
+  "addressSearch": {
+    "enterAddress": "Bitte geben Sie eine Adresse zur Suche ein",
+    "searchFailed": "Adresssuche fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "placeSelected": "Adresse verifiziert",
+    "addressVerified": "Adresse verifiziert und Standort bestätigt",
+    "usingCurrentLocation": "Ihr aktueller Standort wird verwendet",
+    "useCurrentLocation": "Aktuellen Standort Verwenden",
+    "locationObtained": "Standort erhalten",
+    "locationObtainedDesc": "Ihr aktueller Standort wurde erfolgreich erfasst.",
+    "locationFailed": "Ihr Standort konnte nicht ermittelt werden. Bitte überprüfen Sie Ihre Browsereinstellungen und versuchen Sie es erneut.",
+    "locationDenied": "Der Zugriff auf den Standort wurde verweigert. Bitte aktivieren Sie die Standortberechtigungen in Ihren Browsereinstellungen.",
+    "coordinatesRequired": "Gültige Standortkoordinaten sind für die Wettbewerbsanalyse erforderlich.",
+    "multipleResults": {
+      "title": "Mehrere Standorte Gefunden",
+      "description": "Wir haben mehrere Unternehmen an dieser Adresse gefunden. Bitte wählen Sie das richtige aus:"
+    },
+    "suggestion": {
+      "title": "Adresse Gefunden",
+      "description": "Wir haben ein passendes Unternehmen mit einer vollständigeren Adresse gefunden. Möchten Sie diese verwenden?",
+      "useThis": "Diese Adresse Verwenden",
+      "keepOriginal": "Meine Adresse Behalten"
+    },
+    "noResults": {
+      "title": "Adresse Nicht Gefunden",
+      "description": "Wir konnten diese Adresse nicht verifizieren. Wenn Sie sich am Standort Ihres Unternehmens befinden, klicken Sie auf 'Aktuellen Standort Verwenden', um die Koordinaten von Ihrem Gerät zu erhalten. Andernfalls versuchen Sie eine genauere Adresse mit Stadt und Land.",
+      "editAddress": "Adresse Bearbeiten"
+    },
+    "apiKeyMissing": {
+      "title": "Adressvalidierung Nicht Verfügbar",
+      "description": "Die Adressvalidierung ist vorübergehend nicht verfügbar. Wenn Sie sich am Standort Ihres Unternehmens befinden, klicken Sie auf 'Aktuellen Standort Verwenden', um die Koordinaten zu erhalten. Stellen Sie sicher, dass Sie den Standortzugriff erlauben, wenn Sie dazu aufgefordert werden."
+    }
   }
 }

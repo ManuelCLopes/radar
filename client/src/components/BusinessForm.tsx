@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "@tanstack/react-query";
-import { Building2, MapPin, Search, Loader2, AlertTriangle, CheckCircle } from "lucide-react";
+import { Building2, MapPin, Search, Loader2, AlertTriangle, CheckCircle, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -61,6 +61,8 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
   const { toast } = useToast();
   
   const [selectedPlace, setSelectedPlace] = useState<PlaceResult | null>(null);
+  const [manualCoordinates, setManualCoordinates] = useState<{ lat: number; lng: number } | null>(null);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [showMultipleResultsModal, setShowMultipleResultsModal] = useState(false);
   const [showAddressSuggestionDialog, setShowAddressSuggestionDialog] = useState(false);
   const [showNoResultsDialog, setShowNoResultsDialog] = useState(false);
@@ -112,6 +114,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
       const result = await searchMutation.mutateAsync(searchQuery);
       
       if (result.apiKeyMissing) {
+        setPendingSubmitData(form.getValues());
         setShowApiKeyMissingDialog(true);
         return;
       }
@@ -145,6 +148,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
 
   const selectPlace = (place: PlaceResult) => {
     setSelectedPlace(place);
+    setManualCoordinates(null);
     form.setValue("address", place.address);
     setShowMultipleResultsModal(false);
     setShowAddressSuggestionDialog(false);
@@ -154,8 +158,59 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
     });
   };
 
+  const handleGetCurrentLocation = (): Promise<{ lat: number; lng: number }> => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error("Geolocation not supported"));
+        return;
+      }
+
+      setIsGettingLocation(true);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setIsGettingLocation(false);
+          resolve({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          setIsGettingLocation(false);
+          reject(error);
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    });
+  };
+
+  const handleUseCurrentLocation = async () => {
+    try {
+      const coords = await handleGetCurrentLocation();
+      setManualCoordinates(coords);
+      setSelectedPlace(null);
+      setShowNoResultsDialog(false);
+      setShowApiKeyMissingDialog(false);
+      toast({
+        title: t("addressSearch.locationObtained"),
+        description: t("addressSearch.locationObtainedDesc"),
+      });
+    } catch (error) {
+      const errorMessage = error instanceof GeolocationPositionError 
+        ? (error.code === 1 
+            ? t("addressSearch.locationDenied") 
+            : t("addressSearch.locationFailed"))
+        : t("addressSearch.locationFailed");
+      
+      toast({
+        title: t("toast.error.title"),
+        description: errorMessage,
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleSubmit = async (data: FormValues) => {
-    if (!selectedPlace) {
+    if (!selectedPlace && !manualCoordinates) {
       await handleSearchAddress();
       return;
     }
@@ -163,34 +218,24 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
     const businessData: InsertBusiness = {
       name: data.name,
       type: data.type,
-      address: selectedPlace.address,
-      latitude: selectedPlace.latitude,
-      longitude: selectedPlace.longitude,
+      address: selectedPlace?.address || data.address,
+      latitude: selectedPlace?.latitude || manualCoordinates?.lat || 0,
+      longitude: selectedPlace?.longitude || manualCoordinates?.lng || 0,
     };
+
+    if (businessData.latitude === 0 && businessData.longitude === 0) {
+      toast({
+        title: t("toast.error.title"),
+        description: t("addressSearch.coordinatesRequired"),
+        variant: "destructive",
+      });
+      return;
+    }
 
     await onSubmit(businessData);
     form.reset();
     setSelectedPlace(null);
-  };
-
-  const handleProceedWithoutValidation = async () => {
-    if (!pendingSubmitData) return;
-    
-    setShowNoResultsDialog(false);
-    setShowApiKeyMissingDialog(false);
-    
-    const businessData: InsertBusiness = {
-      name: pendingSubmitData.name,
-      type: pendingSubmitData.type,
-      address: pendingSubmitData.address,
-      latitude: 0,
-      longitude: 0,
-    };
-
-    await onSubmit(businessData);
-    form.reset();
-    setSelectedPlace(null);
-    setPendingSubmitData(null);
+    setManualCoordinates(null);
   };
 
   const handleAcceptSuggestedAddress = () => {
@@ -283,6 +328,9 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
                             if (selectedPlace) {
                               setSelectedPlace(null);
                             }
+                            if (manualCoordinates) {
+                              setManualCoordinates(null);
+                            }
                           }}
                         />
                       </FormControl>
@@ -305,6 +353,12 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
                       <div className="flex items-center gap-2 mt-2 text-sm text-green-600 dark:text-green-400">
                         <CheckCircle className="h-4 w-4" />
                         <span>{t("addressSearch.addressVerified")}</span>
+                      </div>
+                    )}
+                    {manualCoordinates && !selectedPlace && (
+                      <div className="flex items-center gap-2 mt-2 text-sm text-blue-600 dark:text-blue-400">
+                        <Navigation className="h-4 w-4" />
+                        <span>{t("addressSearch.usingCurrentLocation")}</span>
                       </div>
                     )}
                   </FormItem>
@@ -417,12 +471,21 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
               {t("addressSearch.noResults.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="flex-col sm:flex-row gap-2">
             <AlertDialogCancel onClick={() => setShowNoResultsDialog(false)}>
               {t("addressSearch.noResults.editAddress")}
             </AlertDialogCancel>
-            <AlertDialogAction onClick={handleProceedWithoutValidation}>
-              {t("addressSearch.noResults.proceed")}
+            <AlertDialogAction 
+              onClick={handleUseCurrentLocation}
+              disabled={isGettingLocation}
+              data-testid="button-use-location-fallback"
+            >
+              {isGettingLocation ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Navigation className="h-4 w-4 mr-2" />
+              )}
+              {t("addressSearch.useCurrentLocation")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -439,15 +502,21 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
               {t("addressSearch.apiKeyMissing.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="flex-col sm:flex-row gap-2">
             <AlertDialogCancel onClick={() => setShowApiKeyMissingDialog(false)}>
               {t("common.cancel")}
             </AlertDialogCancel>
-            <AlertDialogAction onClick={() => {
-              setPendingSubmitData(form.getValues());
-              handleProceedWithoutValidation();
-            }}>
-              {t("addressSearch.apiKeyMissing.proceed")}
+            <AlertDialogAction 
+              onClick={handleUseCurrentLocation}
+              disabled={isGettingLocation}
+              data-testid="button-use-location-api-missing"
+            >
+              {isGettingLocation ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Navigation className="h-4 w-4 mr-2" />
+              )}
+              {t("addressSearch.useCurrentLocation")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

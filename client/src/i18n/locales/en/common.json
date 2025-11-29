@@ -30,8 +30,8 @@
       "latitudePlaceholder": "e.g., 40.7128",
       "longitude": "Longitude",
       "longitudePlaceholder": "e.g., -74.0060",
-      "address": "Address (Optional)",
-      "addressPlaceholder": "Street address",
+      "address": "Address",
+      "addressPlaceholder": "Enter your business address",
       "submit": "Register Business",
       "submitting": "Registering..."
     },
@@ -144,5 +144,40 @@
     "light": "Light",
     "dark": "Dark",
     "system": "System"
+  },
+  "common": {
+    "cancel": "Cancel"
+  },
+  "addressSearch": {
+    "enterAddress": "Please enter an address to search",
+    "searchFailed": "Failed to search for address. Please try again.",
+    "placeSelected": "Address verified",
+    "addressVerified": "Address verified and location confirmed",
+    "usingCurrentLocation": "Using your current location",
+    "useCurrentLocation": "Use Current Location",
+    "locationObtained": "Location obtained",
+    "locationObtainedDesc": "Your current location has been captured successfully.",
+    "locationFailed": "Could not get your location. Please check your browser settings and try again.",
+    "locationDenied": "Location access was denied. Please enable location permissions in your browser settings to use this feature.",
+    "coordinatesRequired": "Valid location coordinates are required for competitor analysis.",
+    "multipleResults": {
+      "title": "Multiple Locations Found",
+      "description": "We found several businesses at this address. Please select the correct one:"
+    },
+    "suggestion": {
+      "title": "Address Found",
+      "description": "We found a matching business with a more complete address. Would you like to use it?",
+      "useThis": "Use This Address",
+      "keepOriginal": "Keep My Address"
+    },
+    "noResults": {
+      "title": "Address Not Found",
+      "description": "We couldn't verify this address. If you're at your business location, click 'Use Current Location' to get coordinates from your device. Otherwise, try a more specific address including city and country.",
+      "editAddress": "Edit Address"
+    },
+    "apiKeyMissing": {
+      "title": "Address Validation Unavailable",
+      "description": "Address validation is temporarily unavailable. If you're at your business location, click 'Use Current Location' to get coordinates from your device. Make sure to allow location access when prompted."
+    }
   }
 }
