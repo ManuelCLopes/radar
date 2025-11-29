@@ -21,7 +21,7 @@ export async function searchNearby(
         headers: {
           "Content-Type": "application/json",
           "X-Goog-Api-Key": API_KEY,
-          "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.types",
+          "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.types,places.location",
         },
         body: JSON.stringify({
           includedTypes: [type],
