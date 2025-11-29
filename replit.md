@@ -121,6 +121,12 @@ shared/
 - Status endpoint to monitor scheduler health
 
 ## Recent Changes
+- 2025-11-29: Price level and enhanced AI analysis features
+  - Added price level display ($ to $$$$) to competitor cards and HTML reports
+  - Enhanced AI analysis with review theme insights (service, price, ambience, speed, quality)
+  - AI now provides 3-5 practical recommendations for the next month
+  - Mock data generator includes randomized price levels for testing
+
 - 2025-11-29: Commercial landing page in Portuguese
   - Created LandingPage.tsx with 8 sections: Hero, How It Works, Report Features, Sample, Audience, Pricing, FAQ, CTA
   - Landing page is now the default route ("/")
