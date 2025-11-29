@@ -1,15 +1,88 @@
 import type { Business, Competitor } from "@shared/schema";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+});
 
 export async function analyzeCompetitors(
   business: Business,
   competitors: Competitor[]
 ): Promise<string> {
   const totalCompetitors = competitors.length;
-  
+
   if (totalCompetitors === 0) {
     return `Great news! No direct competitors were found in the immediate vicinity of "${business.name}". This could indicate a potential market opportunity. However, we recommend expanding the search radius to ensure comprehensive market analysis.`;
   }
 
+  const competitorsSummary = competitors.map((c, i) => 
+    `${i + 1}. ${c.name} - Rating: ${c.rating || "N/A"}/5 (${c.userRatingsTotal || 0} reviews), Distance: ${c.distance || "Unknown"}, Address: ${c.address}`
+  ).join("\n");
+
+  const avgRating = competitors
+    .filter(c => c.rating)
+    .reduce((sum, c) => sum + (c.rating || 0), 0) / competitors.filter(c => c.rating).length;
+
+  const totalReviews = competitors.reduce((sum, c) => sum + (c.userRatingsTotal || 0), 0);
+
+  const prompt = `You are a business strategy consultant analyzing local competition for a small business. Provide a comprehensive, actionable competitive analysis report.
+
+BUSINESS DETAILS:
+- Name: ${business.name}
+- Type: ${business.type}
+- Location: ${business.address || `Coordinates: ${business.latitude}, ${business.longitude}`}
+
+NEARBY COMPETITORS (${totalCompetitors} found):
+${competitorsSummary}
+
+MARKET METRICS:
+- Average competitor rating: ${avgRating ? avgRating.toFixed(1) : "N/A"}/5.0
+- Total market reviews: ${totalReviews.toLocaleString()}
+
+Please provide a detailed analysis including:
+1. MARKET OVERVIEW - Summary of the competitive landscape
+2. KEY COMPETITORS - Analysis of the top competitors and their strengths
+3. MARKET GAPS - Opportunities where competitors may be underserving customers
+4. STRATEGIC RECOMMENDATIONS - Specific, actionable steps to compete effectively
+5. DIFFERENTIATION STRATEGIES - Ways to stand out from the competition
+6. RISK ASSESSMENT - Potential challenges and how to mitigate them
+
+Format your response with clear headers and bullet points for easy reading. Be specific and practical in your recommendations.`;
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: "You are an expert business strategist specializing in local market competition analysis. Provide clear, actionable insights that help small businesses compete effectively in their local markets."
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      max_tokens: 2000,
+      temperature: 0.7,
+    });
+
+    const aiAnalysis = response.choices[0]?.message?.content;
+    
+    if (!aiAnalysis) {
+      console.error("No AI response received");
+      return generateFallbackAnalysis(business, competitors);
+    }
+
+    return aiAnalysis;
+  } catch (error) {
+    console.error("Error calling OpenAI:", error);
+    return generateFallbackAnalysis(business, competitors);
+  }
+}
+
+function generateFallbackAnalysis(business: Business, competitors: Competitor[]): string {
+  const totalCompetitors = competitors.length;
   const avgRating = competitors
     .filter(c => c.rating)
     .reduce((sum, c) => sum + (c.rating || 0), 0) / competitors.filter(c => c.rating).length;
@@ -20,7 +93,7 @@ export async function analyzeCompetitors(
   const highRatedCompetitors = competitors.filter(c => (c.rating || 0) >= 4.5);
   const lowRatedCompetitors = competitors.filter(c => (c.rating || 0) < 4.0);
 
-  const analysis = `
+  return `
 COMPETITOR ANALYSIS REPORT FOR "${business.name.toUpperCase()}"
 ${"=".repeat(50)}
 
@@ -56,9 +129,5 @@ ${avgRating && avgRating < 4.2
 • Develop loyalty programs to retain customers in this competitive environment
 
 This analysis is based on current market data and should be reviewed periodically to track market changes.
-
-[Note: This is a mock analysis. Connect a real AI service (OpenAI, Anthropic, etc.) for more detailed insights.]
 `.trim();
-
-  return analysis;
 }
