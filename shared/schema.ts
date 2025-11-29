@@ -67,9 +67,21 @@ export const reports = pgTable("reports", {
   html: text("html").notNull(),
 });
 
-export const insertReportSchema = createInsertSchema(reports).omit({
-  id: true,
-  generatedAt: true,
+export const competitorSchema = z.object({
+  name: z.string(),
+  address: z.string(),
+  rating: z.number().optional(),
+  userRatingsTotal: z.number().optional(),
+  types: z.array(z.string()).optional(),
+  distance: z.string().optional(),
+});
+
+export const insertReportSchema = z.object({
+  businessId: z.string(),
+  businessName: z.string(),
+  competitors: z.array(competitorSchema),
+  aiAnalysis: z.string(),
+  html: z.string(),
 });
 
 export type InsertReport = z.infer<typeof insertReportSchema>;
