@@ -34,7 +34,7 @@ export async function analyzeCompetitors(
   }
 
   const competitorsSummary = competitors.map((c, i) => 
-    `${i + 1}. ${c.name} - Rating: ${c.rating || "N/A"}/5 (${c.userRatingsTotal || 0} reviews), Distance: ${c.distance || "Unknown"}, Address: ${c.address}`
+    `${i + 1}. ${c.name} - Rating: ${c.rating || "N/A"}/5 (${c.userRatingsTotal || 0} reviews), Price Level: ${c.priceLevel || "Unknown"}, Distance: ${c.distance || "Unknown"}, Address: ${c.address}`
   ).join("\n");
 
   const avgRating = competitors
@@ -60,14 +60,14 @@ MARKET METRICS:
 - Total market reviews: ${totalReviews.toLocaleString()}
 
 Please provide a detailed analysis including:
-1. MARKET OVERVIEW - Summary of the competitive landscape
-2. KEY COMPETITORS - Analysis of the top competitors and their strengths
-3. MARKET GAPS - Opportunities where competitors may be underserving customers
-4. STRATEGIC RECOMMENDATIONS - Specific, actionable steps to compete effectively
-5. DIFFERENTIATION STRATEGIES - Ways to stand out from the competition
-6. RISK ASSESSMENT - Potential challenges and how to mitigate them
+1. MARKET OVERVIEW - Summary of the competitive landscape and how ${business.name} compares to competitors
+2. KEY COMPETITORS - Analysis of the top competitors, their strengths, ratings, and price positioning
+3. REVIEW THEME ANALYSIS - Based on the review volume and ratings, analyze what themes likely dominate customer feedback (e.g., service quality, value for money, ambience, wait times, food quality, customer care)
+4. MARKET GAPS - Opportunities where competitors may be underserving customers
+5. 3-5 PRACTICAL RECOMMENDATIONS - Specific, actionable steps for the next month (e.g., improve wait times, adjust pricing, train staff, enhance specific services)
+6. DIFFERENTIATION STRATEGIES - Ways to stand out from the competition based on current market positioning
 
-Format your response with clear headers and bullet points for easy reading. Be specific and practical in your recommendations. Remember: Write everything in ${languageName}.`;
+Format your response with clear headers and bullet points for easy reading. Be specific and practical in your recommendations. Analyze the data to provide insights about service, price, ambience, speed, and quality patterns in the local market. Remember: Write everything in ${languageName}.`;
 
   try {
     const response = await openai.chat.completions.create({

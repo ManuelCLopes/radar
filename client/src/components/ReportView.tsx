@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Download, Building2, Star, MapPin, Brain, Users, FileText, Printer, Mail } from "lucide-react";
+import { Download, Building2, Star, MapPin, Brain, Users, FileText, Printer, Mail, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
@@ -82,7 +82,7 @@ interface ReportViewProps {
   onOpenChange: (open: boolean) => void;
 }
 
-function CompetitorCard({ competitor, index, t }: { competitor: Competitor; index: number; t: (key: string, options?: object) => string }) {
+function CompetitorCard({ competitor, index, t }: { competitor: Competitor; index: number; t: (key: string, options?: Record<string, unknown>) => string }) {
   return (
     <Card className="hover-elevate" data-testid={`card-competitor-${index}`}>
       <CardContent className="p-4">
@@ -106,11 +106,19 @@ function CompetitorCard({ competitor, index, t }: { competitor: Competitor; inde
               {t("report.competitor.reviews", { count: competitor.userRatingsTotal.toLocaleString() })}
             </p>
           )}
-          {competitor.distance && (
-            <Badge variant="outline" className="text-xs">
-              {competitor.distance}
-            </Badge>
-          )}
+          <div className="flex flex-wrap gap-1">
+            {competitor.distance && (
+              <Badge variant="outline" className="text-xs">
+                {competitor.distance}
+              </Badge>
+            )}
+            {competitor.priceLevel && (
+              <Badge variant="outline" className="text-xs flex items-center gap-0.5">
+                <DollarSign className="h-2.5 w-2.5" />
+                {competitor.priceLevel}
+              </Badge>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>

@@ -82,6 +82,7 @@ export interface Competitor {
   userRatingsTotal?: number;
   types?: string[];
   distance?: string;
+  priceLevel?: string;
 }
 
 export const reports = pgTable("reports", {
@@ -101,6 +102,7 @@ export const competitorSchema = z.object({
   userRatingsTotal: z.number().optional(),
   types: z.array(z.string()).optional(),
   distance: z.string().optional(),
+  priceLevel: z.string().optional(),
 });
 
 export const insertReportSchema = z.object({

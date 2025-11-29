@@ -41,7 +41,7 @@ export async function runReportForBusiness(businessId: string, language: string 
 
 function generateReportHTML(
   business: Business,
-  competitors: { name: string; address: string; rating?: number; userRatingsTotal?: number }[],
+  competitors: { name: string; address: string; rating?: number; userRatingsTotal?: number; priceLevel?: string }[],
   aiAnalysis: string
 ): string {
   const competitorRows = competitors
@@ -52,6 +52,7 @@ function generateReportHTML(
         <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">${c.address}</td>
         <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center;">${c.rating ? c.rating.toFixed(1) : 'N/A'}</td>
         <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center;">${c.userRatingsTotal || 'N/A'}</td>
+        <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center;">${c.priceLevel || 'N/A'}</td>
       </tr>
     `
     )
@@ -202,6 +203,7 @@ function generateReportHTML(
               <th>Address</th>
               <th style="text-align: center;">Rating</th>
               <th style="text-align: center;">Reviews</th>
+              <th style="text-align: center;">Price</th>
             </tr>
           </thead>
           <tbody>

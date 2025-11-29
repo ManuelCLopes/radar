@@ -75,7 +75,7 @@ export async function searchNearby(
         headers: {
           "Content-Type": "application/json",
           "X-Goog-Api-Key": API_KEY,
-          "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.types,places.location",
+          "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.types,places.location,places.priceLevel",
         },
         body: JSON.stringify({
           includedTypes: [type],
@@ -111,11 +111,24 @@ export async function searchNearby(
       userRatingsTotal: place.userRatingCount,
       types: place.types,
       distance: calculateDistance(lat, lng, place.location?.latitude, place.location?.longitude),
+      priceLevel: formatPriceLevel(place.priceLevel),
     }));
   } catch (error) {
     console.error("Error fetching from Google Places:", error);
     return generateMockCompetitors(type, lat, lng);
   }
+}
+
+function formatPriceLevel(priceLevel?: string): string | undefined {
+  if (!priceLevel) return undefined;
+  const priceLevelMap: Record<string, string> = {
+    "PRICE_LEVEL_FREE": "Free",
+    "PRICE_LEVEL_INEXPENSIVE": "$",
+    "PRICE_LEVEL_MODERATE": "$$",
+    "PRICE_LEVEL_EXPENSIVE": "$$$",
+    "PRICE_LEVEL_VERY_EXPENSIVE": "$$$$",
+  };
+  return priceLevelMap[priceLevel] || undefined;
 }
 
 function calculateDistance(lat1: number, lng1: number, lat2?: number, lng2?: number): string {
@@ -162,6 +175,7 @@ function generateMockCompetitors(type: string, lat: number, lng: number): Compet
   const names = businessNames[type] || businessNames.other;
   const numCompetitors = Math.floor(Math.random() * 4) + 2;
 
+  const priceLevels = ["$", "$$", "$$$", "$$$$"];
   return names.slice(0, numCompetitors).map((name, index) => ({
     name,
     address: `${100 + index * 50} Main Street, Local City`,
@@ -169,5 +183,6 @@ function generateMockCompetitors(type: string, lat: number, lng: number): Compet
     userRatingsTotal: Math.floor(Math.random() * 500) + 50,
     types: [type],
     distance: `${(Math.random() * 1.5 + 0.2).toFixed(1)}km`,
+    priceLevel: priceLevels[Math.floor(Math.random() * priceLevels.length)],
   }));
 }
