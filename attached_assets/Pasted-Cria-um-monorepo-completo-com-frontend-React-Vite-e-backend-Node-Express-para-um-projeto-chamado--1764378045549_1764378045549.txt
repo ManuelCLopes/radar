@@ -1,0 +1,109 @@
+Cria um monorepo completo com frontend React (Vite) e backend Node/Express para um projeto chamado “Local Competitor Analyzer”. A estrutura deve ser assim:
+
+project-root/
+  client/        # Vite + React
+  server/        # Node + Express
+  replit.nix
+  package.json (root optional)
+
+====================================
+REQUISITOS DO FRONTEND (client/)
+====================================
+
+1. Criar um projeto React com Vite dentro de /client.
+2. Ter as seguintes páginas/componentes:
+   - App.jsx
+   - components/BusinessForm.jsx
+   - components/BusinessList.jsx
+3. Cada componente deve comunicar com o backend via fetch.
+4. Criar o ficheiro client/src/api.js com funções:
+   - createBusiness(data)
+   - getBusinesses()
+   - runReport(id)
+5. O App.jsx deve:
+   - mostrar um formulário para criar negócios
+   - mostrar lista de negócios
+   - botão “Gerar Relatório” que chama /api/run-report/:id
+
+====================================
+REQUISITOS DO BACKEND (server/)
+====================================
+
+Criar um backend Node/Express com esta estrutura:
+
+server/
+  index.js          # arranque do express
+  db.js             # BD simples em JSON
+  googlePlaces.js   # fetch à Google Places API (mas com API_KEY como placeholder)
+  ai.js             # integração com IA (apenas função mock)
+  reports.js        # lógica para gerar relatório (HTML mock)
+  cron.js           # cron job (não precisa de ativar agora)
+  package.json
+
+====================================
+CONTEÚDOS A IMPLEMENTAR NO BACKEND
+====================================
+
+index.js:
+- Express + CORS + JSON
+- Rotas:
+  POST /api/businesses → adiciona negócio na BD JSON
+  GET  /api/businesses → lista negócios
+  POST /api/run-report/:id → chama runReportForBusiness()
+
+db.js:
+- Implementar BD baseada em ficheiro JSON
+- Funções:
+  load()
+  save()
+  addBusiness()
+  listBusinesses()
+  getBusiness(id)
+
+googlePlaces.js:
+- Exportar função searchNearby(lat, lng, type, radius)
+- Usar fetch para POST https://places.googleapis.com/v1/places:searchNearby
+- API_KEY = process.env.GOOGLE_API_KEY (placeholder)
+
+ai.js:
+- Exportar função analyzeCompetitors() que apenas devolve string mock:
+  return “Análise automática fictícia (placeholder).”
+
+reports.js:
+- Exportar função async runReportForBusiness(id)
+- Buscar negócio na BD
+- Chamar searchNearby
+- Chamar analyzeCompetitors
+- Construir relatório HTML básico:
+  <h1>Relatório de Concorrência - Nome</h1>
+  <pre>JSON dos concorrentes</pre>
+  <pre>Análise IA</pre>
+- Retornar objeto: { html }
+
+====================================
+REQUISITOS DE CONFIGURAÇÃO
+====================================
+
+1. Criar o ficheiro replit.nix para suportar:
+   - NodeJS
+   - npm
+   - build do Vite
+
+2. Criar script no root para correr o backend:
+   "start": "node server/index.js"
+
+3. Backend deve correr na porta 3000.
+
+4. Frontend deve correr na porta 5173.
+
+====================================
+RESULTADO FINAL ESPERADO
+====================================
+
+Ao terminar, quero um monorepo onde:
+- Posso correr o backend com “node server/index.js”
+- Posso correr o frontend com “npm run dev” dentro de /client
+- Consigo criar negócios e gerar relatórios mockados
+- Estrutura está pronta para eu adicionar Google API real e IA real depois.
+
+Cria todo o código e ficheiros necessários automaticamente.
