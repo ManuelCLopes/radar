@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { runReportForBusiness } from "./reports";
+import { startScheduler, getSchedulerStatus, runScheduledReports } from "./scheduler";
 import { insertBusinessSchema } from "@shared/schema";
 
 export async function registerRoutes(
@@ -119,6 +120,28 @@ export async function registerRoutes(
       res.status(500).json({ error: "Failed to get report" });
     }
   });
+
+  app.get("/api/scheduler/status", async (req, res) => {
+    try {
+      const status = getSchedulerStatus();
+      res.json(status);
+    } catch (error) {
+      console.error("Error getting scheduler status:", error);
+      res.status(500).json({ error: "Failed to get scheduler status" });
+    }
+  });
+
+  app.post("/api/scheduler/run-all", async (req, res) => {
+    try {
+      const results = await runScheduledReports();
+      res.json(results);
+    } catch (error) {
+      console.error("Error running scheduled reports:", error);
+      res.status(500).json({ error: "Failed to run scheduled reports" });
+    }
+  });
+
+  startScheduler();
 
   return httpServer;
 }
