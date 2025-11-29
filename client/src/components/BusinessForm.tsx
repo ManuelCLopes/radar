@@ -19,12 +19,12 @@ const businessTypeKeys: Record<BusinessType, string> = {
   hotel: "hotel",
   bar: "bar",
   bakery: "bakery",
-  supermarket: "retail",
-  clinic: "other",
-  dentist: "other",
-  bank: "other",
-  gas_station: "other",
-  car_repair: "other",
+  supermarket: "supermarket",
+  clinic: "clinic",
+  dentist: "dentist",
+  bank: "bank",
+  gas_station: "gasStation",
+  car_repair: "carRepair",
   other: "other",
 };
 

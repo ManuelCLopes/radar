@@ -45,6 +45,12 @@
       "bar": "Bar / Kneipe",
       "bakery": "Bäckerei",
       "pharmacy": "Apotheke",
+      "supermarket": "Supermarkt",
+      "clinic": "Arztpraxis",
+      "dentist": "Zahnarzt",
+      "bank": "Bank",
+      "gasStation": "Tankstelle",
+      "carRepair": "Autowerkstatt",
       "other": "Sonstiges"
     },
     "list": {

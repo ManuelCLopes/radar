@@ -45,6 +45,12 @@
       "bar": "Bar / Pub",
       "bakery": "Bakery",
       "pharmacy": "Pharmacy",
+      "supermarket": "Supermarket",
+      "clinic": "Medical Clinic",
+      "dentist": "Dentist",
+      "bank": "Bank",
+      "gasStation": "Gas Station",
+      "carRepair": "Car Repair",
       "other": "Other"
     },
     "list": {
