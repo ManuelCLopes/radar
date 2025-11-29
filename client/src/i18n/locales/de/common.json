@@ -1,0 +1,143 @@
+{
+  "app": {
+    "title": "Lokaler Wettbewerbsanalysator",
+    "description": "Analysieren Sie Ihre lokale Konkurrenz mit KI-gestützten Erkenntnissen"
+  },
+  "nav": {
+    "dashboard": "Dashboard"
+  },
+  "dashboard": {
+    "header": {
+      "title": "Lokaler Wettbewerbsanalysator",
+      "subtitle": "Registrieren Sie Ihr Unternehmen und entdecken Sie nahegelegene Wettbewerber mit KI-gestützter Analyse"
+    },
+    "stats": {
+      "registeredBusinesses": "Registrierte Unternehmen",
+      "analysisStatus": "Analysestatus",
+      "uniqueLocations": "Einzigartige Standorte",
+      "businessTypes": "Unternehmenstypen",
+      "active": "Aktiv"
+    }
+  },
+  "business": {
+    "form": {
+      "title": "Neues Unternehmen Registrieren",
+      "name": "Unternehmensname",
+      "namePlaceholder": "Unternehmensname eingeben",
+      "type": "Unternehmenstyp",
+      "typePlaceholder": "Typ auswählen",
+      "latitude": "Breitengrad",
+      "latitudePlaceholder": "z.B., 52.5200",
+      "longitude": "Längengrad",
+      "longitudePlaceholder": "z.B., 13.4050",
+      "address": "Adresse (Optional)",
+      "addressPlaceholder": "Adresse",
+      "submit": "Unternehmen Registrieren",
+      "submitting": "Registrierung..."
+    },
+    "types": {
+      "restaurant": "Restaurant",
+      "cafe": "Café",
+      "retail": "Einzelhandel",
+      "gym": "Fitnessstudio",
+      "salon": "Salon / Spa",
+      "hotel": "Hotel",
+      "bar": "Bar / Kneipe",
+      "bakery": "Bäckerei",
+      "pharmacy": "Apotheke",
+      "other": "Sonstiges"
+    },
+    "list": {
+      "title": "Ihre Unternehmen",
+      "empty": "Noch keine Unternehmen registriert. Fügen Sie oben Ihr erstes Unternehmen hinzu.",
+      "generateReport": "Bericht Erstellen",
+      "generating": "Wird erstellt...",
+      "viewHistory": "Berichtsverlauf Anzeigen",
+      "delete": "Löschen"
+    },
+    "deleteDialog": {
+      "title": "Unternehmen Löschen",
+      "description": "Sind Sie sicher, dass Sie \"{{name}}\" löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden und löscht auch alle zugehörigen Berichte.",
+      "cancel": "Abbrechen",
+      "confirm": "Löschen"
+    }
+  },
+  "report": {
+    "view": {
+      "title": "Wettbewerbsanalysebericht",
+      "generatedAt": "Erstellt {{date}}",
+      "export": "Exportieren",
+      "downloadHtml": "HTML Herunterladen",
+      "printPdf": "Drucken / Als PDF Speichern",
+      "emailReport": "Per E-Mail Senden"
+    },
+    "stats": {
+      "competitorsFound": "Wettbewerber Gefunden",
+      "avgRating": "Durchschn. Bewertung",
+      "totalReviews": "Gesamte Bewertungen"
+    },
+    "sections": {
+      "aiAnalysis": "KI-Analyse",
+      "nearbyCompetitors": "Nahegelegene Wettbewerber",
+      "noCompetitors": "Keine Wettbewerber in der Nähe gefunden."
+    },
+    "competitor": {
+      "reviews": "{{count}} Bewertungen"
+    },
+    "history": {
+      "title": "Berichtsverlauf",
+      "description": "Alle erstellten Berichte für {{name}} anzeigen",
+      "empty": "Für dieses Unternehmen wurden noch keine Berichte erstellt.",
+      "competitorsAnalyzed": "{{count}} Wettbewerber analysiert",
+      "view": "Anzeigen",
+      "download": "Herunterladen"
+    }
+  },
+  "toast": {
+    "businessRegistered": {
+      "title": "Unternehmen registriert",
+      "description": "Ihr Unternehmen wurde erfolgreich registriert."
+    },
+    "businessDeleted": {
+      "title": "Unternehmen gelöscht",
+      "description": "Das Unternehmen wurde entfernt."
+    },
+    "reportGenerated": {
+      "title": "Bericht erstellt",
+      "description": "Ihr Wettbewerbsanalysebericht ist fertig."
+    },
+    "reportDownloaded": {
+      "title": "Bericht heruntergeladen",
+      "description": "Der HTML-Bericht wurde in Ihren Downloads gespeichert."
+    },
+    "printDialogOpened": {
+      "title": "Druckdialog geöffnet",
+      "description": "Verwenden Sie die Option 'Als PDF speichern' zum Speichern als PDF."
+    },
+    "emailClientOpened": {
+      "title": "E-Mail-Client geöffnet",
+      "description": "Ihre E-Mail-Anwendung wurde mit der Berichtszusammenfassung geöffnet."
+    },
+    "error": {
+      "title": "Fehler",
+      "fetchBusinesses": "Fehler beim Laden der Unternehmen",
+      "registerBusiness": "Fehler beim Registrieren des Unternehmens",
+      "deleteBusiness": "Fehler beim Löschen des Unternehmens",
+      "generateReport": "Fehler beim Erstellen des Berichts",
+      "fetchReports": "Fehler beim Laden der Berichte"
+    }
+  },
+  "language": {
+    "select": "Sprache",
+    "en": "English",
+    "pt": "Português (Portugal)",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch"
+  },
+  "theme": {
+    "light": "Hell",
+    "dark": "Dunkel",
+    "system": "System"
+  }
+}

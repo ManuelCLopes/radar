@@ -1,0 +1,143 @@
+{
+  "app": {
+    "title": "Analyseur de Concurrence Locale",
+    "description": "Analysez votre concurrence locale avec des insights basés sur l'IA"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord"
+  },
+  "dashboard": {
+    "header": {
+      "title": "Analyseur de Concurrence Locale",
+      "subtitle": "Enregistrez votre entreprise et découvrez les concurrents à proximité avec une analyse basée sur l'IA"
+    },
+    "stats": {
+      "registeredBusinesses": "Entreprises Enregistrées",
+      "analysisStatus": "État de l'Analyse",
+      "uniqueLocations": "Emplacements Uniques",
+      "businessTypes": "Types d'Entreprise",
+      "active": "Actif"
+    }
+  },
+  "business": {
+    "form": {
+      "title": "Enregistrer une Nouvelle Entreprise",
+      "name": "Nom de l'Entreprise",
+      "namePlaceholder": "Entrez le nom de l'entreprise",
+      "type": "Type d'Entreprise",
+      "typePlaceholder": "Sélectionnez un type",
+      "latitude": "Latitude",
+      "latitudePlaceholder": "ex., 48.8566",
+      "longitude": "Longitude",
+      "longitudePlaceholder": "ex., 2.3522",
+      "address": "Adresse (Optionnel)",
+      "addressPlaceholder": "Adresse",
+      "submit": "Enregistrer l'Entreprise",
+      "submitting": "Enregistrement..."
+    },
+    "types": {
+      "restaurant": "Restaurant",
+      "cafe": "Café",
+      "retail": "Commerce de Détail",
+      "gym": "Salle de Sport / Fitness",
+      "salon": "Salon / Spa",
+      "hotel": "Hôtel",
+      "bar": "Bar / Pub",
+      "bakery": "Boulangerie",
+      "pharmacy": "Pharmacie",
+      "other": "Autre"
+    },
+    "list": {
+      "title": "Vos Entreprises",
+      "empty": "Aucune entreprise enregistrée. Ajoutez votre première entreprise ci-dessus.",
+      "generateReport": "Générer un Rapport",
+      "generating": "Génération...",
+      "viewHistory": "Voir l'Historique des Rapports",
+      "delete": "Supprimer"
+    },
+    "deleteDialog": {
+      "title": "Supprimer l'Entreprise",
+      "description": "Êtes-vous sûr de vouloir supprimer \"{{name}}\" ? Cette action ne peut pas être annulée et supprimera également tous les rapports associés.",
+      "cancel": "Annuler",
+      "confirm": "Supprimer"
+    }
+  },
+  "report": {
+    "view": {
+      "title": "Rapport d'Analyse de la Concurrence",
+      "generatedAt": "Généré {{date}}",
+      "export": "Exporter",
+      "downloadHtml": "Télécharger HTML",
+      "printPdf": "Imprimer / Enregistrer en PDF",
+      "emailReport": "Envoyer par Email"
+    },
+    "stats": {
+      "competitorsFound": "Concurrents Trouvés",
+      "avgRating": "Note Moyenne",
+      "totalReviews": "Total des Avis"
+    },
+    "sections": {
+      "aiAnalysis": "Analyse IA",
+      "nearbyCompetitors": "Concurrents à Proximité",
+      "noCompetitors": "Aucun concurrent trouvé dans les environs."
+    },
+    "competitor": {
+      "reviews": "{{count}} avis"
+    },
+    "history": {
+      "title": "Historique des Rapports",
+      "description": "Voir tous les rapports générés pour {{name}}",
+      "empty": "Aucun rapport n'a encore été généré pour cette entreprise.",
+      "competitorsAnalyzed": "{{count}} concurrents analysés",
+      "view": "Voir",
+      "download": "Télécharger"
+    }
+  },
+  "toast": {
+    "businessRegistered": {
+      "title": "Entreprise enregistrée",
+      "description": "Votre entreprise a été enregistrée avec succès."
+    },
+    "businessDeleted": {
+      "title": "Entreprise supprimée",
+      "description": "L'entreprise a été supprimée."
+    },
+    "reportGenerated": {
+      "title": "Rapport généré",
+      "description": "Votre rapport d'analyse de la concurrence est prêt."
+    },
+    "reportDownloaded": {
+      "title": "Rapport téléchargé",
+      "description": "Le rapport HTML a été enregistré dans vos téléchargements."
+    },
+    "printDialogOpened": {
+      "title": "Dialogue d'impression ouvert",
+      "description": "Utilisez l'option 'Enregistrer en PDF' pour sauvegarder en PDF."
+    },
+    "emailClientOpened": {
+      "title": "Client email ouvert",
+      "description": "Votre application email a été ouverte avec le résumé du rapport."
+    },
+    "error": {
+      "title": "Erreur",
+      "fetchBusinesses": "Échec du chargement des entreprises",
+      "registerBusiness": "Échec de l'enregistrement de l'entreprise",
+      "deleteBusiness": "Échec de la suppression de l'entreprise",
+      "generateReport": "Échec de la génération du rapport",
+      "fetchReports": "Échec du chargement des rapports"
+    }
+  },
+  "language": {
+    "select": "Langue",
+    "en": "English",
+    "pt": "Português (Portugal)",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch"
+  },
+  "theme": {
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système"
+  }
+}

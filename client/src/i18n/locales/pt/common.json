@@ -1,0 +1,143 @@
+{
+  "app": {
+    "title": "Analisador de Concorrência Local",
+    "description": "Analise a sua concorrência local com insights baseados em IA"
+  },
+  "nav": {
+    "dashboard": "Painel"
+  },
+  "dashboard": {
+    "header": {
+      "title": "Analisador de Concorrência Local",
+      "subtitle": "Registe o seu negócio e descubra concorrentes próximos com análise baseada em IA"
+    },
+    "stats": {
+      "registeredBusinesses": "Negócios Registados",
+      "analysisStatus": "Estado da Análise",
+      "uniqueLocations": "Localizações Únicas",
+      "businessTypes": "Tipos de Negócio",
+      "active": "Ativo"
+    }
+  },
+  "business": {
+    "form": {
+      "title": "Registar Novo Negócio",
+      "name": "Nome do Negócio",
+      "namePlaceholder": "Introduza o nome do negócio",
+      "type": "Tipo de Negócio",
+      "typePlaceholder": "Selecione um tipo",
+      "latitude": "Latitude",
+      "latitudePlaceholder": "ex., 38.7223",
+      "longitude": "Longitude",
+      "longitudePlaceholder": "ex., -9.1393",
+      "address": "Morada (Opcional)",
+      "addressPlaceholder": "Endereço",
+      "submit": "Registar Negócio",
+      "submitting": "A registar..."
+    },
+    "types": {
+      "restaurant": "Restaurante",
+      "cafe": "Café",
+      "retail": "Loja de Retalho",
+      "gym": "Ginásio / Fitness",
+      "salon": "Salão / Spa",
+      "hotel": "Hotel",
+      "bar": "Bar / Pub",
+      "bakery": "Padaria",
+      "pharmacy": "Farmácia",
+      "other": "Outro"
+    },
+    "list": {
+      "title": "Os Seus Negócios",
+      "empty": "Ainda não há negócios registados. Adicione o seu primeiro negócio acima.",
+      "generateReport": "Gerar Relatório",
+      "generating": "A gerar...",
+      "viewHistory": "Ver Histórico de Relatórios",
+      "delete": "Eliminar"
+    },
+    "deleteDialog": {
+      "title": "Eliminar Negócio",
+      "description": "Tem a certeza que pretende eliminar \"{{name}}\"? Esta ação não pode ser desfeita e irá também eliminar todos os relatórios associados.",
+      "cancel": "Cancelar",
+      "confirm": "Eliminar"
+    }
+  },
+  "report": {
+    "view": {
+      "title": "Relatório de Análise de Concorrência",
+      "generatedAt": "Gerado {{date}}",
+      "export": "Exportar",
+      "downloadHtml": "Transferir HTML",
+      "printPdf": "Imprimir / Guardar como PDF",
+      "emailReport": "Enviar por Email"
+    },
+    "stats": {
+      "competitorsFound": "Concorrentes Encontrados",
+      "avgRating": "Classificação Média",
+      "totalReviews": "Total de Avaliações"
+    },
+    "sections": {
+      "aiAnalysis": "Análise IA",
+      "nearbyCompetitors": "Concorrentes Próximos",
+      "noCompetitors": "Não foram encontrados concorrentes na área próxima."
+    },
+    "competitor": {
+      "reviews": "{{count}} avaliações"
+    },
+    "history": {
+      "title": "Histórico de Relatórios",
+      "description": "Ver todos os relatórios gerados para {{name}}",
+      "empty": "Ainda não foram gerados relatórios para este negócio.",
+      "competitorsAnalyzed": "{{count}} concorrentes analisados",
+      "view": "Ver",
+      "download": "Transferir"
+    }
+  },
+  "toast": {
+    "businessRegistered": {
+      "title": "Negócio registado",
+      "description": "O seu negócio foi registado com sucesso."
+    },
+    "businessDeleted": {
+      "title": "Negócio eliminado",
+      "description": "O negócio foi removido."
+    },
+    "reportGenerated": {
+      "title": "Relatório gerado",
+      "description": "O seu relatório de análise de concorrência está pronto."
+    },
+    "reportDownloaded": {
+      "title": "Relatório transferido",
+      "description": "O relatório HTML foi guardado nas suas transferências."
+    },
+    "printDialogOpened": {
+      "title": "Diálogo de impressão aberto",
+      "description": "Use a opção 'Guardar como PDF' para guardar como PDF."
+    },
+    "emailClientOpened": {
+      "title": "Cliente de email aberto",
+      "description": "A sua aplicação de email foi aberta com o resumo do relatório."
+    },
+    "error": {
+      "title": "Erro",
+      "fetchBusinesses": "Falha ao carregar negócios",
+      "registerBusiness": "Falha ao registar negócio",
+      "deleteBusiness": "Falha ao eliminar negócio",
+      "generateReport": "Falha ao gerar relatório",
+      "fetchReports": "Falha ao carregar relatórios"
+    }
+  },
+  "language": {
+    "select": "Idioma",
+    "en": "English",
+    "pt": "Português (Portugal)",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch"
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
+  }
+}

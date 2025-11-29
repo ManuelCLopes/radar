@@ -1,0 +1,143 @@
+{
+  "app": {
+    "title": "Analizador de Competencia Local",
+    "description": "Analiza tu competencia local con insights basados en IA"
+  },
+  "nav": {
+    "dashboard": "Panel"
+  },
+  "dashboard": {
+    "header": {
+      "title": "Analizador de Competencia Local",
+      "subtitle": "Registra tu negocio y descubre competidores cercanos con análisis basado en IA"
+    },
+    "stats": {
+      "registeredBusinesses": "Negocios Registrados",
+      "analysisStatus": "Estado del Análisis",
+      "uniqueLocations": "Ubicaciones Únicas",
+      "businessTypes": "Tipos de Negocio",
+      "active": "Activo"
+    }
+  },
+  "business": {
+    "form": {
+      "title": "Registrar Nuevo Negocio",
+      "name": "Nombre del Negocio",
+      "namePlaceholder": "Ingresa el nombre del negocio",
+      "type": "Tipo de Negocio",
+      "typePlaceholder": "Selecciona un tipo",
+      "latitude": "Latitud",
+      "latitudePlaceholder": "ej., 40.4168",
+      "longitude": "Longitud",
+      "longitudePlaceholder": "ej., -3.7038",
+      "address": "Dirección (Opcional)",
+      "addressPlaceholder": "Dirección",
+      "submit": "Registrar Negocio",
+      "submitting": "Registrando..."
+    },
+    "types": {
+      "restaurant": "Restaurante",
+      "cafe": "Cafetería",
+      "retail": "Tienda Minorista",
+      "gym": "Gimnasio / Fitness",
+      "salon": "Salón / Spa",
+      "hotel": "Hotel",
+      "bar": "Bar / Pub",
+      "bakery": "Panadería",
+      "pharmacy": "Farmacia",
+      "other": "Otro"
+    },
+    "list": {
+      "title": "Tus Negocios",
+      "empty": "Aún no hay negocios registrados. Agrega tu primer negocio arriba.",
+      "generateReport": "Generar Informe",
+      "generating": "Generando...",
+      "viewHistory": "Ver Historial de Informes",
+      "delete": "Eliminar"
+    },
+    "deleteDialog": {
+      "title": "Eliminar Negocio",
+      "description": "¿Estás seguro de que deseas eliminar \"{{name}}\"? Esta acción no se puede deshacer y también eliminará todos los informes asociados.",
+      "cancel": "Cancelar",
+      "confirm": "Eliminar"
+    }
+  },
+  "report": {
+    "view": {
+      "title": "Informe de Análisis de Competencia",
+      "generatedAt": "Generado {{date}}",
+      "export": "Exportar",
+      "downloadHtml": "Descargar HTML",
+      "printPdf": "Imprimir / Guardar como PDF",
+      "emailReport": "Enviar por Email"
+    },
+    "stats": {
+      "competitorsFound": "Competidores Encontrados",
+      "avgRating": "Calificación Promedio",
+      "totalReviews": "Total de Reseñas"
+    },
+    "sections": {
+      "aiAnalysis": "Análisis IA",
+      "nearbyCompetitors": "Competidores Cercanos",
+      "noCompetitors": "No se encontraron competidores en el área cercana."
+    },
+    "competitor": {
+      "reviews": "{{count}} reseñas"
+    },
+    "history": {
+      "title": "Historial de Informes",
+      "description": "Ver todos los informes generados para {{name}}",
+      "empty": "Aún no se han generado informes para este negocio.",
+      "competitorsAnalyzed": "{{count}} competidores analizados",
+      "view": "Ver",
+      "download": "Descargar"
+    }
+  },
+  "toast": {
+    "businessRegistered": {
+      "title": "Negocio registrado",
+      "description": "Tu negocio ha sido registrado exitosamente."
+    },
+    "businessDeleted": {
+      "title": "Negocio eliminado",
+      "description": "El negocio ha sido eliminado."
+    },
+    "reportGenerated": {
+      "title": "Informe generado",
+      "description": "Tu informe de análisis de competencia está listo."
+    },
+    "reportDownloaded": {
+      "title": "Informe descargado",
+      "description": "El informe HTML ha sido guardado en tus descargas."
+    },
+    "printDialogOpened": {
+      "title": "Diálogo de impresión abierto",
+      "description": "Usa la opción 'Guardar como PDF' para guardar como PDF."
+    },
+    "emailClientOpened": {
+      "title": "Cliente de email abierto",
+      "description": "Tu aplicación de email ha sido abierta con el resumen del informe."
+    },
+    "error": {
+      "title": "Error",
+      "fetchBusinesses": "Error al cargar negocios",
+      "registerBusiness": "Error al registrar negocio",
+      "deleteBusiness": "Error al eliminar negocio",
+      "generateReport": "Error al generar informe",
+      "fetchReports": "Error al cargar informes"
+    }
+  },
+  "language": {
+    "select": "Idioma",
+    "en": "English",
+    "pt": "Português (Portugal)",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch"
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
+  }
+}

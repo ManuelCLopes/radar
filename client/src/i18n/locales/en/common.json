@@ -1,0 +1,143 @@
+{
+  "app": {
+    "title": "Local Competitor Analyzer",
+    "description": "Analyze your local competition with AI-powered insights"
+  },
+  "nav": {
+    "dashboard": "Dashboard"
+  },
+  "dashboard": {
+    "header": {
+      "title": "Local Competitor Analyzer",
+      "subtitle": "Register your business and discover nearby competitors with AI-powered analysis"
+    },
+    "stats": {
+      "registeredBusinesses": "Registered Businesses",
+      "analysisStatus": "Analysis Status",
+      "uniqueLocations": "Unique Locations",
+      "businessTypes": "Business Types",
+      "active": "Active"
+    }
+  },
+  "business": {
+    "form": {
+      "title": "Register New Business",
+      "name": "Business Name",
+      "namePlaceholder": "Enter business name",
+      "type": "Business Type",
+      "typePlaceholder": "Select a type",
+      "latitude": "Latitude",
+      "latitudePlaceholder": "e.g., 40.7128",
+      "longitude": "Longitude",
+      "longitudePlaceholder": "e.g., -74.0060",
+      "address": "Address (Optional)",
+      "addressPlaceholder": "Street address",
+      "submit": "Register Business",
+      "submitting": "Registering..."
+    },
+    "types": {
+      "restaurant": "Restaurant",
+      "cafe": "Cafe",
+      "retail": "Retail Store",
+      "gym": "Gym / Fitness",
+      "salon": "Salon / Spa",
+      "hotel": "Hotel",
+      "bar": "Bar / Pub",
+      "bakery": "Bakery",
+      "pharmacy": "Pharmacy",
+      "other": "Other"
+    },
+    "list": {
+      "title": "Your Businesses",
+      "empty": "No businesses registered yet. Add your first business above.",
+      "generateReport": "Generate Report",
+      "generating": "Generating...",
+      "viewHistory": "View Report History",
+      "delete": "Delete"
+    },
+    "deleteDialog": {
+      "title": "Delete Business",
+      "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone and will also delete all associated reports.",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    }
+  },
+  "report": {
+    "view": {
+      "title": "Competitor Analysis Report",
+      "generatedAt": "Generated {{date}}",
+      "export": "Export",
+      "downloadHtml": "Download HTML",
+      "printPdf": "Print / Save as PDF",
+      "emailReport": "Email Report"
+    },
+    "stats": {
+      "competitorsFound": "Competitors Found",
+      "avgRating": "Avg. Rating",
+      "totalReviews": "Total Reviews"
+    },
+    "sections": {
+      "aiAnalysis": "AI Analysis",
+      "nearbyCompetitors": "Nearby Competitors",
+      "noCompetitors": "No competitors found in the nearby area."
+    },
+    "competitor": {
+      "reviews": "{{count}} reviews"
+    },
+    "history": {
+      "title": "Report History",
+      "description": "View all generated reports for {{name}}",
+      "empty": "No reports have been generated for this business yet.",
+      "competitorsAnalyzed": "{{count}} competitors analyzed",
+      "view": "View",
+      "download": "Download"
+    }
+  },
+  "toast": {
+    "businessRegistered": {
+      "title": "Business registered",
+      "description": "Your business has been successfully registered."
+    },
+    "businessDeleted": {
+      "title": "Business deleted",
+      "description": "The business has been removed."
+    },
+    "reportGenerated": {
+      "title": "Report generated",
+      "description": "Your competitor analysis report is ready."
+    },
+    "reportDownloaded": {
+      "title": "Report downloaded",
+      "description": "HTML report has been saved to your downloads."
+    },
+    "printDialogOpened": {
+      "title": "Print dialog opened",
+      "description": "Use 'Save as PDF' option to save as PDF."
+    },
+    "emailClientOpened": {
+      "title": "Email client opened",
+      "description": "Your default email app has been opened with the report summary."
+    },
+    "error": {
+      "title": "Error",
+      "fetchBusinesses": "Failed to load businesses",
+      "registerBusiness": "Failed to register business",
+      "deleteBusiness": "Failed to delete business",
+      "generateReport": "Failed to generate report",
+      "fetchReports": "Failed to load reports"
+    }
+  },
+  "language": {
+    "select": "Language",
+    "en": "English",
+    "pt": "Português (Portugal)",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  }
+}
