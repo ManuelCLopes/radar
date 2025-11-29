@@ -1,4 +1,4 @@
-import { MapPin, Building2, FileText, Loader2, Calendar, Trash2 } from "lucide-react";
+import { MapPin, Building2, FileText, Loader2, Calendar, Trash2, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +30,7 @@ interface BusinessListProps {
   isLoading?: boolean;
   onGenerateReport: (id: string) => void;
   onDelete: (id: string) => void;
+  onViewHistory: (business: Business) => void;
   generatingReportId?: string | null;
   deletingId?: string | null;
 }
@@ -75,6 +76,7 @@ export function BusinessList({
   isLoading = false,
   onGenerateReport,
   onDelete,
+  onViewHistory,
   generatingReportId = null,
   deletingId = null,
 }: BusinessListProps) {
@@ -173,6 +175,15 @@ export function BusinessList({
                         Generate Report
                       </>
                     )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => onViewHistory(business)}
+                    data-testid={`button-view-history-${business.id}`}
+                    title="View Report History"
+                  >
+                    <History className="h-4 w-4" />
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>

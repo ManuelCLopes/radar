@@ -85,13 +85,38 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/reports/:businessId", async (req, res) => {
+  app.get("/api/reports/business/:businessId", async (req, res) => {
     try {
       const reports = await storage.getReportsByBusinessId(req.params.businessId);
       res.json(reports);
     } catch (error) {
       console.error("Error getting reports:", error);
       res.status(500).json({ error: "Failed to get reports" });
+    }
+  });
+
+  app.get("/api/reports", async (req, res) => {
+    try {
+      const reports = await storage.listAllReports();
+      res.json(reports);
+    } catch (error) {
+      console.error("Error listing reports:", error);
+      res.status(500).json({ error: "Failed to list reports" });
+    }
+  });
+
+  app.get("/api/reports/:id", async (req, res) => {
+    try {
+      const report = await storage.getReport(req.params.id);
+      
+      if (!report) {
+        return res.status(404).json({ error: "Report not found" });
+      }
+
+      res.json(report);
+    } catch (error) {
+      console.error("Error getting report:", error);
+      res.status(500).json({ error: "Failed to get report" });
     }
   });
 

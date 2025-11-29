@@ -1,5 +1,6 @@
-import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type InsertUser, type Competitor } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type InsertUser, businesses, reports, users } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -14,82 +15,74 @@ export interface IStorage {
   saveReport(report: InsertReport): Promise<Report>;
   getReport(id: string): Promise<Report | undefined>;
   getReportsByBusinessId(businessId: string): Promise<Report[]>;
+  listAllReports(): Promise<Report[]>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-  private businesses: Map<string, Business>;
-  private reports: Map<string, Report>;
-
-  constructor() {
-    this.users = new Map();
-    this.businesses = new Map();
-    this.reports = new Map();
-  }
-
+export class DatabaseStorage implements IStorage {
   async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
     return user;
   }
 
   async getBusiness(id: string): Promise<Business | undefined> {
-    return this.businesses.get(id);
+    const [business] = await db.select().from(businesses).where(eq(businesses.id, id));
+    return business || undefined;
   }
 
   async listBusinesses(): Promise<Business[]> {
-    return Array.from(this.businesses.values()).sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+    return await db.select().from(businesses).orderBy(desc(businesses.createdAt));
   }
 
   async addBusiness(insertBusiness: InsertBusiness): Promise<Business> {
-    const id = randomUUID();
-    const business: Business = {
-      ...insertBusiness,
-      id,
-      createdAt: new Date(),
-      address: insertBusiness.address ?? null,
-    };
-    this.businesses.set(id, business);
+    const [business] = await db
+      .insert(businesses)
+      .values(insertBusiness)
+      .returning();
     return business;
   }
 
   async deleteBusiness(id: string): Promise<boolean> {
-    return this.businesses.delete(id);
+    const result = await db.delete(businesses).where(eq(businesses.id, id)).returning();
+    return result.length > 0;
   }
 
   async saveReport(insertReport: InsertReport): Promise<Report> {
-    const id = randomUUID();
-    const report: Report = {
-      ...insertReport,
-      id,
-      generatedAt: new Date(),
-    };
-    this.reports.set(id, report);
+    const [report] = await db
+      .insert(reports)
+      .values(insertReport)
+      .returning();
     return report;
   }
 
   async getReport(id: string): Promise<Report | undefined> {
-    return this.reports.get(id);
+    const [report] = await db.select().from(reports).where(eq(reports.id, id));
+    return report || undefined;
   }
 
   async getReportsByBusinessId(businessId: string): Promise<Report[]> {
-    return Array.from(this.reports.values())
-      .filter((report) => report.businessId === businessId)
-      .sort((a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime());
+    return await db
+      .select()
+      .from(reports)
+      .where(eq(reports.businessId, businessId))
+      .orderBy(desc(reports.generatedAt));
+  }
+
+  async listAllReports(): Promise<Report[]> {
+    return await db.select().from(reports).orderBy(desc(reports.generatedAt));
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

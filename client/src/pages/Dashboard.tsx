@@ -5,6 +5,7 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { BusinessForm } from "@/components/BusinessForm";
 import { BusinessList } from "@/components/BusinessList";
 import { ReportView } from "@/components/ReportView";
+import { ReportHistory } from "@/components/ReportHistory";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,6 +17,8 @@ export default function Dashboard() {
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [generatingReportId, setGeneratingReportId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [historyBusiness, setHistoryBusiness] = useState<Business | null>(null);
+  const [historyDialogOpen, setHistoryDialogOpen] = useState(false);
 
   const { data: businesses = [], isLoading } = useQuery<Business[]>({
     queryKey: ["/api/businesses"],
@@ -76,6 +79,7 @@ export default function Dashboard() {
     onSuccess: (report: Report) => {
       setCurrentReport(report);
       setReportDialogOpen(true);
+      queryClient.invalidateQueries({ queryKey: ["/api/reports/business"] });
       toast({
         title: "Report generated",
         description: "Your competitor analysis report is ready.",
@@ -103,6 +107,17 @@ export default function Dashboard() {
 
   const handleDelete = (id: string) => {
     deleteBusinessMutation.mutate(id);
+  };
+
+  const handleViewHistory = (business: Business) => {
+    setHistoryBusiness(business);
+    setHistoryDialogOpen(true);
+  };
+
+  const handleViewReportFromHistory = (report: Report) => {
+    setHistoryDialogOpen(false);
+    setCurrentReport(report);
+    setReportDialogOpen(true);
   };
 
   return (
@@ -192,6 +207,7 @@ export default function Dashboard() {
               isLoading={isLoading}
               onGenerateReport={handleGenerateReport}
               onDelete={handleDelete}
+              onViewHistory={handleViewHistory}
               generatingReportId={generatingReportId}
               deletingId={deletingId}
             />
@@ -209,6 +225,13 @@ export default function Dashboard() {
         report={currentReport}
         open={reportDialogOpen}
         onOpenChange={setReportDialogOpen}
+      />
+
+      <ReportHistory
+        business={historyBusiness}
+        open={historyDialogOpen}
+        onOpenChange={setHistoryDialogOpen}
+        onViewReport={handleViewReportFromHistory}
       />
     </div>
   );
