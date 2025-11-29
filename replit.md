@@ -33,7 +33,9 @@ client/src/
 │       ├── fr/common.json    # French translations
 │       └── de/common.json    # German translations
 ├── pages/
-│   └── Dashboard.tsx         # Main dashboard page
+│   ├── Dashboard.tsx         # Main dashboard page
+│   ├── LandingPage.tsx       # Commercial landing page (Portuguese)
+│   └── LandingPage.css       # Landing page styles
 ├── lib/
 │   └── queryClient.ts        # React Query configuration
 └── App.tsx                   # Main app with routing
@@ -119,6 +121,13 @@ shared/
 - Status endpoint to monitor scheduler health
 
 ## Recent Changes
+- 2025-11-29: Commercial landing page in Portuguese
+  - Created LandingPage.tsx with 8 sections: Hero, How It Works, Report Features, Sample, Audience, Pricing, FAQ, CTA
+  - Landing page is now the default route ("/")
+  - Dashboard moved to "/dashboard" route
+  - Mobile-responsive design with custom CSS styling
+  - Link at bottom navigates to dashboard for existing customers
+
 - 2025-11-29: Pending-location workflow for unverified addresses
   - Users can proceed with registration even when address validation fails
   - Three options in validation dialogs: Use Current Location, Proceed with Address, Edit Address

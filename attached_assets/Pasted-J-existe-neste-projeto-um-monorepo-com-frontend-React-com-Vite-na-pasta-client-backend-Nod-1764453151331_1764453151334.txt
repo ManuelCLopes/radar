@@ -1,0 +1,196 @@
+Já existe neste projeto um monorepo com:
+
+- frontend React com Vite na pasta `client/`
+- backend Node/Express na pasta `server/`
+- já existem componentes relacionados com o “Radar de Concorrência Local” (ex.: formulário de negócios, etc.)
+
+Quero que agora acrescentes **apenas** uma landing page comercial no frontend, SEM mexer na estrutura do backend nem apagar ficheiros existentes.
+
+Tarefas:
+
+1. Criar um novo componente `LandingPage.jsx` no frontend (por exemplo em `client/src/LandingPage.jsx` ou `client/src/pages/LandingPage.jsx` – escolhe o mais consistente com o código atual).
+2. Criar um ficheiro de estilos simples, por exemplo `client/src/LandingPage.css`, e importá-lo no `LandingPage.jsx`.
+3. Atualizar o `App.jsx` do frontend para que a landing page seja a primeira coisa que o utilizador vê (por exemplo, renderizar `<LandingPage />` e, se fizer sentido, manter por baixo um pequeno link ou secção para aceder ao dashboard já existente).
+4. NÃO alterar nem apagar lógica já existente relacionada com o dashboard (formularios, chamadas à API, etc.). Apenas adiciona a landing page e faz a integração de forma limpa.
+
+A landing page é para vender o produto “Radar de Concorrência Local” e deve ser escrita em português de Portugal, com as seguintes secções e textos base (podes ajustar ligeiramente o wording para ficar natural, mas mantém o conteúdo):
+
+========================================
+SECÇÃO 1 – HERO
+========================================
+
+Headline:
+"Vê o que os teus concorrentes andam a fazer – sem perder horas no Google."
+
+Subheadline:
+"O Radar de Concorrência Local analisa automaticamente os negócios à tua volta, compara reviews, preços e reputação online e envia-te um relatório simples, uma vez por mês. Para que saibas onde estás a ganhar… e onde estás a perder."
+
+Bullets:
+- "🗺️ Mapeia os principais concorrentes num raio à tua escolha"
+- "⭐ Compara ratings, nº de reviews e nível de preço"
+- "📩 Recebe recomendações práticas no teu email, todos os meses"
+
+Botões:
+- Botão principal: "Quero ver um exemplo de relatório"
+- Link secundário: "Ou marcar uma demo de 15 minutos"
+
+========================================
+SECÇÃO 2 – COMO FUNCIONA
+========================================
+
+Título: "Como funciona?"
+
+Passo 1 – "Diz-nos qual é o teu negócio"
+Texto: "Inserimos o nome, localização e tipo de negócio (ex.: restaurante de sushi em Odivelas, clínica de estética em Viseu, etc.)."
+
+Passo 2 – "O Radar analisa os teus concorrentes"
+Texto: "Usamos dados reais do Google para identificar os negócios à tua volta, reviews, ratings, volume de comentários e nível de preço."
+
+Passo 3 – "Recebes um relatório claro, todos os meses"
+Texto: "Compilamos tudo num relatório simples, com gráficos e conclusões em linguagem humana. Sem dashboards complicados, sem folhas Excel."
+
+========================================
+SECÇÃO 3 – O QUE VEM NO RELATÓRIO
+========================================
+
+Título: "O que vem no relatório mensal?"
+
+Subtítulo: "Não é mais uma folha de Excel. É um resumo que qualquer pessoa do staff consegue entender."
+
+Blocos (cards):
+
+1) "Mapa de concorrência local"
+   Texto: "Lista dos principais concorrentes num raio à tua escolha, com rating, nº de reviews, nível de preço e distância."
+
+2) "Comparação directa contigo"
+   Texto: "Vês logo quem está acima ou abaixo de ti em rating, reputação e quantidade de feedback."
+
+3) "Análise de temas das reviews"
+   Texto: "Identificamos padrões: os clientes elogiam o quê nos outros? E em ti? Serviço, preço, ambiente, rapidez, qualidade da comida…"
+
+4) "3–5 recomendações práticas para o próximo mês"
+   Texto: "Pistas concretas: melhorar tempo de espera, ajustar preços, reforçar sobremesas, treinar equipa de sala, etc."
+
+========================================
+SECÇÃO 4 – AMOSTRA DO RELATÓRIO
+========================================
+
+Título: "Uma pequena amostra do que vais receber"
+
+Texto:
+"Na imagem de exemplo, vês um relatório para um restaurante num raio de 3 km:
+– 12 concorrentes directos identificados
+– ranking por rating do Google
+– gráficos simples com 'força da marca' na zona
+– resumo de temas dominantes das reviews ('serviço rápido', 'preço justo', 'demora no atendimento', etc.)
+
+Cada relatório é personalizado para o teu negócio e enviado em PDF para o teu email."
+
+No JSX, cria um `div` para uma imagem de exemplo (por agora um placeholder com um rectângulo e texto “Screenshot do relatório”).
+
+========================================
+SECÇÃO 5 – PARA QUEM É
+========================================
+
+Título: "Para quem é o Radar de Concorrência Local?"
+
+Texto introdutório:
+"Ideal para negócios locais que dependem de reputação e reviews:"
+
+Lista:
+- "🍽️ Restaurantes, cafés e pastelarias"
+- "💆 Clínicas de estética, cabeleireiros, barbearias"
+- "🏋️ Ginásios e estúdios de treino"
+- "🏨 Pequenos hotéis, alojamentos locais, guesthouses"
+- "🛍️ Lojas físicas que competem em zonas comerciais"
+
+Texto final:
+"Se tens um negócio local e tens concorrência à tua volta, o Radar foi feito para ti."
+
+========================================
+SECÇÃO 6 – PLANOS & PREÇOS
+========================================
+
+Título: "Planos e preços"
+
+Plano 1 – Essencial:
+Subtítulo: "Para negócios individuais."
+Inclui:
+- "1 localização"
+- "Relatório mensal"
+- "Raio até 3 km"
+- "Até 20 concorrentes analisados"
+- "Envios por email em PDF"
+- "Suporte por email"
+
+Preço: "9€ / mês ou 90€ / ano"
+
+Plano 2 – Profissional:
+Subtítulo: "Para quem tem mais de um negócio ou quer acompanhar a fundo."
+Inclui:
+- "Até 3 localizações"
+- "Relatório mensal + botão 'gerar agora' no painel"
+- "Raio até 5 km por localização"
+- "Até 40 concorrentes por localização"
+- "Relatórios com secção extra de recomendações"
+- "Prioridade no suporte"
+
+Adicionar também uma pequena badge tipo:
+"Primeiros 10 negócios com setup inicial gratuito e preço fixo vitalício."
+
+========================================
+SECÇÃO 7 – FAQ
+========================================
+
+Título: "Perguntas frequentes"
+
+Perguntas/respostas:
+
+1) "De onde vêm os dados?"
+   R: "Usamos dados públicos do Google Maps/Google Business (rating, nº de reviews, localização, etc.). Não acedemos a nada privado."
+
+2) "Preciso de instalar alguma coisa?"
+   R: "Não. Recebes os relatórios por email em PDF. Se quiseres, podes ter acesso a um painel simples online para gerar relatórios adicionais."
+
+3) "Isto substitui um consultor de marketing?"
+   R: "Não. O Radar ajuda-te a perceber melhor o contexto à tua volta. Poupas horas de pesquisa e ganhas clareza para tomar decisões. O que fazes com os dados é decisão tua."
+
+4) "Posso cancelar quando quiser?"
+   R: "Sim. Não há fidelização. Se cancelares, deixas simplesmente de receber relatórios."
+
+5) "Posso experimentar antes de pagar?"
+   R: "Podes pedir um relatório único experimental para a tua zona, com desconto ou gratuitamente, dependendo das campanhas em vigor."
+
+========================================
+SECÇÃO 8 – CTA FINAL
+========================================
+
+Título:
+"Queres ver como estás em relação aos teus concorrentes?"
+
+Texto:
+"Envia o nome e localização do teu negócio e nós mostramos-te uma amostra real de relatório."
+
+Botão principal:
+"Pedir amostra de relatório"
+
+Subtexto:
+"Sem compromisso. Usamos apenas dados públicos."
+
+========================================
+ESTILO & RESPONSIVIDADE
+========================================
+
+- Fundo claro, contentor central com max-width ~1100–1200px.
+- Mobile-first: em ecrãs pequenos tudo em coluna, texto legível.
+- Em desktop, podes usar grids para:
+  - cards da secção “O que vem no relatório”
+  - planos de preços lado a lado
+  - secção “amostra” com texto + placeholder da imagem lado a lado.
+- Usa uma tipografia simples (`system-ui`, `sans-serif`) e um tom azul para os botões principais.
+- No final, apresenta:
+  1) o código completo de `LandingPage.jsx`
+  2) o código de `LandingPage.css`
+  3) a versão atualizada de `App.jsx` a importar e renderizar `<LandingPage />`.
+
+Importante: não apagues código já existente, apenas integra a landing page.
