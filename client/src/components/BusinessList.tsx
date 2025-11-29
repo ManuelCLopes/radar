@@ -121,26 +121,26 @@ export function BusinessList({
   }
 
   return (
-    <Card>
+    <Card className="min-w-0 overflow-hidden">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-xl font-semibold flex items-center gap-2">
+        <CardTitle className="text-xl font-semibold flex items-center gap-2 flex-wrap">
           <Building2 className="h-5 w-5 text-primary" />
           {t("business.list.title")}
-          <Badge variant="secondary" className="ml-2">{businesses.length}</Badge>
+          <Badge variant="secondary">{businesses.length}</Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-3 min-w-0">
         {businesses.map((business) => {
           const isPending = business.locationStatus === "pending" || business.latitude === null || business.longitude === null;
           
           return (
           <Card
             key={business.id}
-            className="hover-elevate transition-all"
+            className="hover-elevate transition-all min-w-0"
             data-testid={`card-business-${business.id}`}
           >
-            <CardContent className="p-4">
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+            <CardContent className="p-4 min-w-0">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 min-w-0">
                 <div className="flex-1 min-w-0 space-y-2">
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold text-base truncate" data-testid={`text-business-name-${business.id}`}>
@@ -185,22 +185,25 @@ export function BusinessList({
                     {new Date(business.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex items-center gap-2 shrink-0 flex-wrap">
                   <Button
                     onClick={() => onGenerateReport(business.id)}
                     disabled={generatingReportId === business.id || isPending}
                     data-testid={`button-generate-report-${business.id}`}
                     title={isPending ? t("locationStatus.pendingNote") : undefined}
+                    size="sm"
                   >
                     {generatingReportId === business.id ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        {t("business.list.generating")}
+                        <span className="hidden sm:inline">{t("business.list.generating")}</span>
+                        <span className="sm:hidden">...</span>
                       </>
                     ) : (
                       <>
                         <FileText className="h-4 w-4 mr-2" />
-                        {t("business.list.generateReport")}
+                        <span className="hidden sm:inline">{t("business.list.generateReport")}</span>
+                        <span className="sm:hidden">{t("business.list.report")}</span>
                       </>
                     )}
                   </Button>

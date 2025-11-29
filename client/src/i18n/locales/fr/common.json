@@ -57,6 +57,7 @@
       "title": "Vos Entreprises",
       "empty": "Aucune entreprise enregistrée. Ajoutez votre première entreprise ci-dessus.",
       "generateReport": "Générer un Rapport",
+      "report": "Rapport",
       "generating": "Génération...",
       "viewHistory": "Voir l'Historique des Rapports",
       "delete": "Supprimer"

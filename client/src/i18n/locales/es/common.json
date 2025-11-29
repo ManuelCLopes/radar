@@ -57,6 +57,7 @@
       "title": "Tus Negocios",
       "empty": "Aún no hay negocios registrados. Agrega tu primer negocio arriba.",
       "generateReport": "Generar Informe",
+      "report": "Informe",
       "generating": "Generando...",
       "viewHistory": "Ver Historial de Informes",
       "delete": "Eliminar"

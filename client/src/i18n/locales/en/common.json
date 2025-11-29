@@ -57,6 +57,7 @@
       "title": "Your Businesses",
       "empty": "No businesses registered yet. Add your first business above.",
       "generateReport": "Generate Report",
+      "report": "Report",
       "generating": "Generating...",
       "viewHistory": "View Report History",
       "delete": "Delete"
