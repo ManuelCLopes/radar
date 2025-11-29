@@ -77,9 +77,10 @@ shared/
 - `id`: Unique identifier (auto-generated)
 - `name`: Business name
 - `type`: Business type (restaurant, cafe, retail, etc.)
-- `latitude`: Location latitude
-- `longitude`: Location longitude
+- `latitude`: Location latitude (nullable for pending businesses)
+- `longitude`: Location longitude (nullable for pending businesses)
 - `address`: Optional street address
+- `locationStatus`: Location verification status ('validated' | 'pending')
 - `createdAt`: Creation timestamp
 
 ### Report
@@ -118,6 +119,15 @@ shared/
 - Status endpoint to monitor scheduler health
 
 ## Recent Changes
+- 2025-11-29: Pending-location workflow for unverified addresses
+  - Users can proceed with registration even when address validation fails
+  - Three options in validation dialogs: Use Current Location, Proceed with Address, Edit Address
+  - Pending businesses marked with yellow "Location pending" badge
+  - Report generation disabled for pending-location businesses
+  - Visual indicators clearly show location status (verified/pending) in business list
+  - Scheduler skips pending-location businesses for automated reports
+  - All 5 languages updated with pending-location translations
+
 - 2025-11-29: Address-driven registration with geolocation fallback
   - Replaced manual lat/lng entry with address search powered by Google Places API
   - Added interactive address validation with multiple result selection modal
@@ -125,7 +135,6 @@ shared/
   - Backend enforces coordinate validation (valid ranges, non-zero, finite numbers)
   - Clear error messages and guidance when location methods fail
   - All 16 business types properly translated across 5 languages
-  - Note: If both address validation and geolocation fail, users must retry with a more specific address or enable location permissions
 
 - 2025-11-29: Multi-language support (i18n) implementation
   - Added react-i18next for internationalization

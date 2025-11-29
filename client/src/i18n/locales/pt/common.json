@@ -160,6 +160,10 @@
     "locationFailed": "Não foi possível obter a sua localização. Por favor, verifique as definições do navegador e tente novamente.",
     "locationDenied": "O acesso à localização foi negado. Por favor, ative as permissões de localização nas definições do seu navegador.",
     "coordinatesRequired": "São necessárias coordenadas válidas para a análise de concorrência.",
+    "proceedWithAddress": "Continuar com a Morada",
+    "proceedingWithAddress": "Morada guardada",
+    "proceedingWithAddressDesc": "O negócio será registado com localização pendente. Os relatórios não podem ser gerados até a localização ser verificada.",
+    "pendingVerification": "Localização pendente de verificação - relatórios indisponíveis",
     "multipleResults": {
       "title": "Vários Locais Encontrados",
       "description": "Encontrámos vários negócios nesta morada. Por favor, selecione o correto:"
@@ -172,12 +176,17 @@
     },
     "noResults": {
       "title": "Morada Não Encontrada",
-      "description": "Não conseguimos verificar esta morada. Se estiver na localização do seu negócio, clique em 'Usar Localização Atual' para obter as coordenadas do seu dispositivo. Caso contrário, tente uma morada mais específica incluindo cidade e país.",
+      "description": "Não conseguimos verificar esta morada. Pode tentar uma morada mais específica, usar a sua localização atual, ou continuar com a morada introduzida (os relatórios ficarão indisponíveis até a localização ser verificada).",
       "editAddress": "Editar Morada"
     },
     "apiKeyMissing": {
       "title": "Validação de Morada Indisponível",
-      "description": "A validação de morada está temporariamente indisponível. Se estiver na localização do seu negócio, clique em 'Usar Localização Atual' para obter as coordenadas. Certifique-se de permitir o acesso à localização quando solicitado."
+      "description": "A validação de morada está temporariamente indisponível. Pode usar a sua localização atual ou continuar com a morada introduzida (os relatórios ficarão indisponíveis até a localização ser verificada)."
     }
+  },
+  "locationStatus": {
+    "validated": "Localização verificada",
+    "pending": "Localização pendente",
+    "pendingNote": "Relatórios indisponíveis até a localização ser verificada"
   }
 }

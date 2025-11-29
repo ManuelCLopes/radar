@@ -62,6 +62,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
   
   const [selectedPlace, setSelectedPlace] = useState<PlaceResult | null>(null);
   const [manualCoordinates, setManualCoordinates] = useState<{ lat: number; lng: number } | null>(null);
+  const [pendingLocationAddress, setPendingLocationAddress] = useState<string | null>(null);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [showMultipleResultsModal, setShowMultipleResultsModal] = useState(false);
   const [showAddressSuggestionDialog, setShowAddressSuggestionDialog] = useState(false);
@@ -149,6 +150,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
   const selectPlace = (place: PlaceResult) => {
     setSelectedPlace(place);
     setManualCoordinates(null);
+    setPendingLocationAddress(null);
     form.setValue("address", place.address);
     setShowMultipleResultsModal(false);
     setShowAddressSuggestionDialog(false);
@@ -188,6 +190,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
       const coords = await handleGetCurrentLocation();
       setManualCoordinates(coords);
       setSelectedPlace(null);
+      setPendingLocationAddress(null);
       setShowNoResultsDialog(false);
       setShowApiKeyMissingDialog(false);
       toast({
@@ -209,33 +212,41 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
     }
   };
 
+  const handleProceedWithAddress = () => {
+    const address = form.getValues("address");
+    setPendingLocationAddress(address);
+    setSelectedPlace(null);
+    setManualCoordinates(null);
+    setShowNoResultsDialog(false);
+    setShowApiKeyMissingDialog(false);
+    toast({
+      title: t("addressSearch.proceedingWithAddress"),
+      description: t("addressSearch.proceedingWithAddressDesc"),
+    });
+  };
+
   const handleSubmit = async (data: FormValues) => {
-    if (!selectedPlace && !manualCoordinates) {
+    if (!selectedPlace && !manualCoordinates && !pendingLocationAddress) {
       await handleSearchAddress();
       return;
     }
+
+    const isPending = !!pendingLocationAddress && !selectedPlace && !manualCoordinates;
 
     const businessData: InsertBusiness = {
       name: data.name,
       type: data.type,
       address: selectedPlace?.address || data.address,
-      latitude: selectedPlace?.latitude || manualCoordinates?.lat || 0,
-      longitude: selectedPlace?.longitude || manualCoordinates?.lng || 0,
+      latitude: selectedPlace?.latitude || manualCoordinates?.lat || null,
+      longitude: selectedPlace?.longitude || manualCoordinates?.lng || null,
+      locationStatus: isPending ? "pending" : "validated",
     };
-
-    if (businessData.latitude === 0 && businessData.longitude === 0) {
-      toast({
-        title: t("toast.error.title"),
-        description: t("addressSearch.coordinatesRequired"),
-        variant: "destructive",
-      });
-      return;
-    }
 
     await onSubmit(businessData);
     form.reset();
     setSelectedPlace(null);
     setManualCoordinates(null);
+    setPendingLocationAddress(null);
   };
 
   const handleAcceptSuggestedAddress = () => {
@@ -331,6 +342,9 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
                             if (manualCoordinates) {
                               setManualCoordinates(null);
                             }
+                            if (pendingLocationAddress) {
+                              setPendingLocationAddress(null);
+                            }
                           }}
                         />
                       </FormControl>
@@ -359,6 +373,12 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
                       <div className="flex items-center gap-2 mt-2 text-sm text-blue-600 dark:text-blue-400">
                         <Navigation className="h-4 w-4" />
                         <span>{t("addressSearch.usingCurrentLocation")}</span>
+                      </div>
+                    )}
+                    {pendingLocationAddress && !selectedPlace && !manualCoordinates && (
+                      <div className="flex items-center gap-2 mt-2 text-sm text-yellow-600 dark:text-yellow-400">
+                        <AlertTriangle className="h-4 w-4" />
+                        <span>{t("addressSearch.pendingVerification")}</span>
                       </div>
                     )}
                   </FormItem>
@@ -475,6 +495,14 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
             <AlertDialogCancel onClick={() => setShowNoResultsDialog(false)}>
               {t("addressSearch.noResults.editAddress")}
             </AlertDialogCancel>
+            <Button 
+              variant="outline"
+              onClick={handleProceedWithAddress}
+              data-testid="button-proceed-with-address"
+            >
+              <MapPin className="h-4 w-4 mr-2" />
+              {t("addressSearch.proceedWithAddress")}
+            </Button>
             <AlertDialogAction 
               onClick={handleUseCurrentLocation}
               disabled={isGettingLocation}
@@ -506,6 +534,14 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
             <AlertDialogCancel onClick={() => setShowApiKeyMissingDialog(false)}>
               {t("common.cancel")}
             </AlertDialogCancel>
+            <Button 
+              variant="outline"
+              onClick={handleProceedWithAddress}
+              data-testid="button-proceed-with-address-api-missing"
+            >
+              <MapPin className="h-4 w-4 mr-2" />
+              {t("addressSearch.proceedWithAddress")}
+            </Button>
             <AlertDialogAction 
               onClick={handleUseCurrentLocation}
               disabled={isGettingLocation}

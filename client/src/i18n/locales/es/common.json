@@ -160,6 +160,10 @@
     "locationFailed": "No se pudo obtener tu ubicación. Por favor, verifica la configuración de tu navegador e intenta de nuevo.",
     "locationDenied": "Se denegó el acceso a la ubicación. Por favor, habilita los permisos de ubicación en la configuración de tu navegador.",
     "coordinatesRequired": "Se requieren coordenadas válidas para el análisis de competencia.",
+    "proceedWithAddress": "Continuar con la Dirección",
+    "proceedingWithAddress": "Dirección guardada",
+    "proceedingWithAddressDesc": "El negocio será registrado con ubicación pendiente. Los informes no pueden ser generados hasta que la ubicación sea verificada.",
+    "pendingVerification": "Ubicación pendiente de verificación - informes no disponibles",
     "multipleResults": {
       "title": "Múltiples Ubicaciones Encontradas",
       "description": "Encontramos varios negocios en esta dirección. Por favor, selecciona el correcto:"
@@ -172,12 +176,17 @@
     },
     "noResults": {
       "title": "Dirección No Encontrada",
-      "description": "No pudimos verificar esta dirección. Si estás en la ubicación de tu negocio, haz clic en 'Usar Ubicación Actual' para obtener las coordenadas de tu dispositivo. De lo contrario, intenta con una dirección más específica incluyendo ciudad y país.",
+      "description": "No pudimos verificar esta dirección. Puedes intentar con una dirección más específica, usar tu ubicación actual, o continuar con la dirección ingresada (los informes no estarán disponibles hasta que la ubicación sea verificada).",
       "editAddress": "Editar Dirección"
     },
     "apiKeyMissing": {
       "title": "Validación de Dirección No Disponible",
-      "description": "La validación de direcciones está temporalmente no disponible. Si estás en la ubicación de tu negocio, haz clic en 'Usar Ubicación Actual' para obtener las coordenadas. Asegúrate de permitir el acceso a la ubicación cuando se solicite."
+      "description": "La validación de direcciones está temporalmente no disponible. Puedes usar tu ubicación actual o continuar con la dirección ingresada (los informes no estarán disponibles hasta que la ubicación sea verificada)."
     }
+  },
+  "locationStatus": {
+    "validated": "Ubicación verificada",
+    "pending": "Ubicación pendiente",
+    "pendingNote": "Informes no disponibles hasta que la ubicación sea verificada"
   }
 }

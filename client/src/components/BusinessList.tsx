@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { MapPin, Building2, FileText, Loader2, Calendar, Trash2, History } from "lucide-react";
+import { MapPin, Building2, FileText, Loader2, Calendar, Trash2, History, AlertTriangle, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -130,7 +130,10 @@ export function BusinessList({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        {businesses.map((business) => (
+        {businesses.map((business) => {
+          const isPending = business.locationStatus === "pending" || business.latitude === null || business.longitude === null;
+          
+          return (
           <Card
             key={business.id}
             className="hover-elevate transition-all"
@@ -139,21 +142,42 @@ export function BusinessList({
             <CardContent className="p-4">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                 <div className="flex-1 min-w-0 space-y-2">
-                  <h3 className="font-semibold text-base truncate" data-testid={`text-business-name-${business.id}`}>
-                    {business.name}
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-base truncate" data-testid={`text-business-name-${business.id}`}>
+                      {business.name}
+                    </h3>
+                    {isPending ? (
+                      <Badge variant="outline" className="text-yellow-600 border-yellow-600 shrink-0" data-testid={`badge-pending-${business.id}`}>
+                        <AlertTriangle className="h-3 w-3 mr-1" />
+                        {t("locationStatus.pending")}
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-green-600 border-green-600 shrink-0" data-testid={`badge-verified-${business.id}`}>
+                        <CheckCircle className="h-3 w-3 mr-1" />
+                        {t("locationStatus.validated")}
+                      </Badge>
+                    )}
+                  </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge variant="outline" data-testid={`badge-type-${business.id}`}>
                       {getBusinessTypeLabel(business.type)}
                     </Badge>
-                    <span className="text-sm text-muted-foreground flex items-center gap-1">
-                      <MapPin className="h-3 w-3" />
-                      {business.latitude.toFixed(4)}, {business.longitude.toFixed(4)}
-                    </span>
+                    {business.latitude !== null && business.longitude !== null && (
+                      <span className="text-sm text-muted-foreground flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        {business.latitude.toFixed(4)}, {business.longitude.toFixed(4)}
+                      </span>
+                    )}
                   </div>
                   {business.address && (
                     <p className="text-sm text-muted-foreground truncate">
                       {business.address}
+                    </p>
+                  )}
+                  {isPending && (
+                    <p className="text-xs text-yellow-600 dark:text-yellow-400 flex items-center gap-1">
+                      <AlertTriangle className="h-3 w-3" />
+                      {t("locationStatus.pendingNote")}
                     </p>
                   )}
                   <p className="text-xs text-muted-foreground flex items-center gap-1">
@@ -164,8 +188,9 @@ export function BusinessList({
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <Button
                     onClick={() => onGenerateReport(business.id)}
-                    disabled={generatingReportId === business.id}
+                    disabled={generatingReportId === business.id || isPending}
                     data-testid={`button-generate-report-${business.id}`}
+                    title={isPending ? t("locationStatus.pendingNote") : undefined}
                   >
                     {generatingReportId === business.id ? (
                       <>
@@ -225,7 +250,7 @@ export function BusinessList({
               </div>
             </CardContent>
           </Card>
-        ))}
+        )})}
       </CardContent>
     </Card>
   );

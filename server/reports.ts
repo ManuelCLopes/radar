@@ -11,6 +11,10 @@ export async function runReportForBusiness(businessId: string, language: string 
     throw new Error(`Business with ID ${businessId} not found`);
   }
 
+  if (business.locationStatus === "pending" || business.latitude === null || business.longitude === null) {
+    throw new Error(`Business "${business.name}" has pending location verification. Please verify the business location before generating a report.`);
+  }
+
   const competitors = await searchNearby(
     business.latitude,
     business.longitude,

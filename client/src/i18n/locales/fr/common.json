@@ -160,6 +160,10 @@
     "locationFailed": "Impossible d'obtenir votre position. Veuillez vérifier les paramètres de votre navigateur et réessayer.",
     "locationDenied": "L'accès à la localisation a été refusé. Veuillez activer les autorisations de localisation dans les paramètres de votre navigateur.",
     "coordinatesRequired": "Des coordonnées valides sont requises pour l'analyse de la concurrence.",
+    "proceedWithAddress": "Continuer avec l'Adresse",
+    "proceedingWithAddress": "Adresse enregistrée",
+    "proceedingWithAddressDesc": "L'entreprise sera enregistrée avec un emplacement en attente. Les rapports ne peuvent pas être générés tant que l'emplacement n'est pas vérifié.",
+    "pendingVerification": "Emplacement en attente de vérification - rapports indisponibles",
     "multipleResults": {
       "title": "Plusieurs Emplacements Trouvés",
       "description": "Nous avons trouvé plusieurs entreprises à cette adresse. Veuillez sélectionner la bonne:"
@@ -172,12 +176,17 @@
     },
     "noResults": {
       "title": "Adresse Non Trouvée",
-      "description": "Nous n'avons pas pu vérifier cette adresse. Si vous êtes à l'emplacement de votre entreprise, cliquez sur 'Utiliser Ma Position' pour obtenir les coordonnées de votre appareil. Sinon, essayez une adresse plus spécifique incluant la ville et le pays.",
+      "description": "Nous n'avons pas pu vérifier cette adresse. Vous pouvez essayer une adresse plus spécifique, utiliser votre position actuelle, ou continuer avec l'adresse saisie (les rapports seront indisponibles jusqu'à ce que l'emplacement soit vérifié).",
       "editAddress": "Modifier l'Adresse"
     },
     "apiKeyMissing": {
       "title": "Validation d'Adresse Indisponible",
-      "description": "La validation d'adresse est temporairement indisponible. Si vous êtes à l'emplacement de votre entreprise, cliquez sur 'Utiliser Ma Position' pour obtenir les coordonnées. Assurez-vous d'autoriser l'accès à la localisation lorsqu'on vous le demande."
+      "description": "La validation d'adresse est temporairement indisponible. Vous pouvez utiliser votre position actuelle ou continuer avec l'adresse saisie (les rapports seront indisponibles jusqu'à ce que l'emplacement soit vérifié)."
     }
+  },
+  "locationStatus": {
+    "validated": "Emplacement vérifié",
+    "pending": "Emplacement en attente",
+    "pendingNote": "Rapports indisponibles jusqu'à ce que l'emplacement soit vérifié"
   }
 }

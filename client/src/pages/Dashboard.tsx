@@ -184,7 +184,7 @@ export default function Dashboard() {
               </div>
               <div className="min-w-0">
                 <p className="text-2xl font-bold" data-testid="stat-locations">
-                  {new Set(businesses.map(b => `${b.latitude.toFixed(2)},${b.longitude.toFixed(2)}`)).size}
+                  {new Set(businesses.filter(b => b.latitude !== null && b.longitude !== null).map(b => `${b.latitude!.toFixed(2)},${b.longitude!.toFixed(2)}`)).size}
                 </p>
                 <p className="text-sm text-muted-foreground truncate">{t("dashboard.stats.uniqueLocations")}</p>
               </div>

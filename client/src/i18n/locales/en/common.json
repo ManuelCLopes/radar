@@ -160,6 +160,10 @@
     "locationFailed": "Could not get your location. Please check your browser settings and try again.",
     "locationDenied": "Location access was denied. Please enable location permissions in your browser settings to use this feature.",
     "coordinatesRequired": "Valid location coordinates are required for competitor analysis.",
+    "proceedWithAddress": "Proceed with Address",
+    "proceedingWithAddress": "Address saved",
+    "proceedingWithAddressDesc": "Business will be registered with pending location. Reports cannot be generated until location is verified.",
+    "pendingVerification": "Location pending verification - reports unavailable",
     "multipleResults": {
       "title": "Multiple Locations Found",
       "description": "We found several businesses at this address. Please select the correct one:"
@@ -172,12 +176,17 @@
     },
     "noResults": {
       "title": "Address Not Found",
-      "description": "We couldn't verify this address. If you're at your business location, click 'Use Current Location' to get coordinates from your device. Otherwise, try a more specific address including city and country.",
+      "description": "We couldn't verify this address. You can try a more specific address, use your current location, or proceed with the entered address (reports will be unavailable until location is verified).",
       "editAddress": "Edit Address"
     },
     "apiKeyMissing": {
       "title": "Address Validation Unavailable",
-      "description": "Address validation is temporarily unavailable. If you're at your business location, click 'Use Current Location' to get coordinates from your device. Make sure to allow location access when prompted."
+      "description": "Address validation is temporarily unavailable. You can use your current location or proceed with the entered address (reports will be unavailable until location is verified)."
     }
+  },
+  "locationStatus": {
+    "validated": "Location verified",
+    "pending": "Location pending",
+    "pendingNote": "Reports unavailable until location is verified"
   }
 }

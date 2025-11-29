@@ -160,6 +160,10 @@
     "locationFailed": "Ihr Standort konnte nicht ermittelt werden. Bitte überprüfen Sie Ihre Browsereinstellungen und versuchen Sie es erneut.",
     "locationDenied": "Der Zugriff auf den Standort wurde verweigert. Bitte aktivieren Sie die Standortberechtigungen in Ihren Browsereinstellungen.",
     "coordinatesRequired": "Gültige Standortkoordinaten sind für die Wettbewerbsanalyse erforderlich.",
+    "proceedWithAddress": "Mit Adresse Fortfahren",
+    "proceedingWithAddress": "Adresse gespeichert",
+    "proceedingWithAddressDesc": "Das Unternehmen wird mit ausstehendem Standort registriert. Berichte können nicht erstellt werden, bis der Standort verifiziert ist.",
+    "pendingVerification": "Standort ausstehend - Berichte nicht verfügbar",
     "multipleResults": {
       "title": "Mehrere Standorte Gefunden",
       "description": "Wir haben mehrere Unternehmen an dieser Adresse gefunden. Bitte wählen Sie das richtige aus:"
@@ -172,12 +176,17 @@
     },
     "noResults": {
       "title": "Adresse Nicht Gefunden",
-      "description": "Wir konnten diese Adresse nicht verifizieren. Wenn Sie sich am Standort Ihres Unternehmens befinden, klicken Sie auf 'Aktuellen Standort Verwenden', um die Koordinaten von Ihrem Gerät zu erhalten. Andernfalls versuchen Sie eine genauere Adresse mit Stadt und Land.",
+      "description": "Wir konnten diese Adresse nicht verifizieren. Sie können eine genauere Adresse versuchen, Ihren aktuellen Standort verwenden, oder mit der eingegebenen Adresse fortfahren (Berichte sind nicht verfügbar, bis der Standort verifiziert ist).",
       "editAddress": "Adresse Bearbeiten"
     },
     "apiKeyMissing": {
       "title": "Adressvalidierung Nicht Verfügbar",
-      "description": "Die Adressvalidierung ist vorübergehend nicht verfügbar. Wenn Sie sich am Standort Ihres Unternehmens befinden, klicken Sie auf 'Aktuellen Standort Verwenden', um die Koordinaten zu erhalten. Stellen Sie sicher, dass Sie den Standortzugriff erlauben, wenn Sie dazu aufgefordert werden."
+      "description": "Die Adressvalidierung ist vorübergehend nicht verfügbar. Sie können Ihren aktuellen Standort verwenden oder mit der eingegebenen Adresse fortfahren (Berichte sind nicht verfügbar, bis der Standort verifiziert ist)."
     }
+  },
+  "locationStatus": {
+    "validated": "Standort verifiziert",
+    "pending": "Standort ausstehend",
+    "pendingNote": "Berichte nicht verfügbar, bis der Standort verifiziert ist"
   }
 }

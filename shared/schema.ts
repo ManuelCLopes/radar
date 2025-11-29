@@ -24,13 +24,17 @@ export const businessTypes = [
 
 export type BusinessType = typeof businessTypes[number];
 
+export const locationStatusValues = ["validated", "pending"] as const;
+export type LocationStatus = typeof locationStatusValues[number];
+
 export const businesses = pgTable("businesses", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   type: text("type").notNull().$type<BusinessType>(),
-  latitude: real("latitude").notNull(),
-  longitude: real("longitude").notNull(),
+  latitude: real("latitude"),
+  longitude: real("longitude"),
   address: text("address"),
+  locationStatus: text("location_status").default("validated").$type<LocationStatus>(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -40,9 +44,10 @@ export const insertBusinessSchema = createInsertSchema(businesses).omit({
 }).extend({
   type: z.enum(businessTypes, { required_error: "Business type is required" }),
   name: z.string().min(1, "Business name is required").max(100),
-  latitude: z.number().min(-90).max(90),
-  longitude: z.number().min(-180).max(180),
+  latitude: z.number().min(-90).max(90).nullable().optional(),
+  longitude: z.number().min(-180).max(180).nullable().optional(),
   address: z.string().min(1, "Address is required"),
+  locationStatus: z.enum(locationStatusValues).default("validated"),
 });
 
 export interface PlaceResult {

@@ -39,6 +39,18 @@ export async function runScheduledReports(): Promise<{
   let failed = 0;
 
   for (const business of businesses) {
+    if (business.locationStatus === "pending" || business.latitude === null || business.longitude === null) {
+      console.log(`[Scheduler] Skipping ${business.name} - pending location verification`);
+      results.push({ 
+        businessId: business.id, 
+        businessName: business.name, 
+        success: false, 
+        error: "Pending location verification" 
+      });
+      failed++;
+      continue;
+    }
+    
     try {
       console.log(`[Scheduler] Generating report for: ${business.name}`);
       await runReportForBusiness(business.id);
