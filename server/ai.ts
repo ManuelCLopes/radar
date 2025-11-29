@@ -6,14 +6,31 @@ const openai = new OpenAI({
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
 });
 
+const languageNames: Record<string, string> = {
+  en: "English",
+  pt: "Portuguese (Portugal)",
+  es: "Spanish",
+  fr: "French",
+  de: "German",
+};
+
 export async function analyzeCompetitors(
   business: Business,
-  competitors: Competitor[]
+  competitors: Competitor[],
+  language: string = "en"
 ): Promise<string> {
   const totalCompetitors = competitors.length;
+  const languageName = languageNames[language] || "English";
 
   if (totalCompetitors === 0) {
-    return `Great news! No direct competitors were found in the immediate vicinity of "${business.name}". This could indicate a potential market opportunity. However, we recommend expanding the search radius to ensure comprehensive market analysis.`;
+    const noCompetitorMessages: Record<string, string> = {
+      en: `Great news! No direct competitors were found in the immediate vicinity of "${business.name}". This could indicate a potential market opportunity. However, we recommend expanding the search radius to ensure comprehensive market analysis.`,
+      pt: `Ótimas notícias! Não foram encontrados concorrentes diretos nas imediações de "${business.name}". Isto pode indicar uma oportunidade de mercado potencial. No entanto, recomendamos expandir o raio de pesquisa para garantir uma análise de mercado abrangente.`,
+      es: `¡Buenas noticias! No se encontraron competidores directos en las inmediaciones de "${business.name}". Esto podría indicar una oportunidad de mercado potencial. Sin embargo, recomendamos ampliar el radio de búsqueda para garantizar un análisis de mercado integral.`,
+      fr: `Bonne nouvelle ! Aucun concurrent direct n'a été trouvé à proximité immédiate de "${business.name}". Cela pourrait indiquer une opportunité de marché potentielle. Cependant, nous recommandons d'élargir le rayon de recherche pour assurer une analyse de marché complète.`,
+      de: `Gute Nachrichten! In der unmittelbaren Umgebung von "${business.name}" wurden keine direkten Wettbewerber gefunden. Dies könnte auf eine potenzielle Marktchance hindeuten. Wir empfehlen jedoch, den Suchradius zu erweitern, um eine umfassende Marktanalyse sicherzustellen.`,
+    };
+    return noCompetitorMessages[language] || noCompetitorMessages.en;
   }
 
   const competitorsSummary = competitors.map((c, i) => 
@@ -27,6 +44,8 @@ export async function analyzeCompetitors(
   const totalReviews = competitors.reduce((sum, c) => sum + (c.userRatingsTotal || 0), 0);
 
   const prompt = `You are a business strategy consultant analyzing local competition for a small business. Provide a comprehensive, actionable competitive analysis report.
+
+IMPORTANT: Write your entire response in ${languageName}. All text, headers, and recommendations must be in ${languageName}.
 
 BUSINESS DETAILS:
 - Name: ${business.name}
@@ -48,7 +67,7 @@ Please provide a detailed analysis including:
 5. DIFFERENTIATION STRATEGIES - Ways to stand out from the competition
 6. RISK ASSESSMENT - Potential challenges and how to mitigate them
 
-Format your response with clear headers and bullet points for easy reading. Be specific and practical in your recommendations.`;
+Format your response with clear headers and bullet points for easy reading. Be specific and practical in your recommendations. Remember: Write everything in ${languageName}.`;
 
   try {
     const response = await openai.chat.completions.create({
@@ -56,7 +75,7 @@ Format your response with clear headers and bullet points for easy reading. Be s
       messages: [
         {
           role: "system",
-          content: "You are an expert business strategist specializing in local market competition analysis. Provide clear, actionable insights that help small businesses compete effectively in their local markets."
+          content: `You are an expert business strategist specializing in local market competition analysis. Provide clear, actionable insights that help small businesses compete effectively in their local markets. Always respond in ${languageName}.`
         },
         {
           role: "user",

@@ -4,7 +4,7 @@ import { searchNearby } from "./googlePlaces";
 import { analyzeCompetitors } from "./ai";
 import type { Report, Business, InsertReport } from "@shared/schema";
 
-export async function runReportForBusiness(businessId: string): Promise<Report> {
+export async function runReportForBusiness(businessId: string, language: string = "en"): Promise<Report> {
   const business = await storage.getBusiness(businessId);
   
   if (!business) {
@@ -18,7 +18,7 @@ export async function runReportForBusiness(businessId: string): Promise<Report> 
     1500
   );
 
-  const aiAnalysis = await analyzeCompetitors(business, competitors);
+  const aiAnalysis = await analyzeCompetitors(business, competitors, language);
 
   const html = generateReportHTML(business, competitors, aiAnalysis);
 

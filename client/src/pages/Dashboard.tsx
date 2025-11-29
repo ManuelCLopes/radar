@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { BarChart3, TrendingUp, Building2, MapPin } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { BusinessForm } from "@/components/BusinessForm";
@@ -7,11 +8,13 @@ import { BusinessList } from "@/components/BusinessList";
 import { ReportView } from "@/components/ReportView";
 import { ReportHistory } from "@/components/ReportHistory";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Business, InsertBusiness, Report } from "@shared/schema";
 
 export default function Dashboard() {
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const [currentReport, setCurrentReport] = useState<Report | null>(null);
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
@@ -32,14 +35,14 @@ export default function Dashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/businesses"] });
       toast({
-        title: "Business registered",
-        description: "Your business has been successfully added.",
+        title: t("toast.businessRegistered.title"),
+        description: t("toast.businessRegistered.description"),
       });
     },
     onError: (error: Error) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to register business.",
+        title: t("toast.error.title"),
+        description: error.message || t("toast.error.registerBusiness"),
         variant: "destructive",
       });
     },
@@ -54,14 +57,14 @@ export default function Dashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/businesses"] });
       toast({
-        title: "Business deleted",
-        description: "The business has been removed.",
+        title: t("toast.businessDeleted.title"),
+        description: t("toast.businessDeleted.description"),
       });
     },
     onError: (error: Error) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to delete business.",
+        title: t("toast.error.title"),
+        description: error.message || t("toast.error.deleteBusiness"),
         variant: "destructive",
       });
     },
@@ -73,7 +76,7 @@ export default function Dashboard() {
   const generateReportMutation = useMutation({
     mutationFn: async (id: string) => {
       setGeneratingReportId(id);
-      const response = await apiRequest("POST", `/api/run-report/${id}`);
+      const response = await apiRequest("POST", `/api/run-report/${id}`, { language: i18n.language });
       return response.json();
     },
     onSuccess: (report: Report) => {
@@ -81,14 +84,14 @@ export default function Dashboard() {
       setReportDialogOpen(true);
       queryClient.invalidateQueries({ queryKey: ["/api/reports/business"] });
       toast({
-        title: "Report generated",
-        description: "Your competitor analysis report is ready.",
+        title: t("toast.reportGenerated.title"),
+        description: t("toast.reportGenerated.description"),
       });
     },
     onError: (error: Error) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to generate report.",
+        title: t("toast.error.title"),
+        description: error.message || t("toast.error.generateReport"),
         variant: "destructive",
       });
     },
@@ -130,13 +133,16 @@ export default function Dashboard() {
                 <BarChart3 className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-xl font-bold tracking-tight">Local Competitor Analyzer</h1>
+                <h1 className="text-xl font-bold tracking-tight">{t("dashboard.header.title")}</h1>
                 <p className="text-sm text-muted-foreground hidden sm:block">
-                  AI-powered business intelligence
+                  {t("app.description")}
                 </p>
               </div>
             </div>
-            <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <LanguageSelector />
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </header>
@@ -152,7 +158,7 @@ export default function Dashboard() {
                 <p className="text-2xl font-bold" data-testid="stat-total-businesses">
                   {businesses.length}
                 </p>
-                <p className="text-sm text-muted-foreground truncate">Registered Businesses</p>
+                <p className="text-sm text-muted-foreground truncate">{t("dashboard.stats.registeredBusinesses")}</p>
               </div>
             </CardContent>
           </Card>
@@ -164,9 +170,9 @@ export default function Dashboard() {
               </div>
               <div className="min-w-0">
                 <p className="text-2xl font-bold" data-testid="stat-active-analyses">
-                  {businesses.length > 0 ? "Active" : "Ready"}
+                  {businesses.length > 0 ? t("dashboard.stats.active") : "Ready"}
                 </p>
-                <p className="text-sm text-muted-foreground truncate">Analysis Status</p>
+                <p className="text-sm text-muted-foreground truncate">{t("dashboard.stats.analysisStatus")}</p>
               </div>
             </CardContent>
           </Card>
@@ -180,7 +186,7 @@ export default function Dashboard() {
                 <p className="text-2xl font-bold" data-testid="stat-locations">
                   {new Set(businesses.map(b => `${b.latitude.toFixed(2)},${b.longitude.toFixed(2)}`)).size}
                 </p>
-                <p className="text-sm text-muted-foreground truncate">Unique Locations</p>
+                <p className="text-sm text-muted-foreground truncate">{t("dashboard.stats.uniqueLocations")}</p>
               </div>
             </CardContent>
           </Card>
@@ -194,7 +200,7 @@ export default function Dashboard() {
                 <p className="text-2xl font-bold" data-testid="stat-types">
                   {new Set(businesses.map(b => b.type)).size}
                 </p>
-                <p className="text-sm text-muted-foreground truncate">Business Types</p>
+                <p className="text-sm text-muted-foreground truncate">{t("dashboard.stats.businessTypes")}</p>
               </div>
             </CardContent>
           </Card>

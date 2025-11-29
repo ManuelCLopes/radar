@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { FileText, Calendar, Download, Eye, Loader2, Clock } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { FileText, Calendar, Download, Eye, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
@@ -34,23 +35,21 @@ function ReportSkeleton() {
   );
 }
 
-function EmptyHistory() {
+function EmptyHistory({ t }: { t: (key: string) => string }) {
   return (
     <Card>
       <CardContent className="p-8 text-center">
         <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-muted flex items-center justify-center">
           <FileText className="h-6 w-6 text-muted-foreground" />
         </div>
-        <h3 className="text-lg font-medium mb-2">No reports yet</h3>
-        <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-          Generate your first report to start tracking competitor analysis over time.
-        </p>
+        <h3 className="text-lg font-medium mb-2">{t("report.history.empty")}</h3>
       </CardContent>
     </Card>
   );
 }
 
 export function ReportHistory({ business, open, onOpenChange, onViewReport }: ReportHistoryProps) {
+  const { t } = useTranslation();
   const { data: reports = [], isLoading } = useQuery<Report[]>({
     queryKey: ["/api/reports/business", business?.id],
     enabled: open && !!business?.id,
@@ -76,10 +75,10 @@ export function ReportHistory({ business, open, onOpenChange, onViewReport }: Re
         <DialogHeader className="p-6 pb-4 border-b">
           <DialogTitle className="text-xl font-semibold flex items-center gap-2">
             <Clock className="h-5 w-5 text-primary" />
-            Report History
+            {t("report.history.title")}
           </DialogTitle>
           <DialogDescription>
-            Past competitor analysis reports for {business.name}
+            {t("report.history.description", { name: business.name })}
           </DialogDescription>
         </DialogHeader>
 
@@ -92,7 +91,7 @@ export function ReportHistory({ business, open, onOpenChange, onViewReport }: Re
                 ))}
               </>
             ) : reports.length === 0 ? (
-              <EmptyHistory />
+              <EmptyHistory t={t} />
             ) : (
               reports.map((report) => (
                 <Card
@@ -106,16 +105,15 @@ export function ReportHistory({ business, open, onOpenChange, onViewReport }: Re
                         <div className="flex items-center gap-2 flex-wrap">
                           <Badge variant="outline" className="flex items-center gap-1">
                             <FileText className="h-3 w-3" />
-                            Report
+                            {t("report.view.title", "Report")}
                           </Badge>
                           <span className="text-sm text-muted-foreground flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
-                            {new Date(report.generatedAt).toLocaleDateString()} at{" "}
-                            {new Date(report.generatedAt).toLocaleTimeString()}
+                            {new Date(report.generatedAt).toLocaleDateString()} - {new Date(report.generatedAt).toLocaleTimeString()}
                           </span>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {report.competitors.length} competitor{report.competitors.length !== 1 ? "s" : ""} analyzed
+                          {t("report.history.competitorsAnalyzed", { count: report.competitors.length })}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -126,7 +124,7 @@ export function ReportHistory({ business, open, onOpenChange, onViewReport }: Re
                           data-testid={`button-view-report-${report.id}`}
                         >
                           <Eye className="h-4 w-4 mr-2" />
-                          View
+                          {t("report.history.view")}
                         </Button>
                         <Button
                           variant="outline"
@@ -135,7 +133,7 @@ export function ReportHistory({ business, open, onOpenChange, onViewReport }: Re
                           data-testid={`button-download-report-${report.id}`}
                         >
                           <Download className="h-4 w-4 mr-2" />
-                          Download
+                          {t("report.history.download")}
                         </Button>
                       </div>
                     </div>

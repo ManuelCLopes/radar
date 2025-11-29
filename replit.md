@@ -10,6 +10,7 @@ A fullstack business intelligence application that helps users analyze their loc
 - Google Places API integration (with fallback to mock data)
 - OpenAI integration for AI-powered competitor analysis (via Replit AI Integrations)
 - Automated weekly report generation via cron scheduler
+- Multi-language support (English, Portuguese, Spanish, French, German)
 
 ## Project Architecture
 
@@ -17,16 +18,25 @@ A fullstack business intelligence application that helps users analyze their loc
 ```
 client/src/
 ├── components/
-│   ├── BusinessForm.tsx    # Business registration form
-│   ├── BusinessList.tsx    # List of registered businesses with actions
-│   ├── ReportView.tsx      # Modal dialog for viewing/exporting reports
-│   ├── ReportHistory.tsx   # Dialog for viewing past reports
-│   └── ThemeToggle.tsx     # Dark/light mode toggle
+│   ├── BusinessForm.tsx      # Business registration form
+│   ├── BusinessList.tsx      # List of registered businesses with actions
+│   ├── ReportView.tsx        # Modal dialog for viewing/exporting reports
+│   ├── ReportHistory.tsx     # Dialog for viewing past reports
+│   ├── ThemeToggle.tsx       # Dark/light mode toggle
+│   └── LanguageSelector.tsx  # Language selection dropdown
+├── i18n/
+│   ├── index.ts              # i18n configuration
+│   └── locales/
+│       ├── en/common.json    # English translations
+│       ├── pt/common.json    # Portuguese translations
+│       ├── es/common.json    # Spanish translations
+│       ├── fr/common.json    # French translations
+│       └── de/common.json    # German translations
 ├── pages/
-│   └── Dashboard.tsx       # Main dashboard page
+│   └── Dashboard.tsx         # Main dashboard page
 ├── lib/
-│   └── queryClient.ts      # React Query configuration
-└── App.tsx                 # Main app with routing
+│   └── queryClient.ts        # React Query configuration
+└── App.tsx                   # Main app with routing
 ```
 
 ### Backend (`server/`)
@@ -108,6 +118,14 @@ shared/
 - Status endpoint to monitor scheduler health
 
 ## Recent Changes
+- 2025-11-29: Multi-language support (i18n) implementation
+  - Added react-i18next for internationalization
+  - Created translation files for 5 languages (EN, PT, ES, FR, DE)
+  - Language selector in header with language code abbreviations
+  - AI analysis generated in user's selected language
+  - All UI text uses translation keys for consistent localization
+  - Language preference persisted in localStorage
+
 - 2025-11-29: Full feature implementation
   - PostgreSQL database persistence for all data
   - OpenAI integration via Replit AI Integrations
@@ -115,10 +133,10 @@ shared/
   - Report history UI for viewing past reports
   - Automated weekly report generation (cron scheduler)
   - Export dropdown with HTML, PDF, and email options
-  - All 20 automated tests passing
 
 ## User Preferences
 - Clean, professional interface following Linear-style design
 - Inter font for modern typography
 - Blue primary color scheme (HSL 217)
 - Dark mode support
+- No emojis in UI (uses text/icons only)

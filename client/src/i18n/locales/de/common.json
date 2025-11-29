@@ -65,7 +65,6 @@
   "report": {
     "view": {
       "title": "Wettbewerbsanalysebericht",
-      "generatedAt": "Erstellt {{date}}",
       "export": "Exportieren",
       "downloadHtml": "HTML Herunterladen",
       "printPdf": "Drucken / Als PDF Speichern",
@@ -86,7 +85,7 @@
     },
     "history": {
       "title": "Berichtsverlauf",
-      "description": "Alle erstellten Berichte für {{name}} anzeigen",
+      "description": "Frühere Wettbewerbsanalyseberichte für {{name}}",
       "empty": "Für dieses Unternehmen wurden noch keine Berichte erstellt.",
       "competitorsAnalyzed": "{{count}} Wettbewerber analysiert",
       "view": "Anzeigen",

@@ -72,13 +72,14 @@ export async function registerRoutes(
   app.post("/api/run-report/:id", async (req, res) => {
     try {
       const businessId = req.params.id;
+      const language = req.body?.language || "en";
       
       const business = await storage.getBusiness(businessId);
       if (!business) {
         return res.status(404).json({ error: "Business not found" });
       }
 
-      const report = await runReportForBusiness(businessId);
+      const report = await runReportForBusiness(businessId, language);
       res.json(report);
     } catch (error) {
       console.error("Error generating report:", error);

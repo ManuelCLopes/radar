@@ -65,7 +65,6 @@
   "report": {
     "view": {
       "title": "Informe de Análisis de Competencia",
-      "generatedAt": "Generado {{date}}",
       "export": "Exportar",
       "downloadHtml": "Descargar HTML",
       "printPdf": "Imprimir / Guardar como PDF",
@@ -86,7 +85,7 @@
     },
     "history": {
       "title": "Historial de Informes",
-      "description": "Ver todos los informes generados para {{name}}",
+      "description": "Informes de análisis de competencia anteriores para {{name}}",
       "empty": "Aún no se han generado informes para este negocio.",
       "competitorsAnalyzed": "{{count}} competidores analizados",
       "view": "Ver",

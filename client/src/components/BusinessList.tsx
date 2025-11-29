@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { MapPin, Building2, FileText, Loader2, Calendar, Trash2, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,23 +7,23 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import type { Business, BusinessType } from "@shared/schema";
 
-const businessTypeLabels: Record<BusinessType, string> = {
-  restaurant: "Restaurant",
-  cafe: "Cafe",
-  retail: "Retail",
-  gym: "Gym",
-  salon: "Salon",
-  pharmacy: "Pharmacy",
-  hotel: "Hotel",
-  bar: "Bar",
-  bakery: "Bakery",
-  supermarket: "Supermarket",
-  clinic: "Clinic",
-  dentist: "Dentist",
-  bank: "Bank",
-  gas_station: "Gas Station",
-  car_repair: "Auto Repair",
-  other: "Other",
+const businessTypeKeys: Record<BusinessType, string> = {
+  restaurant: "restaurant",
+  cafe: "cafe",
+  retail: "retail",
+  gym: "gym",
+  salon: "salon",
+  pharmacy: "pharmacy",
+  hotel: "hotel",
+  bar: "bar",
+  bakery: "bakery",
+  supermarket: "retail",
+  clinic: "other",
+  dentist: "other",
+  bank: "other",
+  gas_station: "other",
+  car_repair: "other",
+  other: "other",
 };
 
 interface BusinessListProps {
@@ -55,17 +56,14 @@ function BusinessCardSkeleton() {
   );
 }
 
-function EmptyState() {
+function EmptyState({ t }: { t: (key: string) => string }) {
   return (
     <Card>
       <CardContent className="p-8 text-center">
         <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-muted flex items-center justify-center">
           <Building2 className="h-6 w-6 text-muted-foreground" />
         </div>
-        <h3 className="text-lg font-medium mb-2">No businesses registered</h3>
-        <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-          Register your first business using the form to start analyzing your local competition.
-        </p>
+        <h3 className="text-lg font-medium mb-2">{t("business.list.empty")}</h3>
       </CardContent>
     </Card>
   );
@@ -80,15 +78,22 @@ export function BusinessList({
   generatingReportId = null,
   deletingId = null,
 }: BusinessListProps) {
+  const { t } = useTranslation();
+
+  const getBusinessTypeLabel = (type: BusinessType): string => {
+    const key = businessTypeKeys[type];
+    return t(`business.types.${key}`) as string;
+  };
+
   if (isLoading) {
     return (
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-xl font-semibold flex items-center gap-2">
             <Building2 className="h-5 w-5 text-primary" />
-            Your Businesses
+            {t("business.list.title")}
           </CardTitle>
-          <CardDescription>Loading your registered businesses...</CardDescription>
+          <CardDescription>{t("business.list.loading", "Loading...")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {[1, 2, 3].map((i) => (
@@ -105,12 +110,11 @@ export function BusinessList({
         <CardHeader className="space-y-1">
           <CardTitle className="text-xl font-semibold flex items-center gap-2">
             <Building2 className="h-5 w-5 text-primary" />
-            Your Businesses
+            {t("business.list.title")}
           </CardTitle>
-          <CardDescription>Manage and analyze your registered businesses</CardDescription>
         </CardHeader>
         <CardContent>
-          <EmptyState />
+          <EmptyState t={t} />
         </CardContent>
       </Card>
     );
@@ -121,10 +125,9 @@ export function BusinessList({
       <CardHeader className="space-y-1">
         <CardTitle className="text-xl font-semibold flex items-center gap-2">
           <Building2 className="h-5 w-5 text-primary" />
-          Your Businesses
+          {t("business.list.title")}
           <Badge variant="secondary" className="ml-2">{businesses.length}</Badge>
         </CardTitle>
-        <CardDescription>Manage and analyze your registered businesses</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         {businesses.map((business) => (
@@ -141,7 +144,7 @@ export function BusinessList({
                   </h3>
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge variant="outline" data-testid={`badge-type-${business.id}`}>
-                      {businessTypeLabels[business.type]}
+                      {getBusinessTypeLabel(business.type)}
                     </Badge>
                     <span className="text-sm text-muted-foreground flex items-center gap-1">
                       <MapPin className="h-3 w-3" />
@@ -155,7 +158,7 @@ export function BusinessList({
                   )}
                   <p className="text-xs text-muted-foreground flex items-center gap-1">
                     <Calendar className="h-3 w-3" />
-                    Added {new Date(business.createdAt).toLocaleDateString()}
+                    {new Date(business.createdAt).toLocaleDateString()}
                   </p>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
@@ -167,12 +170,12 @@ export function BusinessList({
                     {generatingReportId === business.id ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Generating...
+                        {t("business.list.generating")}
                       </>
                     ) : (
                       <>
                         <FileText className="h-4 w-4 mr-2" />
-                        Generate Report
+                        {t("business.list.generateReport")}
                       </>
                     )}
                   </Button>
@@ -181,7 +184,7 @@ export function BusinessList({
                     size="icon"
                     onClick={() => onViewHistory(business)}
                     data-testid={`button-view-history-${business.id}`}
-                    title="View Report History"
+                    title={t("business.list.viewHistory")}
                   >
                     <History className="h-4 w-4" />
                   </Button>
@@ -202,18 +205,18 @@ export function BusinessList({
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Business</AlertDialogTitle>
+                        <AlertDialogTitle>{t("business.deleteDialog.title")}</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Are you sure you want to delete "{business.name}"? This action cannot be undone.
+                          {t("business.deleteDialog.description", { name: business.name })}
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel data-testid="button-cancel-delete">Cancel</AlertDialogCancel>
+                        <AlertDialogCancel data-testid="button-cancel-delete">{t("business.deleteDialog.cancel")}</AlertDialogCancel>
                         <AlertDialogAction
                           onClick={() => onDelete(business.id)}
                           data-testid="button-confirm-delete"
                         >
-                          Delete
+                          {t("business.deleteDialog.confirm")}
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>

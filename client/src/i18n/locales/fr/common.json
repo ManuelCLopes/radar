@@ -65,7 +65,6 @@
   "report": {
     "view": {
       "title": "Rapport d'Analyse de la Concurrence",
-      "generatedAt": "Généré {{date}}",
       "export": "Exporter",
       "downloadHtml": "Télécharger HTML",
       "printPdf": "Imprimer / Enregistrer en PDF",
@@ -86,7 +85,7 @@
     },
     "history": {
       "title": "Historique des Rapports",
-      "description": "Voir tous les rapports générés pour {{name}}",
+      "description": "Rapports d'analyse de la concurrence précédents pour {{name}}",
       "empty": "Aucun rapport n'a encore été généré pour cette entreprise.",
       "competitorsAnalyzed": "{{count}} concurrents analysés",
       "view": "Voir",

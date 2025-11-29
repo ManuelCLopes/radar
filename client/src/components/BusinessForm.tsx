@@ -1,30 +1,31 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import { Building2, MapPin, Navigation, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { insertBusinessSchema, businessTypes, type InsertBusiness, type BusinessType } from "@shared/schema";
 
-const businessTypeLabels: Record<BusinessType, string> = {
-  restaurant: "Restaurant",
-  cafe: "Cafe / Coffee Shop",
-  retail: "Retail Store",
-  gym: "Gym / Fitness",
-  salon: "Salon / Spa",
-  pharmacy: "Pharmacy",
-  hotel: "Hotel / Accommodation",
-  bar: "Bar / Nightclub",
-  bakery: "Bakery",
-  supermarket: "Supermarket / Grocery",
-  clinic: "Medical Clinic",
-  dentist: "Dental Clinic",
-  bank: "Bank / Financial",
-  gas_station: "Gas Station",
-  car_repair: "Auto Repair",
-  other: "Other",
+const businessTypeKeys: Record<BusinessType, string> = {
+  restaurant: "restaurant",
+  cafe: "cafe",
+  retail: "retail",
+  gym: "gym",
+  salon: "salon",
+  pharmacy: "pharmacy",
+  hotel: "hotel",
+  bar: "bar",
+  bakery: "bakery",
+  supermarket: "retail",
+  clinic: "other",
+  dentist: "other",
+  bank: "other",
+  gas_station: "other",
+  car_repair: "other",
+  other: "other",
 };
 
 interface BusinessFormProps {
@@ -33,6 +34,7 @@ interface BusinessFormProps {
 }
 
 export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps) {
+  const { t } = useTranslation();
   const form = useForm<InsertBusiness>({
     resolver: zodResolver(insertBusinessSchema),
     defaultValues: {
@@ -65,15 +67,20 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
     );
   };
 
+  const getBusinessTypeLabel = (type: BusinessType): string => {
+    const key = businessTypeKeys[type];
+    return t(`business.types.${key}`) as string;
+  };
+
   return (
     <Card>
       <CardHeader className="space-y-1">
         <CardTitle className="text-xl font-semibold flex items-center gap-2">
           <Building2 className="h-5 w-5 text-primary" />
-          Register Business
+          {t("business.form.title")}
         </CardTitle>
         <CardDescription>
-          Add your business to analyze local competition
+          {t("dashboard.header.subtitle")}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -84,10 +91,10 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Business Name</FormLabel>
+                  <FormLabel>{t("business.form.name")}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter business name"
+                      placeholder={t("business.form.namePlaceholder")}
                       data-testid="input-business-name"
                       {...field}
                     />
@@ -102,20 +109,20 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
               name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Business Type</FormLabel>
+                  <FormLabel>{t("business.form.type")}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger data-testid="select-business-type">
-                        <SelectValue placeholder="Select business type" />
+                        <SelectValue placeholder={t("business.form.typePlaceholder")} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {businessTypes.map((type) => (
                         <SelectItem key={type} value={type} data-testid={`option-type-${type}`}>
-                          {businessTypeLabels[type]}
+                          {getBusinessTypeLabel(type)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -130,17 +137,14 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Address (Optional)</FormLabel>
+                  <FormLabel>{t("business.form.address")}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Street address"
+                      placeholder={t("business.form.addressPlaceholder")}
                       data-testid="input-address"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Physical location of your business
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -152,12 +156,12 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
                 name="latitude"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Latitude</FormLabel>
+                    <FormLabel>{t("business.form.latitude")}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         step="any"
-                        placeholder="-90 to 90"
+                        placeholder={t("business.form.latitudePlaceholder")}
                         data-testid="input-latitude"
                         {...field}
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
@@ -173,12 +177,12 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
                 name="longitude"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Longitude</FormLabel>
+                    <FormLabel>{t("business.form.longitude")}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         step="any"
-                        placeholder="-180 to 180"
+                        placeholder={t("business.form.longitudePlaceholder")}
                         data-testid="input-longitude"
                         {...field}
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
@@ -198,7 +202,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
               data-testid="button-get-location"
             >
               <Navigation className="h-4 w-4 mr-2" />
-              Use Current Location
+              {t("business.form.useCurrentLocation", "Use Current Location")}
             </Button>
 
             <Button
@@ -210,12 +214,12 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
               {isPending ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Registering...
+                  {t("business.form.submitting")}
                 </>
               ) : (
                 <>
                   <MapPin className="h-4 w-4 mr-2" />
-                  Register Business
+                  {t("business.form.submit")}
                 </>
               )}
             </Button>

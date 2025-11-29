@@ -65,7 +65,6 @@
   "report": {
     "view": {
       "title": "Competitor Analysis Report",
-      "generatedAt": "Generated {{date}}",
       "export": "Export",
       "downloadHtml": "Download HTML",
       "printPdf": "Print / Save as PDF",
@@ -86,7 +85,7 @@
     },
     "history": {
       "title": "Report History",
-      "description": "View all generated reports for {{name}}",
+      "description": "Past competitor analysis reports for {{name}}",
       "empty": "No reports have been generated for this business yet.",
       "competitorsAnalyzed": "{{count}} competitors analyzed",
       "view": "View",
