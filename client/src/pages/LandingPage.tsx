@@ -1,8 +1,94 @@
 import { Link } from "wouter";
-import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store } from "lucide-react";
+import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, ChevronLeft, ChevronRight } from "lucide-react";
+import useEmblaCarousel from "embla-carousel-react";
+import { useCallback, useEffect, useState } from "react";
 import "./LandingPage.css";
 
+function PricingCard({ plan, subtitle, features, price, featured, testId, priceTestId }: {
+  plan: string;
+  subtitle: string;
+  features: string[];
+  price: string;
+  featured?: boolean;
+  testId: string;
+  priceTestId: string;
+}) {
+  return (
+    <div className={`pricing-card ${featured ? 'featured' : ''}`} data-testid={testId}>
+      <h3 className="pricing-plan-name">{plan}</h3>
+      <p className="pricing-plan-subtitle">{subtitle}</p>
+      <ul className="pricing-features">
+        {features.map((feature, index) => (
+          <li key={index}>{feature}</li>
+        ))}
+      </ul>
+      <p className="pricing-price" data-testid={priceTestId}>{price}</p>
+    </div>
+  );
+}
+
+const pricingPlans = [
+  {
+    plan: "Essencial",
+    subtitle: "Para negócios individuais.",
+    features: [
+      "1 localização",
+      "Relatório mensal",
+      "Raio até 3 km",
+      "Até 20 concorrentes analisados",
+      "Envios por email em PDF",
+      "Suporte por email"
+    ],
+    price: "9€ / mês ou 90€ / ano",
+    testId: "pricing-card-essential",
+    priceTestId: "price-essential"
+  },
+  {
+    plan: "Profissional",
+    subtitle: "Para quem tem mais de um negócio ou quer acompanhar a fundo.",
+    features: [
+      "Até 3 localizações",
+      "Relatório mensal + botão \"gerar agora\" no painel",
+      "Raio até 5 km por localização",
+      "Até 40 concorrentes por localização",
+      "Relatórios com secção extra de recomendações",
+      "Prioridade no suporte"
+    ],
+    price: "19€ / mês ou 180€ / ano",
+    featured: true,
+    testId: "pricing-card-professional",
+    priceTestId: "price-professional"
+  }
+];
+
 export default function LandingPage() {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'center' });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
+
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+  const scrollTo = useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+    setCanScrollPrev(emblaApi.canScrollPrev());
+    setCanScrollNext(emblaApi.canScrollNext());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', onSelect);
+    return () => {
+      emblaApi.off('select', onSelect);
+      emblaApi.off('reInit', onSelect);
+    };
+  }, [emblaApi, onSelect]);
+
   return (
     <div className="landing-page">
       {/* HERO */}
@@ -205,34 +291,58 @@ export default function LandingPage() {
       <section className="landing-section" data-testid="section-pricing">
         <div className="landing-container">
           <h2 className="section-title">Planos e preços</h2>
-          <div className="pricing-grid">
-            <div className="pricing-card" data-testid="pricing-card-essential">
-              <h3 className="pricing-plan-name">Essencial</h3>
-              <p className="pricing-plan-subtitle">Para negócios individuais.</p>
-              <ul className="pricing-features">
-                <li>1 localização</li>
-                <li>Relatório mensal</li>
-                <li>Raio até 3 km</li>
-                <li>Até 20 concorrentes analisados</li>
-                <li>Envios por email em PDF</li>
-                <li>Suporte por email</li>
-              </ul>
-              <p className="pricing-price" data-testid="price-essential">9€ / mês ou 90€ / ano</p>
+          
+          {/* Desktop grid */}
+          <div className="pricing-grid pricing-desktop">
+            {pricingPlans.map((plan) => (
+              <PricingCard key={plan.testId} {...plan} />
+            ))}
+          </div>
+
+          {/* Mobile carousel */}
+          <div className="pricing-carousel-wrapper pricing-mobile">
+            <div className="pricing-carousel" ref={emblaRef}>
+              <div className="pricing-carousel-container">
+                {pricingPlans.map((plan) => (
+                  <div className="pricing-carousel-slide" key={plan.testId}>
+                    <PricingCard {...plan} />
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="pricing-card featured" data-testid="pricing-card-professional">
-              <h3 className="pricing-plan-name">Profissional</h3>
-              <p className="pricing-plan-subtitle">Para quem tem mais de um negócio ou quer acompanhar a fundo.</p>
-              <ul className="pricing-features">
-                <li>Até 3 localizações</li>
-                <li>Relatório mensal + botão "gerar agora" no painel</li>
-                <li>Raio até 5 km por localização</li>
-                <li>Até 40 concorrentes por localização</li>
-                <li>Relatórios com secção extra de recomendações</li>
-                <li>Prioridade no suporte</li>
-              </ul>
-              <p className="pricing-price" data-testid="price-professional">19€ / mês ou 180€ / ano</p>
+            <div className="pricing-carousel-controls">
+              <button 
+                className="pricing-carousel-btn" 
+                onClick={scrollPrev} 
+                disabled={!canScrollPrev}
+                aria-label="Plano anterior"
+                data-testid="button-carousel-prev"
+              >
+                <ChevronLeft />
+              </button>
+              <div className="pricing-carousel-dots">
+                {pricingPlans.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`pricing-carousel-dot ${index === selectedIndex ? 'active' : ''}`}
+                    onClick={() => scrollTo(index)}
+                    aria-label={`Ir para plano ${index + 1}`}
+                    data-testid={`button-carousel-dot-${index}`}
+                  />
+                ))}
+              </div>
+              <button 
+                className="pricing-carousel-btn" 
+                onClick={scrollNext} 
+                disabled={!canScrollNext}
+                aria-label="Próximo plano"
+                data-testid="button-carousel-next"
+              >
+                <ChevronRight />
+              </button>
             </div>
           </div>
+
           <div className="early-bird-badge" data-testid="early-bird-badge">
             Primeiros 10 negócios com setup inicial gratuito e preço fixo vitalício.
           </div>
