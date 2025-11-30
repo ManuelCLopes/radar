@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import type { Business, BusinessType } from "@shared/schema";
 
@@ -142,20 +143,45 @@ export function BusinessList({
             <CardContent className="p-4 min-w-0">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 min-w-0">
                 <div className="flex-1 min-w-0 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-base truncate" data-testid={`text-business-name-${business.id}`}>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-semibold text-base break-words" data-testid={`text-business-name-${business.id}`}>
                       {business.name}
                     </h3>
                     {isPending ? (
-                      <Badge variant="outline" className="text-yellow-600 border-yellow-600 shrink-0" data-testid={`badge-pending-${business.id}`}>
-                        <AlertTriangle className="h-3 w-3 mr-1" />
-                        {t("locationStatus.pending")}
-                      </Badge>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button 
+                            variant="outline" 
+                            size="icon" 
+                            className="h-6 w-6 text-yellow-600 border-yellow-600 shrink-0"
+                            data-testid={`badge-pending-${business.id}`}
+                            aria-label={t("locationStatus.pending")}
+                          >
+                            <AlertTriangle className="h-3 w-3" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-3" align="start">
+                          <p className="text-sm font-medium text-yellow-600">{t("locationStatus.pending")}</p>
+                          <p className="text-xs text-muted-foreground mt-1">{t("locationStatus.pendingNote")}</p>
+                        </PopoverContent>
+                      </Popover>
                     ) : (
-                      <Badge variant="outline" className="text-green-600 border-green-600 shrink-0" data-testid={`badge-verified-${business.id}`}>
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                        {t("locationStatus.validated")}
-                      </Badge>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button 
+                            variant="outline" 
+                            size="icon" 
+                            className="h-6 w-6 text-green-600 border-green-600 shrink-0"
+                            data-testid={`badge-verified-${business.id}`}
+                            aria-label={t("locationStatus.validated")}
+                          >
+                            <CheckCircle className="h-3 w-3" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-3" align="start">
+                          <p className="text-sm font-medium text-green-600">{t("locationStatus.validated")}</p>
+                        </PopoverContent>
+                      </Popover>
                     )}
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
@@ -170,14 +196,8 @@ export function BusinessList({
                     )}
                   </div>
                   {business.address && (
-                    <p className="text-sm text-muted-foreground truncate">
+                    <p className="text-sm text-muted-foreground break-words">
                       {business.address}
-                    </p>
-                  )}
-                  {isPending && (
-                    <p className="text-xs text-yellow-600 dark:text-yellow-400 flex items-center gap-1">
-                      <AlertTriangle className="h-3 w-3" />
-                      {t("locationStatus.pendingNote")}
                     </p>
                   )}
                   <p className="text-xs text-muted-foreground flex items-center gap-1">
@@ -195,13 +215,12 @@ export function BusinessList({
                   >
                     {generatingReportId === business.id ? (
                       <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        <Loader2 className="h-4 w-4 sm:mr-2 animate-spin" />
                         <span className="hidden sm:inline">{t("business.list.generating")}</span>
-                        <span className="sm:hidden">...</span>
                       </>
                     ) : (
                       <>
-                        <FileText className="h-4 w-4 mr-2" />
+                        <FileText className="h-4 w-4 sm:mr-2" />
                         <span className="hidden sm:inline">{t("business.list.generateReport")}</span>
                         <span className="sm:hidden">{t("business.list.report")}</span>
                       </>
