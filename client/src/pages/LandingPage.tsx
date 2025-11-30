@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store } from "lucide-react";
 import "./LandingPage.css";
 
 export default function LandingPage() {
@@ -8,18 +9,25 @@ export default function LandingPage() {
       <section className="hero">
         <div className="landing-container">
           <h1 className="hero-headline" data-testid="hero-headline">
-            Vê o que os teus concorrentes andam a fazer – sem perder horas no Google.
+            Vê o que os teus concorrentes andam a fazer
           </h1>
           <p className="hero-subheadline" data-testid="hero-subheadline">
-            O Radar de Concorrência Local analisa automaticamente os negócios à tua volta, 
-            compara reviews, preços e reputação online e envia-te um relatório simples, 
-            uma vez por mês. Para que saibas onde estás a ganhar… e onde estás a perder.
+            Relatórios mensais automáticos com análise de reviews, preços e reputação dos negócios à tua volta.
           </p>
-          <ul className="hero-bullets" data-testid="hero-bullets">
-            <li>Mapeia os principais concorrentes num raio à tua escolha</li>
-            <li>Compara ratings, número de reviews e nível de preço</li>
-            <li>Recebe recomendações práticas no teu email, todos os meses</li>
-          </ul>
+          <div className="hero-features" data-testid="hero-features">
+            <div className="hero-feature">
+              <MapPin className="hero-feature-icon" />
+              <span>Concorrentes num raio à tua escolha</span>
+            </div>
+            <div className="hero-feature">
+              <Star className="hero-feature-icon" />
+              <span>Ratings, reviews e preços</span>
+            </div>
+            <div className="hero-feature">
+              <Mail className="hero-feature-icon" />
+              <span>Relatório mensal no teu email</span>
+            </div>
+          </div>
           <div className="hero-buttons">
             <a href="#cta-final" className="btn-primary" data-testid="link-hero-cta">
               Quero ver um exemplo de relatório
@@ -77,6 +85,9 @@ export default function LandingPage() {
           </p>
           <div className="report-cards">
             <div className="report-card" data-testid="report-card-map">
+              <div className="report-card-icon">
+                <Map />
+              </div>
               <h3 className="report-card-title">Mapa de concorrência local</h3>
               <p className="report-card-text">
                 Lista dos principais concorrentes num raio à tua escolha, com rating, 
@@ -84,6 +95,9 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="report-card" data-testid="report-card-comparison">
+              <div className="report-card-icon">
+                <BarChart3 />
+              </div>
               <h3 className="report-card-title">Comparação directa contigo</h3>
               <p className="report-card-text">
                 Vês logo quem está acima ou abaixo de ti em rating, reputação e 
@@ -91,6 +105,9 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="report-card" data-testid="report-card-themes">
+              <div className="report-card-icon">
+                <MessageSquare />
+              </div>
               <h3 className="report-card-title">Análise de temas das reviews</h3>
               <p className="report-card-text">
                 Identificamos padrões: os clientes elogiam o quê nos outros? E em ti? 
@@ -98,7 +115,10 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="report-card" data-testid="report-card-recommendations">
-              <h3 className="report-card-title">3–5 recomendações práticas para o próximo mês</h3>
+              <div className="report-card-icon">
+                <Lightbulb />
+              </div>
+              <h3 className="report-card-title">3–5 recomendações práticas</h3>
               <p className="report-card-text">
                 Pistas concretas: melhorar tempo de espera, ajustar preços, reforçar 
                 sobremesas, treinar equipa de sala, etc.
@@ -143,13 +163,38 @@ export default function LandingPage() {
           <p className="section-subtitle">
             Ideal para negócios locais que dependem de reputação e reviews:
           </p>
-          <ul className="audience-list" data-testid="audience-list">
-            <li>Restaurantes, cafés e pastelarias</li>
-            <li>Clínicas de estética, cabeleireiros, barbearias</li>
-            <li>Ginásios e estúdios de treino</li>
-            <li>Pequenos hotéis, alojamentos locais, guesthouses</li>
-            <li>Lojas físicas que competem em zonas comerciais</li>
-          </ul>
+          <div className="audience-grid" data-testid="audience-list">
+            <div className="audience-item">
+              <div className="audience-icon">
+                <Utensils />
+              </div>
+              <span>Restaurantes, cafés e pastelarias</span>
+            </div>
+            <div className="audience-item">
+              <div className="audience-icon">
+                <Scissors />
+              </div>
+              <span>Clínicas de estética, cabeleireiros, barbearias</span>
+            </div>
+            <div className="audience-item">
+              <div className="audience-icon">
+                <Dumbbell />
+              </div>
+              <span>Ginásios e estúdios de treino</span>
+            </div>
+            <div className="audience-item">
+              <div className="audience-icon">
+                <Hotel />
+              </div>
+              <span>Pequenos hotéis, alojamentos locais, guesthouses</span>
+            </div>
+            <div className="audience-item">
+              <div className="audience-icon">
+                <Store />
+              </div>
+              <span>Lojas físicas que competem em zonas comerciais</span>
+            </div>
+          </div>
           <p className="audience-final">
             Se tens um negócio local e tens concorrência à tua volta, o Radar foi feito para ti.
           </p>
