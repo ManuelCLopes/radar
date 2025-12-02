@@ -481,7 +481,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
       </AlertDialog>
 
       <AlertDialog open={showNoResultsDialog} onOpenChange={setShowNoResultsDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-yellow-600" />
@@ -491,22 +491,12 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
               {t("addressSearch.noResults.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col sm:flex-row gap-2">
-            <AlertDialogCancel onClick={() => setShowNoResultsDialog(false)}>
-              {t("addressSearch.noResults.editAddress")}
-            </AlertDialogCancel>
-            <Button 
-              variant="outline"
-              onClick={handleProceedWithAddress}
-              data-testid="button-proceed-with-address"
-            >
-              <MapPin className="h-4 w-4 mr-2" />
-              {t("addressSearch.proceedWithAddress")}
-            </Button>
+          <div className="flex flex-col gap-2 pt-4">
             <AlertDialogAction 
               onClick={handleUseCurrentLocation}
               disabled={isGettingLocation}
               data-testid="button-use-location-fallback"
+              className="w-full"
             >
               {isGettingLocation ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -515,12 +505,27 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
               )}
               {t("addressSearch.useCurrentLocation")}
             </AlertDialogAction>
-          </AlertDialogFooter>
+            <Button 
+              variant="outline"
+              onClick={handleProceedWithAddress}
+              data-testid="button-proceed-with-address"
+              className="w-full"
+            >
+              <MapPin className="h-4 w-4 mr-2" />
+              {t("addressSearch.proceedWithAddress")}
+            </Button>
+            <AlertDialogCancel 
+              onClick={() => setShowNoResultsDialog(false)}
+              className="w-full"
+            >
+              {t("addressSearch.noResults.editAddress")}
+            </AlertDialogCancel>
+          </div>
         </AlertDialogContent>
       </AlertDialog>
 
       <AlertDialog open={showApiKeyMissingDialog} onOpenChange={setShowApiKeyMissingDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-yellow-600" />
@@ -530,22 +535,12 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
               {t("addressSearch.apiKeyMissing.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col sm:flex-row gap-2">
-            <AlertDialogCancel onClick={() => setShowApiKeyMissingDialog(false)}>
-              {t("common.cancel")}
-            </AlertDialogCancel>
-            <Button 
-              variant="outline"
-              onClick={handleProceedWithAddress}
-              data-testid="button-proceed-with-address-api-missing"
-            >
-              <MapPin className="h-4 w-4 mr-2" />
-              {t("addressSearch.proceedWithAddress")}
-            </Button>
+          <div className="flex flex-col gap-2 pt-4">
             <AlertDialogAction 
               onClick={handleUseCurrentLocation}
               disabled={isGettingLocation}
               data-testid="button-use-location-api-missing"
+              className="w-full"
             >
               {isGettingLocation ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -554,7 +549,22 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
               )}
               {t("addressSearch.useCurrentLocation")}
             </AlertDialogAction>
-          </AlertDialogFooter>
+            <Button 
+              variant="outline"
+              onClick={handleProceedWithAddress}
+              data-testid="button-proceed-with-address-api-missing"
+              className="w-full"
+            >
+              <MapPin className="h-4 w-4 mr-2" />
+              {t("addressSearch.proceedWithAddress")}
+            </Button>
+            <AlertDialogCancel 
+              onClick={() => setShowApiKeyMissingDialog(false)}
+              className="w-full"
+            >
+              {t("common.cancel")}
+            </AlertDialogCancel>
+          </div>
         </AlertDialogContent>
       </AlertDialog>
     </>
