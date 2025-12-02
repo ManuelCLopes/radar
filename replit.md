@@ -121,6 +121,17 @@ shared/
 - Status endpoint to monitor scheduler health
 
 ## Recent Changes
+- 2025-12-02: Replit Auth authentication and unified theme/language
+  - Added Replit Auth (OpenID Connect) for user authentication
+  - Protected dashboard route - redirects unauthenticated users to login
+  - Updated users table with Replit Auth schema (id, email, firstName, lastName, profileImageUrl)
+  - Added user avatar dropdown in dashboard header with logout option
+  - Added sticky header to landing page with language selector, theme toggle, and login button
+  - Theme and language settings now unified across landing page and dashboard
+  - Auth routes: /api/login, /api/logout, /api/callback, /api/auth/user
+  - All API routes protected with isAuthenticated middleware
+  - Added user-related translation keys across all 5 languages
+
 - 2025-11-29: Price level and enhanced AI analysis features
   - Added price level display ($ to $$$$) to competitor cards and HTML reports
   - Enhanced AI analysis with review theme insights (service, price, ambience, speed, quality)
