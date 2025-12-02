@@ -1,263 +1,286 @@
-# Local Competitor Analyzer
+# 🎯 Radar Local
 
-## Overview
-A fullstack business intelligence application that helps users analyze their local competition. Users can register their businesses, and the system generates competitor analysis reports using nearby business data and AI-powered insights.
+**AI-powered local competitor analysis platform**
 
-## Current State
-- Full-featured production-ready application
-- Frontend: React + Vite with Tailwind CSS and shadcn/ui components
-- Backend: Express.js with PostgreSQL database persistence (optional for local dev)
-- Authentication: Google OAuth + Email/Password
-- Google Places API integration (with fallback to mock data)
-- OpenAI integration for AI-powered competitor analysis
-- Automated weekly report generation via cron scheduler
-- Multi-language support (English, Portuguese, Spanish, French, German)
+Radar Local helps businesses understand their competitive landscape by analyzing nearby competitors using Google Places data and AI-driven insights. Register your business, generate comprehensive reports, and make data-driven decisions to stay ahead of the competition.
 
-## Local Development Setup
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
+
+---
+
+## ✨ Features
+
+### 🔍 Competitor Analysis
+- **Real-time competitor discovery** using Google Places API
+- **Detailed competitor profiles** with ratings, reviews, and contact information
+- **Geographic visualization** of competitors on interactive maps
+- **AI-powered insights** analyzing market positioning and opportunities
+
+### 🎨 Modern User Experience
+- **Beautiful, responsive UI** with dark mode support
+- **Multi-language support** (English, Portuguese, Spanish, French, German)
+- **Real-time updates** and interactive dashboards
+- **Export capabilities** (HTML, PDF) for reports
+
+### 🔐 Flexible Authentication
+- **Email/Password authentication** with secure bcrypt hashing
+- **Google OAuth integration** for seamless sign-in
+- **Session management** with PostgreSQL or in-memory storage
+- **User profiles** with customizable settings
+
+### 📊 Business Management
+- **Multiple business registration** with location verification
+- **Report history tracking** for trend analysis
+- **Business type categorization** (restaurants, cafes, retail, etc.)
+- **Address validation** using Google Geocoding API
+
+---
+
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn
-- (Optional) PostgreSQL database for persistent storage
 
-### Installation Steps
+- **Node.js** 18+ and npm
+- **PostgreSQL** (optional - uses in-memory storage by default)
+- **Google Places API key** (optional - uses mock data by default)
 
-1. **Clone the repository**
-   ```bash
-   cd /path/to/radar
-   ```
+### Installation
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/ManuelCLopes/radar.git
+cd radar
 
-3. **Configure environment variables (optional)**
-   
-   Create a `.env` file in the root directory:
-   ```bash
-   # Optional: PostgreSQL database (uses in-memory storage if not set)
-   DATABASE_URL=postgresql://user:password@localhost:5432/radar
+# Install dependencies
+npm install
 
-   # Optional: Google OAuth (required for Google login)
-   GOOGLE_CLIENT_ID=your_google_client_id
-   GOOGLE_CLIENT_SECRET=your_google_client_secret
-   GOOGLE_CALLBACK_URL=http://127.0.0.1:5000/api/auth/google/callback
+# Copy environment template
+cp .env.example .env
 
-   # Optional: Google Places API (uses mock data if not set)
-   GOOGLE_API_KEY=your_google_api_key
-
-   # Optional: OpenAI API (uses fallback analysis if not set)
-   AI_INTEGRATIONS_OPENAI_API_KEY=your_openai_api_key
-
-   # Optional: Session secret (auto-generated if not set)
-   SESSION_SECRET=your_session_secret
-   ```
-
-4. **Start the development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Access the application**
-   - Open your browser to `http://127.0.0.1:5000`
-   - Register a new account at `http://127.0.0.1:5000/register`
-   - Or login at `http://127.0.0.1:5000/login`
-
-### Local Development Notes
-
-- **No Database?** The app uses in-memory storage by default. Data will be lost when the server restarts.
-- **No Google OAuth?** You can still use email/password authentication.
-- **No Google Places API?** The app will use mock competitor data.
-- **No OpenAI API?** The app will generate fallback analysis reports.
-
-### Setting Up Google OAuth (Optional)
-
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select an existing one
-3. Enable the Google+ API
-4. Go to "Credentials" → "Create Credentials" → "OAuth 2.0 Client ID"
-5. Set application type to "Web application"
-6. Add authorized redirect URI: `http://127.0.0.1:5000/api/auth/google/callback`
-7. Copy the Client ID and Client Secret to your `.env` file
-
-## Project Architecture
-
-### Frontend (`client/`)
-```
-client/src/
-├── components/
-│   ├── BusinessForm.tsx      # Business registration form
-│   ├── BusinessList.tsx      # List of registered businesses with actions
-│   ├── ReportView.tsx        # Modal dialog for viewing/exporting reports
-│   ├── ReportHistory.tsx     # Dialog for viewing past reports
-│   ├── ThemeToggle.tsx       # Dark/light mode toggle
-│   └── LanguageSelector.tsx  # Language selection dropdown
-├── i18n/
-│   ├── index.ts              # i18n configuration
-│   └── locales/
-│       ├── en/common.json    # English translations
-│       ├── pt/common.json    # Portuguese translations
-│       ├── es/common.json    # Spanish translations
-│       ├── fr/common.json    # French translations
-│       └── de/common.json    # German translations
-├── pages/
-│   ├── Dashboard.tsx         # Main dashboard page
-│   ├── LandingPage.tsx       # Commercial landing page (Portuguese)
-│   ├── LandingPage.css       # Landing page styles
-│   ├── LoginPage.tsx         # Login page
-│   └── RegisterPage.tsx      # Registration page
-├── lib/
-│   └── queryClient.ts        # React Query configuration
-└── App.tsx                   # Main app with routing
+# Start development server
+npm run dev
 ```
 
-### Backend (`server/`)
-```
-server/
-├── index.ts         # Express server entry point
-├── routes.ts        # API route definitions
-├── auth.ts          # Authentication (Google OAuth + Email/Password)
-├── db.ts            # PostgreSQL database connection
-├── storage.ts       # Database storage implementation (DB + in-memory)
-├── googlePlaces.ts  # Google Places API integration
-├── ai.ts            # OpenAI competitor analysis
-├── reports.ts       # Report generation logic
-└── scheduler.ts     # Cron job for automated reports
+The application will be available at `http://127.0.0.1:5000`
+
+### First Steps
+
+1. **Create an account** at `/register`
+2. **Register your business** with name, type, and address
+3. **Generate a report** to see nearby competitors
+4. **Explore insights** and export your analysis
+
+---
+
+## 🛠️ Configuration
+
+All environment variables are **optional**. The application works out-of-the-box with sensible defaults.
+
+### Essential Configuration
+
+For real competitor data, configure Google Places API:
+
+```bash
+# .env
+GOOGLE_PLACES_API_KEY=your_api_key_here
 ```
 
-### Shared (`shared/`)
-```
-shared/
-└── schema.ts        # TypeScript types, Zod schemas, and Drizzle ORM models
+See [SETUP_GUIDE.md](./SETUP_GUIDE.md) for detailed setup instructions.
+
+### Full Configuration
+
+```bash
+# Google Places API (for real competitor data)
+GOOGLE_PLACES_API_KEY=
+
+# OpenAI API (for AI-powered analysis)
+OPENAI_API_KEY=
+
+# Database (for data persistence)
+DATABASE_URL=postgresql://user:password@localhost:5432/radar
+
+# Google OAuth (for "Sign in with Google")
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_CALLBACK_URL=http://127.0.0.1:5000/api/auth/google/callback
+
+# Session Secret (for secure sessions)
+SESSION_SECRET=
 ```
 
-## API Endpoints
+---
+
+## 📁 Project Structure
+
+```
+radar/
+├── client/                 # React frontend
+│   ├── src/
+│   │   ├── components/    # Reusable UI components
+│   │   ├── pages/         # Page components
+│   │   ├── hooks/         # Custom React hooks
+│   │   ├── lib/           # Utilities and helpers
+│   │   └── i18n/          # Internationalization
+├── server/                # Express backend
+│   ├── auth.ts           # Authentication logic
+│   ├── routes.ts         # API endpoints
+│   ├── storage.ts        # Data persistence layer
+│   ├── ai.ts             # AI analysis engine
+│   └── index.ts          # Server entry point
+├── shared/               # Shared types and schemas
+│   └── schema.ts         # Database schema (Drizzle ORM)
+└── db/                   # Database migrations
+```
+
+---
+
+## 🔌 API Endpoints
 
 ### Authentication
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/register` | Register with email/password |
-| POST | `/api/login` | Login with email/password |
-| GET | `/api/auth/google` | Initiate Google OAuth |
-| GET | `/api/auth/google/callback` | Google OAuth callback |
-| POST | `/api/logout` | Logout |
-| GET | `/api/auth/user` | Get current user |
+- `POST /api/register` - Create new account
+- `POST /api/login` - Email/password login
+- `GET /api/auth/google` - Initiate Google OAuth
+- `GET /api/auth/google/callback` - Google OAuth callback
+- `POST /api/logout` - End session
+- `GET /api/auth/user` - Get current user
 
-### Business & Reports
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/businesses` | List all registered businesses |
-| POST | `/api/businesses` | Register a new business |
-| GET | `/api/businesses/:id` | Get a specific business |
-| DELETE | `/api/businesses/:id` | Delete a business |
-| POST | `/api/run-report/:id` | Generate competitor report |
-| GET | `/api/reports/business/:businessId` | Get reports for a business |
-| GET | `/api/scheduler/status` | Get scheduler status |
-| POST | `/api/scheduler/trigger` | Manually trigger scheduled reports |
+### Business Management
+- `GET /api/businesses` - List user's businesses
+- `POST /api/businesses` - Register new business
+- `DELETE /api/businesses/:id` - Delete business
 
-## Data Models
+### Reports
+- `POST /api/run-report/:businessId` - Generate competitor analysis
+- `GET /api/reports/business/:businessId` - Get report history
 
-### User
-- `id`: Unique identifier (auto-generated)
-- `email`: User email (unique, required)
-- `passwordHash`: Hashed password (for local auth)
-- `provider`: Authentication provider ('local' or 'google')
-- `firstName`: User's first name
-- `lastName`: User's last name
-- `profileImageUrl`: Profile image URL (from Google)
-- `createdAt`: Creation timestamp
-- `updatedAt`: Last update timestamp
+---
 
-### Business
-- `id`: Unique identifier (auto-generated)
-- `name`: Business name
-- `type`: Business type (restaurant, cafe, retail, etc.)
-- `latitude`: Location latitude (nullable for pending businesses)
-- `longitude`: Location longitude (nullable for pending businesses)
-- `address`: Optional street address
-- `locationStatus`: Location verification status ('validated' | 'pending')
-- `createdAt`: Creation timestamp
+## 🏗️ Technology Stack
 
-### Report
-- `id`: Unique identifier (auto-generated)
-- `businessId`: Associated business ID
-- `businessName`: Business name
-- `competitors`: Array of competitor data (JSON)
-- `aiAnalysis`: AI-generated analysis text
-- `generatedAt`: Generation timestamp
-- `html`: Full HTML report for download
+### Frontend
+- **React 18** with TypeScript
+- **Vite** for fast development and building
+- **TanStack Query** for data fetching and caching
+- **Wouter** for lightweight routing
+- **Tailwind CSS** for styling
+- **shadcn/ui** for UI components
+- **i18next** for internationalization
 
-## Environment Variables
+### Backend
+- **Node.js** with Express
+- **TypeScript** for type safety
+- **Drizzle ORM** for database operations
+- **Passport.js** for authentication
+- **PostgreSQL** for data persistence
+- **OpenAI API** for AI analysis
+- **Google Places API** for competitor data
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `DATABASE_URL` | PostgreSQL connection string | No (uses in-memory storage) |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID | No (email/password still works) |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | No |
-| `GOOGLE_CALLBACK_URL` | Google OAuth callback URL | No |
-| `GOOGLE_API_KEY` | Google Places API key | No (uses mock data) |
-| `AI_INTEGRATIONS_OPENAI_API_KEY` | OpenAI API key | No (uses fallback analysis) |
-| `SESSION_SECRET` | Session encryption secret | No (auto-generated) |
+### Development
+- **ESLint** for code linting
+- **Prettier** for code formatting
+- **tsx** for TypeScript execution
 
-## Features
+---
 
-### Authentication
-- Email/password registration and login
-- Google OAuth integration
-- Secure password hashing with bcrypt
-- Session-based authentication
-- Protected routes
+## 🧪 Development
 
-### Core Features
-- Business registration with location coordinates
-- Competitor discovery via Google Places API
-- AI-powered competitive analysis
-- Interactive report viewing with competitor cards
-- Report history with past report access
+### Running Locally
 
-### Export Options
-- Download as HTML file
-- Print / Save as PDF (browser print dialog)
-- Email report summary (opens email client)
+```bash
+# Development mode with hot reload
+npm run dev
 
-### Automation
-- Weekly scheduled reports (runs every Monday at 6 AM)
-- Manual trigger endpoint for on-demand scheduling
-- Status endpoint to monitor scheduler health
+# Build for production
+npm run build
 
-## Recent Changes
+# Check TypeScript types
+npm run check
+```
 
-- 2025-12-02: Authentication system replacement
-  - Replaced Replit Auth with Google OAuth + Email/Password
-  - Added login and registration pages
-  - Implemented bcrypt password hashing
-  - Updated database schema with passwordHash and provider fields
-  - Added in-memory storage fallback for local development
-  - Auth routes: /login, /register, /api/auth/google, /api/logout
+### Database Setup
 
-- 2025-12-02: Local development improvements
-  - Made database optional (in-memory storage fallback)
-  - Made OpenAI API optional (fallback analysis)
-  - Made Google Places API optional (mock data)
-  - Fixed server binding to work on macOS (127.0.0.1)
-  - Added comprehensive local setup documentation
+```bash
+# Install PostgreSQL (Mac)
+brew install postgresql@15
+brew services start postgresql@15
 
-- 2025-11-29: Price level and enhanced AI analysis features
-  - Added price level display ($ to $$$$) to competitor cards and HTML reports
-  - Enhanced AI analysis with review theme insights (service, price, ambience, speed, quality)
-  - AI now provides 3-5 practical recommendations for the next month
-  - Mock data generator includes randomized price levels for testing
+# Create database
+createdb radar
 
-- 2025-11-29: Commercial landing page in Portuguese
-  - Created LandingPage.tsx with 8 sections: Hero, How It Works, Report Features, Sample, Audience, Pricing, FAQ, CTA
-  - Landing page is now the default route ("/")
-  - Dashboard moved to "/dashboard" route
-  - Mobile-responsive design with custom CSS styling
+# Add to .env
+DATABASE_URL=postgresql://your_username@localhost:5432/radar
+```
 
-## User Preferences
-- Clean, professional interface following Linear-style design
-- Inter font for modern typography
-- Blue primary color scheme (HSL 217)
-- Dark mode support
-- No emojis in UI (uses text/icons only)
+### Environment Modes
+
+The application adapts based on available configuration:
+
+- **Minimal** (no config): In-memory storage, mock data, email/password auth
+- **Standard** (Places API): Real competitor data, in-memory storage
+- **Full** (all APIs + DB): Complete feature set with persistence
+
+---
+
+## 🌍 Internationalization
+
+Radar Local supports 5 languages:
+
+- 🇬🇧 English (EN)
+- 🇵🇹 Portuguese (PT)
+- 🇪🇸 Spanish (ES)
+- 🇫🇷 French (FR)
+- 🇩🇪 German (DE)
+
+Language files are located in `client/src/i18n/locales/`.
+
+---
+
+## 📚 Documentation
+
+- **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Detailed setup instructions
+- **[.env.example](./.env.example)** - Environment variables reference
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **Google Places API** for competitor data
+- **OpenAI** for AI-powered analysis
+- **shadcn/ui** for beautiful UI components
+- **Drizzle ORM** for type-safe database operations
+
+---
+
+## 📞 Support
+
+For issues, questions, or suggestions:
+
+- 📧 Open an issue on [GitHub](https://github.com/ManuelCLopes/radar/issues)
+- 📖 Check the [SETUP_GUIDE.md](./SETUP_GUIDE.md)
+- 🔍 Review existing issues and discussions
+
+---
+
+<div align="center">
+  <strong>Built with ❤️ for local businesses</strong>
+</div>
