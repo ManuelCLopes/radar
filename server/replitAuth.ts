@@ -20,21 +20,28 @@ const getOidcConfig = memoize(
 
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-  const pgStore = connectPg(session);
-  const sessionStore = new pgStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
-    ttl: sessionTtl,
-    tableName: "sessions",
-  });
+
+  let store;
+  if (process.env.DATABASE_URL) {
+    const pgStore = connectPg(session);
+    store = new pgStore({
+      conString: process.env.DATABASE_URL,
+      createTableIfMissing: false,
+      ttl: sessionTtl,
+      tableName: "sessions",
+    });
+  } else {
+    store = new session.MemoryStore();
+  }
+
   return session({
-    secret: process.env.SESSION_SECRET!,
-    store: sessionStore,
+    secret: process.env.SESSION_SECRET || "local-dev-secret",
+    store: store,
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production", // Secure only in production
       maxAge: sessionTtl,
     },
   });
@@ -67,6 +74,44 @@ export async function setupAuth(app: Express) {
   app.use(getSession());
   app.use(passport.initialize());
   app.use(passport.session());
+
+  if (!process.env.REPL_ID) {
+    console.warn("REPL_ID not set. Using mock authentication for local development.");
+
+    passport.serializeUser((user: any, cb) => cb(null, user));
+    passport.deserializeUser((user: any, cb) => cb(null, user));
+
+    app.get("/api/login", (req, res) => {
+      const user = {
+        id: "local-user",
+        email: "local@example.com",
+        firstName: "Local",
+        lastName: "User",
+        profileImageUrl: null,
+        expires_at: Math.floor(Date.now() / 1000) + 3600 * 24, // 1 day
+      };
+      req.login(user, async (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Login failed" });
+        }
+        await upsertUser({
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          profileImageUrl: user.profileImageUrl,
+        });
+        res.redirect("/dashboard");
+      });
+    });
+
+    app.get("/api/logout", (req, res) => {
+      req.logout(() => {
+        res.redirect("/");
+      });
+    });
+    return;
+  }
 
   const config = await getOidcConfig();
 
@@ -140,6 +185,11 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
   const now = Math.floor(Date.now() / 1000);
   if (now <= user.expires_at) {
     return next();
+  }
+
+  // If we are in local dev mode (no REPL_ID), we don't have refresh tokens
+  if (!process.env.REPL_ID) {
+    return res.status(401).json({ message: "Session expired" });
   }
 
   const refreshToken = user.refresh_token;

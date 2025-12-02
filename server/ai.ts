@@ -3,7 +3,7 @@ import OpenAI from "openai";
 
 const openai = new OpenAI({
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY || "dummy-key-for-local-dev",
 });
 
 const languageNames: Record<string, string> = {
@@ -33,7 +33,7 @@ export async function analyzeCompetitors(
     return noCompetitorMessages[language] || noCompetitorMessages.en;
   }
 
-  const competitorsSummary = competitors.map((c, i) => 
+  const competitorsSummary = competitors.map((c, i) =>
     `${i + 1}. ${c.name} - Rating: ${c.rating || "N/A"}/5 (${c.userRatingsTotal || 0} reviews), Price Level: ${c.priceLevel || "Unknown"}, Distance: ${c.distance || "Unknown"}, Address: ${c.address}`
   ).join("\n");
 
@@ -87,7 +87,7 @@ Format your response with clear headers and bullet points for easy reading. Be s
     });
 
     const aiAnalysis = response.choices[0]?.message?.content;
-    
+
     if (!aiAnalysis) {
       console.error("No AI response received");
       return generateFallbackAnalysis(business, competitors);
@@ -105,10 +105,10 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[])
   const avgRating = competitors
     .filter(c => c.rating)
     .reduce((sum, c) => sum + (c.rating || 0), 0) / competitors.filter(c => c.rating).length;
-  
+
   const totalReviews = competitors.reduce((sum, c) => sum + (c.userRatingsTotal || 0), 0);
   const avgReviews = Math.round(totalReviews / totalCompetitors);
-  
+
   const highRatedCompetitors = competitors.filter(c => (c.rating || 0) >= 4.5);
   const lowRatedCompetitors = competitors.filter(c => (c.rating || 0) < 4.0);
 
@@ -125,13 +125,13 @@ KEY METRICS:
 • Total market reviews: ${totalReviews.toLocaleString()}
 
 COMPETITIVE LANDSCAPE:
-${highRatedCompetitors.length > 0 
-  ? `• ${highRatedCompetitors.length} high-performing competitor(s) with ratings above 4.5 stars. These businesses have established strong customer loyalty.`
-  : "• No competitors have ratings above 4.5 stars, presenting an opportunity to become the market leader in customer satisfaction."}
+${highRatedCompetitors.length > 0
+      ? `• ${highRatedCompetitors.length} high-performing competitor(s) with ratings above 4.5 stars. These businesses have established strong customer loyalty.`
+      : "• No competitors have ratings above 4.5 stars, presenting an opportunity to become the market leader in customer satisfaction."}
 
 ${lowRatedCompetitors.length > 0
-  ? `• ${lowRatedCompetitors.length} competitor(s) with ratings below 4.0 stars. This indicates potential gaps in service quality that you can capitalize on.`
-  : "• All competitors maintain ratings above 4.0 stars, indicating a competitive market with high service standards."}
+      ? `• ${lowRatedCompetitors.length} competitor(s) with ratings below 4.0 stars. This indicates potential gaps in service quality that you can capitalize on.`
+      : "• All competitors maintain ratings above 4.0 stars, indicating a competitive market with high service standards."}
 
 STRATEGIC RECOMMENDATIONS:
 1. Focus on customer service excellence to differentiate from competitors
@@ -141,9 +141,9 @@ STRATEGIC RECOMMENDATIONS:
 5. Build strong community relationships and local partnerships
 
 OPPORTUNITIES:
-${avgRating && avgRating < 4.2 
-  ? "• The market shows room for improvement in customer satisfaction - aim to exceed current standards."
-  : "• The market has high satisfaction standards - focus on innovation and unique offerings."}
+${avgRating && avgRating < 4.2
+      ? "• The market shows room for improvement in customer satisfaction - aim to exceed current standards."
+      : "• The market has high satisfaction standards - focus on innovation and unique offerings."}
 • Consider targeted marketing to capture customers from lower-rated competitors
 • Develop loyalty programs to retain customers in this competitive environment
 

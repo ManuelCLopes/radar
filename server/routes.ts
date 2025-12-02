@@ -5,27 +5,15 @@ import { runReportForBusiness } from "./reports";
 import { startScheduler, getSchedulerStatus, runScheduledReports } from "./scheduler";
 import { searchPlacesByAddress, hasGoogleApiKey } from "./googlePlaces";
 import { insertBusinessSchema } from "@shared/schema";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated } from "./auth";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  
-  // Setup authentication (Replit Auth)
-  await setupAuth(app);
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
+  // Setup authentication (Google OAuth + Email/Password)
+  await setupAuth(app);
 
   // Protected API routes
   app.get("/api/businesses", isAuthenticated, async (req, res) => {
@@ -41,43 +29,43 @@ export async function registerRoutes(
   app.post("/api/businesses", isAuthenticated, async (req, res) => {
     try {
       const validationResult = insertBusinessSchema.safeParse(req.body);
-      
+
       if (!validationResult.success) {
-        return res.status(400).json({ 
-          error: "Validation failed", 
-          details: validationResult.error.flatten() 
+        return res.status(400).json({
+          error: "Validation failed",
+          details: validationResult.error.flatten()
         });
       }
 
       const data = validationResult.data;
-      
+
       const lat = data.latitude;
       const lng = data.longitude;
       const locationStatus = data.locationStatus || "validated";
-      
+
       if (locationStatus === "validated") {
         if (lat === undefined || lat === null || lng === undefined || lng === null) {
-          return res.status(400).json({ 
-            error: "Location coordinates are required for validated businesses. Please verify your address or use your current location." 
+          return res.status(400).json({
+            error: "Location coordinates are required for validated businesses. Please verify your address or use your current location."
           });
         }
-        
-        if (typeof lat !== 'number' || typeof lng !== 'number' || 
-            !Number.isFinite(lat) || !Number.isFinite(lng)) {
-          return res.status(400).json({ 
-            error: "Invalid coordinate format. Please try verifying your address again." 
+
+        if (typeof lat !== 'number' || typeof lng !== 'number' ||
+          !Number.isFinite(lat) || !Number.isFinite(lng)) {
+          return res.status(400).json({
+            error: "Invalid coordinate format. Please try verifying your address again."
           });
         }
-        
+
         if (lat === 0 && lng === 0) {
-          return res.status(400).json({ 
-            error: "Valid location coordinates are required. Please verify your address or use your current location." 
+          return res.status(400).json({
+            error: "Valid location coordinates are required. Please verify your address or use your current location."
           });
         }
-        
+
         if (Math.abs(lat) > 90 || Math.abs(lng) > 180) {
-          return res.status(400).json({ 
-            error: "Coordinates are out of valid range. Please check your location and try again." 
+          return res.status(400).json({
+            error: "Coordinates are out of valid range. Please check your location and try again."
           });
         }
       }
@@ -93,7 +81,7 @@ export async function registerRoutes(
   app.get("/api/businesses/:id", isAuthenticated, async (req, res) => {
     try {
       const business = await storage.getBusiness(req.params.id);
-      
+
       if (!business) {
         return res.status(404).json({ error: "Business not found" });
       }
@@ -108,7 +96,7 @@ export async function registerRoutes(
   app.delete("/api/businesses/:id", isAuthenticated, async (req, res) => {
     try {
       const deleted = await storage.deleteBusiness(req.params.id);
-      
+
       if (!deleted) {
         return res.status(404).json({ error: "Business not found" });
       }
@@ -124,7 +112,7 @@ export async function registerRoutes(
     try {
       const businessId = req.params.id;
       const language = req.body?.language || "en";
-      
+
       const business = await storage.getBusiness(businessId);
       if (!business) {
         return res.status(404).json({ error: "Business not found" });
@@ -161,7 +149,7 @@ export async function registerRoutes(
   app.get("/api/reports/:id", isAuthenticated, async (req, res) => {
     try {
       const report = await storage.getReport(req.params.id);
-      
+
       if (!report) {
         return res.status(404).json({ error: "Report not found" });
       }
@@ -196,16 +184,16 @@ export async function registerRoutes(
   app.get("/api/places/search", isAuthenticated, async (req, res) => {
     try {
       const query = req.query.q as string;
-      
+
       if (!query || query.trim().length === 0) {
         return res.status(400).json({ error: "Search query is required" });
       }
 
       if (!hasGoogleApiKey()) {
-        return res.json({ 
-          results: [], 
+        return res.json({
+          results: [],
           apiKeyMissing: true,
-          message: "Google API key not configured. Manual address entry required." 
+          message: "Google API key not configured. Manual address entry required."
         });
       }
 

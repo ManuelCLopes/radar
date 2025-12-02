@@ -179,11 +179,23 @@ export default function Dashboard() {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <a href="/api/logout" className="cursor-pointer" data-testid="button-logout">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>{t("dashboard.user.logout")}</span>
-                    </a>
+                  <DropdownMenuItem
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      try {
+                        await fetch("/api/logout", { method: "POST" });
+                      } catch (error) {
+                        console.error("Logout failed:", error);
+                      } finally {
+                        window.location.href = "/";
+                      }
+                    }}
+                    className="cursor-pointer"
+                    data-testid="button-logout"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>{t("dashboard.user.logout")}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

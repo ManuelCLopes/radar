@@ -777,3 +777,21 @@
 :root.dark .dashboard-link {
   color: hsl(217 91% 65%);
 }
+
+:root.dark .landing-header,
+:root.dark .hero,
+:root.dark .cta-final {
+  background: linear-gradient(135deg, hsl(220 15% 4%) 0%, hsl(220 14% 10%) 100%);
+  border-bottom: 1px solid hsl(220 12% 14%);
+}
+
+:root.dark .landing-header {
+  border-bottom: none;
+  background: hsl(220 15% 4%); /* Make header solid or match body to blend in */
+}
+
+/* Adjust hero feature backgrounds in dark mode to be visible but subtle */
+:root.dark .hero-feature {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid hsl(220 12% 14%);
+}

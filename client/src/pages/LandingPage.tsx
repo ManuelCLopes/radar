@@ -116,12 +116,12 @@ export default function LandingPage() {
                   </Button>
                 </Link>
               ) : (
-                <a href="/api/login">
+                <Link href="/login">
                   <Button variant="secondary" size="sm" data-testid="button-login">
                     <LogIn className="h-4 w-4 mr-1.5" />
                     Login
                   </Button>
-                </a>
+                </Link>
               )
             )}
           </div>
@@ -155,8 +155,8 @@ export default function LandingPage() {
             <a href="#cta-final" className="btn-primary" data-testid="link-hero-cta">
               Quero ver um exemplo de relatório
             </a>
-            <a 
-              href="mailto:demo@radarlocal.pt?subject=Pedido de demo de 15 minutos" 
+            <a
+              href="mailto:demo@radarlocal.pt?subject=Pedido de demo de 15 minutos"
               className="btn-secondary-link"
               data-testid="link-hero-demo"
             >
@@ -175,7 +175,7 @@ export default function LandingPage() {
               <div className="step-number">1</div>
               <h3 className="step-title">Diz-nos qual é o teu negócio</h3>
               <p className="step-text">
-                Inserimos o nome, localização e tipo de negócio (ex.: restaurante de sushi 
+                Inserimos o nome, localização e tipo de negócio (ex.: restaurante de sushi
                 em Odivelas, clínica de estética em Viseu, etc.).
               </p>
             </div>
@@ -183,7 +183,7 @@ export default function LandingPage() {
               <div className="step-number">2</div>
               <h3 className="step-title">O Radar analisa os teus concorrentes</h3>
               <p className="step-text">
-                Usamos dados reais do Google para identificar os negócios à tua volta, 
+                Usamos dados reais do Google para identificar os negócios à tua volta,
                 reviews, ratings, volume de comentários e nível de preço.
               </p>
             </div>
@@ -191,7 +191,7 @@ export default function LandingPage() {
               <div className="step-number">3</div>
               <h3 className="step-title">Recebes um relatório claro, todos os meses</h3>
               <p className="step-text">
-                Compilamos tudo num relatório simples, com gráficos e conclusões em 
+                Compilamos tudo num relatório simples, com gráficos e conclusões em
                 linguagem humana. Sem dashboards complicados, sem folhas Excel.
               </p>
             </div>
@@ -213,7 +213,7 @@ export default function LandingPage() {
               </div>
               <h3 className="report-card-title">Mapa de concorrência local</h3>
               <p className="report-card-text">
-                Lista dos principais concorrentes num raio à tua escolha, com rating, 
+                Lista dos principais concorrentes num raio à tua escolha, com rating,
                 número de reviews, nível de preço e distância.
               </p>
             </div>
@@ -223,7 +223,7 @@ export default function LandingPage() {
               </div>
               <h3 className="report-card-title">Comparação directa contigo</h3>
               <p className="report-card-text">
-                Vês logo quem está acima ou abaixo de ti em rating, reputação e 
+                Vês logo quem está acima ou abaixo de ti em rating, reputação e
                 quantidade de feedback.
               </p>
             </div>
@@ -233,7 +233,7 @@ export default function LandingPage() {
               </div>
               <h3 className="report-card-title">Análise de temas das reviews</h3>
               <p className="report-card-text">
-                Identificamos padrões: os clientes elogiam o quê nos outros? E em ti? 
+                Identificamos padrões: os clientes elogiam o quê nos outros? E em ti?
                 Serviço, preço, ambiente, rapidez, qualidade da comida…
               </p>
             </div>
@@ -243,7 +243,7 @@ export default function LandingPage() {
               </div>
               <h3 className="report-card-title">3–5 recomendações práticas</h3>
               <p className="report-card-text">
-                Pistas concretas: melhorar tempo de espera, ajustar preços, reforçar 
+                Pistas concretas: melhorar tempo de espera, ajustar preços, reforçar
                 sobremesas, treinar equipa de sala, etc.
               </p>
             </div>
@@ -264,7 +264,7 @@ export default function LandingPage() {
                 – 12 concorrentes directos identificados<br />
                 – ranking por rating do Google<br />
                 – gráficos simples com "força da marca" na zona<br />
-                – resumo de temas dominantes das reviews ("serviço rápido", "preço justo", 
+                – resumo de temas dominantes das reviews ("serviço rápido", "preço justo",
                 "demora no atendimento", etc.)
               </p>
               <p>
@@ -328,7 +328,7 @@ export default function LandingPage() {
       <section className="landing-section" data-testid="section-pricing">
         <div className="landing-container">
           <h2 className="section-title">Planos e preços</h2>
-          
+
           {/* Desktop grid */}
           <div className="pricing-grid pricing-desktop">
             {pricingPlans.map((plan) => (
@@ -348,9 +348,9 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="pricing-carousel-controls">
-              <button 
-                className="pricing-carousel-btn" 
-                onClick={scrollPrev} 
+              <button
+                className="pricing-carousel-btn"
+                onClick={scrollPrev}
                 disabled={!canScrollPrev}
                 aria-label="Plano anterior"
                 data-testid="button-carousel-prev"
@@ -368,9 +368,9 @@ export default function LandingPage() {
                   />
                 ))}
               </div>
-              <button 
-                className="pricing-carousel-btn" 
-                onClick={scrollNext} 
+              <button
+                className="pricing-carousel-btn"
+                onClick={scrollNext}
                 disabled={!canScrollNext}
                 aria-label="Próximo plano"
                 data-testid="button-carousel-next"
@@ -394,22 +394,22 @@ export default function LandingPage() {
             <div className="faq-item" data-testid="faq-item-1">
               <h3 className="faq-question">De onde vêm os dados?</h3>
               <p className="faq-answer">
-                Usamos dados públicos do Google Maps/Google Business (rating, número de reviews, 
+                Usamos dados públicos do Google Maps/Google Business (rating, número de reviews,
                 localização, etc.). Não acedemos a nada privado.
               </p>
             </div>
             <div className="faq-item" data-testid="faq-item-2">
               <h3 className="faq-question">Preciso de instalar alguma coisa?</h3>
               <p className="faq-answer">
-                Não. Recebes os relatórios por email em PDF. Se quiseres, podes ter acesso a um 
+                Não. Recebes os relatórios por email em PDF. Se quiseres, podes ter acesso a um
                 painel simples online para gerar relatórios adicionais.
               </p>
             </div>
             <div className="faq-item" data-testid="faq-item-3">
               <h3 className="faq-question">Isto substitui um consultor de marketing?</h3>
               <p className="faq-answer">
-                Não. O Radar ajuda-te a perceber melhor o contexto à tua volta. Poupas horas 
-                de pesquisa e ganhas clareza para tomar decisões. O que fazes com os dados é 
+                Não. O Radar ajuda-te a perceber melhor o contexto à tua volta. Poupas horas
+                de pesquisa e ganhas clareza para tomar decisões. O que fazes com os dados é
                 decisão tua.
               </p>
             </div>
@@ -422,7 +422,7 @@ export default function LandingPage() {
             <div className="faq-item" data-testid="faq-item-5">
               <h3 className="faq-question">Posso experimentar antes de pagar?</h3>
               <p className="faq-answer">
-                Podes pedir um relatório único experimental para a tua zona, com desconto ou 
+                Podes pedir um relatório único experimental para a tua zona, com desconto ou
                 gratuitamente, dependendo das campanhas em vigor.
               </p>
             </div>
@@ -439,8 +439,8 @@ export default function LandingPage() {
           <p className="cta-final-text">
             Envia o nome e localização do teu negócio e nós mostramos-te uma amostra real de relatório.
           </p>
-          <a 
-            href="mailto:contacto@radarlocal.pt?subject=Pedido de amostra de relatório" 
+          <a
+            href="mailto:contacto@radarlocal.pt?subject=Pedido de amostra de relatório"
             className="btn-primary"
             data-testid="link-cta-request-sample"
           >
