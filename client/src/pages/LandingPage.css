@@ -641,3 +641,139 @@
     padding: 5rem 0;
   }
 }
+
+/* Dark Mode Styles */
+:root.dark .landing-page {
+  color: hsl(210 20% 96%);
+  background-color: hsl(220 15% 4%);
+}
+
+:root.dark .landing-section:nth-child(even) {
+  background-color: hsl(220 14% 7%);
+}
+
+:root.dark .section-title {
+  color: hsl(210 20% 96%);
+}
+
+:root.dark .section-subtitle {
+  color: hsl(220 10% 55%);
+}
+
+:root.dark .step-card {
+  background: hsl(220 14% 7%);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  border: 1px solid hsl(220 12% 14%);
+}
+
+:root.dark .step-title {
+  color: hsl(210 20% 96%);
+}
+
+:root.dark .step-text {
+  color: hsl(220 10% 55%);
+}
+
+:root.dark .report-card {
+  background: hsl(220 14% 7%);
+  border-color: hsl(220 12% 14%);
+}
+
+:root.dark .report-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+}
+
+:root.dark .report-card-title {
+  color: hsl(210 20% 96%);
+}
+
+:root.dark .report-card-text {
+  color: hsl(220 10% 55%);
+}
+
+:root.dark .sample-text p {
+  color: hsl(220 10% 65%);
+}
+
+:root.dark .sample-image-placeholder {
+  background: linear-gradient(135deg, hsl(220 20% 12%) 0%, hsl(220 20% 15%) 100%);
+  border-color: hsl(217 91% 50%);
+  color: hsl(217 91% 65%);
+}
+
+:root.dark .audience-item {
+  background: hsl(220 14% 7%);
+  border-color: hsl(220 12% 14%);
+  color: hsl(210 20% 88%);
+}
+
+:root.dark .audience-final {
+  color: hsl(210 20% 88%);
+}
+
+:root.dark .pricing-card {
+  background: hsl(220 14% 7%);
+  border-color: hsl(220 12% 14%);
+}
+
+:root.dark .pricing-card.featured {
+  border-color: hsl(217 91% 55%);
+  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2);
+}
+
+:root.dark .pricing-plan-name {
+  color: hsl(210 20% 96%);
+}
+
+:root.dark .pricing-plan-subtitle {
+  color: hsl(220 10% 55%);
+}
+
+:root.dark .pricing-features li {
+  border-bottom-color: hsl(220 12% 14%);
+  color: hsl(210 20% 88%);
+}
+
+:root.dark .pricing-carousel-btn {
+  background: hsl(220 14% 10%);
+  border-color: hsl(220 12% 18%);
+  color: hsl(210 20% 88%);
+}
+
+:root.dark .pricing-carousel-btn:hover:not(:disabled) {
+  background: hsl(220 14% 14%);
+  border-color: hsl(220 12% 22%);
+}
+
+:root.dark .pricing-carousel-dot {
+  background: hsl(220 12% 25%);
+}
+
+:root.dark .pricing-carousel-dot.active {
+  background: hsl(217 91% 55%);
+}
+
+:root.dark .pricing-carousel-dot:hover:not(.active) {
+  background: hsl(220 12% 35%);
+}
+
+:root.dark .faq-item {
+  background: hsl(220 14% 7%);
+  border-color: hsl(220 12% 14%);
+}
+
+:root.dark .faq-question {
+  color: hsl(210 20% 96%);
+}
+
+:root.dark .faq-answer {
+  color: hsl(220 10% 55%);
+}
+
+:root.dark .dashboard-link-section {
+  background: hsl(220 18% 3%);
+}
+
+:root.dark .dashboard-link {
+  color: hsl(217 91% 65%);
+}
