@@ -17,6 +17,10 @@
       "uniqueLocations": "Localizações Únicas",
       "businessTypes": "Tipos de Negócio",
       "active": "Ativo"
+    },
+    "user": {
+      "guest": "Visitante",
+      "logout": "Terminar sessão"
     }
   },
   "business": {
@@ -147,7 +151,8 @@
     "system": "Sistema"
   },
   "common": {
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "loading": "A carregar..."
   },
   "addressSearch": {
     "enterAddress": "Por favor, introduza uma morada para pesquisar",

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { BarChart3, TrendingUp, Building2, MapPin } from "lucide-react";
+import { BarChart3, TrendingUp, Building2, MapPin, LogOut } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { BusinessForm } from "@/components/BusinessForm";
 import { BusinessList } from "@/components/BusinessList";
@@ -10,12 +10,24 @@ import { ReportHistory } from "@/components/ReportHistory";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { Business, InsertBusiness, Report } from "@shared/schema";
 
 export default function Dashboard() {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [currentReport, setCurrentReport] = useState<Report | null>(null);
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [generatingReportId, setGeneratingReportId] = useState<string | null>(null);
@@ -142,6 +154,39 @@ export default function Dashboard() {
             <div className="flex items-center gap-2">
               <LanguageSelector />
               <ThemeToggle />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-9 w-9 rounded-full" data-testid="button-user-menu">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src={user?.profileImageUrl || undefined} alt={user?.firstName || "User"} className="object-cover" />
+                      <AvatarFallback>
+                        {user?.firstName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : t("dashboard.user.guest")}
+                      </p>
+                      {user?.email && (
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {user.email}
+                        </p>
+                      )}
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <a href="/api/logout" className="cursor-pointer" data-testid="button-logout">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>{t("dashboard.user.logout")}</span>
+                    </a>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>

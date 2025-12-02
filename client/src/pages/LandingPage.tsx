@@ -1,7 +1,11 @@
 import { Link } from "wouter";
-import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, ChevronLeft, ChevronRight, LogIn } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { useCallback, useEffect, useState } from "react";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 import "./LandingPage.css";
 
 function PricingCard({ plan, subtitle, features, price, featured, testId, priceTestId }: {
@@ -66,6 +70,7 @@ export default function LandingPage() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
+  const { isAuthenticated, isLoading } = useAuth();
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
@@ -91,6 +96,38 @@ export default function LandingPage() {
 
   return (
     <div className="landing-page">
+      {/* HEADER */}
+      <header className="landing-header">
+        <div className="landing-container">
+          <div className="landing-header-brand">
+            <div className="landing-header-logo">
+              <BarChart3 />
+            </div>
+            <span className="landing-header-title">Radar Local</span>
+          </div>
+          <div className="landing-header-actions">
+            <LanguageSelector />
+            <ThemeToggle />
+            {!isLoading && (
+              isAuthenticated ? (
+                <Link href="/dashboard">
+                  <Button variant="secondary" size="sm" data-testid="button-dashboard">
+                    Dashboard
+                  </Button>
+                </Link>
+              ) : (
+                <a href="/api/login">
+                  <Button variant="secondary" size="sm" data-testid="button-login">
+                    <LogIn className="h-4 w-4 mr-1.5" />
+                    Login
+                  </Button>
+                </a>
+              )
+            )}
+          </div>
+        </div>
+      </header>
+
       {/* HERO */}
       <section className="hero">
         <div className="landing-container">

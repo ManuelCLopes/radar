@@ -5,13 +5,30 @@ import { runReportForBusiness } from "./reports";
 import { startScheduler, getSchedulerStatus, runScheduledReports } from "./scheduler";
 import { searchPlacesByAddress, hasGoogleApiKey } from "./googlePlaces";
 import { insertBusinessSchema } from "@shared/schema";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
   
-  app.get("/api/businesses", async (req, res) => {
+  // Setup authentication (Replit Auth)
+  await setupAuth(app);
+
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Protected API routes
+  app.get("/api/businesses", isAuthenticated, async (req, res) => {
     try {
       const businesses = await storage.listBusinesses();
       res.json(businesses);
@@ -21,7 +38,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/businesses", async (req, res) => {
+  app.post("/api/businesses", isAuthenticated, async (req, res) => {
     try {
       const validationResult = insertBusinessSchema.safeParse(req.body);
       
@@ -73,7 +90,7 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/businesses/:id", async (req, res) => {
+  app.get("/api/businesses/:id", isAuthenticated, async (req, res) => {
     try {
       const business = await storage.getBusiness(req.params.id);
       
@@ -88,7 +105,7 @@ export async function registerRoutes(
     }
   });
 
-  app.delete("/api/businesses/:id", async (req, res) => {
+  app.delete("/api/businesses/:id", isAuthenticated, async (req, res) => {
     try {
       const deleted = await storage.deleteBusiness(req.params.id);
       
@@ -103,7 +120,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/run-report/:id", async (req, res) => {
+  app.post("/api/run-report/:id", isAuthenticated, async (req, res) => {
     try {
       const businessId = req.params.id;
       const language = req.body?.language || "en";
@@ -121,7 +138,7 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/reports/business/:businessId", async (req, res) => {
+  app.get("/api/reports/business/:businessId", isAuthenticated, async (req, res) => {
     try {
       const reports = await storage.getReportsByBusinessId(req.params.businessId);
       res.json(reports);
@@ -131,7 +148,7 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/reports", async (req, res) => {
+  app.get("/api/reports", isAuthenticated, async (req, res) => {
     try {
       const reports = await storage.listAllReports();
       res.json(reports);
@@ -141,7 +158,7 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/reports/:id", async (req, res) => {
+  app.get("/api/reports/:id", isAuthenticated, async (req, res) => {
     try {
       const report = await storage.getReport(req.params.id);
       
@@ -156,7 +173,7 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/scheduler/status", async (req, res) => {
+  app.get("/api/scheduler/status", isAuthenticated, async (req, res) => {
     try {
       const status = getSchedulerStatus();
       res.json(status);
@@ -166,7 +183,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/scheduler/run-all", async (req, res) => {
+  app.post("/api/scheduler/run-all", isAuthenticated, async (req, res) => {
     try {
       const results = await runScheduledReports();
       res.json(results);
@@ -176,7 +193,7 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/places/search", async (req, res) => {
+  app.get("/api/places/search", isAuthenticated, async (req, res) => {
     try {
       const query = req.query.q as string;
       
