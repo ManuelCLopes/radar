@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, real, timestamp, jsonb, index } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, real, timestamp, jsonb, index, integer, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -142,5 +142,25 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+
+// Searches table for tracking quick searches and saved searches
+export const searches = pgTable("searches", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "cascade" }),
+  address: varchar("address").notNull(),
+  type: varchar("type").notNull(),
+  radius: integer("radius").notNull(), // in meters
+  latitude: real("latitude"),
+  longitude: real("longitude"),
+  competitorsFound: integer("competitors_found"),
+  isPreview: boolean("is_preview").default(true),
+  ipAddress: varchar("ip_address"), // For anonymous tracking
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type InsertSearch = typeof searches.$inferInsert;
+export type Search = typeof searches.$inferSelect;
+

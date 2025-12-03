@@ -227,6 +227,158 @@
   "locationStatus": {
     "validated": "Emplacement vérifié",
     "pending": "Emplacement en attente",
-    "pendingNote": "Rapports indisponibles jusqu'à ce que l'emplacement soit vérifié"
+    "pendingNote": "Rapports non disponibles jusqu'à ce que l'emplacement soit vérifié"
+  },
+  "radiusOptions": {
+    "immediate": "Voisinage immédiat",
+    "walking": "Distance de marche",
+    "drive": "Court trajet en voiture",
+    "extended": "Zone étendue"
+  },
+  "quickSearch": {
+    "title": "Découvrez votre Concurrence Locale",
+    "subtitle": "Analysez les concurrents dans n'importe quel emplacement instantanément",
+    "addressPlaceholder": "Entrez l'adresse de l'entreprise",
+    "selectType": "Type d'entreprise",
+    "selectRadius": "Rayon de recherche",
+    "analyzeButton": "Analyser la Concurrence",
+    "noSignupRequired": "Aucune inscription requise",
+    "searching": "Recherche en cours...",
+    "error": "Recherche échouée. Veuillez réessayer.",
+    "errors": {
+      "addressNotFound": "Impossible de trouver les coordonnées pour l'adresse fournie",
+      "invalidRadius": "Le rayon doit être l'un des suivants : 500, 1000, 2000, 5000 mètres",
+      "missingFields": "L'adresse, le type et le rayon sont obligatoires",
+      "rateLimitExceeded": "Trop de recherches. Créez un compte gratuit pour des recherches illimitées.",
+      "searchFailed": "Échec de la recherche. Veuillez réessayer."
+    }
+  },
+  "businessTypes": {
+    "restaurant": "Restaurant",
+    "cafe": "Café",
+    "retail": "Magasin de Détail",
+    "gym": "Salle de Sport / Fitness",
+    "salon": "Salon / Spa",
+    "hotel": "Hôtel",
+    "bar": "Bar / Pub",
+    "bakery": "Boulangerie",
+    "pharmacy": "Pharmacie",
+    "supermarket": "Supermarché"
+  },
+  "previewReport": {
+    "title": "Rapport de Prévisualisation",
+    "radius": "rayon",
+    "avgRating": "Note Moyenne",
+    "nearbyCompetitors": "Concurrents à Proximité",
+    "reviews": "avis",
+    "competitorsFound": "{{count}} concurrents trouvés",
+    "showingPreview": "Affichage des {{count}} premiers",
+    "moreCompetitors": "+{{count}} concurrents supplémentaires",
+    "unlockFull": "Débloquer le Rapport Complet",
+    "getCompleteAccess": "Obtenez un accès complet à toutes les fonctionnalités",
+    "aiPreview": "Insights IA (Prévisualisation)",
+    "createAccount": "Créer un Compte Gratuit - C'est Gratuit !",
+    "noCreditCard": "Aucune carte de crédit requise • Accès instantané • Annulez à tout moment",
+    "benefits": {
+      "allCompetitors": "Voir tous les {{count}} concurrents",
+      "fullAnalysis": "Analyse IA complète",
+      "export": "Exporter en PDF/HTML",
+      "saveTrack": "Sauvegarder et suivre les changements"
+    }
+  },
+  "landing": {
+    "brandName": "Radar Local",
+    "heroFeatures": {
+      "competitors": "Concurrents dans le rayon de votre choix",
+      "ratings": "Notes, avis et prix",
+      "monthlyReport": "Rapport mensuel dans votre email"
+    },
+    "howItWorks": {
+      "title": "Comment ça marche ?",
+      "step1": {
+        "title": "Ajoutez votre entreprise",
+        "description": "Nom, adresse et type d'entreprise. Nous validons l'emplacement pour garantir des données précises."
+      },
+      "step2": {
+        "title": "Recevez un rapport mensuel",
+        "description": "Envoyé automatiquement à votre email. Pas besoin de vous connecter ni de vérifier quoi que ce soit."
+      },
+      "step3": {
+        "title": "Prenez de meilleures décisions",
+        "description": "Utilisez les insights pour améliorer votre entreprise et rester en avance sur la concurrence."
+      }
+    },
+    "reportFeatures": {
+      "title": "Que contient le rapport mensuel ?",
+      "subtitle": "Ce n'est pas une autre feuille Excel. C'est un résumé que n'importe qui dans votre équipe peut comprendre.",
+      "map": {
+        "title": "Carte de la concurrence locale",
+        "description": "Voyez qui est autour de vous, à quelle distance et comment ils se comparent."
+      },
+      "comparison": {
+        "title": "Comparaison directe avec vous",
+        "description": "Notes, nombre d'avis, niveau de prix. Sachez où vous vous situez."
+      },
+      "reviews": {
+        "title": "Analyse des thèmes des avis",
+        "description": "Ce que les clients disent de la concurrence. Identifiez les opportunités."
+      },
+      "recommendations": {
+        "title": "3-5 recommandations pratiques",
+        "description": "Insights actionnables basés sur les données. Quoi améliorer, quoi maintenir."
+      }
+    },
+    "sampleSection": {
+      "title": "Un petit échantillon de ce que vous recevrez",
+      "description": "Dans l'image d'exemple, vous voyez un rapport pour un restaurant dans un rayon de 3 km :",
+      "features": {
+        "list": "– liste des concurrents à proximité\n– graphiques simples montrant la 'force de la marque' dans la zone\n– résumé de ce que les clients louent le plus",
+        "personalized": "Chaque rapport est personnalisé pour votre entreprise et envoyé en PDF à votre email."
+      }
+    },
+    "targetAudience": {
+      "title": "Pour qui est le Radar de Concurrence Locale ?",
+      "subtitle": "Idéal pour les entreprises locales qui dépendent de la réputation et des avis :",
+      "restaurants": "Restaurants, cafés et boulangeries",
+      "beauty": "Cliniques esthétiques, coiffeurs, barbiers",
+      "fitness": "Salles de sport et studios d'entraînement",
+      "hotels": "Petits hôtels, hébergements locaux, maisons d'hôtes",
+      "retail": "Magasins physiques en concurrence dans les zones commerciales",
+      "conclusion": "Si vous avez une entreprise locale et de la concurrence autour de vous, Radar a été fait pour vous."
+    },
+    "pricing": {
+      "title": "Plans et tarifs",
+      "earlyBird": "Les 10 premières entreprises bénéficient d'une configuration initiale gratuite et d'un prix fixe à vie."
+    },
+    "faq": {
+      "title": "Questions fréquentes",
+      "q1": {
+        "question": "D'où viennent les données ?",
+        "answer": "De sources publiques comme Google Maps. Nous n'accédons pas aux informations privées ou confidentielles."
+      },
+      "q2": {
+        "question": "Dois-je installer quelque chose ?",
+        "answer": "Non. Tout fonctionne par email. Vous recevez simplement le rapport dans votre boîte de réception."
+      },
+      "q3": {
+        "question": "Cela remplace-t-il un consultant en marketing ?",
+        "answer": "Non. C'est un outil pour vous faire gagner du temps. Pour la stratégie et l'exécution, un consultant apporte plus de valeur."
+      },
+      "q4": {
+        "question": "Puis-je annuler à tout moment ?",
+        "answer": "Oui. Sans engagement. Annulez quand vous voulez, directement depuis votre tableau de bord."
+      },
+      "q5": {
+        "question": "Puis-je essayer avant de payer ?",
+        "answer": "Oui. Demandez un rapport d'exemple par email et nous vous enverrons un exemple pour votre zone."
+      }
+    },
+    "cta": {
+      "question": "Voulez-vous voir comment vous vous comparez à vos concurrents ?",
+      "requestSampleDescription": "Envoyez-nous le nom et l'emplacement de votre entreprise et nous vous montrerons un vrai rapport d'exemple.",
+      "requestSample": "Demander un rapport d'exemple",
+      "noCommitment": "Sans engagement. Nous utilisons uniquement des données publiques.",
+      "existingCustomer": "Déjà client ? Accédez à votre tableau de bord ici"
+    }
   }
 }

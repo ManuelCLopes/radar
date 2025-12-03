@@ -228,5 +228,157 @@
     "validated": "Standort verifiziert",
     "pending": "Standort ausstehend",
     "pendingNote": "Berichte nicht verfügbar, bis der Standort verifiziert ist"
+  },
+  "radiusOptions": {
+    "immediate": "Unmittelbare Nähe",
+    "walking": "Gehweite",
+    "drive": "Kurze Autofahrt",
+    "extended": "Erweitertes Gebiet"
+  },
+  "quickSearch": {
+    "title": "Entdecken Sie Ihre Lokale Konkurrenz",
+    "subtitle": "Analysieren Sie Wettbewerber an jedem Standort sofort",
+    "addressPlaceholder": "Geben Sie die Geschäftsadresse ein",
+    "selectType": "Geschäftstyp",
+    "selectRadius": "Suchradius",
+    "analyzeButton": "Konkurrenz Analysieren",
+    "noSignupRequired": "Keine Registrierung erforderlich",
+    "searching": "Suche läuft...",
+    "error": "Suche fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "errors": {
+      "addressNotFound": "Koordinaten für die angegebene Adresse konnten nicht gefunden werden",
+      "invalidRadius": "Der Radius muss einer der folgenden sein: 500, 1000, 2000, 5000 Meter",
+      "missingFields": "Adresse, Typ und Radius sind erforderlich",
+      "rateLimitExceeded": "Zu viele Suchen. Erstellen Sie ein kostenloses Konto für unbegrenzte Suchen.",
+      "searchFailed": "Suche fehlgeschlagen. Bitte versuchen Sie es erneut."
+    }
+  },
+  "businessTypes": {
+    "restaurant": "Restaurant",
+    "cafe": "Café",
+    "retail": "Einzelhandelsgeschäft",
+    "gym": "Fitnessstudio / Fitness",
+    "salon": "Salon / Spa",
+    "hotel": "Hotel",
+    "bar": "Bar / Kneipe",
+    "bakery": "Bäckerei",
+    "pharmacy": "Apotheke",
+    "supermarket": "Supermarkt"
+  },
+  "previewReport": {
+    "title": "Vorschaubericht",
+    "radius": "Radius",
+    "avgRating": "Durchschnittliche Bewertung",
+    "nearbyCompetitors": "Wettbewerber in der Nähe",
+    "reviews": "Bewertungen",
+    "competitorsFound": "{{count}} Wettbewerber gefunden",
+    "showingPreview": "Zeige erste {{count}}",
+    "moreCompetitors": "+{{count}} weitere Wettbewerber",
+    "unlockFull": "Vollständigen Bericht Freischalten",
+    "getCompleteAccess": "Erhalten Sie vollständigen Zugriff auf alle Funktionen",
+    "aiPreview": "KI-Einblicke (Vorschau)",
+    "createAccount": "Kostenloses Konto Erstellen - Es ist Kostenlos!",
+    "noCreditCard": "Keine Kreditkarte erforderlich • Sofortiger Zugriff • Jederzeit kündbar",
+    "benefits": {
+      "allCompetitors": "Alle {{count}} Wettbewerber sehen",
+      "fullAnalysis": "Vollständige KI-Analyse",
+      "export": "Als PDF/HTML exportieren",
+      "saveTrack": "Speichern und Änderungen verfolgen"
+    }
+  },
+  "landing": {
+    "brandName": "Radar Local",
+    "heroFeatures": {
+      "competitors": "Wettbewerber im Radius Ihrer Wahl",
+      "ratings": "Bewertungen, Rezensionen und Preise",
+      "monthlyReport": "Monatlicher Bericht in Ihrer E-Mail"
+    },
+    "howItWorks": {
+      "title": "Wie funktioniert es?",
+      "step1": {
+        "title": "Fügen Sie Ihr Geschäft hinzu",
+        "description": "Name, Adresse und Geschäftsart. Wir validieren den Standort, um genaue Daten zu gewährleisten."
+      },
+      "step2": {
+        "title": "Erhalten Sie einen monatlichen Bericht",
+        "description": "Automatisch an Ihre E-Mail gesendet. Kein Einloggen oder Überprüfen erforderlich."
+      },
+      "step3": {
+        "title": "Treffen Sie bessere Entscheidungen",
+        "description": "Nutzen Sie die Erkenntnisse, um Ihr Geschäft zu verbessern und der Konkurrenz einen Schritt voraus zu sein."
+      }
+    },
+    "reportFeatures": {
+      "title": "Was enthält der monatliche Bericht?",
+      "subtitle": "Keine weitere Excel-Tabelle. Eine Zusammenfassung, die jeder in Ihrem Team verstehen kann.",
+      "map": {
+        "title": "Lokale Wettbewerbskarte",
+        "description": "Sehen Sie, wer in Ihrer Nähe ist, wie weit entfernt und wie sie sich vergleichen."
+      },
+      "comparison": {
+        "title": "Direkter Vergleich mit Ihnen",
+        "description": "Bewertungen, Anzahl der Rezensionen, Preisniveau. Wissen Sie, wo Sie stehen."
+      },
+      "reviews": {
+        "title": "Analyse der Rezensionsthemen",
+        "description": "Was Kunden über die Konkurrenz sagen. Chancen identifizieren."
+      },
+      "recommendations": {
+        "title": "3-5 praktische Empfehlungen",
+        "description": "Umsetzbare Erkenntnisse basierend auf den Daten. Was zu verbessern, was beizubehalten ist."
+      }
+    },
+    "sampleSection": {
+      "title": "Eine kleine Probe dessen, was Sie erhalten werden",
+      "description": "Im Beispielbild sehen Sie einen Bericht für ein Restaurant in einem Radius von 3 km:",
+      "features": {
+        "list": "– Liste der Wettbewerber in der Nähe\n– einfache Diagramme zur 'Markenstärke' in der Gegend\n– Zusammenfassung dessen, was Kunden am meisten loben",
+        "personalized": "Jeder Bericht ist auf Ihr Geschäft zugeschnitten und wird als PDF an Ihre E-Mail gesendet."
+      }
+    },
+    "targetAudience": {
+      "title": "Für wen ist der Lokale Wettbewerbs-Radar?",
+      "subtitle": "Ideal für lokale Unternehmen, die auf Reputation und Bewertungen angewiesen sind:",
+      "restaurants": "Restaurants, Cafés und Bäckereien",
+      "beauty": "Schönheitskliniken, Friseure, Barbiere",
+      "fitness": "Fitnessstudios und Trainingsstudios",
+      "hotels": "Kleine Hotels, lokale Unterkünfte, Pensionen",
+      "retail": "Physische Geschäfte im Wettbewerb in Geschäftsvierteln",
+      "conclusion": "Wenn Sie ein lokales Geschäft haben und Konkurrenz um sich herum, wurde Radar für Sie gemacht."
+    },
+    "pricing": {
+      "title": "Pläne und Preise",
+      "earlyBird": "Die ersten 10 Unternehmen erhalten kostenlose Ersteinrichtung und lebenslangen Festpreis."
+    },
+    "faq": {
+      "title": "Häufig gestellte Fragen",
+      "q1": {
+        "question": "Woher kommen die Daten?",
+        "answer": "Aus öffentlichen Quellen wie Google Maps. Wir greifen nicht auf private oder vertrauliche Informationen zu."
+      },
+      "q2": {
+        "question": "Muss ich etwas installieren?",
+        "answer": "Nein. Alles funktioniert per E-Mail. Sie erhalten einfach den Bericht in Ihrem Posteingang."
+      },
+      "q3": {
+        "question": "Ersetzt dies einen Marketingberater?",
+        "answer": "Nein. Es ist ein Tool, um Ihnen Zeit zu sparen. Für Strategie und Umsetzung bietet ein Berater mehr Wert."
+      },
+      "q4": {
+        "question": "Kann ich jederzeit kündigen?",
+        "answer": "Ja. Keine Verpflichtung. Kündigen Sie wann immer Sie möchten, direkt über Ihr Dashboard."
+      },
+      "q5": {
+        "question": "Kann ich vor der Zahlung testen?",
+        "answer": "Ja. Fordern Sie einen Beispielbericht per E-Mail an und wir senden Ihnen ein Beispiel für Ihre Region."
+      }
+    },
+    "cta": {
+      "question": "Möchten Sie sehen, wie Sie im Vergleich zu Ihren Wettbewerbern abschneiden?",
+      "requestSampleDescription": "Senden Sie uns den Namen und Standort Ihres Unternehmens und wir zeigen Ihnen einen echten Beispielbericht.",
+      "requestSample": "Beispielbericht anfordern",
+      "noCommitment": "Keine Verpflichtung. Wir verwenden nur öffentliche Daten.",
+      "existingCustomer": "Bereits Kunde? Greifen Sie hier auf Ihr Dashboard zu"
+    }
   }
 }

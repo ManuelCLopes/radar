@@ -151,6 +151,7 @@
     "system": "System"
   },
   "common": {
+    "language": "en",
     "cancel": "Cancel",
     "loading": "Loading..."
   },
@@ -224,9 +225,161 @@
     "multibancoDesc": "MB Reference",
     "perMonth": "/month"
   },
+  "quickSearch": {
+    "title": "Discover Your Local Competition",
+    "subtitle": "Analyze competitors in any location instantly",
+    "addressPlaceholder": "Enter business address",
+    "selectType": "Business type",
+    "selectRadius": "Search radius",
+    "analyzeButton": "Analyze Competition",
+    "noSignupRequired": "No signup required",
+    "searching": "Searching...",
+    "error": "Search failed. Please try again.",
+    "errors": {
+      "addressNotFound": "Could not find coordinates for the provided address",
+      "invalidRadius": "Radius must be one of: 500, 1000, 2000, 5000 meters",
+      "missingFields": "Address, type, and radius are required",
+      "rateLimitExceeded": "Too many searches. Create a free account for unlimited searches.",
+      "searchFailed": "Failed to perform search. Please try again."
+    }
+  },
+  "businessTypes": {
+    "restaurant": "Restaurant",
+    "cafe": "Café",
+    "retail": "Retail Store",
+    "gym": "Gym / Fitness",
+    "salon": "Salon / Spa",
+    "hotel": "Hotel",
+    "bar": "Bar / Pub",
+    "bakery": "Bakery",
+    "pharmacy": "Pharmacy",
+    "supermarket": "Supermarket"
+  },
+  "previewReport": {
+    "title": "Preview Report",
+    "radius": "radius",
+    "avgRating": "Avg. Rating",
+    "nearbyCompetitors": "Nearby Competitors",
+    "reviews": "reviews",
+    "competitorsFound": "{{count}} competitors found",
+    "showingPreview": "Showing first {{count}}",
+    "moreCompetitors": "+{{count}} more competitors",
+    "unlockFull": "Unlock Full Report",
+    "getCompleteAccess": "Get complete access to all features",
+    "aiPreview": "AI Insights (Preview)",
+    "createAccount": "Create Free Account - It's Free!",
+    "noCreditCard": "No credit card required • Instant access • Cancel anytime",
+    "benefits": {
+      "allCompetitors": "See all {{count}} competitors",
+      "fullAnalysis": "Complete AI analysis",
+      "export": "Export to PDF/HTML",
+      "saveTrack": "Save and track changes"
+    }
+  },
+  "landing": {
+    "brandName": "Radar Local",
+    "heroFeatures": {
+      "competitors": "Competitors within your chosen radius",
+      "ratings": "Ratings, reviews and prices",
+      "monthlyReport": "Monthly report in your email"
+    },
+    "howItWorks": {
+      "title": "How does it work?",
+      "step1": {
+        "title": "Add your business",
+        "description": "Name, address, and type of business. We validate the location to ensure accurate data."
+      },
+      "step2": {
+        "title": "Get a monthly report",
+        "description": "Automatically sent to your email. No need to log in or check anything."
+      },
+      "step3": {
+        "title": "Make better decisions",
+        "description": "Use the insights to improve your business and stay ahead of the competition."
+      }
+    },
+    "reportFeatures": {
+      "title": "What's in the monthly report?",
+      "subtitle": "Not another Excel sheet. A summary anyone on your team can understand.",
+      "map": {
+        "title": "Local competition map",
+        "description": "See who's around you, how far away they are, and how they compare."
+      },
+      "comparison": {
+        "title": "Direct comparison with you",
+        "description": "Ratings, number of reviews, price level. Know where you stand."
+      },
+      "reviews": {
+        "title": "Review theme analysis",
+        "description": "What customers are saying about competitors. Identify opportunities."
+      },
+      "recommendations": {
+        "title": "3-5 practical recommendations",
+        "description": "Actionable insights based on the data. What to improve, what to maintain."
+      }
+    },
+    "sampleSection": {
+      "title": "A small sample of what you'll receive",
+      "description": "In the example image, you see a report for a restaurant within a 3 km radius:",
+      "features": {
+        "list": "– list of nearby competitors\n– simple charts showing 'brand strength' in the area\n– summary of what customers praise most",
+        "personalized": "Each report is personalized for your business and sent as PDF to your email."
+      }
+    },
+    "targetAudience": {
+      "title": "Who is Local Competition Radar for?",
+      "subtitle": "Ideal for local businesses that depend on reputation and reviews:",
+      "restaurants": "Restaurants, cafes and bakeries",
+      "beauty": "Beauty clinics, hairdressers, barbershops",
+      "fitness": "Gyms and training studios",
+      "hotels": "Small hotels, local accommodations, guesthouses",
+      "retail": "Physical stores competing in commercial areas",
+      "conclusion": "If you have a local business and competition around you, Radar was made for you."
+    },
+    "pricing": {
+      "title": "Plans and pricing",
+      "earlyBird": "First 10 businesses get free initial setup and lifetime fixed price."
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "q1": {
+        "question": "Where does the data come from?",
+        "answer": "From public sources like Google Maps. We don't access private or confidential information."
+      },
+      "q2": {
+        "question": "Do I need to install anything?",
+        "answer": "No. Everything works via email. You just receive the report in your inbox."
+      },
+      "q3": {
+        "question": "Does this replace a marketing consultant?",
+        "answer": "No. It's a tool to save you time. For strategy and execution, a consultant adds more value."
+      },
+      "q4": {
+        "question": "Can I cancel anytime?",
+        "answer": "Yes. No commitment. Cancel whenever you want, directly from your dashboard."
+      },
+      "q5": {
+        "question": "Can I try before paying?",
+        "answer": "Yes. Request a sample report via email and we'll send you an example for your area."
+      }
+    },
+    "cta": {
+      "question": "Want to see how you compare to your competitors?",
+      "requestSampleDescription": "Send us your business name and location and we'll show you a real sample report.",
+      "requestSample": "Request sample report",
+      "noCommitment": "No commitment. We only use public data.",
+      "existingCustomer": "Already a customer? Access your dashboard here"
+    }
+  },
   "locationStatus": {
     "validated": "Location verified",
     "pending": "Location pending",
     "pendingNote": "Reports unavailable until location is verified"
+  },
+  "radiusOptions": {
+    "immediate": "Immediate vicinity",
+    "walking": "Walking distance",
+    "drive": "Short drive",
+    "extended": "Extended area"
   }
 }

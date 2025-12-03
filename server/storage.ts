@@ -1,4 +1,4 @@
-import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, businesses, reports, users } from "@shared/schema";
+import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, businesses, reports, users, searches } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
@@ -17,6 +17,9 @@ export interface IStorage {
   getReport(id: string): Promise<Report | undefined>;
   getReportsByBusinessId(businessId: string): Promise<Report[]>;
   listAllReports(): Promise<Report[]>;
+
+  // Search tracking
+  trackSearch?(search: InsertSearch): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -92,17 +95,20 @@ export class DatabaseStorage implements IStorage {
   async listAllReports(): Promise<Report[]> {
     return await db!.select().from(reports).orderBy(desc(reports.generatedAt));
   }
+
+  async trackSearch(search: InsertSearch): Promise<void> {
+    await db!.insert(searches).values(search);
+  }
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-  private businesses: Map<string, Business>;
-  private reports: Map<string, Report>;
+  private users = new Map<string, User>();
+  private businesses = new Map<string, Business>();
+  private reportsMap = new Map<string, Report>();
+  private searchesMap = new Map<string, InsertSearch>();
 
   constructor() {
-    this.users = new Map();
-    this.businesses = new Map();
-    this.reports = new Map();
+    // Properties are initialized directly, no need for constructor assignments
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -164,22 +170,27 @@ export class MemStorage implements IStorage {
       id,
       generatedAt: new Date(),
     };
-    this.reports.set(id, report);
+    this.reportsMap.set(id, report);
     return report;
   }
 
   async getReport(id: string): Promise<Report | undefined> {
-    return this.reports.get(id);
+    return this.reportsMap.get(id);
   }
 
   async getReportsByBusinessId(businessId: string): Promise<Report[]> {
-    return Array.from(this.reports.values())
+    return Array.from(this.reportsMap.values())
       .filter((r) => r.businessId === businessId)
       .sort((a, b) => b.generatedAt.getTime() - a.generatedAt.getTime());
   }
 
   async listAllReports(): Promise<Report[]> {
-    return Array.from(this.reports.values()).sort((a, b) => b.generatedAt.getTime() - a.generatedAt.getTime());
+    return Array.from(this.reportsMap.values()).sort((a, b) => b.generatedAt.getTime() - a.generatedAt.getTime());
+  }
+
+  async trackSearch(search: InsertSearch): Promise<void> {
+    const id = 'search-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    this.searchesMap.set(id, { ...search, id });
   }
 }
 

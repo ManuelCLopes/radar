@@ -1,11 +1,16 @@
 import { Link } from "wouter";
-import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, ChevronLeft, ChevronRight, LogIn } from "lucide-react";
+import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, ChevronLeft, ChevronRight, LogIn, Search } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { useCallback, useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadiusSelector } from "@/components/RadiusSelector";
+import { PreviewReportModal } from "@/components/PreviewReportModal";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 import "./LandingPage.css";
 
 function PricingCard({ plan, subtitle, features, price, featured, testId, priceTestId }: {
@@ -71,6 +76,18 @@ export default function LandingPage() {
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const { isAuthenticated, isLoading } = useAuth();
+  const { t } = useTranslation();
+
+  // Quick search state
+  const [searchParams, setSearchParams] = useState({
+    address: '',
+    type: 'restaurant',
+    radius: 1000,
+  });
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState('');
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [previewData, setPreviewData] = useState<any>(null);
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
@@ -94,6 +111,55 @@ export default function LandingPage() {
     };
   }, [emblaApi, onSelect]);
 
+  const handleQuickSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearchError('');
+    setIsSearching(true);
+
+    try {
+      const response = await fetch('/api/quick-search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...searchParams,
+          language: t('common.language', { defaultValue: 'en' }) // Pass current language code
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Map backend error messages to translated versions
+        let errorMessage = t('quickSearch.error');
+
+        if (data.message) {
+          if (data.message.includes('Could not find coordinates')) {
+            errorMessage = t('quickSearch.errors.addressNotFound');
+          } else if (data.message.includes('Radius must be')) {
+            errorMessage = t('quickSearch.errors.invalidRadius');
+          } else if (data.message.includes('required')) {
+            errorMessage = t('quickSearch.errors.missingFields');
+          } else if (data.message.includes('Too many searches')) {
+            errorMessage = t('quickSearch.errors.rateLimitExceeded');
+          }
+        }
+
+        setSearchError(errorMessage);
+        setIsSearching(false);
+        return;
+      }
+
+      // Show preview in modal instead of navigating
+      setPreviewData(data);
+      setShowPreviewModal(true);
+    } catch (error) {
+      console.error('Quick search error:', error);
+      setSearchError(t('quickSearch.errors.searchFailed'));
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   return (
     <div className="landing-page">
       {/* HEADER */}
@@ -103,7 +169,7 @@ export default function LandingPage() {
             <div className="landing-header-logo">
               <BarChart3 />
             </div>
-            <span className="landing-header-title">Radar Local</span>
+            <span className="landing-header-title">{t('landing.brandName')}</span>
           </div>
           <div className="landing-header-actions">
             <LanguageSelector />
@@ -128,40 +194,120 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* HERO */}
+      {/* HERO WITH QUICK SEARCH */}
       <section className="hero">
         <div className="landing-container">
           <h1 className="hero-headline" data-testid="hero-headline">
-            Vê o que os teus concorrentes andam a fazer
+            {t('quickSearch.title')}
           </h1>
           <p className="hero-subheadline" data-testid="hero-subheadline">
-            Relatórios mensais automáticos com análise de reviews, preços e reputação dos negócios à tua volta.
+            {t('quickSearch.subtitle')}
           </p>
-          <div className="hero-features" data-testid="hero-features">
+
+          {/* Quick Search Form */}
+          <form onSubmit={handleQuickSearch} className="max-w-4xl mx-auto mt-8">
+            <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-2xl shadow-2xl p-6 border border-gray-200/50 dark:border-gray-700/50">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                {/* Address Input */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {t('quickSearch.addressPlaceholder')}
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="Rua de Belém 84-92, 1300-085 Lisboa"
+                    value={searchParams.address}
+                    onChange={(e) => setSearchParams({ ...searchParams, address: e.target.value })}
+                    required
+                    className="h-12 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
+                  />
+                </div>
+
+                {/* Business Type Selector */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {t('quickSearch.selectType')}
+                  </label>
+                  <Select
+                    value={searchParams.type}
+                    onValueChange={(value) => setSearchParams({ ...searchParams, type: value })}
+                  >
+                    <SelectTrigger className="h-12 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="restaurant">🍽️ {t("businessTypes.restaurant")}</SelectItem>
+                      <SelectItem value="cafe">☕ {t("businessTypes.cafe")}</SelectItem>
+                      <SelectItem value="retail">🛍️ {t("businessTypes.retail")}</SelectItem>
+                      <SelectItem value="gym">💪 {t("businessTypes.gym")}</SelectItem>
+                      <SelectItem value="salon">💇 {t("businessTypes.salon")}</SelectItem>
+                      <SelectItem value="hotel">🏨 {t("businessTypes.hotel")}</SelectItem>
+                      <SelectItem value="bar">🍺 {t("businessTypes.bar")}</SelectItem>
+                      <SelectItem value="bakery">🥖 {t("businessTypes.bakery")}</SelectItem>
+                      <SelectItem value="pharmacy">💊 {t("businessTypes.pharmacy")}</SelectItem>
+                      <SelectItem value="supermarket">🛒 {t("businessTypes.supermarket")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Radius Selector */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {t('quickSearch.selectRadius')}
+                  </label>
+                  <RadiusSelector
+                    value={searchParams.radius}
+                    onChange={(radius) => setSearchParams({ ...searchParams, radius })}
+                  />
+                </div>
+              </div>
+
+              {/* Error Message */}
+              {searchError && (
+                <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400 text-sm">
+                  {searchError}
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                disabled={isSearching}
+                className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+              >
+                {isSearching ? (
+                  <>
+                    <Search className="w-5 h-5 mr-2 animate-spin" />
+                    {t('quickSearch.searching')}
+                  </>
+                ) : (
+                  <>
+                    <Search className="w-5 h-5 mr-2" />
+                    {t('quickSearch.analyzeButton')}
+                  </>
+                )}
+              </Button>
+
+              <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-3">
+                ✨ {t('quickSearch.noSignupRequired')}
+              </p>
+            </div>
+          </form>
+
+          {/* Features */}
+          <div className="hero-features mt-12" data-testid="hero-features">
             <div className="hero-feature">
               <MapPin className="hero-feature-icon" />
-              <span>Concorrentes num raio à tua escolha</span>
+              <span>{t('landing.heroFeatures.competitors')}</span>
             </div>
             <div className="hero-feature">
               <Star className="hero-feature-icon" />
-              <span>Ratings, reviews e preços</span>
+              <span>{t('landing.heroFeatures.ratings')}</span>
             </div>
             <div className="hero-feature">
               <Mail className="hero-feature-icon" />
-              <span>Relatório mensal no teu email</span>
+              <span>{t('landing.heroFeatures.monthlyReport')}</span>
             </div>
-          </div>
-          <div className="hero-buttons">
-            <a href="#cta-final" className="btn-primary" data-testid="link-hero-cta">
-              Quero ver um exemplo de relatório
-            </a>
-            <a
-              href="mailto:demo@radarlocal.pt?subject=Pedido de demo de 15 minutos"
-              className="btn-secondary-link"
-              data-testid="link-hero-demo"
-            >
-              Ou marcar uma demo de 15 minutos
-            </a>
           </div>
         </div>
       </section>
@@ -169,30 +315,39 @@ export default function LandingPage() {
       {/* COMO FUNCIONA */}
       <section className="landing-section" data-testid="section-how-it-works">
         <div className="landing-container">
-          <h2 className="section-title">Como funciona?</h2>
+          <h2 className="section-title">{t('landing.howItWorks.title')}</h2>
           <div className="steps-grid">
-            <div className="step-card" data-testid="step-card-1">
-              <div className="step-number">1</div>
-              <h3 className="step-title">Diz-nos qual é o teu negócio</h3>
-              <p className="step-text">
-                Inserimos o nome, localização e tipo de negócio (ex.: restaurante de sushi
-                em Odivelas, clínica de estética em Viseu, etc.).
+            <div className="step-card">
+              <div className="step-icon">
+                <Utensils />
+              </div>
+              <h3 className="step-title">{t('landing.howItWorks.step1.title')}</h3>
+              <p className="step-description">
+                {t('landing.howItWorks.step1.description')}
               </p>
             </div>
-            <div className="step-card" data-testid="step-card-2">
-              <div className="step-number">2</div>
-              <h3 className="step-title">O Radar analisa os teus concorrentes</h3>
-              <p className="step-text">
-                Usamos dados reais do Google para identificar os negócios à tua volta,
-                reviews, ratings, volume de comentários e nível de preço.
+            <div className="step-arrow">
+              <ChevronRight />
+            </div>
+            <div className="step-card">
+              <div className="step-icon">
+                <Mail />
+              </div>
+              <h3 className="step-title">{t('landing.howItWorks.step2.title')}</h3>
+              <p className="step-description">
+                {t('landing.howItWorks.step2.description')}
               </p>
             </div>
-            <div className="step-card" data-testid="step-card-3">
-              <div className="step-number">3</div>
-              <h3 className="step-title">Recebes um relatório claro, todos os meses</h3>
-              <p className="step-text">
-                Compilamos tudo num relatório simples, com gráficos e conclusões em
-                linguagem humana. Sem dashboards complicados, sem folhas Excel.
+            <div className="step-arrow">
+              <ChevronRight />
+            </div>
+            <div className="step-card">
+              <div className="step-icon">
+                <BarChart3 />
+              </div>
+              <h3 className="step-title">{t('landing.howItWorks.step3.title')}</h3>
+              <p className="step-description">
+                {t('landing.howItWorks.step3.description')}
               </p>
             </div>
           </div>
@@ -202,49 +357,45 @@ export default function LandingPage() {
       {/* O QUE VEM NO RELATÓRIO */}
       <section className="landing-section" data-testid="section-report-features">
         <div className="landing-container">
-          <h2 className="section-title">O que vem no relatório mensal?</h2>
+          <h2 className="section-title">{t('landing.reportFeatures.title')}</h2>
           <p className="section-subtitle">
-            Não é mais uma folha de Excel. É um resumo que qualquer pessoa do staff consegue entender.
+            {t('landing.reportFeatures.subtitle')}
           </p>
           <div className="report-cards">
-            <div className="report-card" data-testid="report-card-map">
+            <div className="report-card">
               <div className="report-card-icon">
                 <Map />
               </div>
-              <h3 className="report-card-title">Mapa de concorrência local</h3>
-              <p className="report-card-text">
-                Lista dos principais concorrentes num raio à tua escolha, com rating,
-                número de reviews, nível de preço e distância.
+              <h3 className="report-card-title">{t('landing.reportFeatures.map.title')}</h3>
+              <p className="report-card-description">
+                {t('landing.reportFeatures.map.description')}
               </p>
             </div>
-            <div className="report-card" data-testid="report-card-comparison">
+            <div className="report-card">
               <div className="report-card-icon">
                 <BarChart3 />
               </div>
-              <h3 className="report-card-title">Comparação directa contigo</h3>
-              <p className="report-card-text">
-                Vês logo quem está acima ou abaixo de ti em rating, reputação e
-                quantidade de feedback.
+              <h3 className="report-card-title">{t('landing.reportFeatures.comparison.title')}</h3>
+              <p className="report-card-description">
+                {t('landing.reportFeatures.comparison.description')}
               </p>
             </div>
-            <div className="report-card" data-testid="report-card-themes">
+            <div className="report-card">
               <div className="report-card-icon">
                 <MessageSquare />
               </div>
-              <h3 className="report-card-title">Análise de temas das reviews</h3>
-              <p className="report-card-text">
-                Identificamos padrões: os clientes elogiam o quê nos outros? E em ti?
-                Serviço, preço, ambiente, rapidez, qualidade da comida…
+              <h3 className="report-card-title">{t('landing.reportFeatures.reviews.title')}</h3>
+              <p className="report-card-description">
+                {t('landing.reportFeatures.reviews.description')}
               </p>
             </div>
-            <div className="report-card" data-testid="report-card-recommendations">
+            <div className="report-card">
               <div className="report-card-icon">
                 <Lightbulb />
               </div>
-              <h3 className="report-card-title">3–5 recomendações práticas</h3>
-              <p className="report-card-text">
-                Pistas concretas: melhorar tempo de espera, ajustar preços, reforçar
-                sobremesas, treinar equipa de sala, etc.
+              <h3 className="report-card-title">{t('landing.reportFeatures.recommendations.title')}</h3>
+              <p className="report-card-description">
+                {t('landing.reportFeatures.recommendations.description')}
               </p>
             </div>
           </div>
@@ -256,19 +407,17 @@ export default function LandingPage() {
         <div className="landing-container">
           <div className="sample-section">
             <div className="sample-text">
-              <h2 className="section-title">Uma pequena amostra do que vais receber</h2>
+              <h2 className="section-title">{t('landing.sampleSection.title')}</h2>
               <p>
-                Na imagem de exemplo, vês um relatório para um restaurante num raio de 3 km:
+                {t('landing.sampleSection.description')}
               </p>
+              <ul>
+                {t('landing.sampleSection.features.list').split('\n').map((item, i) => (
+                  <li key={i}>{item}</li>
+                ))}
+              </ul>
               <p>
-                – 12 concorrentes directos identificados<br />
-                – ranking por rating do Google<br />
-                – gráficos simples com "força da marca" na zona<br />
-                – resumo de temas dominantes das reviews ("serviço rápido", "preço justo",
-                "demora no atendimento", etc.)
-              </p>
-              <p>
-                Cada relatório é personalizado para o teu negócio e enviado em PDF para o teu email.
+                {t('landing.sampleSection.features.personalized')}
               </p>
             </div>
             <div className="sample-image-placeholder" data-testid="sample-image-placeholder">
@@ -282,44 +431,44 @@ export default function LandingPage() {
       {/* PARA QUEM É */}
       <section className="landing-section" data-testid="section-audience">
         <div className="landing-container">
-          <h2 className="section-title">Para quem é o Radar de Concorrência Local?</h2>
+          <h2 className="section-title">{t('landing.targetAudience.title')}</h2>
           <p className="section-subtitle">
-            Ideal para negócios locais que dependem de reputação e reviews:
+            {t('landing.targetAudience.subtitle')}
           </p>
           <div className="audience-grid" data-testid="audience-list">
             <div className="audience-item">
               <div className="audience-icon">
                 <Utensils />
               </div>
-              <span>Restaurantes, cafés e pastelarias</span>
+              <span>{t('landing.targetAudience.restaurants')}</span>
             </div>
             <div className="audience-item">
               <div className="audience-icon">
                 <Scissors />
               </div>
-              <span>Clínicas de estética, cabeleireiros, barbearias</span>
+              <span>{t('landing.targetAudience.beauty')}</span>
             </div>
             <div className="audience-item">
               <div className="audience-icon">
                 <Dumbbell />
               </div>
-              <span>Ginásios e estúdios de treino</span>
+              <span>{t('landing.targetAudience.fitness')}</span>
             </div>
             <div className="audience-item">
               <div className="audience-icon">
                 <Hotel />
               </div>
-              <span>Pequenos hotéis, alojamentos locais, guesthouses</span>
+              <span>{t('landing.targetAudience.hotels')}</span>
             </div>
             <div className="audience-item">
               <div className="audience-icon">
                 <Store />
               </div>
-              <span>Lojas físicas que competem em zonas comerciais</span>
+              <span>{t('landing.targetAudience.retail')}</span>
             </div>
           </div>
           <p className="audience-final">
-            Se tens um negócio local e tens concorrência à tua volta, o Radar foi feito para ti.
+            {t('landing.targetAudience.conclusion')}
           </p>
         </div>
       </section>
@@ -327,7 +476,7 @@ export default function LandingPage() {
       {/* PLANOS & PREÇOS */}
       <section className="landing-section" data-testid="section-pricing">
         <div className="landing-container">
-          <h2 className="section-title">Planos e preços</h2>
+          <h2 className="section-title">{t('landing.pricing.title')}</h2>
 
           {/* Desktop grid */}
           <div className="pricing-grid pricing-desktop">
@@ -380,50 +529,45 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="early-bird-badge" data-testid="early-bird-badge">
-            Primeiros 10 negócios com setup inicial gratuito e preço fixo vitalício.
-          </div>
+          <p className="early-bird-notice">
+            {t('landing.pricing.earlyBird')}
+          </p>
         </div>
       </section>
 
       {/* FAQ */}
       <section className="landing-section" data-testid="section-faq">
         <div className="landing-container">
-          <h2 className="section-title">Perguntas frequentes</h2>
+          <h2 className="section-title">{t('landing.faq.title')}</h2>
           <div className="faq-list">
             <div className="faq-item" data-testid="faq-item-1">
-              <h3 className="faq-question">De onde vêm os dados?</h3>
+              <h3 className="faq-question">{t('landing.faq.q1.question')}</h3>
               <p className="faq-answer">
-                Usamos dados públicos do Google Maps/Google Business (rating, número de reviews,
-                localização, etc.). Não acedemos a nada privado.
+                {t('landing.faq.q1.answer')}
               </p>
             </div>
             <div className="faq-item" data-testid="faq-item-2">
-              <h3 className="faq-question">Preciso de instalar alguma coisa?</h3>
+              <h3 className="faq-question">{t('landing.faq.q2.question')}</h3>
               <p className="faq-answer">
-                Não. Recebes os relatórios por email em PDF. Se quiseres, podes ter acesso a um
-                painel simples online para gerar relatórios adicionais.
+                {t('landing.faq.q2.answer')}
               </p>
             </div>
             <div className="faq-item" data-testid="faq-item-3">
-              <h3 className="faq-question">Isto substitui um consultor de marketing?</h3>
+              <h3 className="faq-question">{t('landing.faq.q3.question')}</h3>
               <p className="faq-answer">
-                Não. O Radar ajuda-te a perceber melhor o contexto à tua volta. Poupas horas
-                de pesquisa e ganhas clareza para tomar decisões. O que fazes com os dados é
-                decisão tua.
+                {t('landing.faq.q3.answer')}
               </p>
             </div>
             <div className="faq-item" data-testid="faq-item-4">
-              <h3 className="faq-question">Posso cancelar quando quiser?</h3>
+              <h3 className="faq-question">{t('landing.faq.q4.question')}</h3>
               <p className="faq-answer">
-                Sim. Não há fidelização. Se cancelares, deixas simplesmente de receber relatórios.
+                {t('landing.faq.q4.answer')}
               </p>
             </div>
             <div className="faq-item" data-testid="faq-item-5">
-              <h3 className="faq-question">Posso experimentar antes de pagar?</h3>
+              <h3 className="faq-question">{t('landing.faq.q5.question')}</h3>
               <p className="faq-answer">
-                Podes pedir um relatório único experimental para a tua zona, com desconto ou
-                gratuitamente, dependendo das campanhas em vigor.
+                {t('landing.faq.q5.answer')}
               </p>
             </div>
           </div>
@@ -434,20 +578,20 @@ export default function LandingPage() {
       <section className="cta-final" id="cta-final" data-testid="section-cta-final">
         <div className="landing-container">
           <h2 className="section-title">
-            Queres ver como estás em relação aos teus concorrentes?
+            {t('landing.cta.question')}
           </h2>
           <p className="cta-final-text">
-            Envia o nome e localização do teu negócio e nós mostramos-te uma amostra real de relatório.
+            {t('landing.cta.requestSampleDescription')}
           </p>
           <a
             href="mailto:contacto@radarlocal.pt?subject=Pedido de amostra de relatório"
             className="btn-primary"
             data-testid="link-cta-request-sample"
           >
-            Pedir amostra de relatório
+            {t('landing.cta.requestSample')}
           </a>
           <p className="cta-final-subtext">
-            Sem compromisso. Usamos apenas dados públicos.
+            {t('landing.cta.noCommitment')}
           </p>
         </div>
       </section>
@@ -456,10 +600,24 @@ export default function LandingPage() {
       <section className="dashboard-link-section" data-testid="section-dashboard-link">
         <div className="landing-container">
           <Link href="/dashboard" className="dashboard-link" data-testid="link-dashboard">
-            Já és cliente? Acede ao teu painel aqui
+            {t('landing.cta.existingCustomer')}
           </Link>
         </div>
       </section>
+
+      {/* Preview Report Modal */}
+      {previewData && (
+        <PreviewReportModal
+          open={showPreviewModal}
+          onClose={() => setShowPreviewModal(false)}
+          competitors={previewData.competitors}
+          totalFound={previewData.totalFound}
+          aiInsights={previewData.aiInsights}
+          location={previewData.location}
+          radius={previewData.radius}
+          onCreateAccount={() => window.location.href = '/register'}
+        />
+      )}
     </div>
   );
 }

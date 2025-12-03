@@ -151,6 +151,7 @@
     "system": "Sistema"
   },
   "common": {
+    "language": "pt",
     "cancel": "Cancelar",
     "loading": "A carregar..."
   },
@@ -224,9 +225,161 @@
     "multibancoDesc": "Referência MB",
     "perMonth": "/mês"
   },
+  "quickSearch": {
+    "title": "Descubra a Sua Concorrência Local",
+    "subtitle": "Analise concorrentes em qualquer localização instantaneamente",
+    "addressPlaceholder": "Introduza a morada do negócio",
+    "selectType": "Tipo de negócio",
+    "selectRadius": "Raio de pesquisa",
+    "analyzeButton": "Analisar Concorrência",
+    "noSignupRequired": "Sem registo necessário",
+    "searching": "A pesquisar...",
+    "error": "Pesquisa falhou. Por favor tente novamente.",
+    "errors": {
+      "addressNotFound": "Não foi possível encontrar coordenadas para a morada fornecida",
+      "invalidRadius": "O raio deve ser um de: 500, 1000, 2000, 5000 metros",
+      "missingFields": "Morada, tipo e raio são obrigatórios",
+      "rateLimitExceeded": "Demasiadas pesquisas. Crie uma conta grátis para pesquisas ilimitadas.",
+      "searchFailed": "Falha ao realizar pesquisa. Por favor tente novamente."
+    }
+  },
+  "businessTypes": {
+    "restaurant": "Restaurante",
+    "cafe": "Café",
+    "retail": "Loja de Retalho",
+    "gym": "Ginásio / Fitness",
+    "salon": "Salão / Spa",
+    "hotel": "Hotel",
+    "bar": "Bar / Pub",
+    "bakery": "Padaria",
+    "pharmacy": "Farmácia",
+    "supermarket": "Supermercado"
+  },
+  "previewReport": {
+    "title": "Relatório de Pré-visualização",
+    "radius": "raio",
+    "avgRating": "Classificação Média",
+    "nearbyCompetitors": "Concorrentes Próximos",
+    "reviews": "avaliações",
+    "competitorsFound": "{{count}} concorrentes encontrados",
+    "showingPreview": "A mostrar primeiros {{count}}",
+    "moreCompetitors": "+{{count}} concorrentes adicionais",
+    "unlockFull": "Desbloquear Relatório Completo",
+    "getCompleteAccess": "Obtenha acesso completo a todas as funcionalidades",
+    "aiPreview": "Insights IA (Pré-visualização)",
+    "createAccount": "Criar Conta Grátis - É Grátis!",
+    "noCreditCard": "Sem cartão de crédito • Acesso instantâneo • Cancele quando quiser",
+    "benefits": {
+      "allCompetitors": "Ver todos os {{count}} concorrentes",
+      "fullAnalysis": "Análise IA completa",
+      "export": "Exportar para PDF/HTML",
+      "saveTrack": "Guardar e acompanhar alterações"
+    }
+  },
+  "landing": {
+    "brandName": "Radar Local",
+    "heroFeatures": {
+      "competitors": "Concorrentes num raio à tua escolha",
+      "ratings": "Ratings, reviews e preços",
+      "monthlyReport": "Relatório mensal no teu email"
+    },
+    "howItWorks": {
+      "title": "Como funciona?",
+      "step1": {
+        "title": "Adiciona o teu negócio",
+        "description": "Nome, morada e tipo de negócio. Validamos a localização para garantir dados precisos."
+      },
+      "step2": {
+        "title": "Recebe um relatório mensal",
+        "description": "Enviado automaticamente para o teu email. Não precisas de iniciar sessão nem verificar nada."
+      },
+      "step3": {
+        "title": "Toma melhores decisões",
+        "description": "Usa os insights para melhorar o teu negócio e manteres-te à frente da concorrência."
+      }
+    },
+    "reportFeatures": {
+      "title": "O que vem no relatório mensal?",
+      "subtitle": "Não é mais uma folha de Excel. É um resumo que qualquer pessoa do staff consegue entender.",
+      "map": {
+        "title": "Mapa de concorrência local",
+        "description": "Vê quem está à tua volta, a que distância, e como se comparam."
+      },
+      "comparison": {
+        "title": "Comparação directa contigo",
+        "description": "Ratings, número de reviews, nível de preço. Sabe onde estás posicionado."
+      },
+      "reviews": {
+        "title": "Análise de temas das reviews",
+        "description": "O que os clientes dizem sobre a concorrência. Identifica oportunidades."
+      },
+      "recommendations": {
+        "title": "3–5 recomendações práticas",
+        "description": "Insights acionáveis baseados nos dados. O que melhorar, o que manter."
+      }
+    },
+    "sampleSection": {
+      "title": "Uma pequena amostra do que vais receber",
+      "description": "Na imagem de exemplo, vês um relatório para um restaurante num raio de 3 km:",
+      "features": {
+        "list": "– lista de concorrentes próximos\n– gráficos simples com 'força da marca' na zona\n– resumo do que os clientes mais elogiam",
+        "personalized": "Cada relatório é personalizado para o teu negócio e enviado em PDF para o teu email."
+      }
+    },
+    "targetAudience": {
+      "title": "Para quem é o Radar de Concorrência Local?",
+      "subtitle": "Ideal para negócios locais que dependem de reputação e reviews:",
+      "restaurants": "Restaurantes, cafés e pastelarias",
+      "beauty": "Clínicas de estética, cabeleireiros, barbearias",
+      "fitness": "Ginásios e estúdios de treino",
+      "hotels": "Pequenos hotéis, alojamentos locais, guesthouses",
+      "retail": "Lojas físicas que competem em zonas comerciais",
+      "conclusion": "Se tens um negócio local e tens concorrência à tua volta, o Radar foi feito para ti."
+    },
+    "pricing": {
+      "title": "Planos e preços",
+      "earlyBird": "Primeiros 10 negócios com setup inicial gratuito e preço fixo vitalício."
+    },
+    "faq": {
+      "title": "Perguntas frequentes",
+      "q1": {
+        "question": "De onde vêm os dados?",
+        "answer": "De fontes públicas como o Google Maps. Não acedemos a informação privada ou confidencial."
+      },
+      "q2": {
+        "question": "Preciso de instalar alguma coisa?",
+        "answer": "Não. Tudo funciona por email. Recebes apenas o relatório na tua caixa de entrada."
+      },
+      "q3": {
+        "question": "Isto substitui um consultor de marketing?",
+        "answer": "Não. É uma ferramenta para te poupar tempo. Para estratégia e execução, um consultor acrescenta mais valor."
+      },
+      "q4": {
+        "question": "Posso cancelar quando quiser?",
+        "answer": "Sim. Sem compromisso. Cancela quando quiseres, directamente do teu painel."
+      },
+      "q5": {
+        "question": "Posso experimentar antes de pagar?",
+        "answer": "Sim. Pede uma amostra de relatório por email e enviamos-te um exemplo para a tua zona."
+      }
+    },
+    "cta": {
+      "question": "Queres ver como estás em relação aos teus concorrentes?",
+      "requestSampleDescription": "Envia o nome e localização do teu negócio e nós mostramos-te uma amostra real de relatório.",
+      "requestSample": "Pedir amostra de relatório",
+      "noCommitment": "Sem compromisso. Usamos apenas dados públicos.",
+      "existingCustomer": "Já és cliente? Acede ao teu painel aqui"
+    }
+  },
   "locationStatus": {
     "validated": "Localização verificada",
     "pending": "Localização pendente",
     "pendingNote": "Relatórios indisponíveis até a localização ser verificada"
+  },
+  "radiusOptions": {
+    "immediate": "Vizinhança imediata",
+    "walking": "Distância a pé",
+    "drive": "Curta distância de carro",
+    "extended": "Área alargada"
   }
 }

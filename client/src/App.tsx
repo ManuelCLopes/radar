@@ -7,11 +7,13 @@ import { useAuth } from "@/hooks/useAuth";
 import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
+import PreviewReport from "@/pages/PreviewReport";
 import Dashboard from "@/pages/Dashboard";
 import NotFound from "@/pages/not-found";
 import './i18n';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "wouter";
 
 function ProtectedDashboard() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -39,6 +41,39 @@ function ProtectedDashboard() {
   }
 
   return <Dashboard />;
+}
+
+function PreviewReportWrapper() {
+  const [, setLocation] = useLocation();
+  const [previewData, setPreviewData] = useState<any>(null);
+
+  useEffect(() => {
+    const data = sessionStorage.getItem('previewData');
+    if (data) {
+      setPreviewData(JSON.parse(data));
+    } else {
+      setLocation('/');
+    }
+  }, [setLocation]);
+
+  if (!previewData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  return (
+    <PreviewReport
+      competitors={previewData.competitors}
+      totalFound={previewData.totalFound}
+      aiInsights={previewData.aiInsights}
+      location={previewData.location}
+      radius={previewData.radius}
+      onCreateAccount={() => setLocation('/register')}
+    />
+  );
 }
 
 function Router() {

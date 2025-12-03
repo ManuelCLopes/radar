@@ -15,6 +15,134 @@ export async function registerRoutes(
   // Setup authentication (Google OAuth + Email/Password)
   await setupAuth(app);
 
+  // Quick Search endpoint (no authentication required, rate limited)
+  // Simple in-memory rate limiting (5 searches per IP per hour)
+  const searchCounts = new Map<string, { count: number; resetTime: number }>();
+
+  app.post("/api/quick-search", async (req, res) => {
+    try {
+      const clientIp = req.ip || req.socket.remoteAddress || 'unknown';
+      const now = Date.now();
+
+      // Rate limiting check
+      const rateLimit = searchCounts.get(clientIp);
+      if (rateLimit) {
+        if (now < rateLimit.resetTime) {
+          if (rateLimit.count >= 5) {
+            return res.status(429).json({
+              error: "Rate limit exceeded",
+              message: "Too many searches. Create a free account for unlimited searches.",
+              resetTime: rateLimit.resetTime
+            });
+          }
+          rateLimit.count++;
+        } else {
+          // Reset after 1 hour
+          searchCounts.set(clientIp, { count: 1, resetTime: now + 60 * 60 * 1000 });
+        }
+      } else {
+        searchCounts.set(clientIp, { count: 1, resetTime: now + 60 * 60 * 1000 });
+      }
+
+      const { address, type, radius, language = 'en' } = req.body;
+
+      if (!address || !type || !radius) {
+        return res.status(400).json({
+          error: "Missing required fields",
+          message: "Address, type, and radius are required"
+        });
+      }
+
+      // Validate radius
+      const validRadii = [500, 1000, 2000, 5000];
+      if (!validRadii.includes(radius)) {
+        return res.status(400).json({
+          error: "Invalid radius",
+          message: "Radius must be one of: 500, 1000, 2000, 5000 meters"
+        });
+      }
+
+      // Search for the address to get coordinates
+      let coordinates = null;
+      if (hasGoogleApiKey()) {
+        const searchResults = await searchPlacesByAddress(address);
+        if (searchResults && searchResults.length > 0) {
+          coordinates = {
+            latitude: searchResults[0].latitude,
+            longitude: searchResults[0].longitude
+          };
+        }
+      }
+
+      if (!coordinates) {
+        return res.status(400).json({
+          error: "Address not found",
+          message: "Could not find coordinates for the provided address"
+        });
+      }
+
+      // Create temporary business object for report generation
+      const tempBusiness = {
+        id: 'temp-' + Date.now(),
+        name: 'Quick Search',
+        type,
+        address,
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude,
+        locationStatus: 'validated' as const,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      // Generate report (this will use existing report logic)
+      const report = await runReportForBusiness(tempBusiness.id, language, tempBusiness);
+
+      // Limit to preview mode: only first 3 competitors
+      const previewCompetitors = report.competitors?.slice(0, 3) || [];
+      const totalFound = report.competitors?.length || 0;
+
+      // Truncate AI insights to 200 characters
+      const aiInsights = report.aiAnalysis?.substring(0, 200) + (report.aiAnalysis && report.aiAnalysis.length > 200 ? '...' : '');
+
+      // Track search in database (if available)
+      try {
+        if (storage.trackSearch) {
+          await storage.trackSearch({
+            userId: null,
+            address,
+            type,
+            radius,
+            latitude: coordinates.latitude,
+            longitude: coordinates.longitude,
+            competitorsFound: totalFound,
+            isPreview: true,
+            ipAddress: clientIp
+          });
+        }
+      } catch (trackError) {
+        console.warn('Failed to track search:', trackError);
+        // Continue even if tracking fails
+      }
+
+      res.json({
+        preview: true,
+        competitors: previewCompetitors,
+        totalFound,
+        aiInsights,
+        searchId: 'temp-' + Date.now(),
+        location: {
+          address,
+          latitude: coordinates.latitude,
+          longitude: coordinates.longitude
+        },
+        radius
+      });
+    } catch (error) {
+      console.error("Error in quick search:", error);
+      res.status(500).json({ error: "Failed to perform search" });
+    }
+  });
+
   // Protected API routes
   app.get("/api/businesses", isAuthenticated, async (req, res) => {
     try {

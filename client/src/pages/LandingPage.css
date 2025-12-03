@@ -198,18 +198,22 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.step-number {
-  width: 3rem;
-  height: 3rem;
-  background: #3b82f6;
+.step-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 1.25rem;
-  margin: 0 auto 1rem;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+}
+
+.step-icon svg {
+  width: 1.75rem;
+  height: 1.75rem;
 }
 
 .step-title {
@@ -219,9 +223,24 @@
   color: #111827;
 }
 
-.step-text {
+.step-description {
   color: #6b7280;
   font-size: 1rem;
+  line-height: 1.6;
+}
+
+.step-arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #9ca3af;
+  transform: rotate(90deg);
+  margin: 1rem 0;
+}
+
+.step-arrow svg {
+  width: 2rem;
+  height: 2rem;
 }
 
 .report-cards {
@@ -595,7 +614,14 @@
   }
 
   .steps-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .step-arrow {
+    transform: rotate(0deg);
+    margin: 0;
   }
 
   .report-cards {
@@ -670,7 +696,7 @@
   color: hsl(210 20% 96%);
 }
 
-:root.dark .step-text {
+:root.dark .step-description {
   color: hsl(220 10% 55%);
 }
 
@@ -787,7 +813,8 @@
 
 :root.dark .landing-header {
   border-bottom: none;
-  background: hsl(220 15% 4%); /* Make header solid or match body to blend in */
+  background: hsl(220 15% 4%);
+  /* Make header solid or match body to blend in */
 }
 
 /* Adjust hero feature backgrounds in dark mode to be visible but subtle */
