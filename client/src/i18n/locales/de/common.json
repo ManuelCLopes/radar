@@ -190,6 +190,14 @@
       "description": "Die Adressvalidierung ist vorübergehend nicht verfügbar. Sie können Ihren aktuellen Standort verwenden oder mit der eingegebenen Adresse fortfahren (Berichte sind nicht verfügbar, bis der Standort verifiziert ist)."
     }
   },
+  "validation": {
+    "required": "Dieses Feld ist erforderlich",
+    "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+    "passwordMin": "Das Passwort muss mindestens {{min}} Zeichen lang sein",
+    "passwordMismatch": "Passwörter stimmen nicht überein",
+    "radiusMin": "Der Radius muss mindestens {{min}} Meter betragen",
+    "radiusMax": "Der Radius darf {{max}} Meter nicht überschreiten"
+  },
   "auth": {
     "login": "Anmelden",
     "signUp": "Konto Erstellen",

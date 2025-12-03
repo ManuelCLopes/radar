@@ -37,13 +37,14 @@ const businessTypeKeys: Record<BusinessType, string> = {
   other: "other",
 };
 
-const formSchema = z.object({
-  name: z.string().min(1, "Business name is required").max(100),
-  type: z.enum(businessTypes, { required_error: "Business type is required" }),
-  address: z.string().min(1, "Address is required"),
+// Define the shape of the form values for type safety
+const baseSchema = z.object({
+  name: z.string(),
+  type: z.enum(businessTypes),
+  address: z.string(),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<typeof baseSchema>;
 
 interface BusinessFormProps {
   onSubmit: (data: InsertBusiness) => Promise<void>;
@@ -59,7 +60,7 @@ interface SearchResponse {
 export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
-  
+
   const [selectedPlace, setSelectedPlace] = useState<PlaceResult | null>(null);
   const [manualCoordinates, setManualCoordinates] = useState<{ lat: number; lng: number } | null>(null);
   const [pendingLocationAddress, setPendingLocationAddress] = useState<string | null>(null);
@@ -71,7 +72,13 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
   const [searchResults, setSearchResults] = useState<PlaceResult[]>([]);
   const [suggestedPlace, setSuggestedPlace] = useState<PlaceResult | null>(null);
   const [pendingSubmitData, setPendingSubmitData] = useState<FormValues | null>(null);
-  
+
+  const formSchema = z.object({
+    name: z.string().min(1, t("validation.required")).max(100),
+    type: z.enum(businessTypes, { required_error: t("validation.required") }),
+    address: z.string().min(1, t("validation.required")),
+  });
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -99,7 +106,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
   const handleSearchAddress = async () => {
     const address = form.getValues("address");
     const name = form.getValues("name");
-    
+
     if (!address.trim()) {
       toast({
         title: t("toast.error.title"),
@@ -113,7 +120,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
 
     try {
       const result = await searchMutation.mutateAsync(searchQuery);
-      
+
       if (result.apiKeyMissing) {
         setPendingSubmitData(form.getValues());
         setShowApiKeyMissingDialog(true);
@@ -127,7 +134,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
         const place = result.results[0];
         const inputAddress = address.toLowerCase().trim();
         const foundAddress = place.address.toLowerCase();
-        
+
         if (inputAddress !== foundAddress && foundAddress.includes(inputAddress.split(",")[0])) {
           setSuggestedPlace(place);
           setShowAddressSuggestionDialog(true);
@@ -198,12 +205,12 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
         description: t("addressSearch.locationObtainedDesc"),
       });
     } catch (error) {
-      const errorMessage = error instanceof GeolocationPositionError 
-        ? (error.code === 1 
-            ? t("addressSearch.locationDenied") 
-            : t("addressSearch.locationFailed"))
+      const errorMessage = error instanceof GeolocationPositionError
+        ? (error.code === 1
+          ? t("addressSearch.locationDenied")
+          : t("addressSearch.locationFailed"))
         : t("addressSearch.locationFailed");
-      
+
       toast({
         title: t("toast.error.title"),
         description: errorMessage,
@@ -492,7 +499,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="flex flex-col gap-2 pt-4">
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleUseCurrentLocation}
               disabled={isGettingLocation}
               data-testid="button-use-location-fallback"
@@ -505,7 +512,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
               )}
               {t("addressSearch.useCurrentLocation")}
             </AlertDialogAction>
-            <Button 
+            <Button
               variant="outline"
               onClick={handleProceedWithAddress}
               data-testid="button-proceed-with-address"
@@ -514,7 +521,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
               <MapPin className="h-4 w-4 mr-2" />
               {t("addressSearch.proceedWithAddress")}
             </Button>
-            <AlertDialogCancel 
+            <AlertDialogCancel
               onClick={() => setShowNoResultsDialog(false)}
               className="w-full"
             >
@@ -536,7 +543,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="flex flex-col gap-2 pt-4">
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleUseCurrentLocation}
               disabled={isGettingLocation}
               data-testid="button-use-location-api-missing"
@@ -549,7 +556,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
               )}
               {t("addressSearch.useCurrentLocation")}
             </AlertDialogAction>
-            <Button 
+            <Button
               variant="outline"
               onClick={handleProceedWithAddress}
               data-testid="button-proceed-with-address-api-missing"
@@ -558,7 +565,7 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
               <MapPin className="h-4 w-4 mr-2" />
               {t("addressSearch.proceedWithAddress")}
             </Button>
-            <AlertDialogCancel 
+            <AlertDialogCancel
               onClick={() => setShowApiKeyMissingDialog(false)}
               className="w-full"
             >

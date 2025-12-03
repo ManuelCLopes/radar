@@ -70,6 +70,13 @@ const pricingPlans = [
   }
 ];
 
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+// ... (imports remain the same)
+
 export default function LandingPage() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'center' });
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -79,15 +86,27 @@ export default function LandingPage() {
   const { t } = useTranslation();
 
   // Quick search state
-  const [searchParams, setSearchParams] = useState({
-    address: '',
-    type: 'restaurant',
-    radius: 1000,
-  });
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState('');
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [previewData, setPreviewData] = useState<any>(null);
+
+  const searchSchema = z.object({
+    address: z.string().min(1, t("validation.required")),
+    type: z.string().min(1, t("validation.required")),
+    radius: z.number().min(1, t("validation.required")),
+  });
+
+  type SearchFormValues = z.infer<typeof searchSchema>;
+
+  const form = useForm<SearchFormValues>({
+    resolver: zodResolver(searchSchema),
+    defaultValues: {
+      address: '',
+      type: 'restaurant',
+      radius: 1000,
+    },
+  });
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
@@ -111,8 +130,7 @@ export default function LandingPage() {
     };
   }, [emblaApi, onSelect]);
 
-  const handleQuickSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSearchSubmit = async (data: SearchFormValues) => {
     setSearchError('');
     setIsSearching(true);
 
@@ -121,25 +139,25 @@ export default function LandingPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...searchParams,
+          ...data,
           language: t('common.language', { defaultValue: 'en' }) // Pass current language code
         }),
       });
 
-      const data = await response.json();
+      const responseData = await response.json();
 
       if (!response.ok) {
         // Map backend error messages to translated versions
         let errorMessage = t('quickSearch.error');
 
-        if (data.message) {
-          if (data.message.includes('Could not find coordinates')) {
+        if (responseData.message) {
+          if (responseData.message.includes('Could not find coordinates')) {
             errorMessage = t('quickSearch.errors.addressNotFound');
-          } else if (data.message.includes('Radius must be')) {
+          } else if (responseData.message.includes('Radius must be')) {
             errorMessage = t('quickSearch.errors.invalidRadius');
-          } else if (data.message.includes('required')) {
+          } else if (responseData.message.includes('required')) {
             errorMessage = t('quickSearch.errors.missingFields');
-          } else if (data.message.includes('Too many searches')) {
+          } else if (responseData.message.includes('Too many searches')) {
             errorMessage = t('quickSearch.errors.rateLimitExceeded');
           }
         }
@@ -150,7 +168,7 @@ export default function LandingPage() {
       }
 
       // Show preview in modal instead of navigating
-      setPreviewData(data);
+      setPreviewData(responseData);
       setShowPreviewModal(true);
     } catch (error) {
       console.error('Quick search error:', error);
@@ -205,94 +223,127 @@ export default function LandingPage() {
           </p>
 
           {/* Quick Search Form */}
-          <form onSubmit={handleQuickSearch} className="max-w-4xl mx-auto mt-8">
-            <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-2xl shadow-2xl p-6 border border-gray-200/50 dark:border-gray-700/50">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                {/* Address Input */}
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    {t('quickSearch.addressPlaceholder')}
-                  </label>
-                  <Input
-                    type="text"
-                    placeholder="Rua de Belém 84-92, 1300-085 Lisboa"
-                    value={searchParams.address}
-                    onChange={(e) => setSearchParams({ ...searchParams, address: e.target.value })}
-                    required
-                    className="h-12 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
-                  />
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSearchSubmit)} className="max-w-4xl mx-auto mt-8">
+              <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-2xl shadow-2xl p-6 border border-gray-200/50 dark:border-gray-700/50">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  {/* Address Input */}
+                  <div className="md:col-span-2">
+                    <FormField
+                      control={form.control}
+                      name="address"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            {t('quickSearch.addressPlaceholder')}
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="text"
+                              placeholder="Rua de Belém 84-92, 1300-085 Lisboa"
+                              className="h-12 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* Business Type Selector */}
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="type"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            {t('quickSearch.selectType')}
+                          </FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="h-12 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800">
+                                <SelectValue />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="restaurant">🍽️ {t("businessTypes.restaurant")}</SelectItem>
+                              <SelectItem value="cafe">☕ {t("businessTypes.cafe")}</SelectItem>
+                              <SelectItem value="retail">🛍️ {t("businessTypes.retail")}</SelectItem>
+                              <SelectItem value="gym">💪 {t("businessTypes.gym")}</SelectItem>
+                              <SelectItem value="salon">💇 {t("businessTypes.salon")}</SelectItem>
+                              <SelectItem value="hotel">🏨 {t("businessTypes.hotel")}</SelectItem>
+                              <SelectItem value="bar">🍺 {t("businessTypes.bar")}</SelectItem>
+                              <SelectItem value="bakery">🥖 {t("businessTypes.bakery")}</SelectItem>
+                              <SelectItem value="pharmacy">💊 {t("businessTypes.pharmacy")}</SelectItem>
+                              <SelectItem value="supermarket">🛒 {t("businessTypes.supermarket")}</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* Radius Selector */}
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="radius"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            {t('quickSearch.selectRadius')}
+                          </FormLabel>
+                          <FormControl>
+                            <RadiusSelector
+                              value={field.value}
+                              onChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
 
-                {/* Business Type Selector */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    {t('quickSearch.selectType')}
-                  </label>
-                  <Select
-                    value={searchParams.type}
-                    onValueChange={(value) => setSearchParams({ ...searchParams, type: value })}
-                  >
-                    <SelectTrigger className="h-12 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="restaurant">🍽️ {t("businessTypes.restaurant")}</SelectItem>
-                      <SelectItem value="cafe">☕ {t("businessTypes.cafe")}</SelectItem>
-                      <SelectItem value="retail">🛍️ {t("businessTypes.retail")}</SelectItem>
-                      <SelectItem value="gym">💪 {t("businessTypes.gym")}</SelectItem>
-                      <SelectItem value="salon">💇 {t("businessTypes.salon")}</SelectItem>
-                      <SelectItem value="hotel">🏨 {t("businessTypes.hotel")}</SelectItem>
-                      <SelectItem value="bar">🍺 {t("businessTypes.bar")}</SelectItem>
-                      <SelectItem value="bakery">🥖 {t("businessTypes.bakery")}</SelectItem>
-                      <SelectItem value="pharmacy">💊 {t("businessTypes.pharmacy")}</SelectItem>
-                      <SelectItem value="supermarket">🛒 {t("businessTypes.supermarket")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Radius Selector */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    {t('quickSearch.selectRadius')}
-                  </label>
-                  <RadiusSelector
-                    value={searchParams.radius}
-                    onChange={(radius) => setSearchParams({ ...searchParams, radius })}
-                  />
-                </div>
-              </div>
-
-              {/* Error Message */}
-              {searchError && (
-                <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400 text-sm">
-                  {searchError}
-                </div>
-              )}
-
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                disabled={isSearching}
-                className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-              >
-                {isSearching ? (
-                  <>
-                    <Search className="w-5 h-5 mr-2 animate-spin" />
-                    {t('quickSearch.searching')}
-                  </>
-                ) : (
-                  <>
-                    <Search className="w-5 h-5 mr-2" />
-                    {t('quickSearch.analyzeButton')}
-                  </>
+                {/* Error Message */}
+                {searchError && (
+                  <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400 text-sm">
+                    {searchError}
+                  </div>
                 )}
-              </Button>
 
-              <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-3">
-                ✨ {t('quickSearch.noSignupRequired')}
-              </p>
-            </div>
-          </form>
+                {/* Submit Button */}
+                <Button
+                  type="submit"
+                  disabled={isSearching}
+                  className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                >
+                  {isSearching ? (
+                    <>
+                      <Search className="w-5 h-5 mr-2 animate-spin" />
+                      {t('quickSearch.searching')}
+                    </>
+                  ) : (
+                    <>
+                      <Search className="w-5 h-5 mr-2" />
+                      {t('quickSearch.analyzeButton')}
+                    </>
+                  )}
+                </Button>
+
+                <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-3">
+                  ✨ {t('quickSearch.noSignupRequired')}
+                </p>
+              </div>
+            </form>
+          </Form>
 
           {/* Features */}
           <div className="hero-features mt-12" data-testid="hero-features">

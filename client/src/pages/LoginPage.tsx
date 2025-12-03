@@ -8,16 +8,33 @@ import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
 export default function LoginPage() {
     const [, setLocation] = useLocation();
     const { t } = useTranslation();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const loginSchema = z.object({
+        email: z.string().min(1, t("validation.required")).email(t("validation.emailInvalid")),
+        password: z.string().min(1, t("validation.required")),
+    });
+
+    type LoginFormValues = z.infer<typeof loginSchema>;
+
+    const form = useForm<LoginFormValues>({
+        resolver: zodResolver(loginSchema),
+        defaultValues: {
+            email: "",
+            password: "",
+        },
+    });
+
+    const onSubmit = async (data: LoginFormValues) => {
         setError("");
         setLoading(true);
 
@@ -25,31 +42,31 @@ export default function LoginPage() {
             const response = await fetch("/api/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify(data),
             });
 
             if (response.ok) {
                 setLocation("/dashboard");
             } else {
-                let data;
+                let responseData;
                 try {
-                    data = await response.json();
+                    responseData = await response.json();
                 } catch (e) {
                     // If parsing fails, it's likely the default "Unauthorized" text from passport
                     // which means invalid credentials
                     if (response.status === 401) {
-                        data = { code: "INVALID_CREDENTIALS" };
+                        responseData = { code: "INVALID_CREDENTIALS" };
                     } else {
-                        data = { message: "An error occurred" };
+                        responseData = { message: "An error occurred" };
                     }
                 }
 
-                if (data.code === "INVALID_CREDENTIALS" || data.message === "Not authenticated" || data.message === "Unauthorized") {
+                if (responseData.code === "INVALID_CREDENTIALS" || responseData.message === "Not authenticated" || responseData.message === "Unauthorized") {
                     setError(t("auth.errors.invalidCredentials"));
-                } else if (data.code === "GOOGLE_LOGIN_REQUIRED") {
+                } else if (responseData.code === "GOOGLE_LOGIN_REQUIRED") {
                     setError(t("auth.errors.useGoogle"));
                 } else {
-                    setError(data.message || t("auth.errors.generic"));
+                    setError(responseData.message || t("auth.errors.generic"));
                 }
             }
         } catch (err) {
@@ -117,58 +134,68 @@ export default function LoginPage() {
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {t("auth.email")}
-                            </Label>
-                            <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                    placeholder="you@example.com"
-                                    className="pl-10 h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 rounded-xl transition-all"
-                                />
-                            </div>
-                        </div>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("auth.email")}</FormLabel>
+                                        <div className="relative">
+                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                            <FormControl>
+                                                <Input
+                                                    {...field}
+                                                    type="email"
+                                                    placeholder="you@example.com"
+                                                    className="pl-10 h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 rounded-xl transition-all"
+                                                />
+                                            </FormControl>
+                                        </div>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                        <div className="space-y-2">
-                            <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {t("auth.password")}
-                            </Label>
-                            <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                    placeholder="••••••••"
-                                    className="pl-10 h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 rounded-xl transition-all"
-                                />
-                            </div>
-                        </div>
+                            <FormField
+                                control={form.control}
+                                name="password"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("auth.password")}</FormLabel>
+                                        <div className="relative">
+                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                            <FormControl>
+                                                <Input
+                                                    {...field}
+                                                    type="password"
+                                                    placeholder="••••••••"
+                                                    className="pl-10 h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 rounded-xl transition-all"
+                                                />
+                                            </FormControl>
+                                        </div>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                        <Button
-                            type="submit"
-                            className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
-                            disabled={loading}
-                        >
-                            {loading ? (
-                                <div className="flex items-center gap-2">
-                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                    {t("auth.loggingIn")}
-                                </div>
-                            ) : (
-                                t("auth.login")
-                            )}
-                        </Button>
-                    </form>
+                            <Button
+                                type="submit"
+                                className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                        {t("auth.loggingIn")}
+                                    </div>
+                                ) : (
+                                    t("auth.login")
+                                )}
+                            </Button>
+                        </form>
+                    </Form>
 
                     <div className="relative">
                         <div className="absolute inset-0 flex items-center">

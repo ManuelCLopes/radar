@@ -9,6 +9,11 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { cn } from "@/lib/utils";
 
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
 type Step = "account" | "plan" | "payment";
 
 const plans = [
@@ -40,54 +45,62 @@ export default function RegisterPage() {
     const [, setLocation] = useLocation();
     const { t } = useTranslation();
     const [currentStep, setCurrentStep] = useState<Step>("account");
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-        firstName: "",
-        lastName: "",
-        plan: "pro",
-        paymentMethod: "card",
-    });
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+    const registerSchema = z.object({
+        firstName: z.string().optional(),
+        lastName: z.string().optional(),
+        email: z.string().min(1, t("validation.required")).email(t("validation.emailInvalid")),
+        password: z.string().min(6, t("validation.passwordMin", { min: 6 })),
+        plan: z.string(),
+        paymentMethod: z.string(),
+    });
 
-    const handleAccountSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        setError("");
+    type RegisterFormValues = z.infer<typeof registerSchema>;
 
-        if (formData.password.length < 6) {
-            setError(t("auth.passwordTooShort"));
-            return;
+    const form = useForm<RegisterFormValues>({
+        resolver: zodResolver(registerSchema),
+        defaultValues: {
+            firstName: "",
+            lastName: "",
+            email: "",
+            password: "",
+            plan: "pro",
+            paymentMethod: "card",
+        },
+    });
+
+    const handleAccountSubmit = async () => {
+        const isValid = await form.trigger(["email", "password", "firstName", "lastName"]);
+        if (isValid) {
+            setError("");
+            setCurrentStep("plan");
         }
-
-        setCurrentStep("plan");
     };
 
     const handleFinalSubmit = async () => {
         setError("");
         setLoading(true);
+        const data = form.getValues();
 
         try {
             const response = await fetch("/api/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    email: formData.email,
-                    password: formData.password,
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
+                    email: data.email,
+                    password: data.password,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
                 }),
             });
 
             if (response.ok) {
                 setLocation("/dashboard");
             } else {
-                const data = await response.json();
-                setError(data.message || "Registration failed");
+                const responseData = await response.json();
+                setError(responseData.message || "Registration failed");
                 setCurrentStep("account");
             }
         } catch (err) {
@@ -189,256 +202,275 @@ export default function RegisterPage() {
                         </div>
                     )}
 
-                    {/* Step 1: Account */}
-                    {currentStep === "account" && (
-                        <div className="space-y-6">
-                            <form onSubmit={handleAccountSubmit} className="space-y-4">
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="firstName" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                            {t("auth.firstName")}
-                                        </Label>
-                                        <div className="relative">
-                                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                            <Input
-                                                id="firstName"
-                                                name="firstName"
-                                                type="text"
-                                                value={formData.firstName}
-                                                onChange={handleChange}
-                                                placeholder="John"
-                                                className="pl-9 h-11 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 rounded-xl transition-all"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="lastName" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                            {t("auth.lastName")}
-                                        </Label>
-                                        <div className="relative">
-                                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                            <Input
-                                                id="lastName"
-                                                name="lastName"
-                                                type="text"
-                                                value={formData.lastName}
-                                                onChange={handleChange}
-                                                placeholder="Doe"
-                                                className="pl-9 h-11 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 rounded-xl transition-all"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        {t("auth.email")}
-                                    </Label>
-                                    <div className="relative">
-                                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                        <Input
-                                            id="email"
-                                            name="email"
-                                            type="email"
-                                            value={formData.email}
-                                            onChange={handleChange}
-                                            required
-                                            placeholder="you@example.com"
-                                            className="pl-10 h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 rounded-xl transition-all"
+                    <Form {...form}>
+                        {/* Step 1: Account */}
+                        {currentStep === "account" && (
+                            <div className="space-y-6">
+                                <div className="space-y-4">
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <FormField
+                                            control={form.control}
+                                            name="firstName"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("auth.firstName")}</FormLabel>
+                                                    <div className="relative">
+                                                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder="John"
+                                                                className="pl-9 h-11 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 rounded-xl transition-all"
+                                                            />
+                                                        </FormControl>
+                                                    </div>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="lastName"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("auth.lastName")}</FormLabel>
+                                                    <div className="relative">
+                                                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder="Doe"
+                                                                className="pl-9 h-11 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 rounded-xl transition-all"
+                                                            />
+                                                        </FormControl>
+                                                    </div>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
                                         />
                                     </div>
+
+                                    <FormField
+                                        control={form.control}
+                                        name="email"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("auth.email")}</FormLabel>
+                                                <div className="relative">
+                                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                                    <FormControl>
+                                                        <Input
+                                                            {...field}
+                                                            type="email"
+                                                            placeholder="you@example.com"
+                                                            className="pl-10 h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 rounded-xl transition-all"
+                                                        />
+                                                    </FormControl>
+                                                </div>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="password"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("auth.password")}</FormLabel>
+                                                <div className="relative">
+                                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                                    <FormControl>
+                                                        <Input
+                                                            {...field}
+                                                            type="password"
+                                                            placeholder="••••••••"
+                                                            className="pl-10 h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 rounded-xl transition-all"
+                                                        />
+                                                    </FormControl>
+                                                </div>
+                                                <FormMessage />
+                                                <p className="text-xs text-gray-500 dark:text-gray-400">{t("auth.passwordMinChars")}</p>
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <Button
+                                        type="button"
+                                        onClick={handleAccountSubmit}
+                                        className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
+                                    >
+                                        {t("auth.continue")}
+                                    </Button>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        {t("auth.password")}
-                                    </Label>
-                                    <div className="relative">
-                                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                        <Input
-                                            id="password"
-                                            name="password"
-                                            type="password"
-                                            value={formData.password}
-                                            onChange={handleChange}
-                                            required
-                                            placeholder="••••••••"
-                                            className="pl-10 h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 rounded-xl transition-all"
-                                        />
+                                <div className="relative">
+                                    <div className="absolute inset-0 flex items-center">
+                                        <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
                                     </div>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">{t("auth.passwordMinChars")}</p>
+                                    <div className="relative flex justify-center text-sm">
+                                        <span className="px-4 bg-white/80 dark:bg-gray-900/80 text-gray-500 dark:text-gray-400 font-medium">
+                                            {t("auth.orContinueWith")}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <Button
-                                    type="submit"
-                                    className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
+                                    type="button"
+                                    variant="outline"
+                                    className="w-full h-12 border-2 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 rounded-xl font-medium transition-all duration-200 hover:shadow-md"
+                                    onClick={handleGoogleSignup}
                                 >
-                                    {t("auth.continue")}
+                                    <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                                    </svg>
+                                    {t("auth.continueWithGoogle")}
                                 </Button>
-                            </form>
+                            </div>
+                        )}
 
-                            <div className="relative">
-                                <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                        {/* Step 2: Plan Selection */}
+                        {currentStep === "plan" && (
+                            <div className="space-y-4">
+                                <h3 className="text-lg font-semibold text-center text-gray-900 dark:text-white">{t("auth.choosePlan")}</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    {plans.map((plan) => (
+                                        <button
+                                            key={plan.id}
+                                            type="button"
+                                            onClick={() => form.setValue("plan", plan.id)}
+                                            className={cn(
+                                                "relative p-4 rounded-xl border-2 transition-all text-left",
+                                                form.watch("plan") === plan.id
+                                                    ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
+                                                    : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+                                            )}
+                                        >
+                                            {plan.popular && (
+                                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-semibold rounded-full">
+                                                    {t("auth.popular")}
+                                                </div>
+                                            )}
+                                            <div className="space-y-3">
+                                                <div>
+                                                    <h4 className="font-bold text-gray-900 dark:text-white">{plan.name}</h4>
+                                                    <div className="flex items-baseline gap-1 mt-1">
+                                                        <span className="text-2xl font-bold text-gray-900 dark:text-white">{plan.price}</span>
+                                                        <span className="text-sm text-gray-500 dark:text-gray-400">{plan.period}</span>
+                                                    </div>
+                                                </div>
+                                                <ul className="space-y-2">
+                                                    {plan.features.map((feature, i) => (
+                                                        <li key={i} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
+                                                            <Check className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
+                                                            <span>{feature}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        </button>
+                                    ))}
                                 </div>
-                                <div className="relative flex justify-center text-sm">
-                                    <span className="px-4 bg-white/80 dark:bg-gray-900/80 text-gray-500 dark:text-gray-400 font-medium">
-                                        {t("auth.orContinueWith")}
-                                    </span>
+                                <div className="flex gap-3 pt-2">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() => setCurrentStep("account")}
+                                        className="flex-1 h-12 rounded-xl border-gray-300 dark:border-gray-600"
+                                    >
+                                        {t("auth.back")}
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        onClick={() => setCurrentStep("payment")}
+                                        className="flex-1 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all"
+                                    >
+                                        {t("auth.continue")}
+                                    </Button>
                                 </div>
                             </div>
+                        )}
 
-                            <Button
-                                type="button"
-                                variant="outline"
-                                className="w-full h-12 border-2 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 rounded-xl font-medium transition-all duration-200 hover:shadow-md"
-                                onClick={handleGoogleSignup}
-                            >
-                                <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                                </svg>
-                                {t("auth.continueWithGoogle")}
-                            </Button>
-                        </div>
-                    )}
+                        {/* Step 3: Payment */}
+                        {currentStep === "payment" && (
+                            <div className="space-y-4">
+                                <h3 className="text-lg font-semibold text-center text-gray-900 dark:text-white">{t("auth.paymentMethod")}</h3>
 
-                    {/* Step 2: Plan Selection */}
-                    {currentStep === "plan" && (
-                        <div className="space-y-4">
-                            <h3 className="text-lg font-semibold text-center text-gray-900 dark:text-white">{t("auth.choosePlan")}</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                {plans.map((plan) => (
+                                <div className="space-y-3">
                                     <button
-                                        key={plan.id}
-                                        onClick={() => setFormData({ ...formData, plan: plan.id })}
+                                        type="button"
+                                        onClick={() => form.setValue("paymentMethod", "card")}
                                         className={cn(
-                                            "relative p-4 rounded-xl border-2 transition-all text-left",
-                                            formData.plan === plan.id
+                                            "w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-3",
+                                            form.watch("paymentMethod") === "card"
                                                 ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
                                                 : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
                                         )}
                                     >
-                                        {plan.popular && (
-                                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-semibold rounded-full">
-                                                {t("auth.popular")}
-                                            </div>
-                                        )}
-                                        <div className="space-y-3">
-                                            <div>
-                                                <h4 className="font-bold text-gray-900 dark:text-white">{plan.name}</h4>
-                                                <div className="flex items-baseline gap-1 mt-1">
-                                                    <span className="text-2xl font-bold text-gray-900 dark:text-white">{plan.price}</span>
-                                                    <span className="text-sm text-gray-500 dark:text-gray-400">{plan.period}</span>
-                                                </div>
-                                            </div>
-                                            <ul className="space-y-2">
-                                                {plan.features.map((feature, i) => (
-                                                    <li key={i} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
-                                                        <Check className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
-                                                        <span>{feature}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
+                                        <CreditCard className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+                                        <div>
+                                            <div className="font-semibold text-gray-900 dark:text-white">{t("auth.creditCard")}</div>
+                                            <div className="text-sm text-gray-500 dark:text-gray-400">{t("auth.creditCardDesc")}</div>
                                         </div>
                                     </button>
-                                ))}
-                            </div>
-                            <div className="flex gap-3 pt-2">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() => setCurrentStep("account")}
-                                    className="flex-1 h-12 rounded-xl border-gray-300 dark:border-gray-600"
-                                >
-                                    {t("auth.back")}
-                                </Button>
-                                <Button
-                                    onClick={() => setCurrentStep("payment")}
-                                    className="flex-1 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all"
-                                >
-                                    {t("auth.continue")}
-                                </Button>
-                            </div>
-                        </div>
-                    )}
 
-                    {/* Step 3: Payment */}
-                    {currentStep === "payment" && (
-                        <div className="space-y-4">
-                            <h3 className="text-lg font-semibold text-center text-gray-900 dark:text-white">{t("auth.paymentMethod")}</h3>
-
-                            <div className="space-y-3">
-                                <button
-                                    onClick={() => setFormData({ ...formData, paymentMethod: "card" })}
-                                    className={cn(
-                                        "w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-3",
-                                        formData.paymentMethod === "card"
-                                            ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
-                                            : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
-                                    )}
-                                >
-                                    <CreditCard className="w-6 h-6 text-gray-600 dark:text-gray-400" />
-                                    <div>
-                                        <div className="font-semibold text-gray-900 dark:text-white">{t("auth.creditCard")}</div>
-                                        <div className="text-sm text-gray-500 dark:text-gray-400">{t("auth.creditCardDesc")}</div>
-                                    </div>
-                                </button>
-
-                                <button
-                                    onClick={() => setFormData({ ...formData, paymentMethod: "mb" })}
-                                    className={cn(
-                                        "w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-3",
-                                        formData.paymentMethod === "mb"
-                                            ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
-                                            : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
-                                    )}
-                                >
-                                    <Building2 className="w-6 h-6 text-gray-600 dark:text-gray-400" />
-                                    <div>
-                                        <div className="font-semibold text-gray-900 dark:text-white">{t("auth.multibanco")}</div>
-                                        <div className="text-sm text-gray-500 dark:text-gray-400">{t("auth.multibancoDesc")}</div>
-                                    </div>
-                                </button>
-                            </div>
-
-                            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
-                                <p className="text-sm text-blue-900 dark:text-blue-100">
-                                    <strong>{t("auth.selectedPlan")}:</strong> {plans.find(p => p.id === formData.plan)?.name} - {plans.find(p => p.id === formData.plan)?.price}{t("auth.perMonth")}
-                                </p>
-                            </div>
-
-                            <div className="flex gap-3 pt-2">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() => setCurrentStep("plan")}
-                                    className="flex-1 h-12 rounded-xl border-gray-300 dark:border-gray-600"
-                                >
-                                    {t("auth.back")}
-                                </Button>
-                                <Button
-                                    onClick={handleFinalSubmit}
-                                    disabled={loading}
-                                    className="flex-1 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all"
-                                >
-                                    {loading ? (
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                            {t("auth.creatingAccount")}
+                                    <button
+                                        type="button"
+                                        onClick={() => form.setValue("paymentMethod", "mb")}
+                                        className={cn(
+                                            "w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-3",
+                                            form.watch("paymentMethod") === "mb"
+                                                ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
+                                                : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+                                        )}
+                                    >
+                                        <Building2 className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+                                        <div>
+                                            <div className="font-semibold text-gray-900 dark:text-white">{t("auth.multibanco")}</div>
+                                            <div className="text-sm text-gray-500 dark:text-gray-400">{t("auth.multibancoDesc")}</div>
                                         </div>
-                                    ) : (
-                                        <div className="flex items-center gap-2">
-                                            <Sparkles className="w-4 h-4" />
-                                            {t("auth.signUp")}
-                                        </div>
-                                    )}
-                                </Button>
+                                    </button>
+                                </div>
+
+                                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
+                                    <p className="text-sm text-blue-900 dark:text-blue-100">
+                                        <strong>{t("auth.selectedPlan")}:</strong> {plans.find(p => p.id === form.watch("plan"))?.name} - {plans.find(p => p.id === form.watch("plan"))?.price}{t("auth.perMonth")}
+                                    </p>
+                                </div>
+
+                                <div className="flex gap-3 pt-2">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() => setCurrentStep("plan")}
+                                        className="flex-1 h-12 rounded-xl border-gray-300 dark:border-gray-600"
+                                    >
+                                        {t("auth.back")}
+                                    </Button>
+                                    <Button
+                                        onClick={handleFinalSubmit}
+                                        disabled={loading}
+                                        className="flex-1 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all"
+                                    >
+                                        {loading ? (
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                                {t("auth.creatingAccount")}
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center gap-2">
+                                                <Sparkles className="w-4 h-4" />
+                                                {t("auth.signUp")}
+                                            </div>
+                                        )}
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </Form>
 
                     {/* Footer */}
                     {currentStep === "account" && (

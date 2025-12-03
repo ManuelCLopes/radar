@@ -191,6 +191,14 @@
       "description": "A validação de morada está temporariamente indisponível. Pode usar a sua localização atual ou continuar com a morada introduzida (os relatórios ficarão indisponíveis até a localização ser verificada)."
     }
   },
+  "validation": {
+    "required": "Este campo é obrigatório",
+    "emailInvalid": "Por favor, insira um endereço de email válido",
+    "passwordMin": "A palavra-passe deve ter pelo menos {{min}} caracteres",
+    "passwordMismatch": "As palavras-passe não coincidem",
+    "radiusMin": "O raio deve ser de pelo menos {{min}} metros",
+    "radiusMax": "O raio não pode exceder {{max}} metros"
+  },
   "auth": {
     "login": "Entrar",
     "signUp": "Criar Conta",

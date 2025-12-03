@@ -191,6 +191,14 @@
       "description": "Address validation is temporarily unavailable. You can use your current location or proceed with the entered address (reports will be unavailable until location is verified)."
     }
   },
+  "validation": {
+    "required": "This field is required",
+    "emailInvalid": "Please enter a valid email address",
+    "passwordMin": "Password must be at least {{min}} characters",
+    "passwordMismatch": "Passwords do not match",
+    "radiusMin": "Radius must be at least {{min}} meters",
+    "radiusMax": "Radius cannot exceed {{max}} meters"
+  },
   "auth": {
     "login": "Log In",
     "signUp": "Sign Up",

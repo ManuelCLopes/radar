@@ -190,6 +190,14 @@
       "description": "La validación de direcciones está temporalmente no disponible. Puedes usar tu ubicación actual o continuar con la dirección ingresada (los informes no estarán disponibles hasta que la ubicación sea verificada)."
     }
   },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "emailInvalid": "Por favor, introduce una dirección de correo electrónico válida",
+    "passwordMin": "La contraseña debe tener al menos {{min}} caracteres",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "radiusMin": "El radio debe ser de al menos {{min}} metros",
+    "radiusMax": "El radio no puede exceder {{max}} metros"
+  },
   "auth": {
     "login": "Iniciar Sesión",
     "signUp": "Crear Cuenta",

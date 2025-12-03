@@ -42,8 +42,8 @@ export function PreviewReportModal({
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="max-w-5xl max-h-[85vh] p-0 gap-0">
-                <DialogHeader className="p-6 pb-4">
+            <DialogContent className="max-w-5xl h-[85vh] p-0 gap-0 flex flex-col overflow-hidden">
+                <DialogHeader className="p-6 pb-4 flex-shrink-0">
                     <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
                         {t("previewReport.title")}
                     </DialogTitle>
@@ -59,7 +59,7 @@ export function PreviewReportModal({
                     </div>
                 </DialogHeader>
 
-                <ScrollArea className="max-h-[calc(85vh-80px)]">
+                <ScrollArea className="flex-1 min-h-0">
                     <div className="p-6 pt-0">
                         {/* Stats */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

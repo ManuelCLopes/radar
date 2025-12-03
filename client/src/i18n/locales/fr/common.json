@@ -190,6 +190,14 @@
       "description": "La validation d'adresse est temporairement indisponible. Vous pouvez utiliser votre position actuelle ou continuer avec l'adresse saisie (les rapports seront indisponibles jusqu'à ce que l'emplacement soit vérifié)."
     }
   },
+  "validation": {
+    "required": "Ce champ est obligatoire",
+    "emailInvalid": "Veuillez entrer une adresse email valide",
+    "passwordMin": "Le mot de passe doit contenir au moins {{min}} caractères",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "radiusMin": "Le rayon doit être d'au moins {{min}} mètres",
+    "radiusMax": "Le rayon ne peut pas dépasser {{max}} mètres"
+  },
   "auth": {
     "login": "Se Connecter",
     "signUp": "Créer un Compte",
