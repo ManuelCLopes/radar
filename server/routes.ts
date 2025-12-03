@@ -4,7 +4,9 @@ import { storage } from "./storage";
 import { runReportForBusiness } from "./reports";
 import { startScheduler, getSchedulerStatus, runScheduledReports } from "./scheduler";
 import { searchPlacesByAddress, hasGoogleApiKey } from "./googlePlaces";
-import { insertBusinessSchema } from "@shared/schema";
+import { type InsertBusiness, insertBusinessSchema, type User as AppUser } from "@shared/schema";
+
+
 import { setupAuth, isAuthenticated } from "./auth";
 
 export async function registerRoutes(
@@ -334,6 +336,75 @@ export async function registerRoutes(
   });
 
   startScheduler();
+
+  // Authenticated Address Analysis
+  app.post("/api/analyze-address", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+
+    try {
+      const { address, type, radius, language = 'en' } = req.body;
+
+      if (!address || !type || !radius) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+
+      // Search for coordinates
+      let coordinates = null;
+      if (hasGoogleApiKey()) {
+        const searchResults = await searchPlacesByAddress(address);
+        if (searchResults && searchResults.length > 0) {
+          coordinates = {
+            latitude: searchResults[0].latitude,
+            longitude: searchResults[0].longitude
+          };
+        }
+      }
+
+      if (!coordinates) {
+        return res.status(400).json({ error: "Address not found" });
+      }
+
+      // Create temp business object
+      const tempBusiness = {
+        id: 'analysis-' + Date.now(),
+        name: 'Analysis: ' + address.split(',')[0],
+        type,
+        address,
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude,
+        locationStatus: 'validated' as const,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      // Generate report
+      const report = await runReportForBusiness(tempBusiness.id, language, tempBusiness);
+
+      // Save report with userId
+      // Exclude id and generatedAt to let DB handle them
+      const { id: _tempId, generatedAt: _tempGenAt, ...reportData } = report;
+
+      console.log("Saving analysis for user:", (req.user as AppUser)?.id);
+
+      const savedReport = await storage.createReport({
+        ...reportData,
+        userId: (req.user as AppUser).id,
+        businessId: undefined
+      });
+
+      res.json(savedReport);
+    } catch (error) {
+      console.error("Analysis error details:", error);
+      res.status(500).json({ error: "Failed to run analysis" });
+    }
+  });
+
+  // Get User's Report History
+  app.get("/api/reports/history", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const reports = await storage.getReportsByUserId((req.user as AppUser).id);
+    res.json(reports);
+  });
 
   return httpServer;
 }

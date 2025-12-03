@@ -270,150 +270,137 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
 
   return (
     <>
-      <Card>
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-xl font-semibold flex items-center gap-2">
-            <Building2 className="h-5 w-5 text-primary" />
-            {t("business.form.title")}
-          </CardTitle>
-          <CardDescription>
-            {t("dashboard.header.subtitle")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("business.form.name")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t("business.form.namePlaceholder")}
-                        data-testid="input-business-name"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("business.form.name")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={t("business.form.namePlaceholder")}
+                    data-testid="input-business-name"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-              <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("business.form.type")}</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger data-testid="select-business-type">
-                          <SelectValue placeholder={t("business.form.typePlaceholder")} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {businessTypes.map((type) => (
-                          <SelectItem key={type} value={type} data-testid={`option-type-${type}`}>
-                            {getBusinessTypeLabel(type)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("business.form.type")}</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger data-testid="select-business-type">
+                      <SelectValue placeholder={t("business.form.typePlaceholder")} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {businessTypes.map((type) => (
+                      <SelectItem key={type} value={type} data-testid={`option-type-${type}`}>
+                        {getBusinessTypeLabel(type)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("business.form.address")}</FormLabel>
-                    <div className="flex gap-2">
-                      <FormControl>
-                        <Input
-                          placeholder={t("business.form.addressPlaceholder")}
-                          data-testid="input-address"
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e);
-                            if (selectedPlace) {
-                              setSelectedPlace(null);
-                            }
-                            if (manualCoordinates) {
-                              setManualCoordinates(null);
-                            }
-                            if (pendingLocationAddress) {
-                              setPendingLocationAddress(null);
-                            }
-                          }}
-                        />
-                      </FormControl>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={handleSearchAddress}
-                        disabled={searchMutation.isPending}
-                        data-testid="button-search-address"
-                      >
-                        {searchMutation.isPending ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Search className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </div>
-                    <FormMessage />
-                    {selectedPlace && (
-                      <div className="flex items-center gap-2 mt-2 text-sm text-green-600 dark:text-green-400">
-                        <CheckCircle className="h-4 w-4" />
-                        <span>{t("addressSearch.addressVerified")}</span>
-                      </div>
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("business.form.address")}</FormLabel>
+                <div className="flex gap-2">
+                  <FormControl>
+                    <Input
+                      placeholder={t("business.form.addressPlaceholder")}
+                      data-testid="input-address"
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        if (selectedPlace) {
+                          setSelectedPlace(null);
+                        }
+                        if (manualCoordinates) {
+                          setManualCoordinates(null);
+                        }
+                        if (pendingLocationAddress) {
+                          setPendingLocationAddress(null);
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleSearchAddress}
+                    disabled={searchMutation.isPending}
+                    data-testid="button-search-address"
+                  >
+                    {searchMutation.isPending ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Search className="h-4 w-4" />
                     )}
-                    {manualCoordinates && !selectedPlace && (
-                      <div className="flex items-center gap-2 mt-2 text-sm text-blue-600 dark:text-blue-400">
-                        <Navigation className="h-4 w-4" />
-                        <span>{t("addressSearch.usingCurrentLocation")}</span>
-                      </div>
-                    )}
-                    {pendingLocationAddress && !selectedPlace && !manualCoordinates && (
-                      <div className="flex items-center gap-2 mt-2 text-sm text-yellow-600 dark:text-yellow-400">
-                        <AlertTriangle className="h-4 w-4" />
-                        <span>{t("addressSearch.pendingVerification")}</span>
-                      </div>
-                    )}
-                  </FormItem>
+                  </Button>
+                </div>
+                <FormMessage />
+                {selectedPlace && (
+                  <div className="flex items-center gap-2 mt-2 text-sm text-green-600 dark:text-green-400">
+                    <CheckCircle className="h-4 w-4" />
+                    <span>{t("addressSearch.addressVerified")}</span>
+                  </div>
                 )}
-              />
+                {manualCoordinates && !selectedPlace && (
+                  <div className="flex items-center gap-2 mt-2 text-sm text-blue-600 dark:text-blue-400">
+                    <Navigation className="h-4 w-4" />
+                    <span>{t("addressSearch.usingCurrentLocation")}</span>
+                  </div>
+                )}
+                {pendingLocationAddress && !selectedPlace && !manualCoordinates && (
+                  <div className="flex items-center gap-2 mt-2 text-sm text-yellow-600 dark:text-yellow-400">
+                    <AlertTriangle className="h-4 w-4" />
+                    <span>{t("addressSearch.pendingVerification")}</span>
+                  </div>
+                )}
+              </FormItem>
+            )}
+          />
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isPending || searchMutation.isPending}
-                data-testid="button-submit-business"
-              >
-                {isPending ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    {t("business.form.submitting")}
-                  </>
-                ) : (
-                  <>
-                    <MapPin className="h-4 w-4 mr-2" />
-                    {t("business.form.submit")}
-                  </>
-                )}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isPending || searchMutation.isPending}
+            data-testid="button-submit-business"
+          >
+            {isPending ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                {t("business.form.submitting")}
+              </>
+            ) : (
+              <>
+                <MapPin className="h-4 w-4 mr-2" />
+                {t("business.form.submit")}
+              </>
+            )}
+          </Button>
+        </form>
+      </Form>
 
       <Dialog open={showMultipleResultsModal} onOpenChange={setShowMultipleResultsModal}>
         <DialogContent className="max-w-lg">

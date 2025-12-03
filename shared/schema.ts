@@ -99,7 +99,8 @@ export interface Competitor {
 
 export const reports = pgTable("reports", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  businessId: varchar("business_id").notNull(),
+  userId: varchar("user_id").references(() => users.id),
+  businessId: varchar("business_id"), // Made nullable to support address-only analysis if needed, or we create a temp business
   businessName: text("business_name").notNull(),
   competitors: jsonb("competitors").notNull().$type<Competitor[]>(),
   aiAnalysis: text("ai_analysis").notNull(),
@@ -118,7 +119,8 @@ export const competitorSchema = z.object({
 });
 
 export const insertReportSchema = z.object({
-  businessId: z.string(),
+  userId: z.string().optional(),
+  businessId: z.string().optional(),
   businessName: z.string(),
   competitors: z.array(competitorSchema),
   aiAnalysis: z.string(),

@@ -3,8 +3,10 @@ import OpenAI from "openai";
 
 const openai = new OpenAI({
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY || "dummy-key-for-local-dev",
+  apiKey: process.env.OPENAI_API_KEY || process.env.AI_INTEGRATIONS_OPENAI_API_KEY || "dummy-key-for-local-dev",
 });
+
+
 
 const languageNames: Record<string, string> = {
   en: "English",

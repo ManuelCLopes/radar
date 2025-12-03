@@ -21,6 +21,21 @@
     "user": {
       "guest": "Visitante",
       "logout": "Terminar sessão"
+    },
+    "registerBusiness": "Registar Negócio",
+    "registerBusinessDesc": "Adicione um novo negócio para acompanhar",
+    "tabs": {
+      "businesses": "Negócios",
+      "newAnalysis": "Nova Análise",
+      "history": "Histórico"
+    },
+    "analysis": {
+      "title": "Executar Nova Análise",
+      "description": "Analise qualquer localização sem registar um negócio.",
+      "historyTitle": "Histórico de Análises",
+      "historyDescription": "Veja e exporte os seus relatórios anteriores.",
+      "noReports": "Nenhum relatório encontrado. Execute uma análise para começar.",
+      "addressPlaceholder": "Introduza a morada para análise"
     }
   },
   "business": {
@@ -59,7 +74,7 @@
     },
     "list": {
       "title": "Os Seus Negócios",
-      "empty": "Ainda não há negócios registados. Adicione o seu primeiro negócio acima.",
+      "empty": "Ainda não há negócios registados. Adicione o seu primeiro negócio.",
       "generateReport": "Gerar Relatório",
       "report": "Relatório",
       "generating": "A gerar...",
@@ -393,6 +408,10 @@
     "immediate": "Vizinhança imediata",
     "walking": "Distância a pé",
     "drive": "Curta distância de carro",
-    "extended": "Área alargada"
+    "extended": "Área alargada",
+    "500m": "500m (A pé)",
+    "1km": "1km (Bairro)",
+    "2km": "2km (Local)",
+    "5km": "5km (Área)"
   }
 }

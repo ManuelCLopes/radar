@@ -13,6 +13,8 @@ export interface IStorage {
   addBusiness(business: InsertBusiness): Promise<Business>;
   deleteBusiness(id: string): Promise<boolean>;
 
+  createReport(report: InsertReport): Promise<Report>;
+  getReportsByUserId(userId: string): Promise<Report[]>;
   saveReport(report: InsertReport): Promise<Report>;
   getReport(id: string): Promise<Report | undefined>;
   getReportsByBusinessId(businessId: string): Promise<Report[]>;
@@ -71,6 +73,10 @@ export class DatabaseStorage implements IStorage {
     return result.length > 0;
   }
 
+  async createReport(insertReport: InsertReport): Promise<Report> {
+    return this.saveReport(insertReport);
+  }
+
   async saveReport(insertReport: InsertReport): Promise<Report> {
     const [report] = await db!
       .insert(reports)
@@ -89,6 +95,14 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(reports)
       .where(eq(reports.businessId, businessId))
+      .orderBy(desc(reports.generatedAt));
+  }
+
+  async getReportsByUserId(userId: string): Promise<Report[]> {
+    return await db!
+      .select()
+      .from(reports)
+      .where(eq(reports.userId, userId))
       .orderBy(desc(reports.generatedAt));
   }
 
@@ -163,11 +177,17 @@ export class MemStorage implements IStorage {
     return this.businesses.delete(id);
   }
 
+  async createReport(insertReport: InsertReport): Promise<Report> {
+    return this.saveReport(insertReport);
+  }
+
   async saveReport(insertReport: InsertReport): Promise<Report> {
     const id = `rep-${Date.now()}`;
     const report: Report = {
       ...insertReport,
       id,
+      userId: insertReport.userId || null,
+      businessId: insertReport.businessId || null,
       generatedAt: new Date(),
     };
     this.reportsMap.set(id, report);
@@ -181,6 +201,12 @@ export class MemStorage implements IStorage {
   async getReportsByBusinessId(businessId: string): Promise<Report[]> {
     return Array.from(this.reportsMap.values())
       .filter((r) => r.businessId === businessId)
+      .sort((a, b) => b.generatedAt.getTime() - a.generatedAt.getTime());
+  }
+
+  async getReportsByUserId(userId: string): Promise<Report[]> {
+    return Array.from(this.reportsMap.values())
+      .filter((r) => r.userId === userId)
       .sort((a, b) => b.generatedAt.getTime() - a.generatedAt.getTime());
   }
 

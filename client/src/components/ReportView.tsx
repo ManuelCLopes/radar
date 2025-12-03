@@ -15,23 +15,23 @@ function parseMarkdown(markdown: string): string {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
-  
+
   html = html.replace(/^### (.+)$/gm, '<h3 class="text-base font-semibold mt-4 mb-2">$1</h3>');
   html = html.replace(/^## (.+)$/gm, '<h2 class="text-lg font-semibold mt-5 mb-2">$1</h2>');
   html = html.replace(/^# (.+)$/gm, '<h1 class="text-xl font-bold mt-6 mb-3">$1</h1>');
-  
+
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>');
   html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  
+
   const lines = html.split('\n');
   let result: string[] = [];
   let inList = false;
-  
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const bulletMatch = line.match(/^[-*] (.+)$/);
     const numberedMatch = line.match(/^(\d+)\. (.+)$/);
-    
+
     if (bulletMatch) {
       if (!inList) {
         result.push('<ul class="list-disc list-inside space-y-1 my-2">');
@@ -58,18 +58,18 @@ function parseMarkdown(markdown: string): string {
       }
     }
   }
-  
+
   if (inList) {
     result.push('</ul>');
   }
-  
+
   return result.join('\n');
 }
 
 function MarkdownContent({ content }: { content: string }) {
   const html = parseMarkdown(content);
   return (
-    <div 
+    <div
       className="prose prose-sm dark:prose-invert max-w-none text-foreground"
       dangerouslySetInnerHTML={{ __html: html }}
     />
@@ -80,6 +80,7 @@ interface ReportViewProps {
   report: Report | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onPrint?: () => void;
 }
 
 function CompetitorCard({ competitor, index, t }: { competitor: Competitor; index: number; t: (key: string, options?: Record<string, unknown>) => string }) {
@@ -144,7 +145,7 @@ function StatCard({ icon: Icon, label, value }: { icon: typeof Building2; label:
 export function ReportView({ report, open, onOpenChange }: ReportViewProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
-  
+
   if (!report) return null;
 
   const handleDownloadHTML = () => {
@@ -164,6 +165,11 @@ export function ReportView({ report, open, onOpenChange }: ReportViewProps) {
   };
 
   const handlePrintPDF = () => {
+    if (onPrint) {
+      onPrint();
+      return;
+    }
+
     const printWindow = window.open("", "_blank");
     if (printWindow) {
       printWindow.document.write(report.html);
@@ -184,9 +190,9 @@ export function ReportView({ report, open, onOpenChange }: ReportViewProps) {
 ${t("report.view.title")} - ${report.businessName}
 
 ${t("report.stats.competitorsFound")}: ${report.competitors.length}
-${t("report.stats.avgRating")}: ${report.competitors.length > 0 
-  ? (report.competitors.filter(c => c.rating).reduce((sum, c) => sum + (c.rating || 0), 0) / report.competitors.filter(c => c.rating).length).toFixed(1)
-  : 'N/A'}
+${t("report.stats.avgRating")}: ${report.competitors.length > 0
+        ? (report.competitors.filter(c => c.rating).reduce((sum, c) => sum + (c.rating || 0), 0) / report.competitors.filter(c => c.rating).length).toFixed(1)
+        : 'N/A'}
 
 ${t("report.sections.aiAnalysis")}:
 ${report.aiAnalysis}
@@ -194,7 +200,7 @@ ${report.aiAnalysis}
 ---
 Local Competitor Analyzer
     `.trim());
-    
+
     window.open(`mailto:?subject=${subject}&body=${body}`, "_blank");
     toast({
       title: t("toast.emailClientOpened.title"),

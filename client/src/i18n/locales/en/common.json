@@ -21,6 +21,21 @@
     "user": {
       "guest": "Guest",
       "logout": "Log out"
+    },
+    "registerBusiness": "Register Business",
+    "registerBusinessDesc": "Add a new business to track",
+    "tabs": {
+      "businesses": "Businesses",
+      "newAnalysis": "New Analysis",
+      "history": "History"
+    },
+    "analysis": {
+      "title": "Run New Analysis",
+      "description": "Analyze any location without registering a business.",
+      "historyTitle": "Analysis History",
+      "historyDescription": "View and export your past reports.",
+      "noReports": "No reports found. Run an analysis to get started.",
+      "addressPlaceholder": "Enter address for analysis"
     }
   },
   "business": {
@@ -59,7 +74,7 @@
     },
     "list": {
       "title": "Your Businesses",
-      "empty": "No businesses registered yet. Add your first business above.",
+      "empty": "No businesses registered yet. Add your first business.",
       "generateReport": "Generate Report",
       "report": "Report",
       "generating": "Generating...",
@@ -393,6 +408,10 @@
     "immediate": "Immediate vicinity",
     "walking": "Walking distance",
     "drive": "Short drive",
-    "extended": "Extended area"
+    "extended": "Extended area",
+    "500m": "500m (Walking)",
+    "1km": "1km (Neighborhood)",
+    "2km": "2km (Local)",
+    "5km": "5km (Area)"
   }
 }

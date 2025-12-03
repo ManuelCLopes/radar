@@ -21,6 +21,21 @@
     "user": {
       "guest": "Gast",
       "logout": "Abmelden"
+    },
+    "registerBusiness": "Geschäft Registrieren",
+    "registerBusinessDesc": "Fügen Sie ein neues Geschäft hinzu",
+    "tabs": {
+      "businesses": "Unternehmen",
+      "newAnalysis": "Neue Analyse",
+      "history": "Verlauf"
+    },
+    "analysis": {
+      "title": "Neue Analyse Ausführen",
+      "description": "Analysieren Sie jeden Standort, ohne ein Unternehmen zu registrieren.",
+      "historyTitle": "Analyse-Verlauf",
+      "historyDescription": "Sehen Sie sich Ihre früheren Berichte an und exportieren Sie sie.",
+      "noReports": "Keine Berichte gefunden. Führen Sie eine Analyse durch, um zu beginnen.",
+      "addressPlaceholder": "Adresse für die Analyse eingeben"
     }
   },
   "business": {
@@ -59,7 +74,7 @@
     },
     "list": {
       "title": "Ihre Unternehmen",
-      "empty": "Noch keine Unternehmen registriert. Fügen Sie oben Ihr erstes Unternehmen hinzu.",
+      "empty": "Noch keine Unternehmen registriert. Fügen Sie Ihr erstes Unternehmen hinzu.",
       "generateReport": "Bericht Erstellen",
       "report": "Bericht",
       "generating": "Wird erstellt...",
@@ -246,7 +261,11 @@
     "immediate": "Unmittelbare Nähe",
     "walking": "Gehweite",
     "drive": "Kurze Autofahrt",
-    "extended": "Erweitertes Gebiet"
+    "extended": "Erweitertes Gebiet",
+    "500m": "500m (Zu Fuß)",
+    "1km": "1km (Nachbarschaft)",
+    "2km": "2km (Lokal)",
+    "5km": "5km (Gebiet)"
   },
   "quickSearch": {
     "title": "Entdecken Sie Ihre Lokale Konkurrenz",
