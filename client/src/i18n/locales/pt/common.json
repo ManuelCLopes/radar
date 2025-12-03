@@ -208,7 +208,12 @@
     "haveAccount": "Já tem conta?",
     "passwordMismatch": "As palavras-passe não coincidem",
     "passwordTooShort": "A palavra-passe deve ter pelo menos 6 caracteres",
-    "passwordMinChars": "Mínimo 6 caracteres",
+    "passwordMinChars": "Mínimo de 6 caracteres",
+    "errors": {
+      "invalidCredentials": "O email ou a palavra-passe estão incorretos.",
+      "useGoogle": "Por favor, usa o login com Google para esta conta",
+      "generic": "Ocorreu um erro. Por favor, tenta novamente."
+    },
     "continue": "Continuar",
     "back": "Voltar",
     "backToHome": "← Voltar à página inicial",

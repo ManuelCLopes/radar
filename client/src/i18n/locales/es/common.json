@@ -208,6 +208,11 @@
     "passwordMismatch": "Las contraseñas no coinciden",
     "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
     "passwordMinChars": "Mínimo 6 caracteres",
+    "errors": {
+      "invalidCredentials": "El correo electrónico o la contraseña son incorrectos.",
+      "useGoogle": "Por favor, usa el inicio de sesión con Google para esta cuenta",
+      "generic": "Ocurrió un error. Por favor, inténtalo de nuevo."
+    },
     "continue": "Continuar",
     "back": "Volver",
     "backToHome": "← Volver al inicio",

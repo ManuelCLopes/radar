@@ -91,7 +91,7 @@ export default function RegisterPage() {
                 setCurrentStep("account");
             }
         } catch (err) {
-            setError("An error occurred. Please try again.");
+            setError(t("auth.errors.generic"));
             setCurrentStep("account");
         } finally {
             setLoading(false);

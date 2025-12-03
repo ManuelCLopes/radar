@@ -206,8 +206,13 @@
     "noAccount": "Noch kein Konto?",
     "haveAccount": "Bereits ein Konto?",
     "passwordMismatch": "Passwörter stimmen nicht überein",
-    "passwordTooShort": "Das Passwort muss mindestens 6 Zeichen lang sein",
+    "passwordTooShort": "Passwort muss mindestens 6 Zeichen lang sein",
     "passwordMinChars": "Mindestens 6 Zeichen",
+    "errors": {
+      "invalidCredentials": "Die E-Mail oder das Passwort ist falsch.",
+      "useGoogle": "Bitte verwenden Sie die Google-Anmeldung für dieses Konto",
+      "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+    },
     "continue": "Weiter",
     "back": "Zurück",
     "backToHome": "← Zurück zur Startseite",

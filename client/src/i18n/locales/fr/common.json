@@ -208,6 +208,11 @@
     "passwordMismatch": "Les mots de passe ne correspondent pas",
     "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères",
     "passwordMinChars": "Minimum 6 caractères",
+    "errors": {
+      "invalidCredentials": "L'email ou le mot de passe est incorrect.",
+      "useGoogle": "Veuillez utiliser la connexion Google pour ce compte",
+      "generic": "Une erreur s'est produite. Veuillez réessayer."
+    },
     "continue": "Continuer",
     "back": "Retour",
     "backToHome": "← Retour à l'accueil",

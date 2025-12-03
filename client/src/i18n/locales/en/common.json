@@ -209,6 +209,11 @@
     "passwordMismatch": "Passwords do not match",
     "passwordTooShort": "Password must be at least 6 characters",
     "passwordMinChars": "Minimum 6 characters",
+    "errors": {
+      "invalidCredentials": "The email or password you entered is incorrect.",
+      "useGoogle": "Please use Google login for this account",
+      "generic": "An error occurred. Please try again."
+    },
     "continue": "Continue",
     "back": "Back",
     "backToHome": "← Back to home",

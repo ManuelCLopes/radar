@@ -67,16 +67,16 @@ export async function setupAuth(app: Express) {
                 try {
                     const user = await storage.getUserByEmail(email);
                     if (!user) {
-                        return done(null, false, { message: "Invalid email or password" });
+                        return done(null, false, { message: "Invalid email or password", code: "INVALID_CREDENTIALS" } as any);
                     }
 
                     if (!user.passwordHash) {
-                        return done(null, false, { message: "Please use Google login for this account" });
+                        return done(null, false, { message: "Please use Google login for this account", code: "GOOGLE_LOGIN_REQUIRED" } as any);
                     }
 
                     const isValid = await bcrypt.compare(password, user.passwordHash);
                     if (!isValid) {
-                        return done(null, false, { message: "Invalid email or password" });
+                        return done(null, false, { message: "Invalid email or password", code: "INVALID_CREDENTIALS" } as any);
                     }
 
                     return done(null, user);
@@ -137,8 +137,24 @@ export async function setupAuth(app: Express) {
 
     // Routes
     // Local login
-    app.post("/api/login", passport.authenticate("local"), (req, res) => {
-        res.json({ user: req.user });
+    app.post("/api/login", (req, res, next) => {
+        passport.authenticate("local", (err: any, user: any, info: any) => {
+            if (err) {
+                return next(err);
+            }
+            if (!user) {
+                return res.status(401).json({
+                    message: info?.message || "Invalid email or password",
+                    code: info?.code || "INVALID_CREDENTIALS"
+                });
+            }
+            req.logIn(user, (err) => {
+                if (err) {
+                    return next(err);
+                }
+                return res.json({ user });
+            });
+        })(req, res, next);
     });
 
     // Local registration

@@ -31,11 +31,29 @@ export default function LoginPage() {
             if (response.ok) {
                 setLocation("/dashboard");
             } else {
-                const data = await response.json();
-                setError(data.message || "Login failed");
+                let data;
+                try {
+                    data = await response.json();
+                } catch (e) {
+                    // If parsing fails, it's likely the default "Unauthorized" text from passport
+                    // which means invalid credentials
+                    if (response.status === 401) {
+                        data = { code: "INVALID_CREDENTIALS" };
+                    } else {
+                        data = { message: "An error occurred" };
+                    }
+                }
+
+                if (data.code === "INVALID_CREDENTIALS" || data.message === "Not authenticated" || data.message === "Unauthorized") {
+                    setError(t("auth.errors.invalidCredentials"));
+                } else if (data.code === "GOOGLE_LOGIN_REQUIRED") {
+                    setError(t("auth.errors.useGoogle"));
+                } else {
+                    setError(data.message || t("auth.errors.generic"));
+                }
             }
         } catch (err) {
-            setError("An error occurred. Please try again.");
+            setError(t("auth.errors.generic"));
         } finally {
             setLoading(false);
         }
