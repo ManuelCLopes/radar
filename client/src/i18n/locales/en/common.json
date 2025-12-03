@@ -281,7 +281,13 @@
     "bar": "Bar / Pub",
     "bakery": "Bakery",
     "pharmacy": "Pharmacy",
-    "supermarket": "Supermarket"
+    "supermarket": "Supermarket",
+    "clinic": "Medical Clinic",
+    "dentist": "Dentist",
+    "bank": "Bank",
+    "gas_station": "Gas Station",
+    "car_repair": "Car Repair",
+    "other": "Other"
   },
   "previewReport": {
     "title": "Preview Report",

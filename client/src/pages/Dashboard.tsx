@@ -297,11 +297,22 @@ export default function Dashboard() {
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    {businessTypes.map((type) => (
-                                      <SelectItem key={type} value={type}>
-                                        {t(`businessTypes.${type}`)}
-                                      </SelectItem>
-                                    ))}
+                                    <SelectItem value="restaurant">🍽️ {t("businessTypes.restaurant")}</SelectItem>
+                                    <SelectItem value="cafe">☕ {t("businessTypes.cafe")}</SelectItem>
+                                    <SelectItem value="retail">🛍️ {t("businessTypes.retail")}</SelectItem>
+                                    <SelectItem value="gym">💪 {t("businessTypes.gym")}</SelectItem>
+                                    <SelectItem value="salon">💇 {t("businessTypes.salon")}</SelectItem>
+                                    <SelectItem value="hotel">🏨 {t("businessTypes.hotel")}</SelectItem>
+                                    <SelectItem value="bar">🍺 {t("businessTypes.bar")}</SelectItem>
+                                    <SelectItem value="bakery">🥖 {t("businessTypes.bakery")}</SelectItem>
+                                    <SelectItem value="pharmacy">💊 {t("businessTypes.pharmacy")}</SelectItem>
+                                    <SelectItem value="supermarket">🛒 {t("businessTypes.supermarket")}</SelectItem>
+                                    <SelectItem value="clinic">🏥 {t("businessTypes.clinic")}</SelectItem>
+                                    <SelectItem value="dentist">🦷 {t("businessTypes.dentist")}</SelectItem>
+                                    <SelectItem value="bank">🏦 {t("businessTypes.bank")}</SelectItem>
+                                    <SelectItem value="gas_station">⛽ {t("businessTypes.gas_station")}</SelectItem>
+                                    <SelectItem value="car_repair">🔧 {t("businessTypes.car_repair")}</SelectItem>
+                                    <SelectItem value="other">🏢 {t("businessTypes.other")}</SelectItem>
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />

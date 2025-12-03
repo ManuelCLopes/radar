@@ -295,7 +295,13 @@
     "bar": "Bar / Pub",
     "bakery": "Boulangerie",
     "pharmacy": "Pharmacie",
-    "supermarket": "Supermarché"
+    "supermarket": "Supermarché",
+    "clinic": "Clinique Médicale",
+    "dentist": "Dentiste",
+    "bank": "Banque",
+    "gas_station": "Station-service",
+    "car_repair": "Réparation Automobile",
+    "other": "Autre"
   },
   "previewReport": {
     "title": "Rapport de Prévisualisation",
