@@ -193,9 +193,7 @@ export default function Dashboard() {
     logoutMutation.mutate();
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -501,7 +499,6 @@ export default function Dashboard() {
           setReportViewOpen(open);
           if (!open) setSelectedReport(null);
         }}
-        onPrint={handlePrint}
       />
 
       {/* Business History Dialog */}

@@ -53,6 +53,7 @@ export async function runReportForBusiness(
     aiAnalysis,
     html,
     generatedAt: new Date(),
+    userId: null,
   };
 }
 
@@ -160,7 +161,9 @@ function generateReportHTML(
     }
   };
 
-  const t = translations[language] || translations.en;
+  // Normalize language code (e.g. "pt-BR" -> "pt")
+  const normalizedLang = language.split('-')[0].toLowerCase();
+  const t = translations[normalizedLang] || translations[language] || translations.en;
 
   const competitorRows = competitors
     .map(

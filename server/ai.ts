@@ -22,7 +22,9 @@ export async function analyzeCompetitors(
   language: string = "en"
 ): Promise<string> {
   const totalCompetitors = competitors.length;
-  const languageName = languageNames[language] || "English";
+  // Normalize language code (e.g. "pt-BR" -> "pt")
+  const normalizedLang = language.split('-')[0].toLowerCase();
+  const languageName = languageNames[normalizedLang] || languageNames[language] || "English";
 
   if (totalCompetitors === 0) {
     const noCompetitorMessages: Record<string, string> = {
@@ -297,7 +299,9 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
     }
   };
 
-  const t = translations[language] || translations.en;
+  // Normalize language code (e.g. "pt-BR" -> "pt")
+  const normalizedLang = language.split('-')[0].toLowerCase();
+  const t = translations[normalizedLang] || translations[language] || translations.en;
 
   return `
 ${t.title} "${business.name.toUpperCase()}"

@@ -68,8 +68,8 @@
       "clinic": "Clinique Médicale",
       "dentist": "Dentiste",
       "bank": "Banque",
-      "gasStation": "Station-Service",
-      "carRepair": "Garage Automobile",
+      "gas_station": "Station-service",
+      "car_repair": "Réparation Automobile",
       "other": "Autre"
     },
     "list": {

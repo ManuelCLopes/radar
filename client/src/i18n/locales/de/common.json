@@ -68,8 +68,8 @@
       "clinic": "Arztpraxis",
       "dentist": "Zahnarzt",
       "bank": "Bank",
-      "gasStation": "Tankstelle",
-      "carRepair": "Autowerkstatt",
+      "gas_station": "Tankstelle",
+      "car_repair": "Autowerkstatt",
       "other": "Sonstiges"
     },
     "list": {

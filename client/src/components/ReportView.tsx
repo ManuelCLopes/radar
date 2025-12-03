@@ -142,7 +142,7 @@ function StatCard({ icon: Icon, label, value }: { icon: typeof Building2; label:
   );
 }
 
-export function ReportView({ report, open, onOpenChange }: ReportViewProps) {
+export function ReportView({ report, open, onOpenChange, onPrint }: ReportViewProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
 
@@ -170,13 +170,52 @@ export function ReportView({ report, open, onOpenChange }: ReportViewProps) {
       return;
     }
 
-    const printWindow = window.open("", "_blank");
+    const printWindow = window.open("", "_blank", "width=800,height=600");
     if (printWindow) {
-      printWindow.document.write(report.html);
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>${t("report.view.title")} - ${report.businessName}</title>
+            <style>
+              body { font-family: system-ui, -apple-system, sans-serif; line-height: 1.5; color: #000; max-width: 800px; margin: 0 auto; padding: 2rem; }
+              h1 { font-size: 24px; font-weight: bold; margin-bottom: 1rem; }
+              h2 { font-size: 20px; font-weight: bold; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 1px solid #ccc; padding-bottom: 0.5rem; }
+              h3 { font-size: 18px; font-weight: bold; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+              p { margin-bottom: 1rem; }
+              ul, ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+              li { margin-bottom: 0.25rem; }
+              .header { margin-bottom: 2rem; border-bottom: 2px solid #000; padding-bottom: 1rem; }
+              .meta { color: #666; font-size: 14px; margin-bottom: 2rem; }
+              @media print {
+                body { padding: 0; }
+                .no-print { display: none; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>${t("report.view.title")}</h1>
+              <div class="meta">
+                <p><strong>Business:</strong> ${report.businessName}</p>
+                <p><strong>Date:</strong> ${new Date(report.generatedAt).toLocaleString()}</p>
+              </div>
+            </div>
+            ${report.html}
+            <script>
+              window.onload = () => {
+                setTimeout(() => {
+                  window.print();
+                  window.onafterprint = () => window.close();
+                }, 500);
+              };
+            </script>
+          </body>
+        </html>
+      `;
+
+      printWindow.document.write(htmlContent);
       printWindow.document.close();
-      printWindow.onload = () => {
-        printWindow.print();
-      };
     }
     toast({
       title: t("toast.printDialogOpened.title"),
