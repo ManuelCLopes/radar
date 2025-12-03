@@ -119,6 +119,16 @@ export default function LandingPage() {
     setCanScrollNext(emblaApi.canScrollNext());
   }, [emblaApi]);
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   useEffect(() => {
     if (!emblaApi) return;
     onSelect();
@@ -181,7 +191,7 @@ export default function LandingPage() {
   return (
     <div className="landing-page">
       {/* HEADER */}
-      <header className="landing-header">
+      <header className={`landing-header ${isScrolled ? 'scrolled' : ''}`}>
         <div className="landing-container">
           <div className="landing-header-brand">
             <div className="landing-header-logo">
@@ -195,7 +205,7 @@ export default function LandingPage() {
             {!isLoading && (
               isAuthenticated ? (
                 <Link href="/dashboard">
-                  <Button variant="secondary" size="sm" data-testid="button-dashboard">
+                  <Button variant="ghost" size="sm" className="dashboard-btn">
                     Dashboard
                   </Button>
                 </Link>
@@ -481,7 +491,7 @@ export default function LandingPage() {
 
       {/* PARA QUEM É */}
       <section className="landing-section" data-testid="section-audience">
-        <div className="landing-container">
+        <div className="landing-container centered">
           <h2 className="section-title">{t('landing.targetAudience.title')}</h2>
           <p className="section-subtitle">
             {t('landing.targetAudience.subtitle')}
