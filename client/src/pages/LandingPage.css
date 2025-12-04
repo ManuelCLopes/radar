@@ -80,20 +80,9 @@
   background-color: rgba(255, 255, 255, 0.15);
 }
 
-.dashboard-btn {
-  background: rgba(255, 255, 255, 0.2) !important;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  color: white !important;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
 
-.dashboard-btn:hover {
-  background: rgba(255, 255, 255, 0.3) !important;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
+
+
 
 @media (max-width: 640px) {
   .landing-header-title {

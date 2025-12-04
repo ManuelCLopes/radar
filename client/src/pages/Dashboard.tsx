@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { BarChart3, TrendingUp, Building2, MapPin, LogOut, Search, History, FileText, Loader2 } from "lucide-react";
@@ -200,39 +201,25 @@ export default function Dashboard() {
       {/* Header */}
       <header className="border-b sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 font-bold text-xl text-primary">
+          <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary cursor-pointer transition-opacity hover:opacity-80">
             <BarChart3 className="h-6 w-6" />
             <span>Radar</span>
-          </div>
+          </Link>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <LanguageSelector />
             <ThemeToggle />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={user?.profileImageUrl || undefined} alt={user?.firstName || "User"} />
-                    <AvatarFallback>{user?.firstName?.[0] || "U"}</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{user?.firstName} {user?.lastName}</p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {user?.email}
-                    </p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>{t("dashboard.user.logout")}</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleLogout}
+              className="expandable-btn text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20"
+              title={t("dashboard.user.logout")}
+            >
+              <LogOut className="h-5 w-5" />
+              <span aria-hidden="true">{t("dashboard.user.logout")}</span>
+              <span className="sr-only">{t("dashboard.user.logout")}</span>
+            </Button>
           </div>
         </div>
       </header>

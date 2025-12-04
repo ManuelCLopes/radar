@@ -21,7 +21,7 @@ function ProtectedDashboard() {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      window.location.href = "/login";
+      window.location.href = "/";
     }
   }, [isAuthenticated, isLoading]);
 

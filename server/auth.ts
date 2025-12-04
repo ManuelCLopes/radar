@@ -226,27 +226,50 @@ export async function setupAuth(app: Express) {
     );
 
     // Logout
-    app.post("/api/logout", (req, res) => {
-        req.logout((err) => {
+    // Logout - Handle both paths to be safe
+    const logoutHandler = (req: any, res: any, next: any) => {
+        const sessionId = req.sessionID;
+        console.log(`[Logout] Attempting logout for session: ${sessionId}`);
+
+        // Clear site data header to force browser to wipe cookies and storage
+        res.setHeader("Clear-Site-Data", '"cookies", "storage"');
+
+        req.logout((err: any) => {
             if (err) {
-                return res.status(500).json({ message: "Logout failed" });
+                console.error("[Logout] Passport logout error:", err);
+                return next(err);
             }
-            res.json({ success: true, message: "Logged out successfully" });
+
+            req.session.destroy((err: any) => {
+                if (err) {
+                    console.error("[Logout] Session destroy error:", err);
+                    return next(err);
+                }
+                console.log(`[Logout] Session destroyed successfully: ${sessionId}`);
+
+                res.clearCookie("connect.sid", { path: '/' });
+                res.json({ success: true, message: "Logged out successfully" });
+            });
         });
-    });
+    };
+
+    app.post("/api/auth/logout", logoutHandler);
+    app.post("/api/logout", logoutHandler); // Alias
 
     // Also support GET for logout link
-    app.get("/api/logout", (req, res) => {
-        req.logout((err) => {
-            if (err) {
-                return res.status(500).json({ message: "Logout failed" });
-            }
-            res.json({ success: true, message: "Logged out successfully" });
-        });
-    });
+    app.get("/api/auth/logout", logoutHandler);
+    app.get("/api/logout", logoutHandler);
 
     // Get current user
     app.get("/api/auth/user", (req, res) => {
+        // Prevent caching of user state
+        res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.header("Pragma", "no-cache");
+        res.header("Expires", "0");
+        res.header("ETag", "false"); // Disable ETag to prevent 304
+
+        console.log(`[Auth Check] Session: ${req.sessionID}, User: ${req.user ? (req.user as any).id : 'null'}`);
+
         if (req.isAuthenticated()) {
             res.json({ user: req.user });
         } else {

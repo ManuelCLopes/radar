@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, ChevronLeft, ChevronRight, LogIn, Search, Check, X } from "lucide-react";
+import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, ChevronLeft, ChevronRight, LogIn, Search, Check, X, User, LayoutDashboard } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { useCallback, useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -258,15 +258,18 @@ export default function LandingPage() {
             {!isLoading && (
               isAuthenticated ? (
                 <Link href="/dashboard">
-                  <Button variant="ghost" size="sm" className="dashboard-btn">
-                    Dashboard
+                  <Button variant="ghost" size="icon" title="Dashboard" className="expandable-btn">
+                    <LayoutDashboard className="h-5 w-5" />
+                    <span aria-hidden="true">Dashboard</span>
+                    <span className="sr-only">Dashboard</span>
                   </Button>
                 </Link>
               ) : (
                 <Link href="/login">
-                  <Button variant="secondary" size="sm" data-testid="button-login">
-                    <LogIn className="h-4 w-4 mr-1.5" />
-                    Login
+                  <Button variant="ghost" size="icon" data-testid="button-login" title="Login" className="expandable-btn">
+                    <User className="h-5 w-5" />
+                    <span aria-hidden="true">Login</span>
+                    <span className="sr-only">Login</span>
                   </Button>
                 </Link>
               )

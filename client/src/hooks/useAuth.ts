@@ -7,7 +7,17 @@ export function useAuth() {
   const { toast } = useToast();
   const { data: user, isLoading } = useQuery<User>({
     queryKey: ["/api/auth/user"],
+    queryFn: async () => {
+      const res = await fetch(`/api/auth/user?_t=${Date.now()}`);
+      if (res.status === 401) return null;
+      if (!res.ok) {
+        throw new Error("Failed to fetch user");
+      }
+      const data = await res.json();
+      return data.user;
+    },
     retry: false,
+    staleTime: 0,
   });
 
   const logoutMutation = useMutation({
@@ -16,6 +26,7 @@ export function useAuth() {
     },
     onSuccess: () => {
       queryClient.setQueryData(["/api/auth/user"], null);
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
     },
     onError: (error: Error) => {
       toast({
