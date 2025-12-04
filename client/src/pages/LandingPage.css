@@ -106,7 +106,7 @@
 }
 
 .landing-container {
-  max-width: 1140px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
@@ -436,9 +436,13 @@
 .pricing-card {
   background: white;
   border-radius: 1rem;
-  padding: 2rem;
+  padding: 1.5rem;
   border: 2px solid #e5e7eb;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 400px;
 }
 
 .pricing-card.featured {
@@ -456,6 +460,8 @@
 .pricing-plan-subtitle {
   color: #6b7280;
   margin-bottom: 1.5rem;
+  min-height: 3rem;
+  /* Ensure subtitles align */
 }
 
 .pricing-features {
@@ -463,6 +469,8 @@
   padding: 0;
   margin: 0 0 1.5rem;
   text-align: left;
+  flex: 1;
+  /* Push button to bottom */
 }
 
 .pricing-features li {
@@ -472,13 +480,10 @@
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
+  white-space: nowrap;
 }
 
-.pricing-features li::before {
-  content: "✓";
-  color: #10b981;
-  font-weight: 700;
-}
+
 
 .pricing-price {
   font-size: 1.75rem;
@@ -487,13 +492,7 @@
 }
 
 /* Mobile/Desktop visibility */
-.pricing-desktop {
-  display: none;
-}
 
-.pricing-mobile {
-  display: block;
-}
 
 /* Mobile Carousel */
 .pricing-carousel-wrapper {
@@ -509,10 +508,24 @@
 }
 
 .pricing-carousel-slide {
-  flex: 0 0 100%;
+  flex: 0 0 85%;
   min-width: 0;
   padding: 0 0.5rem;
 }
+
+@media (min-width: 950px) {
+  .pricing-carousel-slide {
+    flex: 0 0 50%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .pricing-carousel-slide {
+    flex: 0 0 33.333%;
+  }
+}
+
+
 
 .pricing-carousel-slide .pricing-card {
   height: 100%;
@@ -524,6 +537,12 @@
   justify-content: center;
   gap: 1rem;
   margin-top: 1.5rem;
+}
+
+@media (min-width: 1280px) {
+  .pricing-carousel-controls {
+    display: none;
+  }
 }
 
 .pricing-carousel-btn {
@@ -580,17 +599,7 @@
   background: #9ca3af;
 }
 
-.early-bird-notice {
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  color: #1f2937;
-  padding: 1rem 2rem;
-  border-radius: 0.5rem;
-  text-align: center;
-  font-weight: 600;
-  max-width: 600px;
-  margin: 0 auto;
-  box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3);
-}
+
 
 .faq-list {
   max-width: 800px;
@@ -690,15 +699,20 @@
   .audience-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
 
-  /* Switch from carousel to grid on desktop */
+@media (min-width: 1024px) {
   .pricing-desktop {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
   }
 
-  .pricing-mobile {
-    display: none;
+  .pricing-desktop .pricing-card {
+    flex: 1 1 380px;
+    max-width: 420px;
+    width: 100%;
   }
 }
 

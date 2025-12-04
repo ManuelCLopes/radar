@@ -385,8 +385,56 @@
       "conclusion": "Si vous avez une entreprise locale et de la concurrence autour de vous, Radar a été fait pour vous."
     },
     "pricing": {
-      "title": "Plans et tarifs",
-      "earlyBird": "Les 10 premières entreprises bénéficient d'une configuration initiale gratuite et d'un prix fixe à vie."
+      "title": "Plans et Tarifs",
+      "subtitle": "Trouvez le plan idéal pour votre entreprise, que vous débutiez ou gériez plusieurs emplacements.",
+      "noContracts": "Sans engagement. Annulez à tout moment.",
+      "perMonth": "/mois",
+      "essential": {
+        "subtitle": "Parfait pour les petites entreprises qui souhaitent commencer à analyser la concurrence simplement.",
+        "button": "Commencer maintenant",
+        "features": [
+          "1 Emplacement",
+          "Rapports bimensuels (PDF)",
+          "Rayon jusqu'à 5 km",
+          "Alertes de nouveaux avis",
+          "Analyse IA Basique",
+          "~ Historique des Concurrents",
+          "~ Alertes Concurrents",
+          "~ Analyse des Sentiments des Avis",
+          "Support inclus"
+        ]
+      },
+      "professional": {
+        "subtitle": "Pour les entreprises en croissance qui ont besoin d'une analyse approfondie et d'alertes intelligentes.",
+        "button": "Essayer Professionnel",
+        "features": [
+          "Jusqu'à 3 Emplacements",
+          "10 Rapports/mois (PDF et HTML)",
+          "Rayon jusqu'à 20 km",
+          "Analyse IA Avancée (SWOT + Tendances)",
+          "Historique des Concurrents",
+          "Alertes Concurrents",
+          "Comparaison Mensuelle Automatique",
+          "Analyse des Sentiments des Avis",
+          "~ Marque personnalisée sur les PDF",
+          "~ Tableau de bord multi-entreprises",
+          "Support inclus"
+        ]
+      },
+      "agency": {
+        "subtitle": "Pour les consultants, agences et réseaux d'entreprises nécessitant échelle, organisation et rapports professionnels.",
+        "button": "Devenir Partenaire",
+        "features": [
+          "Jusqu'à 10 Emplacements",
+          "Rapports illimités (PDF, HTML, CSV)",
+          "Rayon jusqu'à 50 km",
+          "Analyse IA Avancée + Stratégie",
+          "Historique et Alertes Premium",
+          "Marque personnalisée sur les PDF",
+          "Tableau de bord multi-entreprises",
+          "Support Prioritaire"
+        ]
+      }
     },
     "faq": {
       "title": "Questions fréquentes",

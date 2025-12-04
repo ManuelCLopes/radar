@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, ChevronLeft, ChevronRight, LogIn, Search } from "lucide-react";
+import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, ChevronLeft, ChevronRight, LogIn, Search, Check, X } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { useCallback, useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -13,60 +13,109 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import "./LandingPage.css";
 
-function PricingCard({ plan, subtitle, features, price, featured, testId, priceTestId }: {
+function PricingCard({ plan, subtitle, features, price, period, featured, buttonText, testId, priceTestId }: {
   plan: string;
   subtitle: string;
   features: string[];
   price: string;
+  period: string;
   featured?: boolean;
+  buttonText: string;
   testId: string;
   priceTestId: string;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div className={`pricing-card ${featured ? 'featured' : ''}`} data-testid={testId}>
       <h3 className="pricing-plan-name">{plan}</h3>
-      <p className="pricing-plan-subtitle">{subtitle}</p>
+      <p className="pricing-plan-subtitle">{t(subtitle)}</p>
+      <div className="pricing-price-container">
+        <span className="pricing-price" data-testid={priceTestId}>{price}</span>
+        <span className="pricing-period">{t(period)}</span>
+      </div>
       <ul className="pricing-features">
-        {features.map((feature, index) => (
-          <li key={index}>{feature}</li>
-        ))}
+        {features.map((featureKey, i) => {
+          const translatedFeature = t(featureKey);
+          const isNegative = translatedFeature.startsWith('~');
+          const cleanFeature = isNegative ? translatedFeature.substring(1).trim() : translatedFeature;
+
+          return (
+            <li key={i} className={isNegative ? 'feature-negative' : ''}>
+              {isNegative ? (
+                <X className="w-5 h-5 text-gray-400 mr-2 flex-shrink-0" />
+              ) : (
+                <Check className="w-5 h-5 text-green-500 mr-2 flex-shrink-0" />
+              )}
+              <span className={isNegative ? 'text-gray-400 line-through' : ''}>{cleanFeature}</span>
+            </li>
+          );
+        })}
       </ul>
-      <p className="pricing-price" data-testid={priceTestId}>{price}</p>
+      <button className={`btn-pricing ${featured ? 'btn-primary' : 'btn-outline'}`}>
+        {t(buttonText)}
+      </button>
     </div>
   );
 }
 
 const pricingPlans = [
   {
-    plan: "Essencial",
-    subtitle: "Para negócios individuais.",
+    plan: "Essential",
+    subtitle: "landing.pricing.essential.subtitle",
     features: [
-      "1 localização",
-      "Relatório mensal",
-      "Raio até 3 km",
-      "Até 20 concorrentes analisados",
-      "Envios por email em PDF",
-      "Suporte por email"
+      "landing.pricing.essential.features.0",
+      "landing.pricing.essential.features.1",
+      "landing.pricing.essential.features.2",
+      "landing.pricing.essential.features.3",
+      "landing.pricing.essential.features.4",
+      "landing.pricing.essential.features.5",
+      "landing.pricing.essential.features.6"
     ],
-    price: "9€ / mês ou 90€ / ano",
+    price: "9.90€",
+    period: "landing.pricing.perMonth",
+    buttonText: "landing.pricing.essential.button",
     testId: "pricing-card-essential",
     priceTestId: "price-essential"
   },
   {
-    plan: "Profissional",
-    subtitle: "Para quem tem mais de um negócio ou quer acompanhar a fundo.",
+    plan: "Professional",
+    subtitle: "landing.pricing.professional.subtitle",
     features: [
-      "Até 3 localizações",
-      "Relatório mensal + botão \"gerar agora\" no painel",
-      "Raio até 5 km por localização",
-      "Até 40 concorrentes por localização",
-      "Relatórios com secção extra de recomendações",
-      "Prioridade no suporte"
+      "landing.pricing.professional.features.0",
+      "landing.pricing.professional.features.1",
+      "landing.pricing.professional.features.2",
+      "landing.pricing.professional.features.3",
+      "landing.pricing.professional.features.4",
+      "landing.pricing.professional.features.5",
+      "landing.pricing.professional.features.6",
+      "landing.pricing.professional.features.7",
+      "landing.pricing.professional.features.8"
     ],
-    price: "19€ / mês ou 180€ / ano",
-    featured: true,
+    price: "29.90€",
+    period: "landing.pricing.perMonth",
+    buttonText: "landing.pricing.professional.button",
     testId: "pricing-card-professional",
     priceTestId: "price-professional"
+  },
+  {
+    plan: "Agency",
+    subtitle: "landing.pricing.agency.subtitle",
+    features: [
+      "landing.pricing.agency.features.0",
+      "landing.pricing.agency.features.1",
+      "landing.pricing.agency.features.2",
+      "landing.pricing.agency.features.3",
+      "landing.pricing.agency.features.4",
+      "landing.pricing.agency.features.5",
+      "landing.pricing.agency.features.6",
+      "landing.pricing.agency.features.7"
+    ],
+    price: "79.90€",
+    period: "landing.pricing.perMonth",
+    buttonText: "landing.pricing.agency.button",
+    testId: "pricing-card-agency",
+    priceTestId: "price-agency"
   }
 ];
 
@@ -78,8 +127,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 // ... (imports remain the same)
 
 export default function LandingPage() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'center' });
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'center', startIndex: 1 });
+  const [selectedIndex, setSelectedIndex] = useState(1);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const { isAuthenticated, isLoading } = useAuth();
@@ -131,9 +180,13 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (!emblaApi) return;
-    onSelect();
+    // Force initial state to Professional (index 1)
+    setSelectedIndex(1);
+    emblaApi.scrollTo(1);
+
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
+
     return () => {
       emblaApi.off('select', onSelect);
       emblaApi.off('reInit', onSelect);
@@ -539,20 +592,24 @@ export default function LandingPage() {
         <div className="landing-container">
           <h2 className="section-title">{t('landing.pricing.title')}</h2>
 
-          {/* Desktop grid */}
-          <div className="pricing-grid pricing-desktop">
-            {pricingPlans.map((plan) => (
-              <PricingCard key={plan.testId} {...plan} />
-            ))}
-          </div>
-
-          {/* Mobile carousel */}
-          <div className="pricing-carousel-wrapper pricing-mobile">
+          {/* Pricing Carousel (Responsive) */}
+          <div className="pricing-carousel-wrapper">
             <div className="pricing-carousel" ref={emblaRef}>
               <div className="pricing-carousel-container">
-                {pricingPlans.map((plan) => (
-                  <div className="pricing-carousel-slide" key={plan.testId}>
-                    <PricingCard {...plan} />
+                {pricingPlans.map((plan, index) => (
+                  <div
+                    className="pricing-carousel-slide"
+                    key={plan.testId}
+                    onClick={() => {
+                      scrollTo(index);
+                      setSelectedIndex(index);
+                    }}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <PricingCard
+                      {...plan}
+                      featured={index === selectedIndex}
+                    />
                   </div>
                 ))}
               </div>
@@ -590,9 +647,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <p className="early-bird-notice">
-            {t('landing.pricing.earlyBird')}
-          </p>
+
         </div>
       </section>
 

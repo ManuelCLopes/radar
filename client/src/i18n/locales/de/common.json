@@ -50,9 +50,59 @@
       "longitude": "Längengrad",
       "longitudePlaceholder": "z.B., 13.4050",
       "address": "Adresse",
-      "addressPlaceholder": "Geben Sie die Adresse Ihres Unternehmens ein",
-      "submit": "Unternehmen Registrieren",
-      "submitting": "Registrierung..."
+      "addressPlaceholder": "Geben Sie die Adresse Ihres Unternehmens ein"
+    },
+    "pricing": {
+      "title": "Pläne und Preise",
+      "subtitle": "Finden Sie den idealen Plan für Ihr Unternehmen – egal, ob Sie gerade erst anfangen oder mehrere Standorte verwalten.",
+      "noContracts": "Keine Verträge. Jederzeit kündbar.",
+      "perMonth": "/Monat",
+      "essential": {
+        "subtitle": "Perfekt für kleine Unternehmen, die einfach anfangen wollen, die Konkurrenz zu analysieren.",
+        "button": "Jetzt starten",
+        "features": [
+          "1 Standort",
+          "Zweiwöchentliche Berichte (PDF)",
+          "Radius bis zu 5 km",
+          "Benachrichtigungen über neue Bewertungen",
+          "Basis-KI-Analyse",
+          "~ Wettbewerber-Historie",
+          "~ Wettbewerber-Warnungen",
+          "~ Bewertungs-Sentiment-Analyse",
+          "Support inbegriffen"
+        ]
+      },
+      "professional": {
+        "subtitle": "Für wachsende Unternehmen, die tiefe Analysen und intelligente Warnungen benötigen.",
+        "button": "Professional ausprobieren",
+        "features": [
+          "Bis zu 3 Standorte",
+          "10 Berichte/Monat (PDF & HTML)",
+          "Radius bis zu 20 km",
+          "Erweiterte KI-Analyse (SWOT + Trends)",
+          "Wettbewerber-Historie",
+          "Wettbewerber-Warnungen",
+          "Automatischer Monatsvergleich",
+          "Bewertungs-Sentiment-Analyse",
+          "~ Benutzerdefiniertes Branding auf PDFs",
+          "~ Multi-Business-Dashboard",
+          "Support inbegriffen"
+        ]
+      },
+      "agency": {
+        "subtitle": "Für Berater, Agenturen und Unternehmensnetzwerke, die Skalierung, Organisation und professionelle Berichterstattung benötigen.",
+        "button": "Partner werden",
+        "features": [
+          "Bis zu 10 Standorte",
+          "Unbegrenzte Berichte (PDF, HTML, CSV)",
+          "Radius bis zu 50 km",
+          "Erweiterte KI-Analyse + Strategie",
+          "Premium-Historie & Warnungen",
+          "Benutzerdefiniertes Branding auf PDFs",
+          "Multi-Business-Dashboard",
+          "Priorisierter Support"
+        ]
+      }
     },
     "types": {
       "restaurant": "Restaurant",

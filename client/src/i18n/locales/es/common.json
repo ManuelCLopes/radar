@@ -385,8 +385,56 @@
       "conclusion": "Si tienes un negocio local y competencia a tu alrededor, Radar fue hecho para ti."
     },
     "pricing": {
-      "title": "Planes y precios",
-      "earlyBird": "Los primeros 10 negocios obtienen configuración inicial gratuita y precio fijo de por vida."
+      "title": "Planes y Precios",
+      "subtitle": "Encuentra el plan ideal para tu negocio, ya sea que estés comenzando o gestionando múltiples ubicaciones.",
+      "noContracts": "Sin contratos. Cancela cuando quieras.",
+      "perMonth": "/mes",
+      "essential": {
+        "subtitle": "Perfecto para pequeños negocios que quieren comenzar a analizar a la competencia de forma sencilla.",
+        "button": "Empezar ahora",
+        "features": [
+          "1 Ubicación",
+          "Informes quincenales (PDF)",
+          "Radio hasta 5 km",
+          "Alertas de nuevas reseñas",
+          "Análisis IA Básico",
+          "~ Historial de Competidores",
+          "~ Alertas de Competidores",
+          "~ Análisis de Sentimento de Reseñas",
+          "Soporte incluido"
+        ]
+      },
+      "professional": {
+        "subtitle": "Para negocios en crecimiento que necesitan análisis profundo y alertas inteligentes.",
+        "button": "Probar Profesional",
+        "features": [
+          "Hasta 3 Ubicaciones",
+          "10 Informes/mes (PDF y HTML)",
+          "Radio hasta 20 km",
+          "Análisis IA Avanzado (DAFO + Tendencias)",
+          "Historial de Competidores",
+          "Alertas de Competidores",
+          "Comparación Mensual Automática",
+          "Análisis de Sentimiento de Reseñas",
+          "~ Marca personalizada en PDFs",
+          "~ Panel multi-negocio",
+          "Soporte incluido"
+        ]
+      },
+      "agency": {
+        "subtitle": "Para consultores, agencias y redes de negocios que necesitan escala, organización e informes profesionales.",
+        "button": "Convertirse en Socio",
+        "features": [
+          "Hasta 10 Ubicaciones",
+          "Informes ilimitados (PDF, HTML, CSV)",
+          "Radio hasta 50 km",
+          "Análisis IA Avanzado + Estrategia",
+          "Historial y Alertas Premium",
+          "Marca personalizada en PDFs",
+          "Panel multi-negocio",
+          "Soporte Prioritario"
+        ]
+      }
     },
     "faq": {
       "title": "Preguntas frecuentes",
