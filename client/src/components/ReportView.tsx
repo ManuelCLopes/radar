@@ -265,7 +265,7 @@ Local Competitor Analyzer
                 {report.businessName} - {new Date(report.generatedAt).toLocaleString()}
               </DialogDescription>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mr-8">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" data-testid="button-export-report">
