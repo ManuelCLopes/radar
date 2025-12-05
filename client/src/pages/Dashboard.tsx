@@ -171,6 +171,7 @@ export default function Dashboard() {
     onSuccess: (report: Report) => {
       setCurrentReport(report);
       setReportDialogOpen(true);
+      setIsAnalysisOpen(false);
       queryClient.invalidateQueries({ queryKey: ["/api/reports/history"] });
       toast({
         title: t("toast.reportGenerated.title"),
@@ -436,11 +437,17 @@ export default function Dashboard() {
 
               <TabsContent value="history">
                 <Card>
-                  <CardHeader>
-                    <CardTitle>{t("dashboard.analysis.historyTitle")}</CardTitle>
-                    <CardDescription>
-                      {t("dashboard.analysis.historyDescription")}
-                    </CardDescription>
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                      <CardTitle>{t("dashboard.analysis.historyTitle")}</CardTitle>
+                      <CardDescription>
+                        {t("dashboard.analysis.historyDescription")}
+                      </CardDescription>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => queryClient.invalidateQueries({ queryKey: ["/api/reports/history"] })}>
+                      <History className="h-4 w-4 mr-2" />
+                      Refresh
+                    </Button>
                   </CardHeader>
                   <CardContent>
                     {isLoadingHistory ? (

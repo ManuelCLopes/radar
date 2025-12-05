@@ -119,8 +119,8 @@ export const competitorSchema = z.object({
 });
 
 export const insertReportSchema = z.object({
-  userId: z.string().optional(),
-  businessId: z.string().optional(),
+  userId: z.string().optional().nullable(),
+  businessId: z.string().optional().nullable(),
   businessName: z.string(),
   competitors: z.array(competitorSchema),
   aiAnalysis: z.string(),

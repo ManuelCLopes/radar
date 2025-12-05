@@ -276,6 +276,13 @@ export async function registerRoutes(
     }
   });
 
+  // Get User's Report History
+  app.get("/api/reports/history", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const reports = await storage.getReportsByUserId((req.user as AppUser).id);
+    res.json(reports);
+  });
+
   app.get("/api/reports/:id", isAuthenticated, async (req, res) => {
     try {
       const report = await storage.getReport(req.params.id);
@@ -384,12 +391,10 @@ export async function registerRoutes(
       // Exclude id and generatedAt to let DB handle them
       const { id: _tempId, generatedAt: _tempGenAt, ...reportData } = report;
 
-      console.log("Saving analysis for user:", (req.user as AppUser)?.id);
-
       const savedReport = await storage.createReport({
         ...reportData,
         userId: (req.user as AppUser).id,
-        businessId: undefined
+        businessId: null // Explicitly set to null for ad-hoc analysis
       });
 
       res.json(savedReport);
@@ -399,12 +404,7 @@ export async function registerRoutes(
     }
   });
 
-  // Get User's Report History
-  app.get("/api/reports/history", async (req, res) => {
-    if (!req.isAuthenticated()) return res.sendStatus(401);
-    const reports = await storage.getReportsByUserId((req.user as AppUser).id);
-    res.json(reports);
-  });
+
 
   return httpServer;
 }

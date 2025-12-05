@@ -143,6 +143,7 @@ export class MemStorage implements IStorage {
       firstName: userData.firstName ?? null,
       lastName: userData.lastName ?? null,
       profileImageUrl: userData.profileImageUrl ?? null,
+      plan: userData.plan ?? "essential",
       createdAt: new Date(),
       updatedAt: new Date(),
     };
