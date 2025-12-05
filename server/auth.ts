@@ -160,7 +160,7 @@ export async function setupAuth(app: Express) {
     // Local registration
     app.post("/api/register", async (req, res) => {
         try {
-            const { email, password, firstName, lastName } = req.body;
+            const { email, password, firstName, lastName, plan } = req.body;
 
             if (!email || !password) {
                 return res.status(400).json({ message: "Email and password are required" });
@@ -182,6 +182,7 @@ export async function setupAuth(app: Express) {
                 provider: "local",
                 firstName: firstName || null,
                 lastName: lastName || null,
+                plan: plan || "essential",
             });
 
             // Log in the user

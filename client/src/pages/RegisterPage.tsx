@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BarChart3, Mail, Lock, User, Sparkles, Check, CreditCard, Building2 } from "lucide-react";
+import { BarChart3, Mail, Lock, User, Check, Loader2, AlertCircle, ChevronLeft, ChevronRight, CreditCard, Building2, Sparkles } from "lucide-react";
+import useEmblaCarousel from 'embla-carousel-react';
+import { useCallback, useEffect } from "react";
+import "./LandingPage.css";
 import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -18,26 +21,50 @@ type Step = "account" | "plan" | "payment";
 
 const plans = [
     {
-        id: "free",
-        name: "Free",
-        price: "€0",
+        id: "essential",
+        name: "Essential",
+        price: "9.90€",
         period: "/mês",
-        features: ["1 negócio", "5 relatórios/mês", "Análise básica"],
+        features: [
+            "landing.pricing.essential.features.0",
+            "landing.pricing.essential.features.1",
+            "landing.pricing.essential.features.2",
+            "landing.pricing.essential.features.3",
+            "landing.pricing.essential.features.4"
+        ],
     },
     {
-        id: "pro",
-        name: "Pro",
-        price: "€29",
+        id: "professional",
+        name: "Professional",
+        price: "29.90€",
         period: "/mês",
-        features: ["5 negócios", "Relatórios ilimitados", "Análise avançada", "Suporte prioritário"],
+        features: [
+            "landing.pricing.professional.features.0",
+            "landing.pricing.professional.features.1",
+            "landing.pricing.professional.features.2",
+            "landing.pricing.professional.features.3",
+            "landing.pricing.professional.features.4",
+            "landing.pricing.professional.features.5",
+            "landing.pricing.professional.features.6",
+            "landing.pricing.professional.features.7"
+        ],
         popular: true,
     },
     {
-        id: "enterprise",
-        name: "Enterprise",
-        price: "€99",
+        id: "agency",
+        name: "Agency",
+        price: "79.90€",
         period: "/mês",
-        features: ["Negócios ilimitados", "Relatórios ilimitados", "API access", "Suporte dedicado"],
+        features: [
+            "landing.pricing.agency.features.0",
+            "landing.pricing.agency.features.1",
+            "landing.pricing.agency.features.2",
+            "landing.pricing.agency.features.3",
+            "landing.pricing.agency.features.4",
+            "landing.pricing.agency.features.5",
+            "landing.pricing.agency.features.6",
+            "landing.pricing.agency.features.7"
+        ],
     },
 ];
 
@@ -66,10 +93,92 @@ export default function RegisterPage() {
             lastName: "",
             email: "",
             password: "",
-            plan: "pro",
+            plan: "professional",
             paymentMethod: "card",
         },
     });
+
+    const [emblaRef, emblaApi] = useEmblaCarousel({
+        loop: false,
+        align: 'center',
+        startIndex: plans.findIndex(p => p.id === form.getValues("plan"))
+    });
+
+    const [selectedIndex, setSelectedIndex] = useState(() => {
+        const initialPlan = form.getValues("plan");
+        const index = plans.findIndex(p => p.id === initialPlan);
+        return index !== -1 ? index : 1;
+    });
+
+    const [canScrollPrev, setCanScrollPrev] = useState(false);
+    const [canScrollNext, setCanScrollNext] = useState(false);
+
+    const [carouselReady, setCarouselReady] = useState(false);
+
+    // Track the intended target index to prevent race conditions
+    const targetIndexRef = useRef(plans.findIndex(p => p.id === form.getValues("plan")));
+    if (targetIndexRef.current === -1) targetIndexRef.current = 1;
+
+    const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
+    const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+    const scrollTo = useCallback((index: number) => emblaApi && emblaApi.scrollTo(index), [emblaApi]);
+
+    const onSelect = useCallback(() => {
+        if (!emblaApi) return;
+        setSelectedIndex(emblaApi.selectedScrollSnap());
+        setCanScrollPrev(emblaApi.canScrollPrev());
+        setCanScrollNext(emblaApi.canScrollNext());
+    }, [emblaApi]);
+
+    useEffect(() => {
+        if (!emblaApi) return;
+        onSelect();
+        emblaApi.on("select", onSelect);
+        emblaApi.on("reInit", onSelect);
+    }, [emblaApi, onSelect]);
+
+    // Update form when carousel selection changes
+    useEffect(() => {
+        if (currentStep === "plan" && emblaApi) {
+            const selectedPlan = plans[selectedIndex];
+
+            // If not ready, only allow update if we reached the target index
+            if (!carouselReady) {
+                if (selectedIndex === targetIndexRef.current) {
+                    setCarouselReady(true);
+                } else {
+                    return; // Ignore updates until we reach target
+                }
+            }
+
+            // Only update if the plan actually changed to avoid overwriting initial state
+            if (selectedPlan && form.getValues("plan") !== selectedPlan.id) {
+                form.setValue("plan", selectedPlan.id);
+            }
+        }
+    }, [selectedIndex, currentStep, form, emblaApi, carouselReady]);
+
+    // Sync carousel with form value on mount/step change
+    useEffect(() => {
+        if (currentStep === "plan" && emblaApi) {
+            const currentPlanId = form.getValues("plan");
+            const index = plans.findIndex(p => p.id === currentPlanId);
+
+            if (index !== -1) {
+                // Update target index
+                targetIndexRef.current = index;
+
+                // Force scroll to index with a small delay to ensure layout is ready
+                setTimeout(() => {
+                    scrollTo(index);
+                }, 100);
+            }
+        } else {
+            setCarouselReady(false);
+        }
+    }, [currentStep, emblaApi, form, scrollTo]);
+
+
 
     const handleAccountSubmit = async () => {
         const isValid = await form.trigger(["email", "password", "firstName", "lastName"]);
@@ -140,7 +249,10 @@ export default function RegisterPage() {
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-400/10 dark:bg-indigo-600/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }}></div>
             </div>
 
-            <div className="w-full max-w-2xl px-4 relative z-10">
+            <div className={cn(
+                "w-full px-4 relative z-10 transition-all duration-500 ease-in-out",
+                currentStep === "plan" ? "max-w-7xl" : "max-w-2xl"
+            )}>
                 <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 p-8 space-y-6">
                     {/* Logo and Title */}
                     <div className="flex items-center justify-center gap-4">
@@ -336,43 +448,89 @@ export default function RegisterPage() {
                         {currentStep === "plan" && (
                             <div className="space-y-4">
                                 <h3 className="text-lg font-semibold text-center text-gray-900 dark:text-white">{t("auth.choosePlan")}</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    {plans.map((plan) => (
-                                        <button
-                                            key={plan.id}
-                                            type="button"
-                                            onClick={() => form.setValue("plan", plan.id)}
-                                            className={cn(
-                                                "relative p-4 rounded-xl border-2 transition-all text-left",
-                                                form.watch("plan") === plan.id
-                                                    ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
-                                                    : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
-                                            )}
-                                        >
-                                            {plan.popular && (
-                                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-semibold rounded-full">
-                                                    {t("auth.popular")}
-                                                </div>
-                                            )}
-                                            <div className="space-y-3">
-                                                <div>
-                                                    <h4 className="font-bold text-gray-900 dark:text-white">{plan.name}</h4>
-                                                    <div className="flex items-baseline gap-1 mt-1">
-                                                        <span className="text-2xl font-bold text-gray-900 dark:text-white">{plan.price}</span>
-                                                        <span className="text-sm text-gray-500 dark:text-gray-400">{plan.period}</span>
+                                <div className="pricing-carousel" ref={emblaRef}>
+                                    <div className="pricing-carousel-container py-4">
+                                        {plans.map((plan, index) => (
+                                            <div
+                                                className="pricing-carousel-slide"
+                                                key={plan.id}
+                                                onClick={() => {
+                                                    form.setValue("plan", plan.id);
+                                                    scrollTo(index);
+                                                }}
+                                                style={{ cursor: 'pointer' }}
+                                            >
+                                                <button
+                                                    type="button"
+                                                    className={cn(
+                                                        "w-full relative p-4 rounded-xl border-2 transition-all text-left h-full flex flex-col",
+                                                        form.watch("plan") === plan.id
+                                                            ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
+                                                            : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+                                                    )}
+                                                >
+                                                    {plan.popular && (
+                                                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-semibold rounded-full">
+                                                            {t("auth.popular")}
+                                                        </div>
+                                                    )}
+                                                    <div className="flex justify-between items-start mb-2">
+                                                        <div>
+                                                            <h4 className="font-semibold text-gray-900 dark:text-white">{plan.name}</h4>
+                                                            <div className="flex items-baseline gap-1 mt-1">
+                                                                <span className="text-2xl font-bold text-gray-900 dark:text-white">{plan.price}</span>
+                                                                <span className="text-sm text-gray-500 dark:text-gray-400">{plan.period}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className={cn(
+                                                            "w-5 h-5 rounded-full border-2 flex items-center justify-center",
+                                                            form.watch("plan") === plan.id
+                                                                ? "border-blue-600 bg-blue-600"
+                                                                : "border-gray-300 dark:border-gray-600"
+                                                        )}>
+                                                            {form.watch("plan") === plan.id && <Check className="w-3 h-3 text-white" />}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <ul className="space-y-2">
-                                                    {plan.features.map((feature, i) => (
-                                                        <li key={i} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
-                                                            <Check className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
-                                                            <span>{feature}</span>
-                                                        </li>
-                                                    ))}
-                                                </ul>
+                                                    <ul className="space-y-2 mt-4 flex-1">
+                                                        {plan.features.map((feature, i) => (
+                                                            <li key={i} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
+                                                                <Check className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
+                                                                <span>{t(feature)}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </button>
                                             </div>
-                                        </button>
-                                    ))}
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="pricing-carousel-controls">
+                                    <button
+                                        type="button"
+                                        className="pricing-carousel-btn"
+                                        onClick={scrollPrev}
+                                        disabled={!canScrollPrev}
+                                    >
+                                        <ChevronLeft />
+                                    </button>
+                                    <div className="pricing-carousel-dots">
+                                        {plans.map((_, index) => (
+                                            <button
+                                                key={index}
+                                                type="button"
+                                                className={`pricing-carousel-dot ${index === selectedIndex ? 'active' : ''}`}
+                                                onClick={() => scrollTo(index)}
+                                            />
+                                        ))}
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className="pricing-carousel-btn"
+                                        onClick={scrollNext}
+                                        disabled={!canScrollNext}
+                                    >
+                                        <ChevronRight />
+                                    </button>
                                 </div>
                                 <div className="flex gap-3 pt-2">
                                     <Button
