@@ -11,6 +11,7 @@ export interface IStorage {
   getBusiness(id: string): Promise<Business | undefined>;
   listBusinesses(): Promise<Business[]>;
   addBusiness(business: InsertBusiness): Promise<Business>;
+  updateBusiness(id: string, business: Partial<InsertBusiness>): Promise<Business>;
   deleteBusiness(id: string): Promise<boolean>;
 
   createReport(report: InsertReport): Promise<Report>;
@@ -73,6 +74,20 @@ export class DatabaseStorage implements IStorage {
     return result.length > 0;
   }
 
+  async updateBusiness(id: string, business: Partial<InsertBusiness>): Promise<Business> {
+    const [updatedBusiness] = await db!
+      .update(businesses)
+      .set({ ...business, updatedAt: new Date() })
+      .where(eq(businesses.id, id))
+      .returning();
+
+    if (!updatedBusiness) {
+      throw new Error("Business not found");
+    }
+
+    return updatedBusiness;
+  }
+
   async createReport(insertReport: InsertReport): Promise<Report> {
     return this.saveReport(insertReport);
   }
@@ -116,13 +131,18 @@ export class DatabaseStorage implements IStorage {
 }
 
 export class MemStorage implements IStorage {
-  private users = new Map<string, User>();
-  private businesses = new Map<string, Business>();
-  private reportsMap = new Map<string, Report>();
-  private searchesMap = new Map<string, InsertSearch>();
+  private users: Map<string, User>;
+  private businesses: Map<string, Business>;
+  private reports: Map<string, Report>;
+  private searches: Map<string, InsertSearch>;
+  currentId: number;
 
   constructor() {
-    // Properties are initialized directly, no need for constructor assignments
+    this.users = new Map();
+    this.businesses = new Map();
+    this.reports = new Map();
+    this.searches = new Map();
+    this.currentId = 1;
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -130,25 +150,27 @@ export class MemStorage implements IStorage {
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(u => u.email === email);
+    return Array.from(this.users.values()).find(
+      (user) => user.email === email
+    );
   }
 
-  async upsertUser(userData: UpsertUser): Promise<User> {
-    const id = userData.id || `user-${Date.now()}`;
-    const user: User = {
+  async upsertUser(user: UpsertUser): Promise<User> {
+    const id = user.id || String(this.currentId++);
+    const newUser: User = {
+      ...user,
       id,
-      email: userData.email!,
-      passwordHash: userData.passwordHash ?? null,
-      provider: userData.provider ?? "local",
-      firstName: userData.firstName ?? null,
-      lastName: userData.lastName ?? null,
-      profileImageUrl: userData.profileImageUrl ?? null,
-      plan: userData.plan ?? "essential",
       createdAt: new Date(),
       updatedAt: new Date(),
+      firstName: user.firstName || null,
+      lastName: user.lastName || null,
+      profileImageUrl: user.profileImageUrl || null,
+      passwordHash: user.passwordHash || null,
+      plan: user.plan || "essential",
+      provider: user.provider || "local"
     };
-    this.users.set(id, user);
-    return user;
+    this.users.set(id, newUser);
+    return newUser;
   }
 
   async getBusiness(id: string): Promise<Business | undefined> {
@@ -156,22 +178,40 @@ export class MemStorage implements IStorage {
   }
 
   async listBusinesses(): Promise<Business[]> {
-    return Array.from(this.businesses.values()).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    return Array.from(this.businesses.values()).sort((a, b) =>
+      b.createdAt.getTime() - a.createdAt.getTime()
+    );
   }
 
-  async addBusiness(insertBusiness: InsertBusiness): Promise<Business> {
-    const id = `biz-${Date.now()}`;
-    const business: Business = {
-      ...insertBusiness,
+  async addBusiness(business: InsertBusiness): Promise<Business> {
+    const id = String(this.currentId++);
+    const newBusiness: Business = {
+      ...business,
       id,
       createdAt: new Date(),
-      latitude: insertBusiness.latitude ?? null,
-      longitude: insertBusiness.longitude ?? null,
-      address: insertBusiness.address ?? null,
-      locationStatus: insertBusiness.locationStatus ?? "validated",
+      updatedAt: new Date(),
+      latitude: business.latitude ?? null,
+      longitude: business.longitude ?? null,
+      locationStatus: business.locationStatus ?? "validated"
     };
-    this.businesses.set(id, business);
-    return business;
+    this.businesses.set(id, newBusiness);
+    return newBusiness;
+  }
+
+  async updateBusiness(id: string, business: Partial<InsertBusiness>): Promise<Business> {
+    const existingBusiness = this.businesses.get(id);
+    if (!existingBusiness) {
+      throw new Error("Business not found");
+    }
+
+    const updatedBusiness: Business = {
+      ...existingBusiness,
+      ...business,
+      updatedAt: new Date()
+    };
+
+    this.businesses.set(id, updatedBusiness);
+    return updatedBusiness;
   }
 
   async deleteBusiness(id: string): Promise<boolean> {
@@ -183,41 +223,42 @@ export class MemStorage implements IStorage {
   }
 
   async saveReport(insertReport: InsertReport): Promise<Report> {
-    const id = `rep-${Date.now()}`;
+    const id = String(this.currentId++);
     const report: Report = {
       ...insertReport,
       id,
-      userId: insertReport.userId || null,
-      businessId: insertReport.businessId || null,
       generatedAt: new Date(),
+      userId: insertReport.userId || null,
+      businessId: insertReport.businessId || null
     };
-    this.reportsMap.set(id, report);
+    this.reports.set(id, report);
     return report;
   }
 
   async getReport(id: string): Promise<Report | undefined> {
-    return this.reportsMap.get(id);
+    return this.reports.get(id);
   }
 
   async getReportsByBusinessId(businessId: string): Promise<Report[]> {
-    return Array.from(this.reportsMap.values())
-      .filter((r) => r.businessId === businessId)
+    return Array.from(this.reports.values())
+      .filter((report) => report.businessId === businessId)
       .sort((a, b) => b.generatedAt.getTime() - a.generatedAt.getTime());
   }
 
   async getReportsByUserId(userId: string): Promise<Report[]> {
-    return Array.from(this.reportsMap.values())
-      .filter((r) => r.userId === userId)
+    return Array.from(this.reports.values())
+      .filter((report) => report.userId === userId)
       .sort((a, b) => b.generatedAt.getTime() - a.generatedAt.getTime());
   }
 
   async listAllReports(): Promise<Report[]> {
-    return Array.from(this.reportsMap.values()).sort((a, b) => b.generatedAt.getTime() - a.generatedAt.getTime());
+    return Array.from(this.reports.values())
+      .sort((a, b) => b.generatedAt.getTime() - a.generatedAt.getTime());
   }
 
   async trackSearch(search: InsertSearch): Promise<void> {
-    const id = 'search-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-    this.searchesMap.set(id, { ...search, id });
+    const id = String(this.currentId++);
+    this.searches.set(id, search);
   }
 }
 

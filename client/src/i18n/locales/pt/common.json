@@ -35,8 +35,16 @@
       "historyTitle": "Histórico de Análises",
       "historyDescription": "Veja e exporte os seus relatórios anteriores.",
       "noReports": "Nenhum relatório encontrado. Execute uma análise para começar.",
-      "addressPlaceholder": "Introduza a morada para análise"
-    }
+      "addressPlaceholder": "Insira o endereço para análise"
+    },
+    "addBusiness": "Adicionar Negócio",
+    "addBusinessDesc": "Insira os detalhes do novo negócio.",
+    "editBusiness": "Editar Negócio",
+    "editBusinessDesc": "Atualize os detalhes do seu negócio.",
+    "businessCreated": "Negócio Criado",
+    "businessCreatedDesc": "O negócio foi criado com sucesso.",
+    "businessUpdated": "Negócio Atualizado",
+    "businessUpdatedDesc": "Os detalhes do negócio foram atualizados com sucesso."
   },
   "business": {
     "form": {

@@ -36,7 +36,15 @@
       "historyDescription": "Consultez et exportez vos rapports précédents.",
       "noReports": "Aucun rapport trouvé. Lancez une analyse pour commencer.",
       "addressPlaceholder": "Entrez l'adresse pour l'analyse"
-    }
+    },
+    "addBusiness": "Ajouter une Entreprise",
+    "addBusinessDesc": "Entrez les détails de la nouvelle entreprise.",
+    "editBusiness": "Modifier l'Entreprise",
+    "editBusinessDesc": "Mettez à jour les détails de votre entreprise.",
+    "businessCreated": "Entreprise Créée",
+    "businessCreatedDesc": "L'entreprise a été créée avec succès.",
+    "businessUpdated": "Entreprise Mise à Jour",
+    "businessUpdatedDesc": "Les détails de l'entreprise ont été mis à jour avec succès."
   },
   "business": {
     "form": {

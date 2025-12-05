@@ -36,7 +36,15 @@
       "historyDescription": "View and export your past reports.",
       "noReports": "No reports found. Run an analysis to get started.",
       "addressPlaceholder": "Enter address for analysis"
-    }
+    },
+    "addBusiness": "Add Business",
+    "addBusinessDesc": "Enter the details of the new business.",
+    "editBusiness": "Edit Business",
+    "editBusinessDesc": "Update the details of your business.",
+    "businessCreated": "Business Created",
+    "businessCreatedDesc": "The business has been successfully created.",
+    "businessUpdated": "Business Updated",
+    "businessUpdatedDesc": "The business details have been successfully updated."
   },
   "business": {
     "form": {

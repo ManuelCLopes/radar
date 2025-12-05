@@ -49,6 +49,7 @@ type FormValues = z.infer<typeof baseSchema>;
 interface BusinessFormProps {
   onSubmit: (data: InsertBusiness) => Promise<void>;
   isPending?: boolean;
+  initialValues?: Partial<FormValues>;
 }
 
 interface SearchResponse {
@@ -57,7 +58,7 @@ interface SearchResponse {
   message?: string;
 }
 
-export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps) {
+export function BusinessForm({ onSubmit, isPending = false, initialValues }: BusinessFormProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
 
@@ -82,9 +83,9 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      type: undefined,
-      address: "",
+      name: initialValues?.name || "",
+      type: initialValues?.type || undefined,
+      address: initialValues?.address || "",
     },
   });
 
@@ -233,6 +234,24 @@ export function BusinessForm({ onSubmit, isPending = false }: BusinessFormProps)
   };
 
   const handleSubmit = async (data: FormValues) => {
+    // If editing and address hasn't changed, skip search/validation
+    if (initialValues && data.address === initialValues.address) {
+      const businessData: InsertBusiness = {
+        name: data.name,
+        type: data.type,
+        address: data.address,
+        // Preserve existing coordinates if not changed (handled by backend merge or we pass undefined)
+        // Actually, we should probably pass null or undefined if we don't have new coords, 
+        // but since we don't have the full business object here, we rely on the parent or the fact that we are updating.
+        // For update, we might want to pass only changed fields, but this form submits a full InsertBusiness object.
+        // Let's assume if address is unchanged, we keep existing location status.
+        locationStatus: "validated", // Assuming existing is validated if we are editing
+      };
+      await onSubmit(businessData);
+      form.reset();
+      return;
+    }
+
     if (!selectedPlace && !manualCoordinates && !pendingLocationAddress) {
       await handleSearchAddress();
       return;

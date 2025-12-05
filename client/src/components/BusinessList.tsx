@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { MapPin, Building2, FileText, Loader2, Calendar, Trash2, History, AlertTriangle, CheckCircle } from "lucide-react";
+import { MapPin, Building2, FileText, Loader2, Calendar, Trash2, History, AlertTriangle, CheckCircle, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +33,7 @@ interface BusinessListProps {
   onGenerateReport: (id: string) => void;
   onDelete: (id: string) => void;
   onViewHistory: (business: Business) => void;
+  onEdit: (business: Business) => void;
   generatingReportId?: string | null;
   deletingId?: string | null;
 }
@@ -76,6 +77,7 @@ export function BusinessList({
   onGenerateReport,
   onDelete,
   onViewHistory,
+  onEdit,
   generatingReportId = null,
   deletingId = null,
 }: BusinessListProps) {
@@ -133,146 +135,156 @@ export function BusinessList({
       <CardContent className="space-y-3 min-w-0">
         {businesses.map((business) => {
           const isPending = business.locationStatus === "pending" || business.latitude === null || business.longitude === null;
-          
+
           return (
-          <Card
-            key={business.id}
-            className="hover-elevate transition-all min-w-0"
-            data-testid={`card-business-${business.id}`}
-          >
-            <CardContent className="p-4 min-w-0">
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 min-w-0">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-semibold text-base break-words" data-testid={`text-business-name-${business.id}`}>
-                      {business.name}
-                    </h3>
-                    {isPending ? (
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button 
-                            variant="outline" 
-                            size="icon" 
-                            className="h-6 w-6 text-yellow-600 border-yellow-600 shrink-0"
-                            data-testid={`badge-pending-${business.id}`}
-                            aria-label={t("locationStatus.pending")}
-                          >
-                            <AlertTriangle className="h-3 w-3" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-3" align="start">
-                          <p className="text-sm font-medium text-yellow-600">{t("locationStatus.pending")}</p>
-                          <p className="text-xs text-muted-foreground mt-1">{t("locationStatus.pendingNote")}</p>
-                        </PopoverContent>
-                      </Popover>
-                    ) : (
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button 
-                            variant="outline" 
-                            size="icon" 
-                            className="h-6 w-6 text-green-600 border-green-600 shrink-0"
-                            data-testid={`badge-verified-${business.id}`}
-                            aria-label={t("locationStatus.validated")}
-                          >
-                            <CheckCircle className="h-3 w-3" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-3" align="start">
-                          <p className="text-sm font-medium text-green-600">{t("locationStatus.validated")}</p>
-                        </PopoverContent>
-                      </Popover>
+            <Card
+              key={business.id}
+              className="hover-elevate transition-all min-w-0"
+              data-testid={`card-business-${business.id}`}
+            >
+              <CardContent className="p-4 min-w-0">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 min-w-0">
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="font-semibold text-base break-words" data-testid={`text-business-name-${business.id}`}>
+                        {business.name}
+                      </h3>
+                      {isPending ? (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-6 w-6 text-yellow-600 border-yellow-600 shrink-0"
+                              data-testid={`badge-pending-${business.id}`}
+                              aria-label={t("locationStatus.pending")}
+                            >
+                              <AlertTriangle className="h-3 w-3" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-3" align="start">
+                            <p className="text-sm font-medium text-yellow-600">{t("locationStatus.pending")}</p>
+                            <p className="text-xs text-muted-foreground mt-1">{t("locationStatus.pendingNote")}</p>
+                          </PopoverContent>
+                        </Popover>
+                      ) : (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-6 w-6 text-green-600 border-green-600 shrink-0"
+                              data-testid={`badge-verified-${business.id}`}
+                              aria-label={t("locationStatus.validated")}
+                            >
+                              <CheckCircle className="h-3 w-3" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-3" align="start">
+                            <p className="text-sm font-medium text-green-600">{t("locationStatus.validated")}</p>
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge variant="outline" data-testid={`badge-type-${business.id}`}>
+                        {getBusinessTypeLabel(business.type)}
+                      </Badge>
+                      {business.latitude !== null && business.longitude !== null && (
+                        <span className="text-sm text-muted-foreground flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          {business.latitude.toFixed(4)}, {business.longitude.toFixed(4)}
+                        </span>
+                      )}
+                    </div>
+                    {business.address && (
+                      <p className="text-sm text-muted-foreground break-words">
+                        {business.address}
+                      </p>
                     )}
-                  </div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Badge variant="outline" data-testid={`badge-type-${business.id}`}>
-                      {getBusinessTypeLabel(business.type)}
-                    </Badge>
-                    {business.latitude !== null && business.longitude !== null && (
-                      <span className="text-sm text-muted-foreground flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        {business.latitude.toFixed(4)}, {business.longitude.toFixed(4)}
-                      </span>
-                    )}
-                  </div>
-                  {business.address && (
-                    <p className="text-sm text-muted-foreground break-words">
-                      {business.address}
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Calendar className="h-3 w-3" />
+                      {new Date(business.createdAt).toLocaleDateString()}
                     </p>
-                  )}
-                  <p className="text-xs text-muted-foreground flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
-                    {new Date(business.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 shrink-0 flex-wrap">
-                  <Button
-                    onClick={() => onGenerateReport(business.id)}
-                    disabled={generatingReportId === business.id || isPending}
-                    data-testid={`button-generate-report-${business.id}`}
-                    title={isPending ? t("locationStatus.pendingNote") : undefined}
-                    size="sm"
-                  >
-                    {generatingReportId === business.id ? (
-                      <>
-                        <Loader2 className="h-4 w-4 sm:mr-2 animate-spin" />
-                        <span className="hidden sm:inline">{t("business.list.generating")}</span>
-                      </>
-                    ) : (
-                      <>
-                        <FileText className="h-4 w-4 sm:mr-2" />
-                        <span className="hidden sm:inline">{t("business.list.generateReport")}</span>
-                        <span className="sm:hidden">{t("business.list.report")}</span>
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => onViewHistory(business)}
-                    data-testid={`button-view-history-${business.id}`}
-                    title={t("business.list.viewHistory")}
-                  >
-                    <History className="h-4 w-4" />
-                  </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        disabled={deletingId === business.id}
-                        data-testid={`button-delete-${business.id}`}
-                      >
-                        {deletingId === business.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Trash2 className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>{t("business.deleteDialog.title")}</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          {t("business.deleteDialog.description", { name: business.name })}
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel data-testid="button-cancel-delete">{t("business.deleteDialog.cancel")}</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => onDelete(business.id)}
-                          data-testid="button-confirm-delete"
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                    <Button
+                      onClick={() => onGenerateReport(business.id)}
+                      disabled={generatingReportId === business.id || isPending}
+                      data-testid={`button-generate-report-${business.id}`}
+                      title={isPending ? t("locationStatus.pendingNote") : undefined}
+                      size="sm"
+                    >
+                      {generatingReportId === business.id ? (
+                        <>
+                          <Loader2 className="h-4 w-4 sm:mr-2 animate-spin" />
+                          <span className="hidden sm:inline">{t("business.list.generating")}</span>
+                        </>
+                      ) : (
+                        <>
+                          <FileText className="h-4 w-4 sm:mr-2" />
+                          <span className="hidden sm:inline">{t("business.list.generateReport")}</span>
+                          <span className="sm:hidden">{t("business.list.report")}</span>
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => onViewHistory(business)}
+                      data-testid={`button-view-history-${business.id}`}
+                      title={t("business.list.viewHistory")}
+                    >
+                      <History className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => onEdit(business)}
+                      data-testid={`button-edit-${business.id}`}
+                      title={t("common.edit")}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          disabled={deletingId === business.id}
+                          data-testid={`button-delete-${business.id}`}
                         >
-                          {t("business.deleteDialog.confirm")}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                          {deletingId === business.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>{t("business.deleteDialog.title")}</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            {t("business.deleteDialog.description", { name: business.name })}
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel data-testid="button-cancel-delete">{t("business.deleteDialog.cancel")}</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => onDelete(business.id)}
+                            data-testid="button-confirm-delete"
+                          >
+                            {t("business.deleteDialog.confirm")}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        )})}
+              </CardContent>
+            </Card>
+          )
+        })}
       </CardContent>
     </Card>
   );

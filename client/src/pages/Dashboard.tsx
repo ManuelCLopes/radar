@@ -62,6 +62,9 @@ export default function Dashboard() {
   const [isAnalysisOpen, setIsAnalysisOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const [reportViewOpen, setReportViewOpen] = useState(false);
+  const [editingBusiness, setEditingBusiness] = useState<Business | null>(null);
+
+  const [isAddOpen, setIsAddOpen] = useState(false);
 
   // Analysis Form
   const analysisForm = useForm<AnalysisFormValues>({
@@ -91,8 +94,8 @@ export default function Dashboard() {
 
   const createBusinessMutation = useMutation({
     mutationFn: async (data: InsertBusiness) => {
-      const response = await apiRequest("POST", "/api/businesses", data);
-      return response.json();
+      const res = await apiRequest("POST", "/api/businesses", data);
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/businesses"] });
@@ -100,11 +103,34 @@ export default function Dashboard() {
         title: t("toast.businessRegistered.title"),
         description: t("toast.businessRegistered.description"),
       });
+      setIsAddOpen(false);
     },
     onError: (error: Error) => {
       toast({
         title: t("toast.error.title"),
         description: error.message || t("toast.error.registerBusiness"),
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateBusinessMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: InsertBusiness }) => {
+      const res = await apiRequest("PUT", `/api/businesses/${id}`, data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/businesses"] });
+      toast({
+        title: t("dashboard.businessUpdated"),
+        description: t("dashboard.businessUpdatedDesc"),
+      });
+      setEditingBusiness(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: t("toast.error.title"),
+        description: error.message,
         variant: "destructive",
       });
     },
@@ -245,112 +271,118 @@ export default function Dashboard() {
                   </TabsTrigger>
                 </TabsList>
 
-                <Dialog open={isAnalysisOpen} onOpenChange={setIsAnalysisOpen}>
-                  <DialogTrigger asChild>
-                    <Button className="gap-2">
-                      <Search className="h-4 w-4" />
-                      {t("dashboard.tabs.newAnalysis")}
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[600px]">
-                    <DialogHeader>
-                      <DialogTitle>{t("dashboard.analysis.title")}</DialogTitle>
-                      <DialogDescription>
-                        {t("dashboard.analysis.description")}
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="py-4">
-                      <Form {...analysisForm}>
-                        <form onSubmit={analysisForm.handleSubmit(handleAnalysisSubmit)} className="space-y-6">
-                          <FormField
-                            control={analysisForm.control}
-                            name="address"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("business.form.address")}</FormLabel>
-                                <FormControl>
-                                  <Input {...field} placeholder={t("dashboard.analysis.addressPlaceholder")} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={analysisForm.control}
-                            name="type"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("business.form.type")}</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <div className="flex gap-2">
+                  <Button onClick={() => setIsAddOpen(true)} className="gap-2">
+                    <Building2 className="h-4 w-4" />
+                    <span className="hidden sm:inline">{t("dashboard.addBusiness")}</span>
+                  </Button>
+                  <Dialog open={isAnalysisOpen} onOpenChange={setIsAnalysisOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="gap-2">
+                        <Search className="h-4 w-4" />
+                        <span className="hidden sm:inline">{t("dashboard.tabs.newAnalysis")}</span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[600px]">
+                      <DialogHeader>
+                        <DialogTitle>{t("dashboard.analysis.title")}</DialogTitle>
+                        <DialogDescription>
+                          {t("dashboard.analysis.description")}
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="py-4">
+                        <Form {...analysisForm}>
+                          <form onSubmit={analysisForm.handleSubmit(handleAnalysisSubmit)} className="space-y-6">
+                            <FormField
+                              control={analysisForm.control}
+                              name="address"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>{t("business.form.address")}</FormLabel>
                                   <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder={t("business.form.typePlaceholder")} />
-                                    </SelectTrigger>
+                                    <Input {...field} placeholder={t("dashboard.analysis.addressPlaceholder")} />
                                   </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="restaurant">🍽️ {t("businessTypes.restaurant")}</SelectItem>
-                                    <SelectItem value="cafe">☕ {t("businessTypes.cafe")}</SelectItem>
-                                    <SelectItem value="retail">🛍️ {t("businessTypes.retail")}</SelectItem>
-                                    <SelectItem value="gym">💪 {t("businessTypes.gym")}</SelectItem>
-                                    <SelectItem value="salon">💇 {t("businessTypes.salon")}</SelectItem>
-                                    <SelectItem value="hotel">🏨 {t("businessTypes.hotel")}</SelectItem>
-                                    <SelectItem value="bar">🍺 {t("businessTypes.bar")}</SelectItem>
-                                    <SelectItem value="bakery">🥖 {t("businessTypes.bakery")}</SelectItem>
-                                    <SelectItem value="pharmacy">💊 {t("businessTypes.pharmacy")}</SelectItem>
-                                    <SelectItem value="supermarket">🛒 {t("businessTypes.supermarket")}</SelectItem>
-                                    <SelectItem value="clinic">🏥 {t("businessTypes.clinic")}</SelectItem>
-                                    <SelectItem value="dentist">🦷 {t("businessTypes.dentist")}</SelectItem>
-                                    <SelectItem value="bank">🏦 {t("businessTypes.bank")}</SelectItem>
-                                    <SelectItem value="gas_station">⛽ {t("businessTypes.gas_station")}</SelectItem>
-                                    <SelectItem value="car_repair">🔧 {t("businessTypes.car_repair")}</SelectItem>
-                                    <SelectItem value="other">🏢 {t("businessTypes.other")}</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
 
-                          <FormField
-                            control={analysisForm.control}
-                            name="radius"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("quickSearch.selectRadius")}</FormLabel>
-                                <Select onValueChange={(val) => field.onChange(parseInt(val))} defaultValue={field.value.toString()}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder={t("quickSearch.selectRadius")} />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="500">{t("radiusOptions.500m")}</SelectItem>
-                                    <SelectItem value="1000">{t("radiusOptions.1km")}</SelectItem>
-                                    <SelectItem value="2000">{t("radiusOptions.2km")}</SelectItem>
-                                    <SelectItem value="5000">{t("radiusOptions.5km")}</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                            <FormField
+                              control={analysisForm.control}
+                              name="type"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>{t("business.form.type")}</FormLabel>
+                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder={t("business.form.typePlaceholder")} />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="restaurant">🍽️ {t("businessTypes.restaurant")}</SelectItem>
+                                      <SelectItem value="cafe">☕ {t("businessTypes.cafe")}</SelectItem>
+                                      <SelectItem value="retail">🛍️ {t("businessTypes.retail")}</SelectItem>
+                                      <SelectItem value="gym">💪 {t("businessTypes.gym")}</SelectItem>
+                                      <SelectItem value="salon">💇 {t("businessTypes.salon")}</SelectItem>
+                                      <SelectItem value="hotel">🏨 {t("businessTypes.hotel")}</SelectItem>
+                                      <SelectItem value="bar">🍺 {t("businessTypes.bar")}</SelectItem>
+                                      <SelectItem value="bakery">🥖 {t("businessTypes.bakery")}</SelectItem>
+                                      <SelectItem value="pharmacy">💊 {t("businessTypes.pharmacy")}</SelectItem>
+                                      <SelectItem value="supermarket">🛒 {t("businessTypes.supermarket")}</SelectItem>
+                                      <SelectItem value="clinic">🏥 {t("businessTypes.clinic")}</SelectItem>
+                                      <SelectItem value="dentist">🦷 {t("businessTypes.dentist")}</SelectItem>
+                                      <SelectItem value="bank">🏦 {t("businessTypes.bank")}</SelectItem>
+                                      <SelectItem value="gas_station">⛽ {t("businessTypes.gas_station")}</SelectItem>
+                                      <SelectItem value="car_repair">🔧 {t("businessTypes.car_repair")}</SelectItem>
+                                      <SelectItem value="other">🏢 {t("businessTypes.other")}</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
 
-                          <Button type="submit" className="w-full" disabled={runAnalysisMutation.isPending}>
-                            {runAnalysisMutation.isPending ? (
-                              <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                {t("business.list.generating")}
-                              </>
-                            ) : (
-                              t("quickSearch.analyzeButton")
-                            )}
-                          </Button>
-                        </form>
-                      </Form>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                            <FormField
+                              control={analysisForm.control}
+                              name="radius"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>{t("quickSearch.selectRadius")}</FormLabel>
+                                  <Select onValueChange={(val) => field.onChange(parseInt(val))} defaultValue={field.value.toString()}>
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder={t("quickSearch.selectRadius")} />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="500">{t("radiusOptions.500m")}</SelectItem>
+                                      <SelectItem value="1000">{t("radiusOptions.1km")}</SelectItem>
+                                      <SelectItem value="2000">{t("radiusOptions.2km")}</SelectItem>
+                                      <SelectItem value="5000">{t("radiusOptions.5km")}</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <Button type="submit" className="w-full" disabled={runAnalysisMutation.isPending}>
+                              {runAnalysisMutation.isPending ? (
+                                <>
+                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  {t("business.list.generating")}
+                                </>
+                              ) : (
+                                t("quickSearch.analyzeButton")
+                              )}
+                            </Button>
+                          </form>
+                        </Form>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </div>
 
               {/* Businesses Tab */}
@@ -410,7 +442,7 @@ export default function Dashboard() {
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-12">
-                  <div className="md:col-span-12 lg:col-span-8">
+                  <div className="md:col-span-12 lg:col-span-12">
                     <BusinessList
                       businesses={businesses}
                       isLoading={isLoading}
@@ -422,19 +454,8 @@ export default function Dashboard() {
                         setHistoryBusiness(business);
                         setHistoryDialogOpen(true);
                       }}
+                      onEdit={(business) => setEditingBusiness(business)}
                     />
-                  </div>
-
-                  <div className="md:col-span-12 lg:col-span-4">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>{t("dashboard.registerBusiness")}</CardTitle>
-                        <CardDescription>{t("dashboard.registerBusinessDesc")}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <BusinessForm onSubmit={(data) => createBusinessMutation.mutateAsync(data)} />
-                      </CardContent>
-                    </Card>
                   </div>
                 </div>
               </TabsContent>
@@ -498,6 +519,52 @@ export default function Dashboard() {
           </div>
         </div>
       </main>
+
+      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{t("dashboard.addBusiness")}</DialogTitle>
+            <DialogDescription>
+              {t("dashboard.addBusinessDesc")}
+            </DialogDescription>
+          </DialogHeader>
+          <BusinessForm
+            onSubmit={async (data) => {
+              await createBusinessMutation.mutateAsync(data);
+            }}
+            isPending={createBusinessMutation.isPending}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!editingBusiness} onOpenChange={(open) => !open && setEditingBusiness(null)}>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{t("dashboard.editBusiness")}</DialogTitle>
+            <DialogDescription>
+              {t("dashboard.editBusinessDesc")}
+            </DialogDescription>
+          </DialogHeader>
+          {editingBusiness && (
+            <BusinessForm
+              initialValues={{
+                name: editingBusiness.name,
+                type: editingBusiness.type,
+                address: editingBusiness.address || "",
+              }}
+              onSubmit={async (data) => {
+                if (editingBusiness) {
+                  await updateBusinessMutation.mutateAsync({
+                    id: editingBusiness.id,
+                    data,
+                  });
+                }
+              }}
+              isPending={updateBusinessMutation.isPending}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Report Dialog */}
       <ReportView

@@ -238,6 +238,44 @@ export async function registerRoutes(
     }
   });
 
+  app.put("/api/businesses/:id", isAuthenticated, async (req, res) => {
+    try {
+      const validationResult = insertBusinessSchema.partial().safeParse(req.body);
+
+      if (!validationResult.success) {
+        return res.status(400).json({
+          error: "Validation failed",
+          details: validationResult.error.flatten()
+        });
+      }
+
+      const data = validationResult.data;
+
+      // Validate coordinates if provided
+      if (data.latitude !== undefined || data.longitude !== undefined) {
+        const lat = data.latitude;
+        const lng = data.longitude;
+
+        if (lat !== undefined && lat !== null && (typeof lat !== 'number' || !Number.isFinite(lat) || Math.abs(lat) > 90)) {
+          return res.status(400).json({ error: "Invalid latitude" });
+        }
+
+        if (lng !== undefined && lng !== null && (typeof lng !== 'number' || !Number.isFinite(lng) || Math.abs(lng) > 180)) {
+          return res.status(400).json({ error: "Invalid longitude" });
+        }
+      }
+
+      const updatedBusiness = await storage.updateBusiness(req.params.id, data);
+      res.json(updatedBusiness);
+    } catch (error) {
+      console.error("Error updating business:", error);
+      if (error instanceof Error && error.message === "Business not found") {
+        return res.status(404).json({ error: "Business not found" });
+      }
+      res.status(500).json({ error: "Failed to update business" });
+    }
+  });
+
   app.post("/api/run-report/:id", isAuthenticated, async (req, res) => {
     try {
       const businessId = req.params.id;

@@ -36,7 +36,15 @@
       "historyDescription": "Vea y exporte sus informes anteriores.",
       "noReports": "No se encontraron informes. Ejecute un análisis para comenzar.",
       "addressPlaceholder": "Introduzca la dirección para el análisis"
-    }
+    },
+    "addBusiness": "Añadir Negocio",
+    "addBusinessDesc": "Ingrese los detalles del nuevo negocio.",
+    "editBusiness": "Editar Negocio",
+    "editBusinessDesc": "Actualice los detalles de su negocio.",
+    "businessCreated": "Negocio Creado",
+    "businessCreatedDesc": "El negocio ha sido creado exitosamente.",
+    "businessUpdated": "Negocio Actualizado",
+    "businessUpdatedDesc": "Los detalles del negocio han sido actualizados exitosamente."
   },
   "business": {
     "form": {
