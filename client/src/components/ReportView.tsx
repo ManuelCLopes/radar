@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
@@ -87,9 +86,9 @@ function CompetitorCard({ competitor, index, t }: { competitor: Competitor; inde
   return (
     <Card className="hover-elevate" data-testid={`card-competitor-${index}`}>
       <CardContent className="p-4">
-        <div className="space-y-2">
-          <div className="flex items-start justify-between gap-2">
-            <h4 className="font-medium text-sm leading-tight">{competitor.name}</h4>
+        <div className="space-y-2 min-w-0">
+          <div className="flex items-start justify-between gap-2 min-w-0">
+            <h4 className="font-medium text-sm leading-tight min-w-0 break-words">{competitor.name}</h4>
             {competitor.rating && (
               <Badge variant="secondary" className="flex items-center gap-1 shrink-0">
                 <Star className="h-3 w-3 fill-current" />
@@ -97,9 +96,9 @@ function CompetitorCard({ competitor, index, t }: { competitor: Competitor; inde
               </Badge>
             )}
           </div>
-          <p className="text-sm text-muted-foreground flex items-start gap-1">
+          <p className="text-sm text-muted-foreground flex items-start gap-1 min-w-0">
             <MapPin className="h-3 w-3 mt-0.5 shrink-0" />
-            <span className="line-clamp-2">{competitor.address}</span>
+            <span className="line-clamp-2 break-words">{competitor.address}</span>
           </p>
           {competitor.userRatingsTotal && (
             <p className="text-xs text-muted-foreground flex items-center gap-1">
@@ -253,19 +252,19 @@ Local Competitor Analyzer
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] p-0">
-        <DialogHeader className="p-6 pb-4 border-b">
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-1">
-              <DialogTitle className="text-xl font-semibold flex items-center gap-2">
-                <Building2 className="h-5 w-5 text-primary" />
-                {t("report.view.title")}
+      <DialogContent className="w-[95vw] max-w-4xl h-[90vh] p-0 flex flex-col rounded-lg overflow-hidden">
+        <DialogHeader className="p-6 pb-4 border-b shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+            <div className="space-y-1 pr-8 sm:pr-0">
+              <DialogTitle className="text-xl font-semibold flex flex-wrap items-center gap-2">
+                <Building2 className="h-5 w-5 text-primary shrink-0" />
+                <span className="break-words">{t("report.view.title")}</span>
               </DialogTitle>
               <DialogDescription>
                 {report.businessName} - {new Date(report.generatedAt).toLocaleString()}
               </DialogDescription>
             </div>
-            <div className="flex items-center gap-2 mr-8">
+            <div className="flex items-center gap-2 sm:mr-12">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" data-testid="button-export-report">
@@ -293,8 +292,8 @@ Local Competitor Analyzer
           </div>
         </DialogHeader>
 
-        <ScrollArea className="h-[calc(90vh-140px)]">
-          <div className="p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto">
+          <div className="p-6 space-y-6 break-words overflow-x-hidden">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <StatCard
                 icon={Building2}
@@ -351,7 +350,7 @@ Local Competitor Analyzer
               )}
             </section>
           </div>
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -230,14 +230,18 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <Tabs defaultValue="businesses" className="w-full">
               <div className="flex items-center justify-between mb-6">
-                <TabsList className="grid w-full max-w-[400px] grid-cols-2">
-                  <TabsTrigger value="businesses" className="flex items-center gap-2">
+                <TabsList className="flex w-auto">
+                  <TabsTrigger value="businesses" className="group flex items-center">
                     <Building2 className="h-4 w-4" />
-                    {t("dashboard.tabs.businesses")}
+                    <span className="max-w-0 overflow-hidden opacity-0 whitespace-nowrap transition-all duration-300 ease-in-out group-data-[state=active]:max-w-[150px] group-data-[state=active]:opacity-100 group-data-[state=active]:ml-2 sm:max-w-none sm:opacity-100 sm:ml-2 sm:inline">
+                      {t("dashboard.tabs.businesses")}
+                    </span>
                   </TabsTrigger>
-                  <TabsTrigger value="history" className="flex items-center gap-2">
+                  <TabsTrigger value="history" className="group flex items-center">
                     <History className="h-4 w-4" />
-                    {t("dashboard.tabs.history")}
+                    <span className="max-w-0 overflow-hidden opacity-0 whitespace-nowrap transition-all duration-300 ease-in-out group-data-[state=active]:max-w-[150px] group-data-[state=active]:opacity-100 group-data-[state=active]:ml-2 sm:max-w-none sm:opacity-100 sm:ml-2 sm:inline">
+                      {t("dashboard.tabs.history")}
+                    </span>
                   </TabsTrigger>
                 </TabsList>
 
