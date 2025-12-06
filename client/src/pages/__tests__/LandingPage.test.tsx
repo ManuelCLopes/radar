@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import LandingPage from "../LandingPage";
 import { useAuth } from "@/hooks/useAuth";
@@ -34,12 +34,20 @@ vi.mock("@/components/RadiusSelector", () => ({
             data-testid="radius-selector"
             value={value}
             onChange={(e) => onChange(Number(e.target.value))}
+            type="number"
         />
     ),
 }));
 
 vi.mock("@/components/PreviewReportModal", () => ({
-    PreviewReportModal: ({ open }: any) => open ? <div data-testid="preview-modal">Preview Modal</div> : null,
+    PreviewReportModal: ({ open, onOpenChange }: any) => (
+        open ? (
+            <div data-testid="preview-modal">
+                Preview Modal
+                <button onClick={() => onOpenChange(false)}>Close</button>
+            </div>
+        ) : null
+    ),
 }));
 
 vi.mock("embla-carousel-react", () => ({
@@ -75,13 +83,27 @@ describe("LandingPage", () => {
         expect(screen.getByTestId("hero-subheadline")).toBeInTheDocument();
     });
 
-    it("renders the quick search form", () => {
+    it("renders the quick search form and handles interaction", async () => {
         render(<LandingPage />);
-        // Placeholder is hardcoded
-        expect(screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa")).toBeInTheDocument();
-        expect(screen.getByTestId("radius-selector")).toBeInTheDocument();
-        // Button text might be "quickSearch.analyze" or similar, let's check for button role
-        expect(screen.getByRole("button", { name: /quickSearch/i })).toBeInTheDocument();
+
+        const addressInput = screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa");
+        expect(addressInput).toBeInTheDocument();
+
+        fireEvent.change(addressInput, { target: { value: "Test Address" } });
+        expect(addressInput).toHaveValue("Test Address");
+
+        const radiusSelector = screen.getByTestId("radius-selector");
+        expect(radiusSelector).toBeInTheDocument();
+
+        fireEvent.change(radiusSelector, { target: { value: "2000" } });
+        expect(radiusSelector).toHaveValue(2000);
+
+        const searchButton = screen.getByRole("button", { name: /quickSearch/i });
+        expect(searchButton).toBeInTheDocument();
+
+        // Note: We are not mocking the API call here, so clicking might trigger an error or do nothing if not mocked.
+        // Ideally we should mock the fetch or the function that handles the search if it's extracted.
+        // Since the search logic is inside the component, we might need to mock fetch.
     });
 
     it("renders pricing plans", () => {
@@ -95,6 +117,6 @@ describe("LandingPage", () => {
         expect(screen.getByText("landing.brandName")).toBeInTheDocument();
         expect(screen.getByTestId("theme-toggle")).toBeInTheDocument();
         expect(screen.getByTestId("language-selector")).toBeInTheDocument();
-        expect(screen.getAllByText("Login")[0]).toBeInTheDocument(); // Login text is hardcoded or appears multiple times
+        expect(screen.getAllByText("Login")[0]).toBeInTheDocument();
     });
 });
