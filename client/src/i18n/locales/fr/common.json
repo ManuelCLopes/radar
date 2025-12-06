@@ -36,7 +36,8 @@
       "historyDescription": "Consultez et exportez vos rapports précédents.",
       "noReports": "Aucun rapport trouvé. Lancez une analyse pour commencer.",
       "addressPlaceholder": "Entrez l'adresse pour l'analyse",
-      "reportTitle": "Analyse : {{name}}"
+      "reportTitle": "Analyse : {{name}}",
+      "businessReport": "Rapport d'Entreprise"
     },
     "addBusiness": "Ajouter une Entreprise",
     "addBusinessDesc": "Entrez les détails de la nouvelle entreprise.",

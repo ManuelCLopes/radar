@@ -37,10 +37,46 @@ export function useAuth() {
     },
   });
 
+  const loginMutation = useMutation({
+    mutationFn: async (credentials: any) => {
+      const res = await apiRequest("POST", "/api/login", credentials);
+      return await res.json();
+    },
+    onSuccess: (user: User) => {
+      queryClient.setQueryData(["/api/auth/user"], user);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Login failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const registerMutation = useMutation({
+    mutationFn: async (credentials: any) => {
+      const res = await apiRequest("POST", "/api/register", credentials);
+      return await res.json();
+    },
+    onSuccess: (user: User) => {
+      queryClient.setQueryData(["/api/auth/user"], user);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Registration failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   return {
     user,
     isLoading,
     isAuthenticated: !!user,
+    loginMutation,
     logoutMutation,
+    registerMutation,
   };
 }

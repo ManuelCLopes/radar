@@ -1,0 +1,85 @@
+import { storage } from "./storage";
+import bcrypt from "bcrypt";
+
+export async function seed() {
+    try {
+        const email = "teste@teste.pt";
+        const password = "123123";
+
+        // 1. Create User
+        let user = await storage.getUserByEmail(email);
+        if (!user) {
+            console.log("Seeding: Creating test user...");
+            const hashedPassword = await bcrypt.hash(password, 10);
+            user = await storage.upsertUser({
+                email,
+                passwordHash: hashedPassword,
+                firstName: "Teste",
+                lastName: "User",
+                plan: "professional",
+                provider: "local"
+            });
+            console.log("Seeding: User created");
+        } else {
+            console.log("Seeding: Test user already exists");
+        }
+
+        // 2. Create Business
+        const businessData = {
+            name: "Restaurante Teste",
+            type: "restaurant" as const,
+            address: "Av. da Liberdade, Lisboa",
+            latitude: 38.7191,
+            longitude: -9.1438,
+            locationStatus: "validated" as const
+        };
+
+        const businesses = await storage.listBusinesses();
+        let business = businesses.find(b => b.name === businessData.name);
+
+        if (!business) {
+            console.log("Seeding: Creating test business...");
+            business = await storage.addBusiness(businessData);
+            console.log("Seeding: Business created");
+        } else {
+            console.log("Seeding: Test business already exists");
+        }
+
+        // 3. Create Reports (only if none exist for this business/user to avoid spamming on every restart)
+        const userReports = await storage.getReportsByUserId(user.id);
+        if (userReports.length === 0) {
+            console.log("Seeding: Creating test reports...");
+
+            const report1 = {
+                businessId: business.id,
+                businessName: business.name,
+                userId: user.id,
+                competitors: [
+                    { name: "Competitor A", address: "Nearby St 1", rating: 4.5, userRatingsTotal: 100, priceLevel: "$$" },
+                    { name: "Competitor B", address: "Nearby St 2", rating: 4.0, userRatingsTotal: 50, priceLevel: "$" }
+                ],
+                aiAnalysis: "Test analysis for business. The location is great and competitors are few.",
+                html: "<h1>Test Report</h1><p>Content</p>"
+            };
+            await storage.createReport(report1);
+
+            const report2 = {
+                businessId: null,
+                businessName: "Rua Augusta, Lisboa",
+                userId: user.id,
+                competitors: [
+                    { name: "Cafe Central", address: "Rua Augusta 10", rating: 4.8, userRatingsTotal: 200, priceLevel: "$$" }
+                ],
+                aiAnalysis: "Ad-hoc analysis for Rua Augusta. High foot traffic area.",
+                html: "<h1>Ad-hoc Report</h1><p>Content</p>"
+            };
+            await storage.createReport(report2);
+            console.log("Seeding: Reports created");
+        } else {
+            console.log("Seeding: Reports already exist");
+        }
+
+    } catch (error) {
+        console.error("Seeding failed:", error);
+    }
+}

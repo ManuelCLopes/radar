@@ -286,7 +286,7 @@ export async function registerRoutes(
         return res.status(404).json({ error: "Business not found" });
       }
 
-      const report = await runReportForBusiness(businessId, language);
+      const report = await runReportForBusiness(businessId, language, undefined, (req.user as AppUser).id);
       res.json(report);
     } catch (error) {
       console.error("Error generating report:", error);
@@ -385,7 +385,6 @@ export async function registerRoutes(
   // Authenticated Address Analysis
   app.post("/api/analyze-address", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
-
     try {
       const { address, type, radius, language = 'en' } = req.body;
 
@@ -441,8 +440,6 @@ export async function registerRoutes(
       res.status(500).json({ error: "Failed to run analysis" });
     }
   });
-
-
 
   return httpServer;
 }

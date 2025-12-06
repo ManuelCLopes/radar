@@ -488,18 +488,28 @@ export default function Dashboard() {
                         {reportHistory.map((report) => (
                           <Card key={report.id}>
                             <CardContent className="flex items-center justify-between p-4">
-                              <div>
-                                <p className="font-medium">
-                                  {report.businessId
-                                    ? report.businessName
-                                    : t("dashboard.analysis.reportTitle", {
-                                      name: report.businessName.replace(/^Analysis: /, '')
-                                    })
-                                  }
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                  {new Date(report.generatedAt).toLocaleDateString()}
-                                </p>
+                              <div className="flex items-center gap-3">
+                                <div className={`p-2 rounded-full ${report.businessId ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400' : 'bg-orange-100 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400'}`}>
+                                  {report.businessId ? <Building2 className="h-4 w-4" /> : <MapPin className="h-4 w-4" />}
+                                </div>
+                                <div>
+                                  <p className="font-medium">
+                                    {report.businessId
+                                      ? report.businessName
+                                      : t("dashboard.analysis.reportTitle", {
+                                        name: report.businessName.replace(/^Analysis: /, '')
+                                      })
+                                    }
+                                  </p>
+                                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <span>{new Date(report.generatedAt).toLocaleDateString()}</span>
+                                    {report.businessId && (
+                                      <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full border border-blue-100 dark:bg-blue-900/10 dark:text-blue-400 dark:border-blue-900/20">
+                                        {t("dashboard.analysis.businessReport")}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
                               <div className="flex gap-2">
                                 <Button

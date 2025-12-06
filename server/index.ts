@@ -60,7 +60,14 @@ app.use((req, res, next) => {
   next();
 });
 
+import { seed } from "./seed";
+
 (async () => {
+  // Run seeding in development environment
+  if (process.env.NODE_ENV !== "production") {
+    await seed();
+  }
+
   await registerRoutes(httpServer, app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

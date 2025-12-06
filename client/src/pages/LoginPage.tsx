@@ -7,6 +7,7 @@ import { BarChart3, Mail, Lock, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { useAuth } from "@/hooks/useAuth";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,43 +35,26 @@ export default function LoginPage() {
         },
     });
 
+    const { loginMutation } = useAuth();
+
     const onSubmit = async (data: LoginFormValues) => {
         setError("");
         setLoading(true);
 
         try {
-            const response = await fetch("/api/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
+            await loginMutation.mutateAsync(data);
+            setLocation("/dashboard");
+        } catch (err: any) {
+            // Error handling is now partly in mutation, but we can keep local error state for UI
+            const message = err.message || "An error occurred";
 
-            if (response.ok) {
-                setLocation("/dashboard");
+            if (message.includes("Invalid credentials") || message.includes("401")) {
+                setError(t("auth.errors.invalidCredentials"));
+            } else if (message.includes("Google login required")) {
+                setError(t("auth.errors.useGoogle"));
             } else {
-                let responseData;
-                try {
-                    responseData = await response.json();
-                } catch (e) {
-                    // If parsing fails, it's likely the default "Unauthorized" text from passport
-                    // which means invalid credentials
-                    if (response.status === 401) {
-                        responseData = { code: "INVALID_CREDENTIALS" };
-                    } else {
-                        responseData = { message: "An error occurred" };
-                    }
-                }
-
-                if (responseData.code === "INVALID_CREDENTIALS" || responseData.message === "Not authenticated" || responseData.message === "Unauthorized") {
-                    setError(t("auth.errors.invalidCredentials"));
-                } else if (responseData.code === "GOOGLE_LOGIN_REQUIRED") {
-                    setError(t("auth.errors.useGoogle"));
-                } else {
-                    setError(responseData.message || t("auth.errors.generic"));
-                }
+                setError(message);
             }
-        } catch (err) {
-            setError(t("auth.errors.generic"));
         } finally {
             setLoading(false);
         }

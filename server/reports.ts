@@ -7,7 +7,8 @@ import type { Report, Business, InsertReport } from "@shared/schema";
 export async function runReportForBusiness(
   businessId: string,
   language: string = "en",
-  providedBusiness?: Business
+  providedBusiness?: Business,
+  userId?: string
 ): Promise<Report> {
   const business = providedBusiness || await storage.getBusiness(businessId);
 
@@ -38,6 +39,7 @@ export async function runReportForBusiness(
       competitors,
       aiAnalysis,
       html,
+      userId: userId || null,
     };
 
     const report = await storage.saveReport(insertReport);

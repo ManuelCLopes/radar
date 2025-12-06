@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -188,32 +189,24 @@ export default function RegisterPage() {
         }
     };
 
+    const { registerMutation } = useAuth();
+
     const handleFinalSubmit = async () => {
         setError("");
         setLoading(true);
         const data = form.getValues();
 
         try {
-            const response = await fetch("/api/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    email: data.email,
-                    password: data.password,
-                    firstName: data.firstName,
-                    lastName: data.lastName,
-                }),
+            await registerMutation.mutateAsync({
+                email: data.email,
+                password: data.password,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                plan: data.plan,
             });
-
-            if (response.ok) {
-                setLocation("/dashboard");
-            } else {
-                const responseData = await response.json();
-                setError(responseData.message || "Registration failed");
-                setCurrentStep("account");
-            }
-        } catch (err) {
-            setError(t("auth.errors.generic"));
+            setLocation("/dashboard");
+        } catch (err: any) {
+            setError(err.message || "Registration failed");
             setCurrentStep("account");
         } finally {
             setLoading(false);
