@@ -71,6 +71,36 @@ describe("Reports API", () => {
         // Cleanup
     });
 
+    describe("POST /api/quick-search", () => {
+        it("should perform a quick search without authentication", async () => {
+            const res = await request(app)
+                .post("/api/quick-search")
+                .send({
+                    address: "Quick Search Address",
+                    radius: 1000,
+                    type: "restaurant"
+                });
+
+            expect(res.status).toBe(200);
+            expect(res.body.preview).toBe(true);
+            expect(res.body.competitors).toBeDefined();
+            // Should be limited to 3
+            expect(res.body.competitors.length).toBeLessThanOrEqual(3);
+        });
+
+        it("should validate required fields", async () => {
+            const res = await request(app)
+                .post("/api/quick-search")
+                .send({
+                    address: "", // Missing address
+                    radius: 1000,
+                    type: "restaurant"
+                });
+
+            expect(res.status).toBe(400);
+            expect(res.body.error).toBe("Missing required fields");
+        });
+    });
     describe("POST /api/analyze-address", () => {
         it("should generate a report for an address", async () => {
             const res = await request(app)
