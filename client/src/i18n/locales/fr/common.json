@@ -35,7 +35,8 @@
       "historyTitle": "Historique des Analyses",
       "historyDescription": "Consultez et exportez vos rapports précédents.",
       "noReports": "Aucun rapport trouvé. Lancez une analyse pour commencer.",
-      "addressPlaceholder": "Entrez l'adresse pour l'analyse"
+      "addressPlaceholder": "Entrez l'adresse pour l'analyse",
+      "reportTitle": "Analyse : {{name}}"
     },
     "addBusiness": "Ajouter une Entreprise",
     "addBusinessDesc": "Entrez les détails de la nouvelle entreprise.",
@@ -175,6 +176,7 @@
   },
   "common": {
     "cancel": "Annuler",
+    "refresh": "Actualiser",
     "loading": "Chargement..."
   },
   "addressSearch": {

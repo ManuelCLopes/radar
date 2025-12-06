@@ -471,7 +471,7 @@ export default function Dashboard() {
                     </div>
                     <Button variant="outline" size="sm" onClick={() => queryClient.invalidateQueries({ queryKey: ["/api/reports/history"] })}>
                       <History className="h-4 w-4 mr-2" />
-                      Refresh
+                      {t("common.refresh")}
                     </Button>
                   </CardHeader>
                   <CardContent>
@@ -489,7 +489,14 @@ export default function Dashboard() {
                           <Card key={report.id}>
                             <CardContent className="flex items-center justify-between p-4">
                               <div>
-                                <p className="font-medium">{report.businessName}</p>
+                                <p className="font-medium">
+                                  {report.businessId
+                                    ? report.businessName
+                                    : t("dashboard.analysis.reportTitle", {
+                                      name: report.businessName.replace(/^Analysis: /, '')
+                                    })
+                                  }
+                                </p>
                                 <p className="text-sm text-muted-foreground">
                                   {new Date(report.generatedAt).toLocaleDateString()}
                                 </p>

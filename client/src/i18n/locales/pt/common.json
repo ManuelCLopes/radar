@@ -35,7 +35,8 @@
       "historyTitle": "Histórico de Análises",
       "historyDescription": "Veja e exporte os seus relatórios anteriores.",
       "noReports": "Nenhum relatório encontrado. Execute uma análise para começar.",
-      "addressPlaceholder": "Insira o endereço para análise"
+      "addressPlaceholder": "Insira o endereço para análise",
+      "reportTitle": "Análise: {{name}}"
     },
     "addBusiness": "Adicionar Negócio",
     "addBusinessDesc": "Insira os detalhes do novo negócio.",
@@ -176,6 +177,7 @@
   "common": {
     "language": "pt",
     "cancel": "Cancelar",
+    "refresh": "Atualizar",
     "loading": "A carregar..."
   },
   "addressSearch": {

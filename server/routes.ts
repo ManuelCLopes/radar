@@ -412,7 +412,7 @@ export async function registerRoutes(
       // Create temp business object
       const tempBusiness = {
         id: 'analysis-' + Date.now(),
-        name: 'Analysis: ' + address.split(',')[0],
+        name: address.split(',')[0],
         type,
         address,
         latitude: coordinates.latitude,
