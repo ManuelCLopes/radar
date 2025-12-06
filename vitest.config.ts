@@ -16,6 +16,20 @@ export default defineConfig({
             "@": path.resolve(__dirname, "client", "src"),
             "@shared": path.resolve(__dirname, "shared"),
         },
+        coverage: {
+            provider: "v8",
+            reporter: ["text", "json", "html"],
+            exclude: [
+                "node_modules/**",
+                "dist/**",
+                "**/*.d.ts",
+                "**/*.test.ts",
+                "**/*.test.tsx",
+                "client/src/test/**",
+                "vite.config.ts",
+                "vitest.config.ts",
+            ],
+        },
     },
     resolve: {
         alias: {
