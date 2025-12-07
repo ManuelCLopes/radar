@@ -20,14 +20,24 @@ export async function runReportForBusiness(
     throw new Error(`Business "${business.name}" has pending location verification. Please verify the business location before generating a report.`);
   }
 
+  let userPlan = "essential";
+  if (userId) {
+    const user = await storage.getUser(userId);
+    if (user) {
+      userPlan = user.plan;
+    }
+  }
+
   const competitors = await searchNearby(
     business.latitude,
     business.longitude,
     business.type,
-    1500
+    1500,
+    true, // Always include reviews
+    language
   );
 
-  const aiAnalysis = await analyzeCompetitors(business, competitors, language);
+  const aiAnalysis = await analyzeCompetitors(business, competitors, language, userPlan);
 
   const html = generateReportHTML(business, competitors, aiAnalysis, language);
 

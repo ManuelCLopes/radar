@@ -19,7 +19,8 @@ const languageNames: Record<string, string> = {
 export async function analyzeCompetitors(
   business: Business,
   competitors: Competitor[],
-  language: string = "en"
+  language: string = "en",
+  plan: string = "essential"
 ): Promise<string> {
   const totalCompetitors = competitors.length;
   // Normalize language code (e.g. "pt-BR" -> "pt")
@@ -37,9 +38,13 @@ export async function analyzeCompetitors(
     return noCompetitorMessages[language] || noCompetitorMessages.en;
   }
 
-  const competitorsSummary = competitors.map((c, i) =>
-    `${i + 1}. ${c.name} - Rating: ${c.rating || "N/A"}/5 (${c.userRatingsTotal || 0} reviews), Price Level: ${c.priceLevel || "Unknown"}, Distance: ${c.distance || "Unknown"}, Address: ${c.address}`
-  ).join("\n");
+  const competitorsSummary = competitors.map((c, i) => {
+    let summary = `${i + 1}. ${c.name} - Rating: ${c.rating || "N/A"}/5 (${c.userRatingsTotal || 0} reviews), Price Level: ${c.priceLevel || "Unknown"}, Distance: ${c.distance || "Unknown"}, Address: ${c.address}`;
+    if (c.reviews && c.reviews.length > 0) {
+      summary += `\n   Recent Reviews:\n   - "${c.reviews.map(r => r.text).join('"\n   - "')}"`;
+    }
+    return summary;
+  }).join("\n\n");
 
   const avgRating = competitors
     .filter(c => c.rating)
@@ -47,7 +52,9 @@ export async function analyzeCompetitors(
 
   const totalReviews = competitors.reduce((sum, c) => sum + (c.userRatingsTotal || 0), 0);
 
-  const prompt = `You are a business strategy consultant analyzing local competition for a small business. Provide a comprehensive, actionable competitive analysis report.
+  const isAdvanced = plan === 'professional' || plan === 'agency';
+
+  let prompt = `You are a business strategy consultant analyzing local competition for a small business. Provide a comprehensive, actionable competitive analysis report.
 
 IMPORTANT: Write your entire response in ${languageName}. All text, headers, and recommendations must be in ${languageName}.
 
@@ -66,12 +73,84 @@ MARKET METRICS:
 Please provide a detailed analysis including:
 1. MARKET OVERVIEW - Summary of the competitive landscape and how ${business.name} compares to competitors
 2. KEY COMPETITORS - Analysis of the top competitors, their strengths, ratings, and price positioning
-3. REVIEW THEME ANALYSIS - Based on the review volume and ratings, analyze what themes likely dominate customer feedback (e.g., service quality, value for money, ambience, wait times, food quality, customer care)
-4. MARKET GAPS - Opportunities where competitors may be underserving customers
-5. 3-5 PRACTICAL RECOMMENDATIONS - Specific, actionable steps for the next month (e.g., improve wait times, adjust pricing, train staff, enhance specific services)
-6. DIFFERENTIATION STRATEGIES - Ways to stand out from the competition based on current market positioning
+3. REVIEW THEME ANALYSIS - Based on the "Recent Reviews" provided, analyze what themes likely dominate customer feedback. **QUOTE** specific phrases from reviews to support your points (e.g., "As noted in a review for [Competitor], customers appreciate...").
+4. MARKET GAPS - Opportunities where competitors may be underserving customers`;
 
-Format your response with clear headers and bullet points for easy reading. Be specific and practical in your recommendations. Analyze the data to provide insights about service, price, ambience, speed, and quality patterns in the local market. Remember: Write everything in ${languageName}.`;
+  if (isAdvanced) {
+    prompt = `
+  You are an expert business consultant specializing in local market analysis.
+  Analyze the following business and its competitors to provide a strategic report.
+  
+  Target Business:
+  Name: ${business.name}
+  Type: ${business.type}
+  Address: ${business.address}
+  
+  Competitors (Sorted by distance):
+  ${competitorsSummary}
+  
+  Average Competitor Rating: ${avgRating.toFixed(1)}/5
+  
+  Generate a report in ${languageName} language.
+  
+  CRITICAL INSTRUCTIONS:
+  1.  **FORMATTING**: Use **Bold** for key terms and important metrics. Use \`###\` for sub-headings within sections to organize content. Use bullet points for readability.
+  2.  **REVIEW ANALYSIS**: You MUST analyze the "Recent Reviews" provided. Do NOT just list them. **Synthesize** them into actionable insights. Identify patterns in customer satisfaction and dissatisfaction.
+  3.  **DETAIL**: Be extensive and specific. Avoid generic advice.
+  
+  Structure the response in Markdown with the following sections:
+  
+  # SWOT ANALYSIS
+  ## Strengths
+  (Analyze 3-5 key strengths. Use **bold** for the main point of each bullet)
+  ## Weaknesses
+  (Analyze 3-5 key weaknesses. Use **bold** for the main point)
+  ## Opportunities
+  (Analyze 3-5 opportunities. Use **bold** for the main point. **Strategic Implication**: Explain how to capture this)
+  ## Threats
+  (Analyze 3-5 threats. Use **bold** for the main point. **Strategic Implication**: Explain how to mitigate this)
+  
+  # MARKET TRENDS
+  (Identify 3-5 current trends in this specific niche/location. For each trend, explain the **Business Impact** and reference any relevant competitor reviews that validate this trend)
+  
+  # CUSTOMER SENTIMENT & REVIEW INSIGHTS
+  (Synthesize the competitor reviews into key themes)
+  ## Common Praises
+  (What are competitors doing well? e.g., "Friendly staff", "Tasty food")
+  ## Recurring Complaints
+  (What are the common pain points? e.g., "Long wait times", "High prices")
+  ## Unmet Needs
+  (What are customers asking for that they aren't getting?)
+  
+  # TARGET AUDIENCE PERSONA
+  ## Demographics
+  (Age, Income, Location, etc.)
+  ## Psychographics
+  (Interests, Values, Lifestyle)
+  ## Pain Points & Needs
+  (What problems are they trying to solve?)
+  
+  # MARKETING STRATEGY
+  ## Primary Channels
+  (Best channels to reach this audience)
+  ## Content Ideas
+  (Specific content themes and topics)
+  ## Promotional Tactics
+  (Actionable ideas to drive traffic)
+  
+  IMPORTANT: Be EXTENSIVE and DETAILED. Use in-depth paragraphs for the Market Overview and Competitor Analysis. Avoid generic advice; provide specific, tailored insights based on the location and business type.
+  Remember: Write everything in ${languageName}.
+  `;
+  } else {
+    // Append common sections for basic plan
+    prompt += `
+5. 3-5 PRACTICAL RECOMMENDATIONS - Specific, actionable steps for the next month.
+6. DIFFERENTIATION STRATEGIES - Ways to stand out from the competition.
+
+Format your response with clear headers and bullet points.
+IMPORTANT: Be EXTENSIVE and DETAILED. Use in-depth paragraphs for the Market Overview and Competitor Analysis. Avoid generic advice; provide specific, tailored insights based on the location and business type.
+Remember: Write everything in ${languageName}.`;
+  }
 
   try {
     const response = await openai.chat.completions.create({
@@ -79,14 +158,14 @@ Format your response with clear headers and bullet points for easy reading. Be s
       messages: [
         {
           role: "system",
-          content: `You are an expert business strategist specializing in local market competition analysis. Provide clear, actionable insights that help small businesses compete effectively in their local markets. Always respond in ${languageName}.`
+          content: `You are an expert business strategist specializing in local market competition analysis. Provide clear, actionable, and extensive insights that help small businesses compete effectively. Always respond in ${languageName}.`
         },
         {
           role: "user",
           content: prompt
         }
       ],
-      max_tokens: 2000,
+      max_tokens: 4000,
       temperature: 0.7,
     });
 
@@ -151,7 +230,8 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
         "• Consider targeted marketing to capture customers from lower-rated competitors",
         "• Develop loyalty programs to retain customers in this competitive environment"
       ],
-      disclaimer: "This analysis is based on current market data and should be reviewed periodically to track market changes."
+      disclaimer: "This analysis is based on current market data and should be reviewed periodically to track market changes.",
+      recentReviews: "RECENT REVIEWS (Top Competitors)"
     },
     pt: {
       title: "RELATÓRIO DE ANÁLISE DE CONCORRÊNCIA PARA",
@@ -176,7 +256,7 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
         "Monitorize os preços e estratégias promocionais dos concorrentes",
         "Aproveite as avaliações online e a presença nas redes sociais",
         "Considere propostas de valor únicas que o destaquem",
-        "Construa relacionamentos fortes com a comunidade e parcerias locais"
+        "Construya relacionamentos fortes com a comunidade e parcerias locais"
       ],
       opportunities: "OPORTUNIDADES",
       oppRating: {
@@ -187,7 +267,8 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
         "• Considere marketing direcionado para captar clientes de concorrentes com classificações mais baixas",
         "• Desenvolva programas de fidelização para reter clientes neste ambiente competitivo"
       ],
-      disclaimer: "Esta análise baseia-se em dados atuais do mercado e deve ser revista periodicamente para acompanhar as mudanças do mercado."
+      disclaimer: "Esta análise baseia-se em dados atuais do mercado e deve ser revista periodicamente para acompanhar as mudanças do mercado.",
+      recentReviews: "AVALIAÇÕES RECENTES (Principais Concorrentes)"
     },
     es: {
       title: "INFORME DE ANÁLISIS DE COMPETENCIA PARA",
@@ -223,7 +304,8 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
         "• Considere marketing dirigido para captar clientes de competidores con calificaciones más bajas",
         "• Desarrolle programas de fidelización para retener clientes en este entorno competitivo"
       ],
-      disclaimer: "Este análisis se basa en datos actuales del mercado y debe revisarse periódicamente para seguir los cambios del mercado."
+      disclaimer: "Este análisis se basa en datos actuales del mercado y debe revisarse periódicamente para seguir los cambios del mercado.",
+      recentReviews: "RESEÑAS RECIENTES (Principales Competidores)"
     },
     fr: {
       title: "RAPPORT D'ANALYSE DE LA CONCURRENCE POUR",
@@ -259,7 +341,8 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
         "• Envisagez un marketing ciblé pour capter les clients des concurrents moins bien notés",
         "• Développez des programmes de fidélité pour retenir les clients dans cet environnement concurrentiel"
       ],
-      disclaimer: "Cette analyse est basée sur les données actuelles du marché et doit être revue périodiquement pour suivre les évolutions du marché."
+      disclaimer: "Cette analyse est basée sur les données actuelles du marché et doit être revue périodiquement pour suivre les évolutions du marché.",
+      recentReviews: "AVIS RÉCENTS (Principaux Concurrents)"
     },
     de: {
       title: "WETTBEWERBSANALYSEBERICHT FÜR",
@@ -295,7 +378,8 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
         "• Erwägen Sie gezieltes Marketing, um Kunden von schlechter bewerteten Wettbewerbern zu gewinnen",
         "• Entwickeln Sie Treueprogramme, um Kunden in diesem wettbewerbsintensiven Umfeld zu binden"
       ],
-      disclaimer: "Diese Analyse basiert auf aktuellen Marktdaten und sollte regelmäßig überprüft werden, um Marktveränderungen zu verfolgen."
+      disclaimer: "Diese Analyse basiert auf aktuellen Marktdaten und sollte regelmäßig überprüft werden, um Marktveränderungen zu verfolgen.",
+      recentReviews: "AKTUELLE BEWERTUNGEN (Top-Wettbewerber)"
     }
   };
 
@@ -303,30 +387,67 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
   const normalizedLang = language.split('-')[0].toLowerCase();
   const t = translations[normalizedLang] || translations[language] || translations.en;
 
+  let reviewsSection = "";
+  const topCompetitors = competitors.slice(0, 3);
+
+  if (topCompetitors.some(c => c.reviews && c.reviews.length > 0)) {
+    reviewsSection = `\n${t.recentReviews}:\n`;
+    topCompetitors.forEach(c => {
+      if (c.reviews && c.reviews.length > 0) {
+        const rating = c.rating || 0;
+        let sentiment = "";
+
+        if (rating >= 4.8) {
+          sentiment = normalizedLang === 'pt' ? "Excelência Excecional - Feedback consistentemente positivo." :
+            normalizedLang === 'es' ? "Excelencia Excepcional - Comentarios consistentemente positivos." :
+              normalizedLang === 'fr' ? "Excellence Exceptionnelle - Commentaires constamment positifs." :
+                normalizedLang === 'de' ? "Außergewöhnliche Exzellenz - Durchweg positives Feedback." :
+                  "Exceptional Excellence - Consistently positive feedback.";
+        } else if (rating >= 4.5) {
+          sentiment = normalizedLang === 'pt' ? "Muito Forte - Alta satisfação do cliente." :
+            normalizedLang === 'es' ? "Muy Fuerte - Alta satisfacción del cliente." :
+              normalizedLang === 'fr' ? "Très Fort - Grande satisfaction client." :
+                normalizedLang === 'de' ? "Sehr Stark - Hohe Kundenzufriedenheit." :
+                  "Very Strong - High customer satisfaction.";
+        } else if (rating >= 4.0) {
+          sentiment = normalizedLang === 'pt' ? "Bom Desempenho - Geralmente positivo, mas com espaço para melhorias." :
+            normalizedLang === 'es' ? "Buen Rendimiento - Generalmente positivo, pero con margen de mejora." :
+              normalizedLang === 'fr' ? "Bonne Performance - Généralement positif, mais avec une marge d'amélioration." :
+                normalizedLang === 'de' ? "Gute Leistung - Im Allgemeinen positiv, aber mit Verbesserungspotenzial." :
+                  "Good Performance - Generally positive but room for improvement.";
+        } else {
+          sentiment = normalizedLang === 'pt' ? "Misto/Variável - Experiências inconsistentes reportadas." :
+            normalizedLang === 'es' ? "Mixto/Variable - Experiencias inconsistentes reportadas." :
+              normalizedLang === 'fr' ? "Mixte/Variable - Expériences incohérentes signalées." :
+                normalizedLang === 'de' ? "Gemischt/Variabel - Inkonsistente Erfahrungen gemeldet." :
+                  "Mixed/Variable - Inconsistent experiences reported.";
+        }
+
+        reviewsSection += `\n**${c.name}** (${rating.toFixed(1)}/5)\n`;
+        reviewsSection += `• ${sentiment}\n`;
+      }
+    });
+  }
+
   return `
-${t.title} "${business.name.toUpperCase()}"
-${"=".repeat(50)}
-
-${t.marketOverview}:
+# ${t.title} "${business.name.toUpperCase()}"
+---
+## ${t.marketOverview}
 ${t.overviewText}
-
-${t.keyMetrics}:
-• ${t.avgRating}: ${avgRating ? avgRating.toFixed(1) : "N/A"}/5.0
-• ${t.avgReviews}: ${avgReviews}
-• ${t.totalReviews}: ${totalReviews.toLocaleString()}
-
-${t.landscape}:
+## ${t.keyMetrics}
+• **${t.avgRating}**: ${avgRating ? avgRating.toFixed(1) : "N/A"}/5.0
+• **${t.avgReviews}**: ${avgReviews}
+• **${t.totalReviews}**: ${totalReviews.toLocaleString()}
+## ${t.landscape}
 ${highRatedCompetitors.length > 0 ? t.highRated.found : t.highRated.none}
-
 ${lowRatedCompetitors.length > 0 ? t.lowRated.found : t.lowRated.none}
-
-${t.recommendations}:
+## ${t.recommendations}
 ${t.recList.map((rec: string, i: number) => `${i + 1}. ${rec}`).join('\n')}
-
-${t.opportunities}:
+## ${t.opportunities}
 ${avgRating && avgRating < 4.2 ? t.oppRating.low : t.oppRating.high}
 ${t.oppList.join('\n')}
-
-${t.disclaimer}
+${reviewsSection ? `\n## ${t.recentReviews}\n` + reviewsSection.replace(`${t.recentReviews}:\n`, '') : ''}
+---
+*${t.disclaimer}*
 `.trim();
 }

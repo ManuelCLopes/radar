@@ -87,6 +87,14 @@ export const placeResultSchema = z.object({
 export type InsertBusiness = z.infer<typeof insertBusinessSchema>;
 export type Business = typeof businesses.$inferSelect;
 
+export interface Review {
+  text: string;
+  originalText?: string;
+  author: string;
+  rating: number;
+  date: string; // ISO string
+}
+
 export interface Competitor {
   name: string;
   address: string;
@@ -95,6 +103,7 @@ export interface Competitor {
   types?: string[];
   distance?: string;
   priceLevel?: string;
+  reviews?: Review[];
 }
 
 export const reports = pgTable("reports", {
@@ -108,6 +117,14 @@ export const reports = pgTable("reports", {
   html: text("html").notNull(),
 });
 
+export const reviewSchema = z.object({
+  text: z.string(),
+  originalText: z.string().optional(),
+  author: z.string(),
+  rating: z.number(),
+  date: z.string(),
+});
+
 export const competitorSchema = z.object({
   name: z.string(),
   address: z.string(),
@@ -116,6 +133,7 @@ export const competitorSchema = z.object({
   types: z.array(z.string()).optional(),
   distance: z.string().optional(),
   priceLevel: z.string().optional(),
+  reviews: z.array(reviewSchema).optional(),
 });
 
 export const insertReportSchema = z.object({

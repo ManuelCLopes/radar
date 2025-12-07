@@ -60,14 +60,30 @@ export async function searchNearby(
   lat: number,
   lng: number,
   type: string,
-  radius: number = 1500
+  radius: number = 1500,
+  includeReviews: boolean = true,
+  language: string = "en"
 ): Promise<Competitor[]> {
   if (!API_KEY) {
     console.log("Google API Key not configured, returning mock data");
-    return generateMockCompetitors(type, lat, lng);
+    return generateMockCompetitors(type, lat, lng, includeReviews);
   }
 
   try {
+    const fieldMask = [
+      "places.displayName",
+      "places.formattedAddress",
+      "places.rating",
+      "places.userRatingCount",
+      "places.types",
+      "places.location",
+      "places.priceLevel"
+    ];
+
+    if (includeReviews) {
+      fieldMask.push("places.reviews");
+    }
+
     const response = await fetch(
       "https://places.googleapis.com/v1/places:searchNearby",
       {
@@ -75,11 +91,12 @@ export async function searchNearby(
         headers: {
           "Content-Type": "application/json",
           "X-Goog-Api-Key": API_KEY,
-          "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.types,places.location,places.priceLevel",
+          "X-Goog-FieldMask": fieldMask.join(","),
         },
         body: JSON.stringify({
           includedTypes: [type],
           maxResultCount: 10,
+          languageCode: language,
           locationRestriction: {
             circle: {
               center: {
@@ -95,7 +112,7 @@ export async function searchNearby(
 
     if (!response.ok) {
       console.error("Google Places API error:", response.statusText);
-      return generateMockCompetitors(type, lat, lng);
+      return generateMockCompetitors(type, lat, lng, includeReviews);
     }
 
     const data = await response.json();
@@ -112,10 +129,22 @@ export async function searchNearby(
       types: place.types,
       distance: calculateDistance(lat, lng, place.location?.latitude, place.location?.longitude),
       priceLevel: formatPriceLevel(place.priceLevel),
+      reviews: includeReviews && place.reviews
+        ? place.reviews
+          .map((r: any) => ({
+            text: r.text?.text || "",
+            originalText: r.originalText?.text !== r.text?.text ? r.originalText?.text : undefined,
+            author: r.authorAttribution?.displayName || "Anonymous",
+            rating: r.rating || 0,
+            date: r.publishTime || new Date().toISOString()
+          }))
+          .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .slice(0, 5)
+        : undefined
     }));
   } catch (error) {
     console.error("Error fetching from Google Places:", error);
-    return generateMockCompetitors(type, lat, lng);
+    return generateMockCompetitors(type, lat, lng, includeReviews);
   }
 }
 
@@ -133,16 +162,16 @@ function formatPriceLevel(priceLevel?: string): string | undefined {
 
 function calculateDistance(lat1: number, lng1: number, lat2?: number, lng2?: number): string {
   if (!lat2 || !lng2) return "Unknown";
-  
+
   const R = 6371;
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
   const dLon = ((lng2 - lng1) * Math.PI) / 180;
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+    Math.cos((lat2 * Math.PI) / 180) *
+    Math.sin(dLon / 2) *
+    Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const distance = R * c;
 
@@ -152,7 +181,7 @@ function calculateDistance(lat1: number, lng1: number, lat2?: number, lng2?: num
   return `${distance.toFixed(1)}km`;
 }
 
-function generateMockCompetitors(type: string, lat: number, lng: number): Competitor[] {
+function generateMockCompetitors(type: string, lat: number, lng: number, includeReviews: boolean = true): Competitor[] {
   const businessNames: Record<string, string[]> = {
     restaurant: ["The Golden Fork", "Bistro Milano", "Casa Verde", "Ocean Breeze Grill", "The Hungry Chef"],
     cafe: ["Morning Brew", "The Coffee House", "Bean & Leaf", "Espresso Junction", "Cozy Corner Cafe"],
@@ -176,6 +205,20 @@ function generateMockCompetitors(type: string, lat: number, lng: number): Compet
   const numCompetitors = Math.floor(Math.random() * 4) + 2;
 
   const priceLevels = ["$", "$$", "$$$", "$$$$"];
+
+  const mockReviews = [
+    "Great service and friendly staff!",
+    "A bit pricey but worth it for the quality.",
+    "Wait times can be long during peak hours.",
+    "Best in town, highly recommended!",
+    "Average experience, nothing special.",
+    "Clean and well-maintained facility.",
+    "Staff was rude and unhelpful.",
+    "Excellent value for money.",
+    "Will definitely come back again!",
+    "Not what I expected, disappointed."
+  ];
+
   return names.slice(0, numCompetitors).map((name, index) => ({
     name,
     address: `${100 + index * 50} Main Street, Local City`,
@@ -184,5 +227,14 @@ function generateMockCompetitors(type: string, lat: number, lng: number): Compet
     types: [type],
     distance: `${(Math.random() * 1.5 + 0.2).toFixed(1)}km`,
     priceLevel: priceLevels[Math.floor(Math.random() * priceLevels.length)],
+    reviews: includeReviews
+      ? Array.from({ length: 5 }, (_, i) => ({
+        text: mockReviews[Math.floor(Math.random() * mockReviews.length)],
+        author: `User ${Math.floor(Math.random() * 1000)}`,
+        rating: Math.floor(Math.random() * 2) + 4, // 4 or 5 stars
+        date: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString()
+      }))
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      : undefined
   }));
 }

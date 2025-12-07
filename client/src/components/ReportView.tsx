@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Download, Building2, Star, MapPin, Brain, Users, FileText, Printer, Mail, DollarSign } from "lucide-react";
+import { Download, Building2, Star, MapPin, Brain, Users, FileText, Printer, Mail, DollarSign, TrendingUp, ShieldAlert, CheckCircle2, XCircle, AlertTriangle, ArrowUpRight, Megaphone, MessageSquare, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -15,9 +16,10 @@ function parseMarkdown(markdown: string): string {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 
-  html = html.replace(/^### (.+)$/gm, '<h3 class="text-base font-semibold mt-4 mb-2">$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2 class="text-lg font-semibold mt-5 mb-2">$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h1 class="text-xl font-bold mt-6 mb-3">$1</h1>');
+  html = html.replace(/^### (.+)$/gm, '<h3 class="text-base font-semibold mt-3 mb-2">$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2 class="text-lg font-semibold mt-4 mb-2">$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1 class="text-xl font-bold mt-4 mb-3">$1</h1>');
+  html = html.replace(/^---$/gm, '<hr class="my-4 border-muted" />');
 
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>');
   html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
@@ -86,42 +88,97 @@ function CompetitorCard({ competitor, index, t }: { competitor: Competitor; inde
   return (
     <Card className="hover-elevate" data-testid={`card-competitor-${index}`}>
       <CardContent className="p-4">
-        <div className="space-y-2 min-w-0">
-          <div className="flex items-start justify-between gap-2 min-w-0">
-            <h4 className="font-medium text-sm leading-tight min-w-0 break-words">{competitor.name}</h4>
-            {competitor.rating && (
-              <Badge variant="secondary" className="flex items-center gap-1 shrink-0">
-                <Star className="h-3 w-3 fill-current" />
-                {competitor.rating.toFixed(1)}
-              </Badge>
-            )}
-          </div>
-          <p className="text-sm text-muted-foreground flex items-start gap-1 min-w-0">
-            <MapPin className="h-3 w-3 mt-0.5 shrink-0" />
-            <span className="line-clamp-2 break-words">{competitor.address}</span>
-          </p>
-          {competitor.userRatingsTotal && (
-            <p className="text-xs text-muted-foreground flex items-center gap-1">
-              <Users className="h-3 w-3" />
-              {t("report.competitor.reviews", { count: competitor.userRatingsTotal.toLocaleString() })}
+        <div className="space-y-3 min-w-0">
+          <div className="space-y-2">
+            <div className="flex items-start justify-between gap-2 min-w-0">
+              <h4 className="font-medium text-sm leading-tight min-w-0 break-words">{competitor.name}</h4>
+              {competitor.rating && (
+                <Badge variant="secondary" className="flex items-center gap-1 shrink-0">
+                  <Star className="h-3 w-3 fill-current" />
+                  {competitor.rating.toFixed(1)}
+                </Badge>
+              )}
+            </div>
+            <p className="text-sm text-muted-foreground flex items-start gap-1 min-w-0">
+              <MapPin className="h-3 w-3 mt-0.5 shrink-0" />
+              <span className="line-clamp-2 break-words">{competitor.address}</span>
             </p>
-          )}
-          <div className="flex flex-wrap gap-1">
-            {competitor.distance && (
-              <Badge variant="outline" className="text-xs">
-                {competitor.distance}
-              </Badge>
+            {competitor.userRatingsTotal && (
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <Users className="h-3 w-3" />
+                {t("report.competitor.reviews", { count: competitor.userRatingsTotal.toLocaleString() })}
+              </p>
             )}
-            {competitor.priceLevel && (
-              <Badge variant="outline" className="text-xs flex items-center gap-0.5">
-                <DollarSign className="h-2.5 w-2.5" />
-                {competitor.priceLevel}
-              </Badge>
-            )}
+            <div className="flex flex-wrap gap-1">
+              {competitor.distance && (
+                <Badge variant="outline" className="text-xs">
+                  {competitor.distance}
+                </Badge>
+              )}
+              {competitor.priceLevel && (
+                <Badge variant="outline" className="text-xs flex items-center gap-0.5">
+                  <DollarSign className="h-2.5 w-2.5" />
+                  {competitor.priceLevel}
+                </Badge>
+              )}
+            </div>
           </div>
+
+          {competitor.reviews && competitor.reviews.length > 0 && (
+            <div className="pt-2 border-t">
+              <p className="text-xs font-medium mb-2 flex items-center gap-1 text-muted-foreground">
+                <MessageSquare className="h-3 w-3" />
+                Recent Reviews
+              </p>
+              <div className="space-y-3">
+                {competitor.reviews.map((review, i) => (
+                  <ReviewItem key={i} review={review} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+function ReviewItem({ review }: { review: any }) {
+  const [showOriginal, setShowOriginal] = useState(false);
+  const hasOriginal = review.originalText && review.originalText !== review.text;
+
+  return (
+    <div className="bg-muted/50 p-3 rounded text-xs space-y-1.5">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <span className="font-medium text-foreground">{review.author}</span>
+          {review.rating > 0 && (
+            <div className="flex items-center text-yellow-500">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} className={`h-2.5 w-2.5 ${i < review.rating ? "fill-current" : "text-muted-foreground/30"}`} />
+              ))}
+            </div>
+          )}
+        </div>
+        <span className="text-[10px] text-muted-foreground">
+          {new Date(review.date).toLocaleDateString()}
+        </span>
+      </div>
+
+      <p className="text-muted-foreground italic leading-relaxed">
+        "{showOriginal ? review.originalText : review.text}"
+      </p>
+
+      {hasOriginal && (
+        <button
+          onClick={() => setShowOriginal(!showOriginal)}
+          className="text-[10px] text-primary hover:underline font-medium flex items-center gap-1"
+        >
+          <Globe className="h-2.5 w-2.5" />
+          {showOriginal ? "Show Translated" : "Show Original"}
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -136,6 +193,54 @@ function StatCard({ icon: Icon, label, value }: { icon: typeof Building2; label:
           <p className="text-2xl font-bold">{value}</p>
           <p className="text-xs text-muted-foreground">{label}</p>
         </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function SwotSection({ title, items, icon: Icon, colorClass }: { title: string, items: string[], icon: any, colorClass: string }) {
+  if (!items.length) return null;
+  return (
+    <Card className="h-full">
+      <CardHeader className="pb-2">
+        <CardTitle className={`text-sm font-medium flex items-center gap-2 ${colorClass}`}>
+          <Icon className="h-4 w-4" />
+          {title}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ul className="space-y-2">
+          {items.map((item, i) => (
+            <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+              <span className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 ${colorClass.replace('text-', 'bg-')}`} />
+              {item}
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
+  );
+}
+
+function MarketTrends({ trends }: { trends: string[] }) {
+  if (!trends.length) return null;
+  return (
+    <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/20 dark:to-purple-950/20 border-indigo-100 dark:border-indigo-900">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-indigo-700 dark:text-indigo-300">
+          <TrendingUp className="h-5 w-5" />
+          Market Trends
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {trends.map((trend, i) => (
+            <li key={i} className="bg-white dark:bg-card p-3 rounded-lg shadow-sm border text-sm flex items-start gap-2">
+              <ArrowUpRight className="h-4 w-4 text-indigo-500 shrink-0 mt-0.5" />
+              {trend}
+            </li>
+          ))}
+        </ul>
       </CardContent>
     </Card>
   );
@@ -250,6 +355,105 @@ Local Competitor Analyzer
     ? report.competitors.filter(c => c.rating).reduce((sum, c) => sum + (c.rating || 0), 0) / report.competitors.filter(c => c.rating).length
     : 0;
 
+  // Parse SWOT and Trends
+  const swotRegex = /### SWOT Analysis([\s\S]*?)(?=###|$)/i;
+  const trendsRegex = /### Market Trends([\s\S]*?)(?=###|$)/i;
+  const targetAudienceRegex = /### Target Audience([\s\S]*?)(?=###|$)/i;
+  const marketingRegex = /### Marketing Strategy([\s\S]*?)(?=###|$)/i;
+
+  const swotMatch = report.aiAnalysis.match(swotRegex);
+  const trendsMatch = report.aiAnalysis.match(trendsRegex);
+  const targetAudienceMatch = report.aiAnalysis.match(targetAudienceRegex);
+  const marketingMatch = report.aiAnalysis.match(marketingRegex);
+
+  let swotData = { strengths: [], weaknesses: [], opportunities: [], threats: [] } as any;
+  let trendsData: string[] = [];
+  let targetAudienceData = { demographics: [], psychographics: [], painPoints: [], needs: [] } as any;
+  let marketingData = { primaryChannels: [], contentIdeas: [], promotionalTactics: [] } as any;
+
+  if (swotMatch) {
+    const swotContent = swotMatch[1];
+    const sections = {
+      strengths: /#### Strengths([\s\S]*?)(?=####|$)/i,
+      weaknesses: /#### Weaknesses([\s\S]*?)(?=####|$)/i,
+      opportunities: /#### Opportunities([\s\S]*?)(?=####|$)/i,
+      threats: /#### Threats([\s\S]*?)(?=####|$)/i
+    };
+
+    Object.entries(sections).forEach(([key, regex]) => {
+      const match = swotContent.match(regex);
+      if (match) {
+        swotData[key] = match[1]
+          .split('\n')
+          .map(line => line.trim())
+          .filter(line => line.startsWith('-'))
+          .map(line => line.substring(1).trim());
+      }
+    });
+  }
+
+  if (trendsMatch) {
+    trendsData = trendsMatch[1]
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.startsWith('-'))
+      .map(line => line.substring(1).trim());
+  }
+
+  if (targetAudienceMatch) {
+    const content = targetAudienceMatch[1];
+    const sections = {
+      demographics: /- \*\*Demographics\*\*:([\s\S]*?)(?=- \*\*|$)/i,
+      psychographics: /- \*\*Psychographics\*\*:([\s\S]*?)(?=- \*\*|$)/i,
+      painPoints: /- \*\*Pain Points\*\*:([\s\S]*?)(?=- \*\*|$)/i,
+      needs: /- \*\*Needs\*\*:([\s\S]*?)(?=- \*\*|$)/i
+    };
+
+    Object.entries(sections).forEach(([key, regex]) => {
+      const match = content.match(regex);
+      if (match) {
+        // Handle single line or multi-line list
+        const text = match[1].trim();
+        if (text.startsWith('[')) {
+          // If it's formatted like [Age, Income], split by comma
+          targetAudienceData[key] = text.replace(/^\[|\]$/g, '').split(',').map(s => s.trim());
+        } else {
+          // Fallback or other format
+          targetAudienceData[key] = [text];
+        }
+      }
+    });
+  }
+
+  if (marketingMatch) {
+    const content = marketingMatch[1];
+    const sections = {
+      primaryChannels: /- \*\*Primary Channels\*\*:([\s\S]*?)(?=- \*\*|$)/i,
+      contentIdeas: /- \*\*Content Ideas\*\*:([\s\S]*?)(?=- \*\*|$)/i,
+      promotionalTactics: /- \*\*Promotional Tactics\*\*:([\s\S]*?)(?=- \*\*|$)/i
+    };
+
+    Object.entries(sections).forEach(([key, regex]) => {
+      const match = content.match(regex);
+      if (match) {
+        const text = match[1].trim();
+        if (text.startsWith('[')) {
+          marketingData[key] = text.replace(/^\[|\]$/g, '').split(',').map(s => s.trim());
+        } else {
+          marketingData[key] = [text];
+        }
+      }
+    });
+  }
+
+  // Remove parsed sections from main content display
+  const mainContent = report.aiAnalysis
+    .replace(swotRegex, '')
+    .replace(trendsRegex, '')
+    .replace(targetAudienceRegex, '')
+    .replace(marketingRegex, '')
+    .trim();
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[95vw] max-w-4xl h-[90vh] p-0 flex flex-col rounded-lg overflow-hidden">
@@ -314,6 +518,113 @@ Local Competitor Analyzer
 
             <Separator />
 
+            {/* SWOT Analysis */}
+            {swotMatch && (
+              <section>
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <ShieldAlert className="h-5 w-5 text-primary" />
+                  SWOT Analysis
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <SwotSection
+                    title="Strengths"
+                    items={swotData.strengths}
+                    icon={CheckCircle2}
+                    colorClass="text-green-600"
+                  />
+                  <SwotSection
+                    title="Weaknesses"
+                    items={swotData.weaknesses}
+                    icon={XCircle}
+                    colorClass="text-red-600"
+                  />
+                  <SwotSection
+                    title="Opportunities"
+                    items={swotData.opportunities}
+                    icon={TrendingUp}
+                    colorClass="text-blue-600"
+                  />
+                  <SwotSection
+                    title="Threats"
+                    items={swotData.threats}
+                    icon={AlertTriangle}
+                    colorClass="text-orange-600"
+                  />
+                </div>
+                <Separator className="mt-6" />
+              </section>
+            )}
+
+            {/* Market Trends */}
+            {trendsMatch && (
+              <section>
+                <MarketTrends trends={trendsData} />
+                <Separator className="mt-6" />
+              </section>
+            )}
+
+            {/* Target Audience */}
+            {targetAudienceMatch && (
+              <section>
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Users className="h-5 w-5 text-primary" />
+                  Target Audience Persona
+                </h3>
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {Object.entries(targetAudienceData).map(([key, items]: [string, any]) => (
+                        <div key={key}>
+                          <h4 className="font-medium text-sm text-muted-foreground mb-2 uppercase tracking-wider">{key}</h4>
+                          <ul className="space-y-2">
+                            {items.map((item: string, i: number) => (
+                              <li key={i} className="text-sm flex items-start gap-2">
+                                <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+                <Separator className="mt-6" />
+              </section>
+            )}
+
+            {/* Marketing Strategy */}
+            {marketingMatch && (
+              <section>
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Megaphone className="h-5 w-5 text-primary" />
+                  Marketing Strategy
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {Object.entries(marketingData).map(([key, items]: [string, any]) => (
+                    <Card key={key} className="bg-primary/5 border-primary/10">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-primary uppercase tracking-wider">
+                          {key.replace(/([A-Z])/g, ' $1').trim()}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <ul className="space-y-2">
+                          {items.map((item: string, i: number) => (
+                            <li key={i} className="text-sm flex items-start gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+                <Separator className="mt-6" />
+              </section>
+            )}
+
             <section>
               <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Brain className="h-5 w-5 text-primary" />
@@ -321,7 +632,7 @@ Local Competitor Analyzer
               </h3>
               <Card className="bg-primary/5 border-primary/20">
                 <CardContent className="p-4" data-testid="text-ai-analysis">
-                  <MarkdownContent content={report.aiAnalysis} />
+                  <MarkdownContent content={mainContent} />
                 </CardContent>
               </Card>
             </section>

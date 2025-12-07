@@ -422,7 +422,7 @@ export async function registerRoutes(
       };
 
       // Generate report
-      const report = await runReportForBusiness(tempBusiness.id, language, tempBusiness);
+      const report = await runReportForBusiness(tempBusiness.id, language, tempBusiness, (req.user as AppUser).id);
 
       // Save report with userId
       // Exclude id and generatedAt to let DB handle them

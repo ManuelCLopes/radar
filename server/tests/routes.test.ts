@@ -17,6 +17,11 @@ vi.mock("../reports", () => ({
     runReportForBusiness: vi.fn(),
 }));
 
+// Mock auth state
+const authMocks = vi.hoisted(() => ({
+    user: null as any
+}));
+
 import { searchPlacesByAddress, hasGoogleApiKey } from "../googlePlaces";
 import { runReportForBusiness } from "../reports";
 
@@ -37,6 +42,15 @@ describe("API Routes Integration", () => {
             saveUninitialized: false,
         }));
 
+        // Test auth middleware - runs before routes
+        app.use((req: any, res, next) => {
+            if (authMocks.user) {
+                req.user = authMocks.user;
+                req.isAuthenticated = () => true;
+            }
+            next();
+        });
+
         // Mock passport for authentication
         const passport = require("passport");
         app.use(passport.initialize());
@@ -53,6 +67,7 @@ describe("API Routes Integration", () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        authMocks.user = null;
     });
 
     describe("POST /api/quick-search", () => {
@@ -133,6 +148,46 @@ describe("API Routes Integration", () => {
         it("should require authentication", async () => {
             const res = await request(app).get("/api/places/search?q=test");
             expect(res.status).toBe(401); // Assuming default unauth behavior
+        });
+    });
+
+    describe("POST /api/analyze-address", () => {
+        it("should pass userId to runReportForBusiness", async () => {
+            authMocks.user = { id: "test-user-id", plan: "professional" };
+            (hasGoogleApiKey as any).mockReturnValue(true);
+            (searchPlacesByAddress as any).mockResolvedValue([{
+                latitude: 10,
+                longitude: 20
+            }]);
+            (runReportForBusiness as any).mockResolvedValue({
+                competitors: [],
+                aiAnalysis: "Test analysis",
+                businessName: "Test Business",
+                generatedAt: new Date(),
+                html: "<html></html>"
+            });
+            // Mock storage.createReport since analyze-address calls it
+            vi.spyOn(storage, "createReport").mockResolvedValue({} as any);
+
+            const res = await request(app)
+                .post("/api/analyze-address")
+                .send({
+                    address: "Test Address",
+                    type: "restaurant",
+                    radius: 1000
+                });
+
+            expect(res.status).toBe(200);
+            expect(runReportForBusiness).toHaveBeenCalledWith(
+                expect.stringMatching(/^analysis-/), // temp business id
+                "en",
+                expect.objectContaining({
+                    name: "Test Address",
+                    type: "restaurant",
+                    address: "Test Address"
+                }),
+                "test-user-id" // Verify userId is passed
+            );
         });
     });
 });

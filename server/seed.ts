@@ -6,23 +6,37 @@ export async function seed() {
         const email = "teste@teste.pt";
         const password = "123123";
 
-        // 1. Create User
-        let user = await storage.getUserByEmail(email);
-        if (!user) {
-            console.log("Seeding: Creating test user...");
-            const hashedPassword = await bcrypt.hash(password, 10);
-            user = await storage.upsertUser({
-                email,
-                passwordHash: hashedPassword,
-                firstName: "Teste",
-                lastName: "User",
-                plan: "professional",
-                provider: "local"
-            });
-            console.log("Seeding: User created");
-        } else {
-            console.log("Seeding: Test user already exists");
+        // 1. Create Users
+        const usersToCreate = [
+            { email: "teste@teste.pt", plan: "professional", firstName: "Teste", lastName: "User" }, // Keeping original as professional for backward compat or update it
+            { email: "professional@teste.pt", plan: "professional", firstName: "Pro", lastName: "User" },
+            { email: "agency@teste.pt", plan: "agency", firstName: "Agency", lastName: "User" },
+            { email: "essential@teste.pt", plan: "essential", firstName: "Essential", lastName: "User" }
+        ];
+
+        let mainUser;
+
+        for (const u of usersToCreate) {
+            let user = await storage.getUserByEmail(u.email);
+            if (!user) {
+                console.log(`Seeding: Creating user ${u.email}...`);
+                const hashedPassword = await bcrypt.hash(password, 10);
+                user = await storage.upsertUser({
+                    email: u.email,
+                    passwordHash: hashedPassword,
+                    firstName: u.firstName,
+                    lastName: u.lastName,
+                    plan: u.plan,
+                    provider: "local"
+                });
+                console.log(`Seeding: User ${u.email} created`);
+            } else {
+                console.log(`Seeding: User ${u.email} already exists`);
+            }
+            if (u.email === "teste@teste.pt") mainUser = user;
         }
+
+        const user = mainUser!; // Keep reference for reports below
 
         // 2. Create Business
         const businessData = {
