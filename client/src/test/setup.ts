@@ -29,4 +29,22 @@ if (typeof window !== "undefined") {
         unobserve: vi.fn(),
         disconnect: vi.fn(),
     }));
+
+    // Mock PointerEvent
+    class MockPointerEvent extends Event {
+        button: number;
+        ctrlKey: boolean;
+        pointerType: string;
+
+        constructor(type: string, props: PointerEventInit) {
+            super(type, props);
+            this.button = props.button || 0;
+            this.ctrlKey = props.ctrlKey || false;
+            this.pointerType = props.pointerType || "mouse";
+        }
+    }
+    global.PointerEvent = MockPointerEvent as any;
+    global.HTMLElement.prototype.scrollIntoView = vi.fn();
+    global.HTMLElement.prototype.releasePointerCapture = vi.fn();
+    global.HTMLElement.prototype.hasPointerCapture = vi.fn();
 }

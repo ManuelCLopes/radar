@@ -124,14 +124,16 @@ describe("BusinessForm", () => {
         });
 
         // Select type using mock select
-        await user.selectOptions(screen.getByTestId("mock-select"), "restaurant");
+        // Use fireEvent to ensure change is triggered on the mock select
+        fireEvent.change(screen.getByTestId("mock-select"), { target: { value: "restaurant" } });
 
-        // Submit
-        await user.click(screen.getByTestId("button-submit-business"));
+        const submitButton = screen.getByTestId("button-submit-business");
+        await waitFor(() => expect(submitButton).not.toBeDisabled());
+        fireEvent.click(submitButton);
 
         await waitFor(() => {
-            expect(mockOnSubmit).toHaveBeenCalled(); // Changed to toHaveBeenCalled because we are actually submitting now
-        });
+            expect(mockOnSubmit).toHaveBeenCalled();
+        }, { timeout: 3000 });
     });
 
     it("handles address search and selection", async () => {
