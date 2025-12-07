@@ -191,3 +191,178 @@ describe("API Routes Integration", () => {
         });
     });
 });
+
+describe("Routes Coverage (Edge Cases)", () => {
+    let app: express.Express;
+    let server: any;
+
+    beforeEach(async () => {
+        vi.restoreAllMocks();
+        app = express();
+        app.use(express.json());
+        // Mock isAuthenticated for all requests
+        app.use((req: any, res, next) => {
+            req.isAuthenticated = () => true;
+            req.user = { id: "user-1" };
+            next();
+        });
+        server = createServer(app);
+        await registerRoutes(server, app);
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    describe("POST /api/quick-search", () => {
+        it("should return 400 if required fields missing", async () => {
+            const res = await request(app).post("/api/quick-search").send({});
+            expect(res.status).toBe(400);
+            expect(res.body.error).toBe("Missing required fields");
+        });
+
+        it("should return 400 if radius is invalid", async () => {
+            const res = await request(app).post("/api/quick-search").send({
+                address: "Test St",
+                type: "restaurant",
+                radius: 9999
+            });
+            expect(res.status).toBe(400);
+            expect(res.body.error).toBe("Invalid radius");
+        });
+
+        it("should return 400 if address not found", async () => {
+            (hasGoogleApiKey as any).mockReturnValue(true);
+            (searchPlacesByAddress as any).mockResolvedValue([]);
+
+            const res = await request(app).post("/api/quick-search").send({
+                address: "Unknown St",
+                type: "restaurant",
+                radius: 1000
+            });
+            expect(res.status).toBe(400);
+            expect(res.body.error).toBe("Address not found");
+        });
+    });
+
+    describe("POST /api/businesses", () => {
+        it("should return 400 if validation fails", async () => {
+            const res = await request(app).post("/api/businesses").send({
+                name: "Test",
+                // Missing type
+            });
+            expect(res.status).toBe(400);
+            expect(res.body.error).toBe("Validation failed");
+        });
+
+        it("should return 400 if coordinates invalid", async () => {
+            const res = await request(app).post("/api/businesses").send({
+                name: "Test",
+                type: "restaurant",
+                address: "Test St",
+                latitude: "invalid",
+                longitude: 10
+            });
+            expect(res.status).toBe(400);
+            expect(res.body.error).toBe("Validation failed");
+        });
+
+        it("should return 400 if coordinates out of range", async () => {
+            const res = await request(app).post("/api/businesses").send({
+                name: "Test",
+                type: "restaurant",
+                address: "Test St",
+                latitude: 100, // Invalid lat
+                longitude: 10
+            });
+            expect(res.status).toBe(400);
+            expect(res.body.error).toBe("Validation failed");
+        });
+    });
+
+    describe("PUT /api/businesses/:id", () => {
+        it("should return 404 if business not found", async () => {
+            vi.spyOn(storage, 'updateBusiness').mockRejectedValue(new Error("Business not found"));
+
+            const res = await request(app).put("/api/businesses/999").send({
+                name: "Updated Name"
+            });
+            expect(res.status).toBe(404);
+            expect(res.body.error).toBe("Business not found");
+        });
+
+        it("should return 400 if invalid latitude provided", async () => {
+            const res = await request(app).put("/api/businesses/1").send({
+                latitude: 100
+            });
+            expect(res.status).toBe(400);
+            expect(res.body.error).toBe("Validation failed");
+        });
+    });
+
+    describe("DELETE /api/businesses/:id", () => {
+        it("should return 404 if business not found", async () => {
+            vi.spyOn(storage, 'deleteBusiness').mockResolvedValue(false);
+
+            const res = await request(app).delete("/api/businesses/999");
+            expect(res.status).toBe(404);
+            expect(res.body.error).toBe("Business not found");
+        });
+    });
+
+    describe("POST /api/run-report/:id", () => {
+        it("should return 404 if business not found", async () => {
+            vi.spyOn(storage, 'getBusiness').mockResolvedValue(null);
+
+            const res = await request(app).post("/api/run-report/999");
+            expect(res.status).toBe(404);
+            expect(res.body.error).toBe("Business not found");
+        });
+    });
+
+    describe("GET /api/reports/:id", () => {
+        it("should return 404 if report not found", async () => {
+            vi.spyOn(storage, 'getReport').mockResolvedValue(null);
+
+            const res = await request(app).get("/api/reports/999");
+            expect(res.status).toBe(404);
+            expect(res.body.error).toBe("Report not found");
+        });
+    });
+
+    describe("GET /api/places/search", () => {
+        it("should return 400 if query missing", async () => {
+            const res = await request(app).get("/api/places/search");
+            expect(res.status).toBe(400);
+            expect(res.body.error).toBe("Search query is required");
+        });
+
+        it("should return message if API key missing", async () => {
+            (hasGoogleApiKey as any).mockReturnValue(false);
+
+            const res = await request(app).get("/api/places/search?q=test");
+            expect(res.body.apiKeyMissing).toBe(true);
+        });
+    });
+
+    describe("POST /api/analyze-address", () => {
+        it("should return 400 if required fields missing", async () => {
+            const res = await request(app).post("/api/analyze-address").send({});
+            expect(res.status).toBe(400);
+            expect(res.body.error).toBe("Missing required fields");
+        });
+
+        it("should return 400 if address not found", async () => {
+            (hasGoogleApiKey as any).mockReturnValue(true);
+            (searchPlacesByAddress as any).mockResolvedValue([]);
+
+            const res = await request(app).post("/api/analyze-address").send({
+                address: "Unknown St",
+                type: "restaurant",
+                radius: 1000
+            });
+            expect(res.status).toBe(400);
+            expect(res.body.error).toBe("Address not found");
+        });
+    });
+});
