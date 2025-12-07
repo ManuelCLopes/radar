@@ -272,13 +272,13 @@ export default function Dashboard() {
                 </TabsList>
 
                 <div className="flex gap-2">
-                  <Button onClick={() => setIsAddOpen(true)} className="gap-2">
+                  <Button onClick={() => setIsAddOpen(true)} className="gap-2" data-testid="btn-add-business">
                     <Plus className="h-4 w-4" />
                     <span className="hidden sm:inline">{t("dashboard.addBusiness")}</span>
                   </Button>
                   <Dialog open={isAnalysisOpen} onOpenChange={setIsAnalysisOpen}>
                     <DialogTrigger asChild>
-                      <Button variant="outline" className="gap-2">
+                      <Button variant="outline" className="gap-2" data-testid="btn-new-analysis">
                         <Search className="h-4 w-4" />
                         <span className="hidden sm:inline">{t("dashboard.tabs.newAnalysis")}</span>
                       </Button>

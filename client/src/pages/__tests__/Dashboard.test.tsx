@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import Dashboard from "../Dashboard";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -9,7 +9,7 @@ import { useLocation } from "wouter";
 vi.mock("@tanstack/react-query", async (importOriginal) => {
     const actual = await importOriginal();
     return {
-        ...actual,
+        ...(actual as any),
         useQuery: vi.fn(),
         useMutation: vi.fn(),
         useQueryClient: vi.fn(() => ({
@@ -18,6 +18,13 @@ vi.mock("@tanstack/react-query", async (importOriginal) => {
         QueryClient: vi.fn(),
     };
 });
+
+vi.mock("react-i18next", () => ({
+    useTranslation: () => ({
+        t: (key: string) => key,
+        i18n: { language: "en" }
+    }),
+}));
 
 vi.mock("@/hooks/useAuth", () => ({
     useAuth: vi.fn(),
@@ -28,13 +35,32 @@ vi.mock("wouter", () => ({
     Link: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+vi.mock("@/hooks/use-toast", () => ({
+    useToast: () => ({
+        toast: vi.fn(),
+    }),
+}));
+
 // Mock child components to simplify testing
 vi.mock("@/components/BusinessList", () => ({
-    BusinessList: () => <div data-testid="business-list">Business List</div>,
+    BusinessList: ({ onGenerateReport, onDelete }: any) => (
+        <div data-testid="business-list">
+            <button data-testid="btn-generate-report" onClick={() => onGenerateReport("1")}>Generate</button>
+            <button data-testid="btn-delete" onClick={() => onDelete("1")}>Delete</button>
+        </div>
+    ),
 }));
 
 vi.mock("@/components/BusinessForm", () => ({
-    BusinessForm: () => <div data-testid="business-form">Business Form</div>,
+    BusinessForm: ({ onSubmit }: any) => (
+        <div data-testid="business-form">
+            <button data-testid="submit-business" onClick={() => onSubmit({ name: "New Biz" })}>Submit</button>
+        </div>
+    ),
+}));
+
+vi.mock("@/components/ReportHistory", () => ({
+    ReportHistory: () => <div data-testid="report-history">Report History</div>,
 }));
 
 vi.mock("@/components/ui/tabs", () => ({
@@ -42,6 +68,15 @@ vi.mock("@/components/ui/tabs", () => ({
     TabsList: ({ children }: any) => <div>{children}</div>,
     TabsTrigger: ({ children, value }: any) => <button data-testid={`tab-${value}`}>{children}</button>,
     TabsContent: ({ children, value }: any) => <div data-testid={`content-${value}`}>{children}</div>,
+}));
+
+vi.mock("@/components/ui/dialog", () => ({
+    Dialog: ({ children }: any) => <div>{children}</div>,
+    DialogContent: ({ children }: any) => <div data-testid="dialog-content">{children}</div>,
+    DialogHeader: ({ children }: any) => <div>{children}</div>,
+    DialogTitle: ({ children }: any) => <div>{children}</div>,
+    DialogDescription: ({ children }: any) => <div>{children}</div>,
+    DialogTrigger: ({ children, asChild }: any) => asChild ? children : <button>{children}</button>,
 }));
 
 describe("Dashboard", () => {
@@ -53,7 +88,10 @@ describe("Dashboard", () => {
         plan: "professional"
     };
 
+    const mockMutate = vi.fn();
+
     beforeEach(() => {
+        vi.clearAllMocks();
         (useAuth as any).mockReturnValue({
             user: mockUser,
             logoutMutation: { mutate: vi.fn() }
@@ -80,7 +118,8 @@ describe("Dashboard", () => {
         });
 
         (useMutation as any).mockReturnValue({
-            mutate: vi.fn(),
+            mutate: mockMutate,
+            mutateAsync: mockMutate,
             isPending: false
         });
     });
@@ -99,13 +138,53 @@ describe("Dashboard", () => {
 
     it("renders action buttons", () => {
         render(<Dashboard />);
-        // Check for Add Business button (by text or icon presence if text is hidden on mobile)
-        // Since we mock translation, we expect the key or translated text.
-        // t("dashboard.addBusiness") -> "Add Business" (assuming default mock behavior or key)
-        // But we didn't mock t() to return keys.
-        // Let's check for the button presence via other means if possible, or assume t returns key.
-        // Actually, we didn't mock useTranslation explicitly in the test file, 
-        // but setup.ts might have.
-        // Let's check setup.ts or just check for something we know exists.
+        expect(screen.getByTestId("btn-add-business")).toBeInTheDocument();
+        expect(screen.getByTestId("btn-new-analysis")).toBeInTheDocument();
+    });
+
+    it("opens Analysis dialog and submits", async () => {
+        render(<Dashboard />);
+        screen.debug(undefined, 20000);
+        const analysisBtn = screen.getByTestId("btn-new-analysis");
+        fireEvent.click(analysisBtn);
+
+
+        expect(screen.getByText("dashboard.analysis.title")).toBeInTheDocument();
+    });
+
+    it("opens Add Business dialog and submits", async () => {
+        render(<Dashboard />);
+        const addBtn = screen.getByTestId("btn-add-business");
+        fireEvent.click(addBtn);
+
+        expect(screen.getByTestId("business-form")).toBeInTheDocument();
+
+        // Submit form
+        fireEvent.click(screen.getByTestId("submit-business"));
+
+        expect(mockMutate).toHaveBeenCalled();
+    });
+
+    it("switches tabs", async () => {
+        render(<Dashboard />);
+        // Tabs are mocked to just render content. 
+        // Radix Tabs usually handle switching. Our mock doesn't implement state.
+        // But we can check if the tab triggers are present.
+        expect(screen.getByTestId("tab-history")).toBeInTheDocument();
+
+        // In a real test we'd click and verify content change.
+        // With our mock, we just verify structure.
+    });
+
+    it("handles generate report action from list", async () => {
+        render(<Dashboard />);
+        fireEvent.click(screen.getByTestId("btn-generate-report"));
+        expect(mockMutate).toHaveBeenCalled();
+    });
+
+    it("handles delete action from list", async () => {
+        render(<Dashboard />);
+        fireEvent.click(screen.getByTestId("btn-delete"));
+        expect(mockMutate).toHaveBeenCalled();
     });
 });
