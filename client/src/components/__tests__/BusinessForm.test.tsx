@@ -218,4 +218,84 @@ describe("BusinessForm", () => {
         // Since we removed the change button, we just verify the read-only state persists
         expect(screen.queryByTestId("mock-select")).not.toBeInTheDocument();
     });
+
+    it("handles multiple search results", async () => {
+        const user = userEvent.setup();
+        mockMutateAsync.mockResolvedValue({
+            results: [
+                { placeId: "1", name: "Place A", address: "Address A", latitude: 1, longitude: 1 },
+                { placeId: "2", name: "Place B", address: "Address B", latitude: 2, longitude: 2 }
+            ],
+            apiKeyMissing: false
+        });
+
+        render(<BusinessForm onSubmit={mockOnSubmit} />);
+        await user.type(screen.getByTestId("input-address"), "Test Query");
+        await user.click(screen.getByTestId("button-search-address"));
+
+        await waitFor(() => {
+            expect(screen.getByText("addressSearch.multipleResults.title")).toBeInTheDocument();
+        });
+
+        expect(screen.getByText("Place A")).toBeInTheDocument();
+        expect(screen.getByText("Place B")).toBeInTheDocument();
+
+        // Select one
+        await user.click(screen.getByTestId("card-place-result-0"));
+
+        // Should close dialog and set address
+        await waitFor(() => {
+            expect(screen.queryByText("addressSearch.multipleResults.title")).not.toBeInTheDocument();
+            expect(screen.getByTestId("input-address")).toHaveValue("Address A");
+        });
+    });
+
+    it("handles no search results", async () => {
+        const user = userEvent.setup();
+        mockMutateAsync.mockResolvedValue({
+            results: [],
+            apiKeyMissing: false
+        });
+
+        render(<BusinessForm onSubmit={mockOnSubmit} />);
+        await user.type(screen.getByTestId("input-address"), "Unknown Place");
+        await user.click(screen.getByTestId("button-search-address"));
+
+        await waitFor(() => {
+            expect(screen.getByText("addressSearch.noResults.title")).toBeInTheDocument();
+        });
+
+        // Test "Proceed with address"
+        await user.click(screen.getByTestId("button-proceed-with-address"));
+
+        await waitFor(() => {
+            expect(screen.queryByText("addressSearch.noResults.title")).not.toBeInTheDocument();
+            // Should allow manual entry (type field visible)
+            expect(screen.getByTestId("mock-select")).toBeInTheDocument();
+        });
+    });
+
+    it("handles API key missing", async () => {
+        const user = userEvent.setup();
+        mockMutateAsync.mockResolvedValue({
+            results: [],
+            apiKeyMissing: true
+        });
+
+        render(<BusinessForm onSubmit={mockOnSubmit} />);
+        await user.type(screen.getByTestId("input-address"), "Any Place");
+        await user.click(screen.getByTestId("button-search-address"));
+
+        await waitFor(() => {
+            expect(screen.getByText("addressSearch.apiKeyMissing.title")).toBeInTheDocument();
+        });
+
+        // Test "Proceed with address"
+        await user.click(screen.getByTestId("button-proceed-with-address-api-missing"));
+
+        await waitFor(() => {
+            expect(screen.queryByText("addressSearch.apiKeyMissing.title")).not.toBeInTheDocument();
+            expect(screen.getByTestId("mock-select")).toBeInTheDocument();
+        });
+    });
 });
