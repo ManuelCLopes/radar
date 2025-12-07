@@ -94,4 +94,57 @@ describe("AI Analysis", () => {
 
         expect(result).toContain("COMPETITOR ANALYSIS REPORT FOR");
     });
+
+    it("should include review analysis in fallback report", async () => {
+        mockCreate.mockRejectedValue(new Error("OpenAI Error"));
+
+        const competitors = [
+            {
+                name: "Excellent Place",
+                rating: 4.9,
+                reviews: [{ text: "Great", rating: 5 }]
+            },
+            {
+                name: "Good Place",
+                rating: 4.6,
+                reviews: [{ text: "Good", rating: 4 }]
+            },
+            {
+                name: "Average Place",
+                rating: 4.2,
+                reviews: [{ text: "Okay", rating: 4 }]
+            },
+            {
+                name: "Poor Place",
+                rating: 3.5,
+                reviews: [{ text: "Bad", rating: 3 }]
+            }
+        ];
+
+        const result = await analyzeCompetitors(mockBusiness, competitors as any, "en");
+
+        expect(result).toContain("Exceptional Excellence - Consistently positive feedback");
+        expect(result).toContain("Very Strong - High customer satisfaction");
+        expect(result).toContain("Good Performance - Generally positive but room for improvement");
+        // The 4th competitor is not in top 3, so it might not be included if logic slices top 3.
+        // ai.ts: const topCompetitors = competitors.slice(0, 3);
+        // So "Poor Place" should NOT be in the report.
+        expect(result).not.toContain("Mixed/Variable - Inconsistent experiences reported");
+    });
+
+    it("should include review analysis in fallback report (mixed sentiment)", async () => {
+        mockCreate.mockRejectedValue(new Error("OpenAI Error"));
+
+        const competitors = [
+            {
+                name: "Poor Place",
+                rating: 3.5,
+                reviews: [{ text: "Bad", rating: 3 }]
+            }
+        ];
+
+        const result = await analyzeCompetitors(mockBusiness, competitors as any, "en");
+
+        expect(result).toContain("Mixed/Variable - Inconsistent experiences reported");
+    });
 });
