@@ -193,4 +193,46 @@ Main analysis content here.
         expect(screen.getByText('"Comida boa"')).toBeInTheDocument();
         expect(screen.getByText("Show Translated")).toBeInTheDocument();
     });
+
+    it("should render no competitors message when list is empty", () => {
+        const reportWithNoCompetitors = { ...mockReport, competitors: [] };
+        render(
+            <ReportView
+                report={reportWithNoCompetitors}
+                open={true}
+                onOpenChange={() => { }}
+            />
+        );
+
+        expect(screen.getByText("report.sections.noCompetitors")).toBeInTheDocument();
+    });
+
+    it("should parse and render all SWOT sections", () => {
+        const reportWithFullSWOT = {
+            ...mockReport,
+            aiAnalysis: `
+### SWOT Analysis
+#### Strengths
+- S1
+#### Weaknesses
+- W1
+#### Opportunities
+- O1
+#### Threats
+- T1
+`
+        };
+        render(
+            <ReportView
+                report={reportWithFullSWOT}
+                open={true}
+                onOpenChange={() => { }}
+            />
+        );
+
+        expect(screen.getByText("S1")).toBeInTheDocument();
+        expect(screen.getByText("W1")).toBeInTheDocument();
+        expect(screen.getByText("O1")).toBeInTheDocument();
+        expect(screen.getByText("T1")).toBeInTheDocument();
+    });
 });
