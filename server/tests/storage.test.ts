@@ -172,5 +172,33 @@ describe("Storage", () => {
             expect(db.insert).toHaveBeenCalled();
             expect(mockValues).toHaveBeenCalled();
         });
+
+        it("should get reports by user id", async () => {
+            const mockOrderBy = vi.fn().mockResolvedValue([]);
+            const mockWhere = vi.fn().mockReturnValue({ orderBy: mockOrderBy });
+            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+            const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
+            (db.select as any).mockImplementation(mockSelect);
+
+            await storage.getReportsByUserId("1");
+
+            expect(db.select).toHaveBeenCalled();
+            expect(mockFrom).toHaveBeenCalled();
+            expect(mockWhere).toHaveBeenCalled();
+            expect(mockOrderBy).toHaveBeenCalled();
+        });
+
+        it("should list all reports", async () => {
+            const mockOrderBy = vi.fn().mockResolvedValue([]);
+            const mockFrom = vi.fn().mockReturnValue({ orderBy: mockOrderBy });
+            const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
+            (db.select as any).mockImplementation(mockSelect);
+
+            await storage.listAllReports();
+
+            expect(db.select).toHaveBeenCalled();
+            expect(mockFrom).toHaveBeenCalled();
+            expect(mockOrderBy).toHaveBeenCalled();
+        });
     });
 });

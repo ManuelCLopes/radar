@@ -12,16 +12,20 @@ import { vi, beforeEach, afterEach } from "vitest";
 vi.mock("passport", () => ({
     default: {
         initialize: () => (req: any, res: any, next: any) => {
-            req.isAuthenticated = () => !!req.user;
-            req.login = (user: any, cb: any) => {
-                req.user = user;
-                cb(null);
-            };
+            if (!req.isAuthenticated) req.isAuthenticated = () => !!req.user;
+            if (!req.login) {
+                req.login = (user: any, cb: any) => {
+                    req.user = user;
+                    cb(null);
+                };
+            }
             req.logIn = req.login; // Alias
-            req.logout = (cb: any) => {
-                req.user = null;
-                cb(null);
-            };
+            if (!req.logout) {
+                req.logout = (cb: any) => {
+                    req.user = null;
+                    cb(null);
+                };
+            }
             next();
         },
         session: () => (req: any, res: any, next: any) => next(),
@@ -304,6 +308,56 @@ describe("Auth Coverage (Edge Cases)", () => {
             const res = await request(testApp).post("/api/logout");
             expect(res.status).toBe(200);
             expect(res.body.message).toBe("Logged out successfully");
+        });
+
+        it("should handle logout error", async () => {
+            const testApp = express();
+            testApp.use(express.json());
+            testApp.use(express.urlencoded({ extended: true }));
+
+            testApp.use((req: any, res, next) => {
+                req.isAuthenticated = () => true;
+                req.user = { id: "1", email: "test@example.com" };
+                req.logout = (cb: any) => cb(new Error("Logout error"));
+                req.session = { destroy: (cb: any) => cb(null) };
+                next();
+            });
+
+            setupAuth(testApp);
+
+            // Add error handler
+            testApp.use((err: any, req: any, res: any, next: any) => {
+                res.status(500).json({ message: err.message });
+            });
+
+            const res = await request(testApp).post("/api/logout");
+            expect(res.status).toBe(500);
+            expect(res.body.message).toBe("Logout error");
+        });
+
+        it("should handle session destroy error", async () => {
+            const testApp = express();
+            testApp.use(express.json());
+            testApp.use(express.urlencoded({ extended: true }));
+
+            testApp.use((req: any, res, next) => {
+                req.isAuthenticated = () => true;
+                req.user = { id: "1", email: "test@example.com" };
+                req.logout = (cb: any) => cb(null);
+                req.session = { destroy: (cb: any) => cb(new Error("Session error")) };
+                next();
+            });
+
+            setupAuth(testApp);
+
+            // Add error handler
+            testApp.use((err: any, req: any, res: any, next: any) => {
+                res.status(500).json({ message: err.message });
+            });
+
+            const res = await request(testApp).post("/api/logout");
+            expect(res.status).toBe(500);
+            expect(res.body.message).toBe("Session error");
         });
     });
 
