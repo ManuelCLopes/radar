@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "@tanstack/react-query";
-import { Building2, MapPin, Search, Loader2, AlertTriangle, CheckCircle, Navigation } from "lucide-react";
+import { Building2, MapPin, Search, Loader2, AlertTriangle, CheckCircle, Navigation, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -12,29 +12,30 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertBusinessSchema, businessTypes, type InsertBusiness, type BusinessType, type PlaceResult } from "@shared/schema";
 import { z } from "zod";
 
-const businessTypeKeys: Record<BusinessType, string> = {
-  restaurant: "restaurant",
-  cafe: "cafe",
-  retail: "retail",
-  gym: "gym",
-  salon: "salon",
-  pharmacy: "pharmacy",
-  hotel: "hotel",
-  bar: "bar",
-  bakery: "bakery",
-  supermarket: "supermarket",
-  clinic: "clinic",
-  dentist: "dentist",
-  bank: "bank",
-  gas_station: "gasStation",
-  car_repair: "carRepair",
-  other: "other",
+const businessTypeIcons: Record<BusinessType, string> = {
+  restaurant: "🍽️",
+  cafe: "☕",
+  retail: "🛍️",
+  gym: "💪",
+  salon: "💇",
+  pharmacy: "💊",
+  hotel: "🏨",
+  bar: "🍺",
+  bakery: "🥖",
+  supermarket: "🛒",
+  clinic: "🏥",
+  dentist: "🦷",
+  bank: "🏦",
+  gas_station: "⛽",
+  car_repair: "🔧",
+  other: "🏢",
 };
 
 // Define the shape of the form values for type safety
@@ -100,8 +101,7 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
   });
 
   const getBusinessTypeLabel = (type: BusinessType): string => {
-    const key = businessTypeKeys[type];
-    return t(`business.types.${key}`) as string;
+    return t(`business.types.${type}`) as string;
   };
 
   const handleSearchAddress = async () => {
@@ -155,17 +155,64 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
     }
   };
 
+  const mapGoogleTypeToBusinessType = (googleTypes: string[] = []): BusinessType | undefined => {
+    const mapping: Record<string, BusinessType> = {
+      restaurant: "restaurant",
+      food: "restaurant",
+      meal_takeaway: "restaurant",
+      meal_delivery: "restaurant",
+      cafe: "cafe",
+      coffee_shop: "cafe",
+      bakery: "bakery",
+      bar: "bar",
+      night_club: "bar",
+      store: "retail",
+      clothing_store: "retail",
+      shopping_mall: "retail",
+      gym: "gym",
+      fitness_center: "gym",
+      spa: "salon",
+      beauty_salon: "salon",
+      hair_care: "salon",
+      pharmacy: "pharmacy",
+      drugstore: "pharmacy",
+      lodging: "hotel",
+      hotel: "hotel",
+      supermarket: "supermarket",
+      grocery_or_supermarket: "supermarket",
+      doctor: "clinic",
+      hospital: "clinic",
+      health: "clinic",
+      dentist: "dentist",
+      bank: "bank",
+      finance: "bank",
+      gas_station: "gas_station",
+      car_repair: "car_repair",
+      car_service: "car_repair",
+    };
+
+    for (const type of googleTypes) {
+      if (mapping[type]) {
+        return mapping[type];
+      }
+    }
+    return undefined;
+  };
+
   const selectPlace = (place: PlaceResult) => {
     setSelectedPlace(place);
     setManualCoordinates(null);
     setPendingLocationAddress(null);
     form.setValue("address", place.address);
+
+    // Auto-fill type if not already set or if user wants to overwrite (we'll just overwrite for now as it's a helpful feature)
+    const mappedType = mapGoogleTypeToBusinessType(place.types);
+    if (mappedType) {
+      form.setValue("type", mappedType);
+    }
+
     setShowMultipleResultsModal(false);
     setShowAddressSuggestionDialog(false);
-    toast({
-      title: t("addressSearch.placeSelected"),
-      description: place.name,
-    });
   };
 
   const handleGetCurrentLocation = (): Promise<{ lat: number; lng: number }> => {
@@ -311,34 +358,6 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
 
           <FormField
             control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("business.form.type")}</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger data-testid="select-business-type">
-                      <SelectValue placeholder={t("business.form.typePlaceholder")} />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {businessTypes.map((type) => (
-                      <SelectItem key={type} value={type} data-testid={`option-type-${type}`}>
-                        {getBusinessTypeLabel(type)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
             name="address"
             render={({ field }) => (
               <FormItem>
@@ -360,6 +379,8 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
                         if (pendingLocationAddress) {
                           setPendingLocationAddress(null);
                         }
+                        // Reset type if address changes and it was auto-filled (optional, but good UX)
+                        // For now, let's keep it simple and just hide it if address is cleared/changed until re-selected
                       }}
                     />
                   </FormControl>
@@ -399,6 +420,58 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
               </FormItem>
             )}
           />
+
+          {(selectedPlace || manualCoordinates || pendingLocationAddress) && (
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("business.form.type")}</FormLabel>
+                  {field.value ? (
+                    <div className="flex items-center justify-between p-3 border rounded-md bg-muted/50">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{businessTypeIcons[field.value]}</span>
+                        <span className="font-medium">{getBusinessTypeLabel(field.value)}</span>
+                      </div>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div className="cursor-help p-1">
+                              <Info className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="max-w-xs text-sm">{t("business.form.typeAutoDetected")}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  ) : (
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger data-testid="select-business-type">
+                          <SelectValue placeholder={t("business.form.typePlaceholder")} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {businessTypes.map((type) => (
+                          <SelectItem key={type} value={type} data-testid={`option-type-${type}`}>
+                            <span className="mr-2">{businessTypeIcons[type]}</span>
+                            {getBusinessTypeLabel(type)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
 
           <Button
             type="submit"

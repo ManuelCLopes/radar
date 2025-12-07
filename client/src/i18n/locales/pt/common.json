@@ -62,7 +62,8 @@
       "address": "Morada",
       "addressPlaceholder": "Introduza a morada do seu negócio",
       "submit": "Registar Negócio",
-      "submitting": "A registar..."
+      "submitting": "A registar...",
+      "typeAutoDetected": "Este tipo de negócio foi detetado automaticamente a partir de registos públicos."
     },
     "types": {
       "restaurant": "Restaurante",
@@ -179,13 +180,15 @@
     "language": "pt",
     "cancel": "Cancelar",
     "refresh": "Atualizar",
-    "loading": "A carregar..."
+    "loading": "A carregar...",
+    "change": "Alterar"
   },
   "addressSearch": {
     "enterAddress": "Por favor, introduza uma morada para pesquisar",
     "searchFailed": "Falha ao pesquisar morada. Por favor, tente novamente.",
     "placeSelected": "Morada verificada",
     "addressVerified": "Morada verificada e localização confirmada",
+    "typeAutoSelected": "Morada verificada. Tipo de negócio definido para {{type}}",
     "usingCurrentLocation": "A usar a sua localização atual",
     "useCurrentLocation": "Usar Localização Atual",
     "locationObtained": "Localização obtida",

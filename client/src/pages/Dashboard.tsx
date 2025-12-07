@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { BarChart3, TrendingUp, Building2, MapPin, LogOut, Search, History, FileText, Loader2 } from "lucide-react";
+import { BarChart3, TrendingUp, Building2, MapPin, LogOut, Search, History, FileText, Loader2, Plus } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { BusinessForm } from "@/components/BusinessForm";
 import { BusinessList } from "@/components/BusinessList";
@@ -273,7 +273,7 @@ export default function Dashboard() {
 
                 <div className="flex gap-2">
                   <Button onClick={() => setIsAddOpen(true)} className="gap-2">
-                    <Building2 className="h-4 w-4" />
+                    <Plus className="h-4 w-4" />
                     <span className="hidden sm:inline">{t("dashboard.addBusiness")}</span>
                   </Button>
                   <Dialog open={isAnalysisOpen} onOpenChange={setIsAnalysisOpen}>

@@ -62,7 +62,8 @@
       "address": "Address",
       "addressPlaceholder": "Enter your business address",
       "submit": "Register Business",
-      "submitting": "Registering..."
+      "submitting": "Registering...",
+      "typeAutoDetected": "This business type was automatically detected from public records."
     },
     "types": {
       "restaurant": "Restaurant",
@@ -179,13 +180,15 @@
     "language": "en",
     "cancel": "Cancel",
     "refresh": "Refresh",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "change": "Change"
   },
   "addressSearch": {
     "enterAddress": "Please enter an address to search",
     "searchFailed": "Failed to search for address. Please try again.",
     "placeSelected": "Address verified",
     "addressVerified": "Address verified and location confirmed",
+    "typeAutoSelected": "Address verified. Business type set to {{type}}",
     "usingCurrentLocation": "Using your current location",
     "useCurrentLocation": "Use Current Location",
     "locationObtained": "Location obtained",

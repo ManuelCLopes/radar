@@ -60,7 +60,8 @@
       "longitude": "Längengrad",
       "longitudePlaceholder": "z.B., 13.4050",
       "address": "Adresse",
-      "addressPlaceholder": "Geben Sie die Adresse Ihres Unternehmens ein"
+      "addressPlaceholder": "Geben Sie die Adresse Ihres Unternehmens ein",
+      "typeAutoDetected": "Dieser Geschäftstyp wurde automatisch aus öffentlichen Registern erkannt."
     },
     "pricing": {
       "title": "Pläne und Preise",
@@ -228,7 +229,8 @@
   "common": {
     "cancel": "Abbrechen",
     "refresh": "Aktualisieren",
-    "loading": "Laden..."
+    "loading": "Laden...",
+    "change": "Ändern"
   },
   "addressSearch": {
     "enterAddress": "Bitte geben Sie eine Adresse zur Suche ein",

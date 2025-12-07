@@ -62,7 +62,8 @@
       "address": "Dirección",
       "addressPlaceholder": "Introduce la dirección de tu negocio",
       "submit": "Registrar Negocio",
-      "submitting": "Registrando..."
+      "submitting": "Registrando...",
+      "typeAutoDetected": "Este tipo de negocio fue detectado automáticamente de registros públicos."
     },
     "types": {
       "restaurant": "Restaurante",
@@ -178,7 +179,8 @@
   "common": {
     "cancel": "Cancelar",
     "refresh": "Actualizar",
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "change": "Cambiar"
   },
   "addressSearch": {
     "enterAddress": "Por favor, ingresa una dirección para buscar",
