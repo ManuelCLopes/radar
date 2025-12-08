@@ -69,35 +69,20 @@ describe("ReportView", () => {
             { name: "Comp 2", address: "Addr 2", rating: 3.0 }
         ],
         aiAnalysis: `
-Main analysis content here.
-
-### SWOT Analysis
-#### Strengths
-- Strength 1
-#### Weaknesses
-- Weakness 1
-#### Opportunities
-- Opportunity 1
-#### Threats
-- Threat 1
-
-### Market Trends
-- Trend 1
-
-### Target Audience
-- **Demographics**: [Age 20-30]
-- **Psychographics**: Lifestyle
-- **Pain Points**: Cost
-- **Needs**: Quality
-
-### Marketing Strategy
-- **Primary Channels**: [Social Media]
-- **Content Ideas**: Videos
-- **Promotional Tactics**: Discounts
-
-Main analysis content here.
-### Detailed Analysis
-**Bold text** and *italic*.
+          <p class="my-2">Main analysis content here.</p>
+          <h3 class="text-base font-semibold mt-3 mb-2">Detailed Analysis</h3>
+          <p class="my-2"><strong class="font-semibold">Bold text</strong> and <em>italic</em>.</p>
+          <h3 class="text-base font-semibold mt-3 mb-2">SWOT Analysis</h3>
+          <h4 class="text-sm font-semibold mt-2 mb-1">Strengths</h4>
+          <ul class="list-disc list-inside space-y-1 my-2"><li>Strength 1</li></ul>
+          <h3 class="text-base font-semibold mt-3 mb-2">Market Trends</h3>
+          <ul class="list-disc list-inside space-y-1 my-2"><li>Trend 1</li></ul>
+          <h3 class="text-base font-semibold mt-3 mb-2">Target Audience</h3>
+          <ul class="list-disc list-inside space-y-1 my-2">
+            <li><strong class="font-semibold">Demographics</strong>: Age 20-30</li>
+            <li><strong class="font-semibold">Psychographics</strong>: Lifestyle</li>
+            <li><strong class="font-semibold">Pain Points</strong>: Cost</li>
+          </ul>
         `,
         html: "<div>Report HTML</div>",
         generatedAt: new Date()
@@ -138,8 +123,8 @@ Main analysis content here.
         expect(screen.getByText("Comp 1")).toBeInTheDocument();
         expect(screen.getByText("Strength 1")).toBeInTheDocument();
         expect(screen.getByText("Trend 1")).toBeInTheDocument();
-        expect(screen.getByText("Age 20-30")).toBeInTheDocument();
-        expect(screen.getByText("Social Media")).toBeInTheDocument();
+        expect(screen.getByText(/Age 20-30/)).toBeInTheDocument();
+        expect(screen.getByText(/Lifestyle/)).toBeInTheDocument();
         expect(screen.getByText("Main analysis content here.")).toBeInTheDocument();
     });
 
@@ -208,25 +193,35 @@ Main analysis content here.
     });
 
     it("should parse and render all SWOT sections", () => {
-        const reportWithFullSWOT = {
+        const mockReportAdvanced = {
             ...mockReport,
+            plan: "professional",
             aiAnalysis: `
-### SWOT Analysis
-#### Strengths
-- S1
-#### Weaknesses
-- W1
-#### Opportunities
-- O1
-#### Threats
-- T1
-`
+          <h2 class="text-lg font-semibold mt-4 mb-2">SWOT ANALYSIS</h2>
+          <h3 class="text-base font-semibold mt-3 mb-2">Strengths</h3>
+          <ul class="list-disc list-inside space-y-1 my-2">
+            <li>S1</li>
+          </ul>
+          <h3 class="text-base font-semibold mt-3 mb-2">Weaknesses</h3>
+          <ul class="list-disc list-inside space-y-1 my-2">
+            <li>W1</li>
+          </ul>
+          <h3 class="text-base font-semibold mt-3 mb-2">Opportunities</h3>
+          <ul class="list-disc list-inside space-y-1 my-2">
+            <li>O1</li>
+          </ul>
+          <h3 class="text-base font-semibold mt-3 mb-2">Threats</h3>
+          <ul class="list-disc list-inside space-y-1 my-2">
+            <li>T1</li>
+          </ul>
+        `
         };
+
         render(
             <ReportView
-                report={reportWithFullSWOT}
+                report={mockReportAdvanced}
                 open={true}
-                onOpenChange={() => { }}
+                onOpenChange={vi.fn()}
             />
         );
 

@@ -1,11 +1,14 @@
 import type { Business, Competitor } from "@shared/schema";
 import OpenAI from "openai";
 
+const apiKey = process.env.OPENAI_API_KEY || process.env.AI_INTEGRATIONS_OPENAI_API_KEY || "dummy-key-for-local-dev";
+
+console.log("[OpenAI] API Key configured:", apiKey !== "dummy-key-for-local-dev" ? "✅ YES (starts with " + apiKey.substring(0, 7) + "...)" : "❌ NO - using fallback");
+
 const openai = new OpenAI({
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-  apiKey: process.env.OPENAI_API_KEY || process.env.AI_INTEGRATIONS_OPENAI_API_KEY || "dummy-key-for-local-dev",
+  apiKey: apiKey,
 });
-
 
 
 const languageNames: Record<string, string> = {
@@ -58,6 +61,15 @@ export async function analyzeCompetitors(
 
 IMPORTANT: Write your entire response in ${languageName}. All text, headers, and recommendations must be in ${languageName}.
 
+FORMATTING: Output your response as HTML. Use semantic HTML tags with Tailwind CSS classes for styling:
+- Use <h2 class="text-lg font-semibold mt-4 mb-2"> for main section headers
+- Use <h3 class="text-base font-semibold mt-3 mb-2"> for sub-section headers
+- Use <p class="my-2"> for paragraphs
+- Use <ul class="list-disc list-inside space-y-1 my-2"> for unordered lists
+- Use <li> for list items
+- Use <strong class="font-semibold"> for emphasis
+- Do NOT include <html>, <head>, or <body> tags - only the content
+
 BUSINESS DETAILS:
 - Name: ${business.name}
 - Type: ${business.type}
@@ -73,7 +85,7 @@ MARKET METRICS:
 Please provide a detailed analysis including:
 1. MARKET OVERVIEW - Summary of the competitive landscape and how ${business.name} compares to competitors
 2. KEY COMPETITORS - Analysis of the top competitors, their strengths, ratings, and price positioning
-3. REVIEW THEME ANALYSIS - Based on the "Recent Reviews" provided, analyze what themes likely dominate customer feedback. **QUOTE** specific phrases from reviews to support your points (e.g., "As noted in a review for [Competitor], customers appreciate...").
+3. REVIEW THEME ANALYSIS - Based on the "Recent Reviews" provided, analyze what themes likely dominate customer feedback. QUOTE specific phrases from reviews to support your points (e.g., "As noted in a review for [Competitor], customers appreciate...").
 4. MARKET GAPS - Opportunities where competitors may be underserving customers`;
 
   if (isAdvanced) {
@@ -94,65 +106,74 @@ Please provide a detailed analysis including:
   Generate a report in ${languageName} language.
   
   CRITICAL INSTRUCTIONS:
-  1.  **FORMATTING**: Use **Bold** for key terms and important metrics. Use \`###\` for sub-headings within sections to organize content. Use bullet points for readability.
-  2.  **REVIEW ANALYSIS**: You MUST analyze the "Recent Reviews" provided. Do NOT just list them. **Synthesize** them into actionable insights. Identify patterns in customer satisfaction and dissatisfaction.
+  1.  **FORMATTING**: Output as HTML using semantic tags with Tailwind CSS classes. Use <strong class="font-semibold"> for emphasis. Use <h2> for main sections and <h3> for sub-sections. Use <ul> and <li> for lists.
+  2.  **REVIEW ANALYSIS**: You MUST analyze the "Recent Reviews" provided. Do NOT just list them. Synthesize them into actionable insights. Identify patterns in customer satisfaction and dissatisfaction.
   3.  **DETAIL**: Be extensive and specific. Avoid generic advice.
   
-  Structure the response in Markdown with the following sections:
+  Structure the response as HTML with the following sections:
   
-  # SWOT ANALYSIS
-  ## Strengths
-  (Analyze 3-5 key strengths. Use **bold** for the main point of each bullet)
-  ## Weaknesses
-  (Analyze 3-5 key weaknesses. Use **bold** for the main point)
-  ## Opportunities
-  (Analyze 3-5 opportunities. Use **bold** for the main point. **Strategic Implication**: Explain how to capture this)
-  ## Threats
-  (Analyze 3-5 threats. Use **bold** for the main point. **Strategic Implication**: Explain how to mitigate this)
+  <h2 class="text-lg font-semibold mt-4 mb-2">SWOT ANALYSIS</h2>
+  <h3 class="text-base font-semibold mt-3 mb-2">Strengths</h3>
+  <ul class="list-disc list-inside space-y-1 my-2">
+    <li>Analyze 3-5 key strengths. Use <strong class="font-semibold"> for the main point of each bullet</li>
+  </ul>
+  <h3 class="text-base font-semibold mt-3 mb-2">Weaknesses</h3>
+  <ul class="list-disc list-inside space-y-1 my-2">
+    <li>Analyze 3-5 key weaknesses. Use <strong> for the main point</li>
+  </ul>
+  <h3 class="text-base font-semibold mt-3 mb-2">Opportunities</h3>
+  <ul class="list-disc list-inside space-y-1 my-2">
+    <li>Analyze 3-5 opportunities. Use <strong> for the main point. Add <strong>Strategic Implication:</strong> Explain how to capture this</li>
+  </ul>
+  <h3 class="text-base font-semibold mt-3 mb-2">Threats</h3>
+  <ul class="list-disc list-inside space-y-1 my-2">
+    <li>Analyze 3-5 threats. Use <strong> for the main point. Add <strong>Strategic Implication:</strong> Explain how to mitigate this</li>
+  </ul>
   
-  # MARKET TRENDS
-  (Identify 3-5 current trends in this specific niche/location. For each trend, explain the **Business Impact** and reference any relevant competitor reviews that validate this trend)
+  <h2 class="text-lg font-semibold mt-4 mb-2">MARKET TRENDS</h2>
+  <p class="my-2">Identify 3-5 current trends in this specific niche/location. For each trend, explain the <strong>Business Impact</strong> and reference any relevant competitor reviews that validate this trend</p>
   
-  # CUSTOMER SENTIMENT & REVIEW INSIGHTS
-  (Synthesize the competitor reviews into key themes)
-  ## Common Praises
-  (What are competitors doing well? e.g., "Friendly staff", "Tasty food")
-  ## Recurring Complaints
-  (What are the common pain points? e.g., "Long wait times", "High prices")
-  ## Unmet Needs
-  (What are customers asking for that they aren't getting?)
+  <h2 class="text-lg font-semibold mt-4 mb-2">CUSTOMER SENTIMENT &amp; REVIEW INSIGHTS</h2>
+  <p class="my-2">Synthesize the competitor reviews into key themes</p>
+  <h3 class="text-base font-semibold mt-3 mb-2">Common Praises</h3>
+  <p class="my-2">What are competitors doing well? e.g., "Friendly staff", "Tasty food"</p>
+  <h3 class="text-base font-semibold mt-3 mb-2">Recurring Complaints</h3>
+  <p class="my-2">What are the common pain points? e.g., "Long wait times", "High prices"</p>
+  <h3 class="text-base font-semibold mt-3 mb-2">Unmet Needs</h3>
+  <p class="my-2">What are customers asking for that they aren't getting?</p>
   
-  # TARGET AUDIENCE PERSONA
-  ## Demographics
-  (Age, Income, Location, etc.)
-  ## Psychographics
-  (Interests, Values, Lifestyle)
-  ## Pain Points & Needs
-  (What problems are they trying to solve?)
+  <h2 class="text-lg font-semibold mt-4 mb-2">TARGET AUDIENCE PERSONA</h2>
+  <h3 class="text-base font-semibold mt-3 mb-2">Demographics</h3>
+  <p class="my-2">Age, Income, Location, etc.</p>
+  <h3 class="text-base font-semibold mt-3 mb-2">Psychographics</h3>
+  <p class="my-2">Interests, Values, Lifestyle</p>
+  <h3 class="text-base font-semibold mt-3 mb-2">Pain Points &amp; Needs</h3>
+  <p class="my-2">What problems are they trying to solve?</p>
   
-  # MARKETING STRATEGY
-  ## Primary Channels
-  (Best channels to reach this audience)
-  ## Content Ideas
-  (Specific content themes and topics)
-  ## Promotional Tactics
-  (Actionable ideas to drive traffic)
+  <h2 class="text-lg font-semibold mt-4 mb-2">MARKETING STRATEGY</h2>
+  <h3 class="text-base font-semibold mt-3 mb-2">Primary Channels</h3>
+  <p class="my-2">Best channels to reach this audience</p>
+  <h3 class="text-base font-semibold mt-3 mb-2">Content Ideas</h3>
+  <p class="my-2">Specific content themes and topics</p>
+  <h3 class="text-base font-semibold mt-3 mb-2">Promotional Tactics</h3>
+  <p class="my-2">Actionable ideas to drive traffic</p>
   
   IMPORTANT: Be EXTENSIVE and DETAILED. Use in-depth paragraphs for the Market Overview and Competitor Analysis. Avoid generic advice; provide specific, tailored insights based on the location and business type.
-  Remember: Write everything in ${languageName}.
+  Remember: Write everything in ${languageName}. Do NOT include <html>, <head>, or <body> tags.
   `;
   } else {
     // Append common sections for basic plan
     prompt += `
-5. 3-5 PRACTICAL RECOMMENDATIONS - Specific, actionable steps for the next month.
-6. DIFFERENTIATION STRATEGIES - Ways to stand out from the competition.
+5. PRACTICAL RECOMMENDATIONS - Specific, actionable steps for the next month (use <h2> and <ul> with <li> tags)
+6. DIFFERENTIATION STRATEGIES - Ways to stand out from the competition (use <h2> and <ul> with <li> tags)
 
-Format your response with clear headers and bullet points.
+Format your response as HTML with proper semantic tags and Tailwind CSS classes as shown above. Use <h2 class="text-lg font-semibold mt-4 mb-2"> for section headers, <p class="my-2"> for paragraphs, and <ul class="list-disc list-inside space-y-1 my-2"> for lists.
 IMPORTANT: Be EXTENSIVE and DETAILED. Use in-depth paragraphs for the Market Overview and Competitor Analysis. Avoid generic advice; provide specific, tailored insights based on the location and business type.
-Remember: Write everything in ${languageName}.`;
+Remember: Write everything in ${languageName}. Output HTML only (no <html>, <head>, or <body> tags).`;
   }
 
   try {
+    console.log("[OpenAI] Making API call for business:", business.name);
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -172,13 +193,14 @@ Remember: Write everything in ${languageName}.`;
     const aiAnalysis = response.choices[0]?.message?.content;
 
     if (!aiAnalysis) {
-      console.error("No AI response received");
+      console.error("[OpenAI] ❌ No AI response received");
       return generateFallbackAnalysis(business, competitors, language);
     }
 
+    console.log("[OpenAI] ✅ Successfully generated analysis (" + aiAnalysis.length + " characters)");
     return aiAnalysis;
   } catch (error) {
-    console.error("Error calling OpenAI:", error);
+    console.error("[OpenAI] ❌ Error calling OpenAI:", error);
     return generateFallbackAnalysis(business, competitors, language);
   }
 }
@@ -198,6 +220,7 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
   const translations: Record<string, any> = {
     en: {
       title: "COMPETITOR ANALYSIS REPORT FOR",
+      fallbackNote: "⚠️ BASIC ANALYSIS (OpenAI not configured)",
       marketOverview: "MARKET OVERVIEW",
       overviewText: `We identified ${totalCompetitors} competitor(s) in your local area. Here's what you need to know:`,
       keyMetrics: "KEY METRICS",
@@ -235,6 +258,7 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
     },
     pt: {
       title: "RELATÓRIO DE ANÁLISE DE CONCORRÊNCIA PARA",
+      fallbackNote: "⚠️ ANÁLISE BÁSICA (OpenAI não configurada)",
       marketOverview: "VISÃO GERAL DO MERCADO",
       overviewText: `Identificámos ${totalCompetitors} concorrente(s) na sua área local. Aqui está o que precisa de saber:`,
       keyMetrics: "MÉTRICAS PRINCIPAIS",
@@ -272,6 +296,7 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
     },
     es: {
       title: "INFORME DE ANÁLISIS DE COMPETENCIA PARA",
+      fallbackNote: "⚠️ ANÁLISIS BÁSICO (OpenAI no configurada)",
       marketOverview: "VISIÓN GENERAL DEL MERCADO",
       overviewText: `Identificamos ${totalCompetitors} competidor(es) en su área local. Esto es lo que necesita saber:`,
       keyMetrics: "MÉTRICAS CLAVE",
@@ -309,6 +334,7 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
     },
     fr: {
       title: "RAPPORT D'ANALYSE DE LA CONCURRENCE POUR",
+      fallbackNote: "⚠️ ANALYSE DE BASE (OpenAI non configurée)",
       marketOverview: "APERÇU DU MARCHÉ",
       overviewText: `Nous avons identifié ${totalCompetitors} concurrent(s) dans votre zone locale. Voici ce que vous devez savoir :`,
       keyMetrics: "MÉTRIQUES CLÉS",
@@ -346,6 +372,7 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
     },
     de: {
       title: "WETTBEWERBSANALYSEBERICHT FÜR",
+      fallbackNote: "⚠️ BASISANALYSE (OpenAI nicht konfiguriert)",
       marketOverview: "MARKTÜBERSICHT",
       overviewText: `Wir haben ${totalCompetitors} Wettbewerber in Ihrer Umgebung identifiziert. Hier ist, was Sie wissen müssen:`,
       keyMetrics: "WICHTIGE KENNZAHLEN",
@@ -391,7 +418,7 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
   const topCompetitors = competitors.slice(0, 3);
 
   if (topCompetitors.some(c => c.reviews && c.reviews.length > 0)) {
-    reviewsSection = `\n${t.recentReviews}:\n`;
+    reviewsSection = `<h2 class="text-lg font-semibold mt-4 mb-2">${t.recentReviews}</h2>`;
     topCompetitors.forEach(c => {
       if (c.reviews && c.reviews.length > 0) {
         const rating = c.rating || 0;
@@ -423,31 +450,40 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
                   "Mixed/Variable - Inconsistent experiences reported.";
         }
 
-        reviewsSection += `\n**${c.name}** (${rating.toFixed(1)}/5)\n`;
-        reviewsSection += `• ${sentiment}\n`;
+        reviewsSection += `<p class="my-2"><strong class="font-semibold">${c.name}</strong> (${rating.toFixed(1)}/5)</p>`;
+        reviewsSection += `<p class="my-1">${sentiment}</p>`;
       }
     });
   }
 
   return `
-# ${t.title} "${business.name.toUpperCase()}"
----
-## ${t.marketOverview}
-${t.overviewText}
-## ${t.keyMetrics}
-• **${t.avgRating}**: ${avgRating ? avgRating.toFixed(1) : "N/A"}/5.0
-• **${t.avgReviews}**: ${avgReviews}
-• **${t.totalReviews}**: ${totalReviews.toLocaleString()}
-## ${t.landscape}
-${highRatedCompetitors.length > 0 ? t.highRated.found : t.highRated.none}
-${lowRatedCompetitors.length > 0 ? t.lowRated.found : t.lowRated.none}
-## ${t.recommendations}
-${t.recList.map((rec: string, i: number) => `${i + 1}. ${rec}`).join('\n')}
-## ${t.opportunities}
-${avgRating && avgRating < 4.2 ? t.oppRating.low : t.oppRating.high}
-${t.oppList.join('\n')}
-${reviewsSection ? `\n## ${t.recentReviews}\n` + reviewsSection.replace(`${t.recentReviews}:\n`, '') : ''}
----
-*${t.disclaimer}*
+<h2 class="text-lg font-semibold mt-4 mb-2">${t.title} "${business.name.toUpperCase()}"</h2>
+<div class="bg-yellow-500/10 border border-yellow-500/30 rounded-md p-3 mb-4">
+  <p class="text-sm font-semibold text-yellow-700 dark:text-yellow-400">${t.fallbackNote}</p>
+</div>
+<hr class="my-4 border-muted" />
+<h2 class="text-lg font-semibold mt-4 mb-2">${t.marketOverview}</h2>
+<p class="my-2">${t.overviewText}</p>
+<h3 class="text-base font-semibold mt-3 mb-2">${t.keyMetrics}</h3>
+<ul class="list-disc list-inside space-y-1 my-2">
+  <li><strong class="font-semibold">${t.avgRating}:</strong> ${avgRating ? avgRating.toFixed(1) : "N/A"}/5.0</li>
+  <li><strong class="font-semibold">${t.avgReviews}:</strong> ${avgReviews}</li>
+  <li><strong class="font-semibold">${t.totalReviews}:</strong> ${totalReviews.toLocaleString()}</li>
+</ul>
+<h3 class="text-base font-semibold mt-3 mb-2">${t.landscape}</h3>
+<p class="my-2">${highRatedCompetitors.length > 0 ? t.highRated.found : t.highRated.none}</p>
+<p class="my-2">${lowRatedCompetitors.length > 0 ? t.lowRated.found : t.lowRated.none}</p>
+<h2 class="text-lg font-semibold mt-4 mb-2">${t.recommendations}</h2>
+<ol class="list-decimal list-inside space-y-1 my-2">
+  ${t.recList.map((rec: string) => `<li>${rec}</li>`).join('\n  ')}
+</ol>
+<h2 class="text-lg font-semibold mt-4 mb-2">${t.opportunities}</h2>
+<p class="my-2">${avgRating && avgRating < 4.2 ? t.oppRating.low : t.oppRating.high}</p>
+<ul class="list-disc list-inside space-y-1 my-2">
+  ${t.oppList.map((opp: string) => `<li>${opp.replace(/^• /, '')}</li>`).join('\n  ')}
+</ul>
+${reviewsSection}
+<hr class="my-4 border-muted" />
+<p class="my-2"><em>${t.disclaimer}</em></p>
 `.trim();
 }

@@ -101,13 +101,12 @@ describe("Advanced Reports", () => {
 
         expect(prompt).toContain("SWOT ANALYSIS");
         expect(prompt).toContain("MARKET TRENDS");
+        expect(prompt).toContain("CUSTOMER SENTIMENT &amp; REVIEW INSIGHTS");
         expect(prompt).toContain("TARGET AUDIENCE PERSONA");
         expect(prompt).toContain("MARKETING STRATEGY");
-        expect(prompt).toContain("CUSTOMER SENTIMENT & REVIEW INSIGHTS");
-        expect(prompt).toContain("Synthesize");
-
-        // Check for new formatting and review analysis instructions
-        expect(prompt).toContain("CUSTOMER SENTIMENT & REVIEW INSIGHTS");
+        expect(prompt).toContain("<h2");
+        expect(prompt).toContain("<h3");
+        expect(prompt).toContain("HTML");
         expect(prompt).toContain("Synthesize");
 
         // Check for new formatting and review analysis instructions
