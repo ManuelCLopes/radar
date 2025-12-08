@@ -164,11 +164,13 @@
     },
     "sections": {
       "aiAnalysis": "KI-Analyse",
+      "aiPoweredInsights": "KI-Gestützte Erkenntnisse",
       "nearbyCompetitors": "Nahegelegene Wettbewerber",
       "noCompetitors": "Keine Wettbewerber in der Nähe gefunden."
     },
     "competitor": {
-      "reviews": "{{count}} Bewertungen"
+      "reviews": "{{count}} Bewertungen",
+      "recentReviews": "Aktuelle Bewertungen"
     },
     "history": {
       "title": "Berichtsverlauf",
