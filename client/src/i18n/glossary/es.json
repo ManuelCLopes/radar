@@ -1,0 +1,32 @@
+{
+    "SWOT": {
+        "term": "SWOT",
+        "full": "SWOT (Fortalezas, Debilidades, Oportunidades y Amenazas)",
+        "definition": "Herramienta de análisis estratégico para evaluar la posición competitiva de un negocio"
+    },
+    "KPI": {
+        "term": "KPI",
+        "full": "KPI (Indicador Clave de Rendimiento)",
+        "definition": "Métricas cuantificables utilizadas para evaluar el éxito del negocio"
+    },
+    "ROI": {
+        "term": "ROI",
+        "full": "ROI (Retorno sobre la Inversión)",
+        "definition": "Medida de la rentabilidad de una inversión"
+    },
+    "B2B": {
+        "term": "B2B",
+        "full": "B2B (Business to Business / Negocio a Negocio)",
+        "definition": "Transacciones comerciales entre empresas"
+    },
+    "B2C": {
+        "term": "B2C",
+        "full": "B2C (Business to Consumer / Negocio a Consumidor)",
+        "definition": "Transacciones comerciales entre empresa y consumidor final"
+    },
+    "SEO": {
+        "term": "SEO",
+        "full": "SEO (Search Engine Optimization / Optimización para Motores de Búsqueda)",
+        "definition": "Técnicas para mejorar la visibilidad online"
+    }
+}
