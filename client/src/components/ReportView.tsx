@@ -559,14 +559,35 @@ Local Competitor Analyzer
             )}
 
             <section>
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Brain className="h-5 w-5 text-primary" />
-                {t("report.sections.aiAnalysis")}
-              </h3>
-              <Card className="bg-primary/5 border-primary/20">
-                <CardContent className="p-4" data-testid="text-ai-analysis">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold flex items-center gap-2">
+                  <Brain className="h-6 w-6 text-primary" />
+                  {t("report.sections.aiAnalysis")}
+                </h3>
+                <Badge variant="secondary" className="hidden sm:flex items-center gap-1">
+                  <Brain className="h-3 w-3" />
+                  AI-Powered Insights
+                </Badge>
+              </div>
+
+              <Card className="border-2 border-primary/20 shadow-lg bg-gradient-to-br from-primary/5 via-background to-background">
+                <CardContent className="p-0" data-testid="text-ai-analysis">
                   <div
-                    className="prose prose-sm dark:prose-invert max-w-none text-foreground"
+                    className="prose prose-base dark:prose-invert max-w-none p-6 
+                               [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:mb-4 [&>h2]:mt-6 [&>h2]:first:mt-0
+                               [&>h2]:text-primary [&>h2]:flex [&>h2]:items-center [&>h2]:gap-2
+                               [&>h3]:text-lg [&>h3]:font-semibold [&>h3]:mb-3 [&>h3]:mt-4 
+                               [&>h3]:text-foreground/90 [&>h3]:border-l-4 [&>h3]:border-primary/30 [&>h3]:pl-3
+                               [&>h4]:text-base [&>h4]:font-medium [&>h4]:mb-2 [&>h4]:text-foreground/80
+                               [&>p]:text-foreground/80 [&>p]:leading-relaxed [&>p]:my-3
+                               [&>ul]:my-3 [&>ul]:space-y-2
+                               [&>ul>li]:text-foreground/80 [&>ul>li]:pl-2
+                               [&>ul>li::marker]:text-primary
+                               [&>ol]:my-3 [&>ol]:space-y-2
+                               [&>ol>li]:text-foreground/80 [&>ol>li]:pl-2
+                               [&>strong]:text-primary [&>strong]:font-semibold
+                               [&>em]:text-foreground/70 [&>em]:italic
+                               [&>hr]:my-6 [&>hr]:border-muted"
                     dangerouslySetInnerHTML={{ __html: mainContent }}
                   />
                 </CardContent>

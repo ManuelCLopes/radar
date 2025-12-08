@@ -62,12 +62,16 @@ export async function analyzeCompetitors(
 IMPORTANT: Write your entire response in ${languageName}. All text, headers, and recommendations must be in ${languageName}.
 
 FORMATTING: Output your response as HTML. Use semantic HTML tags with Tailwind CSS classes for styling:
-- Use <h2 class="text-lg font-semibold mt-4 mb-2"> for main section headers
-- Use <h3 class="text-base font-semibold mt-3 mb-2"> for sub-section headers
-- Use <p class="my-2"> for paragraphs
-- Use <ul class="list-disc list-inside space-y-1 my-2"> for unordered lists
-- Use <li> for list items
-- Use <strong class="font-semibold"> for emphasis
+- Use <h2 class="text-2xl font-bold text-primary mb-4 flex items-center gap-2"> for main section headers
+- Use <h3 class="text-lg font-semibold mb-3 text-foreground/90 border-l-4 border-primary/30 pl-3"> for sub-section headers
+- Use <h4 class="text-base font-medium mb-2 text-foreground/80"> for sub-sub-section headers
+- Use <p class="my-3 text-foreground/80 leading-relaxed"> for paragraphs
+- Use <ul class="my-3 space-y-2"> for unordered lists
+- Use <ol class="my-3 space-y-2"> for ordered lists
+- Use <li class="text-foreground/80 pl-2"> for list items
+- Use <strong class="text-primary font-semibold"> for emphasis
+- Use <em class="text-foreground/70 italic"> for slight emphasis
+- Use <hr class="my-6 border-muted"> for section separators
 - Do NOT include <html>, <head>, or <body> tags - only the content
 
 BUSINESS DETAILS:
