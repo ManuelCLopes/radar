@@ -61,7 +61,7 @@ function CompetitorCard({ competitor, index, t }: { competitor: Competitor; inde
             <div className="pt-2 border-t">
               <p className="text-xs font-medium mb-2 flex items-center gap-1 text-muted-foreground">
                 <MessageSquare className="h-3 w-3" />
-                Recent Reviews
+                {t("report.competitor.recentReviews")}
               </p>
               <div className="space-y-3">
                 {competitor.reviews.map((review, i) => (
@@ -566,7 +566,7 @@ Local Competitor Analyzer
                 </h3>
                 <Badge variant="secondary" className="hidden sm:flex items-center gap-1">
                   <Brain className="h-3 w-3" />
-                  AI-Powered Insights
+                  {t("report.sections.aiPoweredInsights")}
                 </Badge>
               </div>
 

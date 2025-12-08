@@ -114,11 +114,13 @@
     },
     "sections": {
       "aiAnalysis": "Análise IA",
+      "aiPoweredInsights": "Insights Gerados por IA",
       "nearbyCompetitors": "Concorrentes Próximos",
       "noCompetitors": "Não foram encontrados concorrentes na área próxima."
     },
     "competitor": {
-      "reviews": "{{count}} avaliações"
+      "reviews": "{{count}} avaliações",
+      "recentReviews": "Avaliações Recentes"
     },
     "history": {
       "title": "Histórico de Relatórios",
