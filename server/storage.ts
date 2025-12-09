@@ -1,4 +1,4 @@
-import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, businesses, reports, users, searches } from "@shared/schema";
+import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type PasswordResetToken, businesses, reports, users, searches, passwordResetTokens } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
@@ -7,6 +7,8 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  findUserByEmail(email: string): Promise<User | undefined>;
+  updateUserPassword(userId: string, passwordHash: string): Promise<void>;
 
   getBusiness(id: string): Promise<Business | undefined>;
   listBusinesses(): Promise<Business[]>;
@@ -20,6 +22,11 @@ export interface IStorage {
   getReport(id: string): Promise<Report | undefined>;
   getReportsByBusinessId(businessId: string): Promise<Report[]>;
   listAllReports(): Promise<Report[]>;
+
+  // Password reset
+  createPasswordResetToken(data: { userId: string; token: string; expiresAt: Date }): Promise<void>;
+  getPasswordResetToken(token: string): Promise<any>;
+  markTokenAsUsed(token: string): Promise<void>;
 
   // Search tracking
   trackSearch?(search: InsertSearch): Promise<void>;
@@ -128,19 +135,39 @@ export class DatabaseStorage implements IStorage {
   async trackSearch(search: InsertSearch): Promise<void> {
     await db!.insert(searches).values(search);
   }
+
+  // Password reset methods
+  async findUserByEmail(email: string): Promise<User | undefined> {
+    return this.getUserByEmail(email);
+  }
+
+  async updateUserPassword(userId: string, passwordHash: string): Promise<void> {
+    await db!.update(users).set({ passwordHash }).where(eq(users.id, userId));
+  }
+
+  async createPasswordResetToken(data: { userId: string; token: string; expiresAt: Date }): Promise<void> {
+    await db!.insert(passwordResetTokens).values(data);
+  }
+
+  async getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined> {
+    const [resetToken] = await db!.select().from(passwordResetTokens).where(eq(passwordResetTokens.token, token));
+    return resetToken || undefined;
+  }
+
+  async markTokenAsUsed(token: string): Promise<void> {
+    await db!.update(passwordResetTokens).set({ used: true }).where(eq(passwordResetTokens.token, token));
+  }
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-  private businesses: Map<string, Business>;
-  private reports: Map<string, Report>;
-  private searches: Map<string, InsertSearch>;
-  currentId: number;
+  private currentId = 1;
+  private users = new Map<string, User>();
+  private businesses = new Map<string, Business>();
+  private reports = new Map<string, Report>();
+  private searches = new Map<string, any>();
+  private resetTokens = new Map<string, any>();
 
   constructor() {
-    this.users = new Map();
-    this.businesses = new Map();
-    this.reports = new Map();
     this.searches = new Map();
     this.currentId = 1;
   }
@@ -258,7 +285,44 @@ export class MemStorage implements IStorage {
 
   async trackSearch(search: InsertSearch): Promise<void> {
     const id = String(this.currentId++);
-    this.searches.set(id, search);
+    this.searches.set(id, {
+      id,
+      ...search,
+      createdAt: new Date(),
+    });
+  }
+
+  // Password reset methods (in-memory)
+  async findUserByEmail(email: string): Promise<User | undefined> {
+    return this.getUserByEmail(email);
+  }
+
+  async updateUserPassword(userId: string, passwordHash: string): Promise<void> {
+    const user = this.users.get(userId); // Changed from find to get
+    if (user) {
+      user.passwordHash = passwordHash;
+      this.users.set(userId, user); // Ensure map is updated
+    }
+  }
+
+  async createPasswordResetToken(data: { userId: string; token: string; expiresAt: Date }): Promise<void> {
+    this.resetTokens.set(data.token, {
+      ...data,
+      used: false,
+      createdAt: new Date(),
+    });
+  }
+
+  async getPasswordResetToken(token: string): Promise<any> {
+    return this.resetTokens.get(token);
+  }
+
+  async markTokenAsUsed(token: string): Promise<void> {
+    const tokenData = this.resetTokens.get(token);
+    if (tokenData) {
+      tokenData.used = true;
+      this.resetTokens.set(token, tokenData); // Ensure map is updated
+    }
   }
 }
 

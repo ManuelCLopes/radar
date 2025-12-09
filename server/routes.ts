@@ -314,6 +314,128 @@ export async function registerRoutes(
     }
   });
 
+  // START: Google Places API status endpoint
+  app.get("/api/google-places/status", async (req, res) => {
+    res.json({ configured: hasGoogleApiKey() });
+  });
+  // END: Google Places API status endpoint
+
+  // Password reset routes
+  app.post("/api/auth/forgot-password", async (req, res) => {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+
+      const { sendEmail, generatePasswordResetEmail } = await import("./email");
+      const crypto = await import("crypto");
+
+      // Find user by email
+      const user = await storage.findUserByEmail(email);
+
+      // Always return success to prevent email enumeration
+      if (!user) {
+        return res.json({ message: "If that email exists, a reset link has been sent." });
+      }
+
+      // Generate secure token
+      const token = crypto.randomBytes(32).toString("hex");
+      const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+      // Store token in database
+      await storage.createPasswordResetToken({
+        userId: user.id,
+        token,
+        expiresAt,
+      });
+
+      // Generate reset link
+      const resetLink = `${req.protocol}://${req.get("host")}/reset-password/${token}`;
+
+      // Send email
+      const { html, text } = generatePasswordResetEmail(resetLink, email);
+      await sendEmail({
+        to: email,
+        subject: "Recuperação de Password - Radar",
+        html,
+        text,
+      });
+
+      res.json({ message: "If that email exists, a reset link has been sent." });
+    } catch (error: any) {
+      console.error("[Password Reset] Error:", error);
+      res.status(500).json({ error: "Failed to process password reset request" });
+    }
+  });
+
+  app.get("/api/auth/verify-reset-token/:token", async (req, res) => {
+    try {
+      const { token } = req.params;
+
+      const resetToken = await storage.getPasswordResetToken(token);
+
+      if (!resetToken) {
+        return res.status(400).json({ valid: false, error: "Invalid or expired token" });
+      }
+
+      if (resetToken.used) {
+        return res.status(400).json({ valid: false, error: "Token already used" });
+      }
+
+      if (new Date() > new Date(resetToken.expiresAt)) {
+        return res.status(400).json({ valid: false, error: "Token expired" });
+      }
+
+      res.json({ valid: true });
+    } catch (error: any) {
+      console.error("[Verify Token] Error:", error);
+      res.status(500).json({ valid: false, error: "Failed to verify token" });
+    }
+  });
+
+  app.post("/api/auth/reset-password", async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+
+      if (!token || !newPassword) {
+        return res.status(400).json({ error: "Token and password are required" });
+      }
+
+      if (newPassword.length < 8) {
+        return res.status(400).json({ error: "Password must be at least 8 characters" });
+      }
+
+      const resetToken = await storage.getPasswordResetToken(token);
+
+      if (!resetToken) {
+        return res.status(400).json({ error: "Invalid or expired token" });
+      }
+
+      if (resetToken.used) {
+        return res.status(400).json({ error: "Token already used" });
+      }
+
+      if (new Date() > new Date(resetToken.expiresAt)) {
+        return res.status(400).json({ error: "Token expired" });
+      }
+
+      // Update password
+      const bcrypt = await import("bcrypt");
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await storage.updateUserPassword(resetToken.userId, hashedPassword);
+
+      // Mark token as used
+      await storage.markTokenAsUsed(token);
+
+      res.json({ message: "Password reset successful" });
+    } catch (error: any) {
+      console.error("[Reset Password] Error:", error);
+      res.status(500).json({ error: "Failed to reset password" });
+    }
+  });
+
   // Get User's Report History
   app.get("/api/reports/history", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
