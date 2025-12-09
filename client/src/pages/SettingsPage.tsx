@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
-import { User, CreditCard, Shield, LogOut, BarChart3 } from "lucide-react";
+import { User, CreditCard, Shield, LogOut, BarChart3, Eye, EyeOff, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,16 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const plans = [
     { id: "essential", name: "Essential", price: "9.90€", features: ["1 localização", "Relatórios quinzenais", "Raio até 5 km"] },
@@ -25,6 +35,13 @@ export default function SettingsPage() {
     const { toast } = useToast();
 
     const [isEditing, setIsEditing] = useState(false);
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+    const [showPlanConfirm, setShowPlanConfirm] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
     const [formData, setFormData] = useState({
         name: user?.firstName || user?.email || "",
         email: user?.email || "",
@@ -43,11 +60,34 @@ export default function SettingsPage() {
         setIsEditing(false);
     };
 
-    const handlePlanChange = (planId: string) => {
+    const handlePlanClick = (planId: string) => {
+        if (planId !== currentPlan) {
+            setSelectedPlan(planId);
+            setShowPlanConfirm(true);
+        }
+    };
+
+    const handleConfirmPlanChange = () => {
+        if (selectedPlan) {
+            toast({
+                title: "Plano alterado",
+                description: `O seu plano foi atualizado para ${plans.find(p => p.id === selectedPlan)?.name}.`,
+            });
+            setShowPlanConfirm(false);
+            setSelectedPlan(null);
+            // TODO: Implement actual plan change API call
+        }
+    };
+
+    const handleDeleteAccount = () => {
         toast({
-            title: "Plano alterado",
-            description: `O seu plano foi atualizado para ${planId}.`,
+            title: "Conta removida",
+            description: "A sua conta foi permanentemente removida.",
+            variant: "destructive",
         });
+        setShowDeleteConfirm(false);
+        // TODO: Implement actual account deletion API call
+        setTimeout(() => logoutMutation.mutate(), 1500);
     };
 
     return (
@@ -123,32 +163,68 @@ export default function SettingsPage() {
                                 <Separator />
                                 <div className="space-y-2">
                                     <Label htmlFor="current-password">Password Atual</Label>
-                                    <Input
-                                        id="current-password"
-                                        type="password"
-                                        value={formData.currentPassword}
-                                        onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
-                                    />
+                                    <div className="relative">
+                                        <Input
+                                            id="current-password"
+                                            type={showCurrentPassword ? "text" : "password"}
+                                            value={formData.currentPassword}
+                                            onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
+                                            className="pr-10"
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                            onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                                        >
+                                            {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                        </Button>
+                                    </div>
                                 </div>
 
                                 <div className="space-y-2">
                                     <Label htmlFor="new-password">Nova Password</Label>
-                                    <Input
-                                        id="new-password"
-                                        type="password"
-                                        value={formData.newPassword}
-                                        onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
-                                    />
+                                    <div className="relative">
+                                        <Input
+                                            id="new-password"
+                                            type={showNewPassword ? "text" : "password"}
+                                            value={formData.newPassword}
+                                            onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
+                                            className="pr-10"
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                            onClick={() => setShowNewPassword(!showNewPassword)}
+                                        >
+                                            {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                        </Button>
+                                    </div>
                                 </div>
 
                                 <div className="space-y-2">
                                     <Label htmlFor="confirm-password">Confirmar Nova Password</Label>
-                                    <Input
-                                        id="confirm-password"
-                                        type="password"
-                                        value={formData.confirmPassword}
-                                        onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                                    />
+                                    <div className="relative">
+                                        <Input
+                                            id="confirm-password"
+                                            type={showConfirmPassword ? "text" : "password"}
+                                            value={formData.confirmPassword}
+                                            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                                            className="pr-10"
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        >
+                                            {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                        </Button>
+                                    </div>
                                 </div>
                             </>
                         )}
@@ -199,10 +275,10 @@ export default function SettingsPage() {
                                     <div
                                         key={plan.id}
                                         className={`p-4 border rounded-lg cursor-pointer transition-colors ${currentPlan === plan.id
-                                                ? "border-primary bg-primary/5"
-                                                : "border-border hover:border-primary/50"
+                                            ? "border-primary bg-primary/5"
+                                            : "border-border hover:border-primary/50"
                                             }`}
-                                        onClick={() => currentPlan !== plan.id && handlePlanChange(plan.id)}
+                                        onClick={() => handlePlanClick(plan.id)}
                                     >
                                         <div className="flex items-center justify-between mb-3">
                                             <div>
@@ -242,16 +318,62 @@ export default function SettingsPage() {
                     <CardContent>
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="font-semibold">Terminar Sessão</p>
-                                <p className="text-sm text-muted-foreground">Terminar sessão em todos os dispositivos</p>
+                                <p className="font-semibold">Remover Conta</p>
+                                <p className="text-sm text-muted-foreground">Eliminar permanentemente a sua conta e todos os dados</p>
                             </div>
-                            <Button variant="outline" onClick={() => logoutMutation.mutate()}>
-                                <LogOut className="h-4 w-4 mr-2" />
-                                Logout
+                            <Button
+                                variant="destructive"
+                                onClick={() => setShowDeleteConfirm(true)}
+                            >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Eliminar Conta
                             </Button>
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* Plan Change Confirmation Dialog */}
+                <AlertDialog open={showPlanConfirm} onOpenChange={setShowPlanConfirm}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Confirmar Mudança de Plano</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Tem a certeza que pretende alterar o seu plano para{" "}
+                                <strong>{plans.find(p => p.id === selectedPlan)?.name}</strong>?
+                                Esta alteração será aplicada imediatamente.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleConfirmPlanChange}>
+                                Confirmar
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+
+                {/* Delete Account Confirmation Dialog */}
+                <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Eliminar Conta</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Esta ação é <strong className="text-destructive">permanente e irreversível</strong>.
+                                Todos os seus dados, relatórios e configurações serão eliminados.
+                                Tem a certeza absoluta que pretende continuar?
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={handleDeleteAccount}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                                Sim, Eliminar Conta
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </main>
         </div>
     );
