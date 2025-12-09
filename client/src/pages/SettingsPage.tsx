@@ -171,15 +171,12 @@ export default function SettingsPage() {
                                             onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
                                             className="pr-10"
                                         />
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            size="sm"
-                                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                        <span
                                             onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
                                         >
                                             {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                        </Button>
+                                        </span>
                                     </div>
                                 </div>
 
@@ -193,15 +190,12 @@ export default function SettingsPage() {
                                             onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
                                             className="pr-10"
                                         />
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            size="sm"
-                                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                        <span
                                             onClick={() => setShowNewPassword(!showNewPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
                                         >
                                             {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                        </Button>
+                                        </span>
                                     </div>
                                 </div>
 
@@ -215,15 +209,12 @@ export default function SettingsPage() {
                                             onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                                             className="pr-10"
                                         />
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            size="sm"
-                                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                        <span
                                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
                                         >
                                             {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                        </Button>
+                                        </span>
                                     </div>
                                 </div>
                             </>
