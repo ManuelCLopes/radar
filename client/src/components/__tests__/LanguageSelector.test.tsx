@@ -52,17 +52,26 @@ describe("LanguageSelector", () => {
         expect(mockChangeLanguage).toHaveBeenCalledWith("pt");
     });
 
-    it("should show all language abbreviations", async () => {
+    it("should show current language badge", () => {
+        render(<LanguageSelector />);
+
+        // Badge should show current language (EN in this case)
+        const badges = screen.getAllByText("EN");
+        expect(badges.length).toBeGreaterThan(0);
+    });
+
+    it("should show all language abbreviations in dropdown", async () => {
         const user = userEvent.setup();
         render(<LanguageSelector />);
 
         const button = screen.getByTestId("button-language-selector");
         await user.click(button);
 
-        expect(screen.getByText("EN")).toBeInTheDocument();
-        expect(screen.getByText("PT")).toBeInTheDocument();
-        expect(screen.getByText("ES")).toBeInTheDocument();
-        expect(screen.getByText("FR")).toBeInTheDocument();
-        expect(screen.getByText("DE")).toBeInTheDocument();
+        // Check all languages are in dropdown (using getAllByText since badge also shows current lang)
+        expect(screen.getAllByText("EN").length).toBeGreaterThan(0);
+        expect(screen.getAllByText("PT").length).toBeGreaterThan(0);
+        expect(screen.getAllByText("ES").length).toBeGreaterThan(0);
+        expect(screen.getAllByText("FR").length).toBeGreaterThan(0);
+        expect(screen.getAllByText("DE").length).toBeGreaterThan(0);
     });
 });
