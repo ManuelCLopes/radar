@@ -34,7 +34,9 @@ export function AIAnalysisContent({ html }: AIAnalysisContentProps) {
     useEffect(() => {
         if (!containerRef.current) return;
 
-        const currentLang = i18n?.language || 'en';
+        // Normalize language code (pt-PT -> pt, en-US -> en, etc.)
+        const rawLang = i18n?.language || 'en';
+        const currentLang = rawLang.split('-')[0]; // Get base language code
         const glossary = glossaries[currentLang] || enGlossary;
         const terms = Object.keys(glossary);
 
@@ -45,23 +47,27 @@ export function AIAnalysisContent({ html }: AIAnalysisContentProps) {
                 let modifiedHTML = text;
 
                 terms.forEach(term => {
-                    const regex = new RegExp(`\\b${term}\\b`, 'gi');
+                    // Only match standalone terms (not in middle of words/phrases)
+                    const regex = new RegExp(`\\b${term}\\b(?!\\s+[A-Z])`, 'gi');
                     if (regex.test(text)) {
                         const termData = glossary[term as keyof typeof glossary];
                         modifiedHTML = modifiedHTML.replace(
                             regex,
                             `<span class="inline-flex items-center gap-1 relative group cursor-help">
                 <span class="font-semibold text-primary">${term}</span>
-                <span class="inline-flex">
-                  <svg class="h-3 w-3 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <sup class="inline-flex items-center">
+                  <svg class="h-3 w-3 text-primary/60 hover:text-primary transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="12" y1="16" x2="12" y2="12"></line>
                     <line x1="12" y1="8" x2="12.01" y2="8"></line>
                   </svg>
-                </span>
-                <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-64 p-3 text-xs text-foreground bg-background border border-border rounded-lg shadow-lg">
-                  <span class="font-semibold block mb-1">${termData.full}</span>
-                  <span class="text-muted-foreground">${termData.definition}</span>
+                </sup>
+                <span class="absolute left-0 bottom-full mb-2 hidden group-hover:block z-[9999] w-80 p-4 text-sm text-foreground bg-popover border-2 border-primary/30 rounded-lg shadow-2xl">
+                  <span class="absolute left-4 -bottom-2 w-4 h-4 bg-popover border-r-2 border-b-2 border-primary/30 transform rotate-45"></span>
+                  <div class="relative z-10 bg-popover">
+                    <span class="font-bold block mb-2 text-primary text-base">${termData.full}</span>
+                    <span class="text-muted-foreground text-sm leading-relaxed block">${termData.definition}</span>
+                  </div>
                 </span>
               </span>`
                         );

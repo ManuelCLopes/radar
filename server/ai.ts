@@ -113,10 +113,11 @@ Please provide a detailed analysis including:
   1.  **FORMATTING**: Output as HTML using semantic tags with Tailwind CSS classes. Use <strong class="font-semibold"> for emphasis. Use <h2> for main sections and <h3> for sub-sections. Use <ul> and <li> for lists.
   2.  **REVIEW ANALYSIS**: You MUST analyze the "Recent Reviews" provided. Do NOT just list them. Synthesize them into actionable insights. Identify patterns in customer satisfaction and dissatisfaction.
   3.  **DETAIL**: Be extensive and specific. Avoid generic advice.
+  4.  **LANGUAGE**: Write section headers in ${languageName}. For example, use "Análise SWOT" in Portuguese, not "SWOT ANALYSIS".
   
   Structure the response as HTML with the following sections:
   
-  <h2 class="text-lg font-semibold mt-4 mb-2">SWOT ANALYSIS</h2>
+  <h2 class="text-lg font-semibold mt-4 mb-2">${languageName === 'Portuguese (Portugal)' ? 'Análise SWOT' : 'SWOT ANALYSIS'}</h2>
   <h3 class="text-base font-semibold mt-3 mb-2">Strengths</h3>
   <ul class="list-disc list-inside space-y-1 my-2">
     <li>Analyze 3-5 key strengths. Use <strong class="font-semibold"> for the main point of each bullet</li>
