@@ -185,6 +185,22 @@ export async function setupAuth(app: Express) {
                 plan: plan || "essential",
             });
 
+            // Send welcome email (async, don't block registration)
+            (async () => {
+                try {
+                    const { sendEmail, generateWelcomeEmail } = await import("./email");
+                    const { html, text } = generateWelcomeEmail(email, firstName);
+                    await sendEmail({
+                        to: email,
+                        subject: "Bem-vindo ao Radar! 🎉",
+                        html,
+                        text,
+                    });
+                } catch (error) {
+                    console.error("[Registration] Failed to send welcome email:", error);
+                }
+            })();
+
             // Log in the user
             req.login(user, (err) => {
                 if (err) {
