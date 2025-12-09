@@ -9,13 +9,14 @@ import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
 import PreviewReport from "@/pages/PreviewReport";
 import Dashboard from "@/pages/Dashboard";
+import SettingsPage from "@/pages/SettingsPage";
 import NotFound from "@/pages/not-found";
 import './i18n';
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 
-function ProtectedDashboard() {
+function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { isAuthenticated, isLoading } = useAuth();
   const { t } = useTranslation();
 
@@ -40,7 +41,7 @@ function ProtectedDashboard() {
     return null;
   }
 
-  return <Dashboard />;
+  return <Component />;
 }
 
 function PreviewReportWrapper() {
@@ -76,6 +77,14 @@ function PreviewReportWrapper() {
   );
 }
 
+function ProtectedDashboard() {
+  return <ProtectedRoute component={Dashboard} />;
+}
+
+function ProtectedSettings() {
+  return <ProtectedRoute component={SettingsPage} />;
+}
+
 function Router() {
   return (
     <Switch>
@@ -83,6 +92,7 @@ function Router() {
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />
       <Route path="/dashboard" component={ProtectedDashboard} />
+      <Route path="/settings" component={ProtectedSettings} />
       <Route component={NotFound} />
     </Switch>
   );

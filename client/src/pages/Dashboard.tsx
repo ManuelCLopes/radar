@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { useLocation, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { BarChart3, TrendingUp, Building2, MapPin, LogOut, Search, History, FileText, Loader2, Plus } from "lucide-react";
+import { MapPin, Star, Plus, Edit, Trash2, BarChart3, LogOut, FileText, History, AlertCircle, Settings, Building2, Search, Loader2, TrendingUp } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { BusinessForm } from "@/components/BusinessForm";
 import { BusinessList } from "@/components/BusinessList";
@@ -116,7 +116,7 @@ export default function Dashboard() {
 
   const updateBusinessMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: InsertBusiness }) => {
-      const res = await apiRequest("PUT", `/api/businesses/${id}`, data);
+      const res = await apiRequest("PUT", `/ api / businesses / ${id} `, data);
       return res.json();
     },
     onSuccess: () => {
@@ -139,7 +139,7 @@ export default function Dashboard() {
   const deleteBusinessMutation = useMutation({
     mutationFn: async (id: string) => {
       setDeletingId(id);
-      const response = await apiRequest("DELETE", `/api/businesses/${id}`);
+      const response = await apiRequest("DELETE", `/ api / businesses / ${id} `);
       return response.json();
     },
     onSuccess: () => {
@@ -164,7 +164,7 @@ export default function Dashboard() {
   const generateReportMutation = useMutation({
     mutationFn: async (id: string) => {
       setGeneratingReportId(id);
-      const response = await apiRequest("POST", `/api/run-report/${id}`, { language: i18n.language });
+      const response = await apiRequest("POST", `/ api / run - report / ${id} `, { language: i18n.language });
       return response.json();
     },
     onSuccess: (report: Report) => {
@@ -236,6 +236,16 @@ export default function Dashboard() {
           <div className="flex items-center gap-2">
             <LanguageSelector />
             <ThemeToggle />
+            <Link href="/settings">
+              <Button
+                variant="ghost"
+                size="icon"
+                title="Definições"
+              >
+                <Settings className="h-5 w-5" />
+                <span className="sr-only">Definições</span>
+              </Button>
+            </Link>
             <Button
               variant="ghost"
               size="icon"
@@ -489,7 +499,7 @@ export default function Dashboard() {
                           <Card key={report.id}>
                             <CardContent className="flex items-center justify-between p-4">
                               <div className="flex items-center gap-3">
-                                <div className={`p-2 rounded-full ${report.businessId ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400' : 'bg-orange-100 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400'}`}>
+                                <div className={`p - 2 rounded - full ${report.businessId ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400' : 'bg-orange-100 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400'} `}>
                                   {report.businessId ? <Building2 className="h-4 w-4" /> : <MapPin className="h-4 w-4" />}
                                 </div>
                                 <div>
