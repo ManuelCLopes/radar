@@ -485,5 +485,57 @@
     "1km": "1km (Bairro)",
     "2km": "2km (Local)",
     "5km": "5km (Área)"
+  },
+  "support": {
+    "backToDashboard": "Voltar ao Dashboard",
+    "title": "Apoiar o Radar",
+    "subtitle": "Ajude a manter o Radar 100% gratuito e open source para todos",
+    "whySupport": {
+      "title": "Porquê Apoiar?",
+      "description": "O Radar é um projeto de paixão construído para ajudar pequenos negócios a competir. Cada doação mantém as luzes acesas."
+    },
+    "costs": {
+      "maps": "Dados de Localização & Mapas",
+      "mapsDesc": "Google Places API alimenta a descoberta de concorrentes",
+      "hosting": "Hosting & Infraestrutura",
+      "hostingDesc": "Servidores confiáveis para manter o Radar a funcionar 24/7",
+      "ai": "Insights AI",
+      "aiDesc": "OpenAI API gera análise acionável de concorrentes"
+    },
+    "mission": "Nossa Missão: Manter o Radar 100% Gratuito Para Sempre",
+    "missionDesc": "Sem paywalls. Sem limites de funcionalidades. Sem anúncios. Apenas uma ferramenta para ajudar negócios locais a prosperar.",
+    "howToSupport": "Escolha Como Apoiar",
+    "everyContribution": "Cada contribuição ajuda, não importa o tamanho!",
+    "platforms": {
+      "github": {
+        "name": "GitHub Sponsors",
+        "desc": "Suporte mensal recorrente • 0% taxas",
+        "cta": "Patrocinar"
+      },
+      "kofi": {
+        "name": "Ko-fi",
+        "desc": "Café único • 0% taxas",
+        "cta": "Comprar um Café"
+      },
+      "bmac": {
+        "name": "Buy Me a Coffee",
+        "desc": "Apoio único • 5% taxas",
+        "cta": "Apoiar"
+      }
+    },
+    "other": {
+      "title": "Não Pode Doar? Sem Problema!",
+      "description": "Existem muitas outras formas de ajudar",
+      "starGithub": "Dar Estrela no GitHub",
+      "starGithubDesc": "Ajuda muito!",
+      "reportBugs": "Reportar Bugs",
+      "reportBugsDesc": "Ajude a melhorar a qualidade",
+      "suggestFeatures": "Sugerir Funcionalidades",
+      "suggestFeaturesDesc": "Partilhe as suas ideias",
+      "shareWithFriends": "Partilhar com Amigos",
+      "shareWithFriendsDesc": "Espalhe a palavra"
+    },
+    "thankYou": "Obrigado!",
+    "thankYouMessage": "O seu apoio torna possível manter o Radar gratuito para todos"
   }
 }

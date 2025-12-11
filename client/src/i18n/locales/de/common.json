@@ -485,5 +485,57 @@
     "cta": {
       "existingAccount": "Haben Sie bereits ein Konto? Greifen Sie hier auf Ihr Dashboard zu"
     }
+  },
+  "support": {
+    "backToDashboard": "Zurück zum Dashboard",
+    "title": "Radar Unterstützen",
+    "subtitle": "Helfen Sie, Radar 100% kostenlos und Open Source für alle zu halten",
+    "whySupport": {
+      "title": "Warum Ihre Unterstützung Wichtig Ist",
+      "description": "Radar ist ein Leidenschaftsprojekt, das kleinen Unternehmen beim Wettbewerb hilft. Jede Spende hält die Lichter an."
+    },
+    "costs": {
+      "maps": "Standortdaten & Karten",
+      "mapsDesc": "Google Places API treibt unsere Konkurrenzentdeckung an",
+      "hosting": "Hosting & Infrastruktur",
+      "hostingDesc": "Zuverlässige Server, um Radar 24/7 am Laufen zu halten",
+      "ai": "KI-gestützte Einblicke",
+      "aiDesc": "OpenAI API generiert umsetzbare Wettbewerbsanalysen"
+    },
+    "mission": "Unsere Mission: Radar 100% Kostenlos Für Immer Halten",
+    "missionDesc": "Keine Bezahlschranken. Keine Funktionslimits. Keine Werbung. Nur ein Tool, um lokalen Unternehmen beim Gedeihen zu helfen.",
+    "howToSupport": "Wählen Sie, Wie Sie Unterstützen Möchten",
+    "everyContribution": "Jeder Beitrag hilft, egal wie groß!",
+    "platforms": {
+      "github": {
+        "name": "GitHub Sponsors",
+        "desc": "Monatliche wiederkehrende Unterstützung • 0% Gebühren",
+        "cta": "Sponsern"
+      },
+      "kofi": {
+        "name": "Ko-fi",
+        "desc": "Einmaliger Kaffee • 0% Gebühren",
+        "cta": "Einen Kaffee Kaufen"
+      },
+      "bmac": {
+        "name": "Buy Me a Coffee",
+        "desc": "Einmalige Unterstützung • 5% Gebühren",
+        "cta": "Unterstützen"
+      }
+    },
+    "other": {
+      "title": "Können Sie Nicht Spenden? Kein Problem!",
+      "description": "Es gibt viele andere Möglichkeiten, wie Sie helfen können",
+      "starGithub": "Auf GitHub Sternen",
+      "starGithubDesc": "Es hilft sehr!",
+      "reportBugs": "Fehler Melden",
+      "reportBugsDesc": "Helfen Sie, die Qualität zu verbessern",
+      "suggestFeatures": "Funktionen Vorschlagen",
+      "suggestFeaturesDesc": "Teilen Sie Ihre Ideen",
+      "shareWithFriends": "Mit Freunden Teilen",
+      "shareWithFriendsDesc": "Verbreiten Sie die Nachricht"
+    },
+    "thankYou": "Vielen Dank!",
+    "thankYouMessage": "Ihre Unterstützung macht es möglich, Radar für alle kostenlos zu halten"
   }
 }

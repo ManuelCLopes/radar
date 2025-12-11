@@ -485,5 +485,57 @@
     "1km": "1km (Neighborhood)",
     "2km": "2km (Local)",
     "5km": "5km (Area)"
+  },
+  "support": {
+    "backToDashboard": "Back to Dashboard",
+    "title": "Support Radar",
+    "subtitle": "Help keep Radar 100% free and open source for everyone",
+    "whySupport": {
+      "title": "Why Your Support Matters",
+      "description": "Radar is a passion project built to help small businesses compete. Every donation keeps the lights on."
+    },
+    "costs": {
+      "maps": "Location Data & Maps",
+      "mapsDesc": "Google Places API powers our competitor discovery",
+      "hosting": "Hosting & Infrastructure",
+      "hostingDesc": "Reliable servers to keep Radar running 24/7",
+      "ai": "AI-Powered Insights",
+      "aiDesc": "OpenAI API generates actionable competitor analysis"
+    },
+    "mission": "Our Mission: Keep Radar 100% Free Forever",
+    "missionDesc": "No paywalls. No feature limits. No ads. Just a tool built to help local businesses thrive.",
+    "howToSupport": "Choose How to Support",
+    "everyContribution": "Every contribution helps, no matter the size!",
+    "platforms": {
+      "github": {
+        "name": "GitHub Sponsors",
+        "desc": "Monthly recurring support • 0% fees",
+        "cta": "Sponsor"
+      },
+      "kofi": {
+        "name": "Ko-fi",
+        "desc": "One-time coffee • 0% fees",
+        "cta": "Buy a Coffee"
+      },
+      "bmac": {
+        "name": "Buy Me a Coffee",
+        "desc": "One-time support • 5% fees",
+        "cta": "Support"
+      }
+    },
+    "other": {
+      "title": "Can't Donate? No Problem!",
+      "description": "There are many other ways you can help",
+      "starGithub": "Star on GitHub",
+      "starGithubDesc": "It helps a lot!",
+      "reportBugs": "Report Bugs",
+      "reportBugsDesc": "Help improve quality",
+      "suggestFeatures": "Suggest Features",
+      "suggestFeaturesDesc": "Share your ideas",
+      "shareWithFriends": "Share with Friends",
+      "shareWithFriendsDesc": "Spread the word"
+    },
+    "thankYou": "Thank You!",
+    "thankYouMessage": "Your support makes it possible to keep Radar free for everyone"
   }
 }

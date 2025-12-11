@@ -3,8 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { BarChart3 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function SupportPage() {
+    const { t } = useTranslation();
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
             {/* Header */}
@@ -15,7 +18,7 @@ export default function SupportPage() {
                         <span>Radar</span>
                     </Link>
                     <Link href="/dashboard">
-                        <Button variant="outline">Back to Dashboard</Button>
+                        <Button variant="outline">{t('support.backToDashboard')}</Button>
                     </Link>
                 </div>
             </header>
@@ -26,19 +29,19 @@ export default function SupportPage() {
                 <div className="text-center mb-12">
                     <Heart className="h-16 w-16 mx-auto mb-4 text-red-500 animate-pulse" />
                     <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
-                        Support Radar
+                        {t('support.title')}
                     </h1>
                     <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                        Help keep Radar <strong>100% free and open source</strong> for everyone
+                        {t('support.subtitle')}
                     </p>
                 </div>
 
                 {/* Why Support */}
                 <Card className="mb-8">
                     <CardHeader>
-                        <CardTitle>💜 Why Your Support Matters</CardTitle>
+                        <CardTitle>💜 {t('support.whySupport.title')}</CardTitle>
                         <CardDescription>
-                            Radar is a passion project built to help small businesses compete. Every donation keeps the lights on.
+                            {t('support.whySupport.description')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -46,31 +49,31 @@ export default function SupportPage() {
                             <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-900 rounded-lg border-l-4 border-blue-500">
                                 <div className="flex items-center gap-2 mb-1">
                                     <span className="text-2xl">🗺️</span>
-                                    <div className="font-semibold text-blue-700 dark:text-blue-300">Location Data & Maps</div>
+                                    <div className="font-semibold text-blue-700 dark:text-blue-300">{t('support.costs.maps')}</div>
                                 </div>
-                                <div className="text-sm text-muted-foreground">Google Places API powers our competitor discovery</div>
+                                <div className="text-sm text-muted-foreground">{t('support.costs.mapsDesc')}</div>
                             </div>
                             <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-900 rounded-lg border-l-4 border-green-500">
                                 <div className="flex items-center gap-2 mb-1">
                                     <span className="text-2xl">☁️</span>
-                                    <div className="font-semibold text-green-700 dark:text-green-300">Hosting & Infrastructure</div>
+                                    <div className="font-semibold text-green-700 dark:text-green-300">{t('support.costs.hosting')}</div>
                                 </div>
-                                <div className="text-sm text-muted-foreground">Reliable servers to keep Radar running 24/7</div>
+                                <div className="text-sm text-muted-foreground">{t('support.costs.hostingDesc')}</div>
                             </div>
                             <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-900 rounded-lg border-l-4 border-purple-500">
                                 <div className="flex items-center gap-2 mb-1">
                                     <span className="text-2xl">🤖</span>
-                                    <div className="font-semibold text-purple-700 dark:text-purple-300">AI-Powered Insights</div>
+                                    <div className="font-semibold text-purple-700 dark:text-purple-300">{t('support.costs.ai')}</div>
                                 </div>
-                                <div className="text-sm text-muted-foreground">OpenAI API generates actionable competitor analysis</div>
+                                <div className="text-sm text-muted-foreground">{t('support.costs.aiDesc')}</div>
                             </div>
                         </div>
                         <div className="p-6 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-950 dark:via-purple-950 dark:to-pink-950 rounded-xl border-2 border-indigo-200 dark:border-indigo-800 text-center">
                             <div className="text-lg font-semibold mb-2 text-indigo-900 dark:text-indigo-100">
-                                🎯 Our Mission: Keep Radar 100% Free Forever
+                                🎯 {t('support.mission')}
                             </div>
                             <div className="text-sm text-muted-foreground max-w-lg mx-auto">
-                                No paywalls. No feature limits. No ads. Just a tool built to help local businesses thrive.
+                                {t('support.missionDesc')}
                             </div>
                         </div>
                     </CardContent>
@@ -79,86 +82,70 @@ export default function SupportPage() {
                 {/* Donation Options */}
                 <Card className="mb-8">
                     <CardHeader>
-                        <CardTitle>Choose How to Support</CardTitle>
+                        <CardTitle>{t('support.howToSupport')}</CardTitle>
                         <CardDescription>
-                            Every contribution helps, no matter the size!
+                            {t('support.everyContribution')}
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                        {/* GitHub Sponsors */}
-                        <a
-                            href="https://github.com/sponsors/YourUsername"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block"
-                        >
-                            <div className="p-6 border-2 border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 rounded-lg transition-all hover:shadow-lg group">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-full group-hover:scale-110 transition-transform">
-                                            <Github className="h-8 w-8 text-purple-600 dark:text-purple-400" />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold text-lg">GitHub Sponsors</h3>
-                                            <p className="text-sm text-muted-foreground">Monthly recurring support • 0% fees</p>
-                                        </div>
+                    <CardContent>
+                        <div className="grid md:grid-cols-3 gap-4">
+                            {/* GitHub Sponsors */}
+                            <a
+                                href="https://github.com/sponsors/YourUsername"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block"
+                            >
+                                <div className="p-4 border-2 border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 rounded-lg transition-all hover:shadow-lg group text-center h-full flex flex-col">
+                                    <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-full group-hover:scale-110 transition-transform mx-auto mb-3">
+                                        <Github className="h-6 w-6 text-purple-600 dark:text-purple-400" />
                                     </div>
-                                    <Button variant="outline" className="group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                                        Sponsor
+                                    <h3 className="font-bold mb-2">{t('support.platforms.github.name')}</h3>
+                                    <p className="text-xs text-muted-foreground mb-4 flex-grow">{t('support.platforms.github.desc')}</p>
+                                    <Button variant="outline" size="sm" className="group-hover:bg-purple-600 group-hover:text-white transition-colors w-full">
+                                        {t('support.platforms.github.cta')}
                                     </Button>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
 
-                        {/* Ko-fi */}
-                        <a
-                            href="https://ko-fi.com/radarapp"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block"
-                        >
-                            <div className="p-6 border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 rounded-lg transition-all hover:shadow-lg group">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="p-3 bg-amber-100 dark:bg-amber-900 rounded-full group-hover:scale-110 transition-transform">
-                                            <Coffee className="h-8 w-8 text-amber-600 dark:text-amber-400" />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold text-lg">Ko-fi</h3>
-                                            <p className="text-sm text-muted-foreground">One-time coffee • 0% fees</p>
-                                        </div>
+                            {/* Ko-fi */}
+                            <a
+                                href="https://ko-fi.com/radarapp"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block"
+                            >
+                                <div className="p-4 border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 rounded-lg transition-all hover:shadow-lg group text-center h-full flex flex-col">
+                                    <div className="p-3 bg-amber-100 dark:bg-amber-900 rounded-full group-hover:scale-110 transition-transform mx-auto mb-3">
+                                        <Coffee className="h-6 w-6 text-amber-600 dark:text-amber-400" />
                                     </div>
-                                    <Button variant="outline" className="group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                                        Buy a Coffee
+                                    <h3 className="font-bold mb-2">{t('support.platforms.kofi.name')}</h3>
+                                    <p className="text-xs text-muted-foreground mb-4 flex-grow">{t('support.platforms.kofi.desc')}</p>
+                                    <Button variant="outline" size="sm" className="group-hover:bg-amber-600 group-hover:text-white transition-colors w-full">
+                                        {t('support.platforms.kofi.cta')}
                                     </Button>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
 
-                        {/* Buy Me a Coffee */}
-                        <a
-                            href="https://buymeacoffee.com/radarapp"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block"
-                        >
-                            <div className="p-6 border-2 border-yellow-200 dark:border-yellow-800 hover:border-yellow-400 dark:hover:border-yellow-600 rounded-lg transition-all hover:shadow-lg group">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full group-hover:scale-110 transition-transform">
-                                            <Gift className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold text-lg">Buy Me a Coffee</h3>
-                                            <p className="text-sm text-muted-foreground">One-time support • 5% fees</p>
-                                        </div>
+                            {/* Buy Me a Coffee */}
+                            <a
+                                href="https://buymeacoffee.com/radarapp"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block"
+                            >
+                                <div className="p-4 border-2 border-yellow-200 dark:border-yellow-800 hover:border-yellow-400 dark:hover:border-yellow-600 rounded-lg transition-all hover:shadow-lg group text-center h-full flex flex-col">
+                                    <div className="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full group-hover:scale-110 transition-transform mx-auto mb-3">
+                                        <Gift className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
                                     </div>
-                                    <Button variant="outline" className="group-hover:bg-yellow-600 group-hover:text-white transition-colors">
-                                        Support
+                                    <h3 className="font-bold mb-2">{t('support.platforms.bmac.name')}</h3>
+                                    <p className="text-xs text-muted-foreground mb-4 flex-grow">{t('support.platforms.bmac.desc')}</p>
+                                    <Button variant="outline" size="sm" className="group-hover:bg-yellow-600 group-hover:text-white transition-colors w-full">
+                                        {t('support.platforms.bmac.cta')}
                                     </Button>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        </div>
                     </CardContent>
                 </Card>
 
