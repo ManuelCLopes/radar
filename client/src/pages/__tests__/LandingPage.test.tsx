@@ -106,12 +106,6 @@ describe("LandingPage", () => {
         // Since the search logic is inside the component, we might need to mock fetch.
     });
 
-    it("renders pricing plans", () => {
-        render(<LandingPage />);
-        expect(screen.getByTestId("pricing-card-essential")).toBeInTheDocument();
-        expect(screen.getByTestId("pricing-card-professional")).toBeInTheDocument();
-    });
-
     it("renders navigation elements", () => {
         render(<LandingPage />);
         expect(screen.getByText("landing.brandName")).toBeInTheDocument();

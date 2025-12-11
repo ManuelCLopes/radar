@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
-import { User, CreditCard, Shield, LogOut, BarChart3, Eye, EyeOff, Trash2 } from "lucide-react";
+import { User, BarChart3, LogOut, Heart, Eye, EyeOff, Trash2, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,11 +23,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-const plans = [
-    { id: "essential", name: "Essential", price: "9.90€", features: ["1 localização", "Relatórios quinzenais", "Raio até 5 km"] },
-    { id: "professional", name: "Professional", price: "29.90€", features: ["5 localizações", "Relatórios semanais", "Análise SWOT avançada"] },
-    { id: "agency", name: "Agency", price: "99.90€", features: ["Localizações ilimitadas", "Relatórios diários", "API access"] },
-];
+// Plans removed - app is now 100% free with donations
 
 export default function SettingsPage() {
     const { user, logoutMutation } = useAuth();
@@ -38,8 +34,7 @@ export default function SettingsPage() {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
-    const [showPlanConfirm, setShowPlanConfirm] = useState(false);
+    // Plan state removed - using donation model
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -50,33 +45,12 @@ export default function SettingsPage() {
         confirmPassword: "",
     });
 
-    const currentPlan = user?.plan || "essential";
-
     const handleSaveProfile = async () => {
         toast({
             title: "Perfil atualizado",
             description: "As suas informações foram guardadas com sucesso.",
         });
         setIsEditing(false);
-    };
-
-    const handlePlanClick = (planId: string) => {
-        if (planId !== currentPlan) {
-            setSelectedPlan(planId);
-            setShowPlanConfirm(true);
-        }
-    };
-
-    const handleConfirmPlanChange = () => {
-        if (selectedPlan) {
-            toast({
-                title: "Plano alterado",
-                description: `O seu plano foi atualizado para ${plans.find(p => p.id === selectedPlan)?.name}.`,
-            });
-            setShowPlanConfirm(false);
-            setSelectedPlan(null);
-            // TODO: Implement actual plan change API call
-        }
     };
 
     const handleDeleteAccount = () => {
@@ -235,62 +209,32 @@ export default function SettingsPage() {
                     </CardContent>
                 </Card>
 
-                {/* Subscription Plan */}
-                <Card>
+                {/* Support Radar - Donation Card */}
+                <Card className="border-purple-200 dark:border-purple-800">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <CreditCard className="h-5 w-5" />
-                            Plano de Subscrição
+                            <Heart className="h-5 w-5 text-red-500" />
+                            Apoiar o Radar
                         </CardTitle>
                         <CardDescription>
-                            Gerir o seu plano atual e fazer upgrade
+                            O Radar é 100% gratuito e open source. Ajude a manter o projeto!
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-                            <div>
-                                <p className="font-semibold">Plano Atual</p>
-                                <p className="text-2xl font-bold mt-1">{currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)}</p>
-                            </div>
-                            <Badge variant="secondary" className="text-lg px-4 py-2">
-                                {plans.find(p => p.id === currentPlan)?.price}/mês
-                            </Badge>
+                        <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950 rounded-lg">
+                            <p className="text-sm mb-3">
+                                <strong>Todas as funcionalidades</strong> estão desbloqueadas para todos.
+                                Se o Radar te ajuda, considera apoiar com uma doação.
+                            </p>
+                            <Link href="/support">
+                                <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                                    <Heart className="mr-2 h-4 w-4" />
+                                    Ver Opções de Apoio
+                                </Button>
+                            </Link>
                         </div>
-
-                        <Separator />
-
-                        <div className="space-y-3">
-                            <p className="font-semibold">Planos Disponíveis</p>
-                            <div className="grid gap-3">
-                                {plans.map((plan) => (
-                                    <div
-                                        key={plan.id}
-                                        className={`p-4 border rounded-lg cursor-pointer transition-colors ${currentPlan === plan.id
-                                            ? "border-primary bg-primary/5"
-                                            : "border-border hover:border-primary/50"
-                                            }`}
-                                        onClick={() => handlePlanClick(plan.id)}
-                                    >
-                                        <div className="flex items-center justify-between mb-3">
-                                            <div>
-                                                <h3 className="font-semibold text-lg">{plan.name}</h3>
-                                                <p className="text-sm text-muted-foreground">{plan.price}/mês</p>
-                                            </div>
-                                            {currentPlan === plan.id && (
-                                                <Badge>Ativo</Badge>
-                                            )}
-                                        </div>
-                                        <ul className="space-y-1 text-sm">
-                                            {plan.features.map((feature, i) => (
-                                                <li key={i} className="flex items-center gap-2 text-muted-foreground">
-                                                    <span className="h-1 w-1 rounded-full bg-primary" />
-                                                    {feature}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                ))}
-                            </div>
+                        <div className="text-sm text-muted-foreground">
+                            <p>💜 GitHub Sponsors • ☕ Ko-fi • 🎁 Buy Me a Coffee</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -322,26 +266,6 @@ export default function SettingsPage() {
                         </div>
                     </CardContent>
                 </Card>
-
-                {/* Plan Change Confirmation Dialog */}
-                <AlertDialog open={showPlanConfirm} onOpenChange={setShowPlanConfirm}>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Confirmar Mudança de Plano</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                Tem a certeza que pretende alterar o seu plano para{" "}
-                                <strong>{plans.find(p => p.id === selectedPlan)?.name}</strong>?
-                                Esta alteração será aplicada imediatamente.
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                            <AlertDialogAction onClick={handleConfirmPlanChange}>
-                                Confirmar
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
 
                 {/* Delete Account Confirmation Dialog */}
                 <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>

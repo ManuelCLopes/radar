@@ -2,13 +2,14 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import RegisterPage from "../RegisterPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Route, Switch } from "wouter";
 
 // Mock hooks
+const mockMutateAsync = vi.fn().mockResolvedValue({});
+
 vi.mock("@/hooks/useAuth", () => ({
     useAuth: () => ({
         registerMutation: {
-            mutateAsync: vi.fn().mockResolvedValue({}),
+            mutateAsync: mockMutateAsync,
         },
     }),
 }));
@@ -25,23 +26,6 @@ vi.mock("@/components/ThemeToggle", () => ({
 }));
 vi.mock("@/components/LanguageSelector", () => ({
     LanguageSelector: () => <div data-testid="language-selector" />,
-}));
-
-// Mock Embla Carousel
-vi.mock("embla-carousel-react", () => ({
-    default: () => [
-        vi.fn(),
-        {
-            scrollPrev: vi.fn(),
-            scrollNext: vi.fn(),
-            scrollTo: vi.fn(),
-            selectedScrollSnap: vi.fn().mockReturnValue(0),
-            canScrollPrev: vi.fn().mockReturnValue(false),
-            canScrollNext: vi.fn().mockReturnValue(true),
-            on: vi.fn(),
-            off: vi.fn(),
-        },
-    ],
 }));
 
 const queryClient = new QueryClient({
@@ -67,6 +51,17 @@ describe("RegisterPage", () => {
         expect(screen.getByLabelText("auth.password")).toBeInTheDocument();
     });
 
+    it("shows 100% free badge", () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <RegisterPage />
+            </QueryClientProvider>
+        );
+
+        expect(screen.getByText(/100% Gratuito/i)).toBeInTheDocument();
+        expect(screen.getByText(/Todas as funcionalidades desbloqueadas/i)).toBeInTheDocument();
+    });
+
     it("validates required fields", async () => {
         render(
             <QueryClientProvider client={queryClient}>
@@ -74,16 +69,15 @@ describe("RegisterPage", () => {
             </QueryClientProvider>
         );
 
-        fireEvent.click(screen.getByRole("button", { name: "auth.continue" }));
+        fireEvent.click(screen.getByRole("button", { name: "auth.signUp" }));
 
         await waitFor(() => {
             // Check for validation messages (mocked translation keys)
             expect(screen.getByText("validation.required")).toBeInTheDocument();
-            expect(screen.getByText("validation.passwordMin")).toBeInTheDocument();
         });
     });
 
-    it("advances to plan selection on valid input", async () => {
+    it("submits registration on valid input", async () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <RegisterPage />
@@ -95,10 +89,16 @@ describe("RegisterPage", () => {
         fireEvent.change(screen.getByLabelText("auth.email"), { target: { value: "test@example.com" } });
         fireEvent.change(screen.getByLabelText("auth.password"), { target: { value: "password123" } });
 
-        fireEvent.click(screen.getByRole("button", { name: "auth.continue" }));
+        fireEvent.click(screen.getByRole("button", { name: "auth.signUp" }));
 
         await waitFor(() => {
-            expect(screen.getByText("auth.choosePlan")).toBeInTheDocument();
+            expect(mockMutateAsync).toHaveBeenCalledWith({
+                email: "test@example.com",
+                password: "password123",
+                firstName: "Test",
+                lastName: "User",
+                plan: "free", // All users are free now!
+            });
         });
     });
 });

@@ -1,6 +1,5 @@
 import { Link } from "wouter";
-import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, ChevronLeft, ChevronRight, LogIn, Search, Check, X, User, LayoutDashboard } from "lucide-react";
-import useEmblaCarousel from "embla-carousel-react";
+import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, LogIn, Search, Check, X, User, LayoutDashboard, ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -13,124 +12,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import "./LandingPage.css";
 
-function PricingCard({ plan, subtitle, features, price, period, featured, buttonText, testId, priceTestId }: {
-  plan: string;
-  subtitle: string;
-  features: string[];
-  price: string;
-  period: string;
-  featured?: boolean;
-  buttonText: string;
-  testId: string;
-  priceTestId: string;
-}) {
-  const { t } = useTranslation();
-
-  return (
-    <div className={`pricing-card ${featured ? 'featured' : ''}`} data-testid={testId}>
-      <h3 className="pricing-plan-name">{plan}</h3>
-      <p className="pricing-plan-subtitle">{t(subtitle)}</p>
-      <div className="pricing-price-container">
-        <span className="pricing-price" data-testid={priceTestId}>{price}</span>
-        <span className="pricing-period">{t(period)}</span>
-      </div>
-      <ul className="pricing-features">
-        {features.map((featureKey, i) => {
-          const translatedFeature = t(featureKey);
-          const isNegative = translatedFeature.startsWith('~');
-          const cleanFeature = isNegative ? translatedFeature.substring(1).trim() : translatedFeature;
-
-          return (
-            <li key={i} className={isNegative ? 'feature-negative' : ''}>
-              {isNegative ? (
-                <X className="w-5 h-5 text-gray-400 mr-2 flex-shrink-0" />
-              ) : (
-                <Check className="w-5 h-5 text-green-500 mr-2 flex-shrink-0" />
-              )}
-              <span className={isNegative ? 'text-gray-400 line-through' : ''}>{cleanFeature}</span>
-            </li>
-          );
-        })}
-      </ul>
-      <button className={`btn-pricing ${featured ? 'btn-primary' : 'btn-outline'}`}>
-        {t(buttonText)}
-      </button>
-    </div>
-  );
-}
-
-const pricingPlans = [
-  {
-    plan: "Essential",
-    subtitle: "landing.pricing.essential.subtitle",
-    features: [
-      "landing.pricing.essential.features.0",
-      "landing.pricing.essential.features.1",
-      "landing.pricing.essential.features.2",
-      "landing.pricing.essential.features.3",
-      "landing.pricing.essential.features.4",
-      "landing.pricing.essential.features.5",
-      "landing.pricing.essential.features.6"
-    ],
-    price: "9.90€",
-    period: "landing.pricing.perMonth",
-    buttonText: "landing.pricing.essential.button",
-    testId: "pricing-card-essential",
-    priceTestId: "price-essential"
-  },
-  {
-    plan: "Professional",
-    subtitle: "landing.pricing.professional.subtitle",
-    features: [
-      "landing.pricing.professional.features.0",
-      "landing.pricing.professional.features.1",
-      "landing.pricing.professional.features.2",
-      "landing.pricing.professional.features.3",
-      "landing.pricing.professional.features.4",
-      "landing.pricing.professional.features.5",
-      "landing.pricing.professional.features.6",
-      "landing.pricing.professional.features.7",
-      "landing.pricing.professional.features.8"
-    ],
-    price: "29.90€",
-    period: "landing.pricing.perMonth",
-    buttonText: "landing.pricing.professional.button",
-    testId: "pricing-card-professional",
-    priceTestId: "price-professional"
-  },
-  {
-    plan: "Agency",
-    subtitle: "landing.pricing.agency.subtitle",
-    features: [
-      "landing.pricing.agency.features.0",
-      "landing.pricing.agency.features.1",
-      "landing.pricing.agency.features.2",
-      "landing.pricing.agency.features.3",
-      "landing.pricing.agency.features.4",
-      "landing.pricing.agency.features.5",
-      "landing.pricing.agency.features.6",
-      "landing.pricing.agency.features.7"
-    ],
-    price: "79.90€",
-    period: "landing.pricing.perMonth",
-    buttonText: "landing.pricing.agency.button",
-    testId: "pricing-card-agency",
-    priceTestId: "price-agency"
-  }
-];
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
-// ... (imports remain the same)
+// Pricing removed - app is 100% free with donations
 
 export default function LandingPage() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'center', startIndex: 1 });
-  const [selectedIndex, setSelectedIndex] = useState(1);
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
   const { isAuthenticated, isLoading } = useAuth();
   const { t } = useTranslation();
 
@@ -139,6 +28,15 @@ export default function LandingPage() {
   const [searchError, setSearchError] = useState('');
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [previewData, setPreviewData] = useState<any>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const searchSchema = z.object({
     address: z.string().min(1, t("validation.required")),
@@ -157,41 +55,7 @@ export default function LandingPage() {
     },
   });
 
-  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
-  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
-  const scrollTo = useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi]);
 
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-    setCanScrollPrev(emblaApi.canScrollPrev());
-    setCanScrollNext(emblaApi.canScrollNext());
-  }, [emblaApi]);
-
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    // Force initial state to Professional (index 1)
-    setSelectedIndex(1);
-    emblaApi.scrollTo(1);
-
-    emblaApi.on('select', onSelect);
-    emblaApi.on('reInit', onSelect);
-
-    return () => {
-      emblaApi.off('select', onSelect);
-      emblaApi.off('reInit', onSelect);
-    };
-  }, [emblaApi, onSelect]);
 
   const onSearchSubmit = async (data: SearchFormValues) => {
     setSearchError('');
@@ -587,70 +451,6 @@ export default function LandingPage() {
           <p className="audience-final">
             {t('landing.targetAudience.conclusion')}
           </p>
-        </div>
-      </section>
-
-      {/* PLANOS & PREÇOS */}
-      <section className="landing-section" data-testid="section-pricing">
-        <div className="landing-container">
-          <h2 className="section-title">{t('landing.pricing.title')}</h2>
-
-          {/* Pricing Carousel (Responsive) */}
-          <div className="pricing-carousel-wrapper">
-            <div className="pricing-carousel" ref={emblaRef}>
-              <div className="pricing-carousel-container">
-                {pricingPlans.map((plan, index) => (
-                  <div
-                    className="pricing-carousel-slide"
-                    key={plan.testId}
-                    onClick={() => {
-                      scrollTo(index);
-                      setSelectedIndex(index);
-                    }}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <PricingCard
-                      {...plan}
-                      featured={index === selectedIndex}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="pricing-carousel-controls">
-              <button
-                className="pricing-carousel-btn"
-                onClick={scrollPrev}
-                disabled={!canScrollPrev}
-                aria-label="Plano anterior"
-                data-testid="button-carousel-prev"
-              >
-                <ChevronLeft />
-              </button>
-              <div className="pricing-carousel-dots">
-                {pricingPlans.map((_, index) => (
-                  <button
-                    key={index}
-                    className={`pricing-carousel-dot ${index === selectedIndex ? 'active' : ''}`}
-                    onClick={() => scrollTo(index)}
-                    aria-label={`Ir para plano ${index + 1}`}
-                    data-testid={`button-carousel-dot-${index}`}
-                  />
-                ))}
-              </div>
-              <button
-                className="pricing-carousel-btn"
-                onClick={scrollNext}
-                disabled={!canScrollNext}
-                aria-label="Próximo plano"
-                data-testid="button-carousel-next"
-              >
-                <ChevronRight />
-              </button>
-            </div>
-          </div>
-
-
         </div>
       </section>
 

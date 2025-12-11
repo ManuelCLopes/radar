@@ -6,12 +6,12 @@ export async function seed() {
         const email = "teste@teste.pt";
         const password = "123123";
 
-        // 1. Create Users
+        // 1. Create Users (all free now - donations only!)
         const usersToCreate = [
-            { email: "teste@teste.pt", plan: "professional", firstName: "Teste", lastName: "User" }, // Keeping original as professional for backward compat or update it
-            { email: "professional@teste.pt", plan: "professional", firstName: "Pro", lastName: "User" },
-            { email: "agency@teste.pt", plan: "agency", firstName: "Agency", lastName: "User" },
-            { email: "essential@teste.pt", plan: "essential", firstName: "Essential", lastName: "User" }
+            { email: "teste@teste.pt", plan: "free", firstName: "Teste", lastName: "User" },
+            { email: "professional@teste.pt", plan: "free", firstName: "Pro", lastName: "User" },
+            { email: "agency@teste.pt", plan: "free", firstName: "Agency", lastName: "User" },
+            { email: "essential@teste.pt", plan: "free", firstName: "Essential", lastName: "User" }
         ];
 
         let mainUser;

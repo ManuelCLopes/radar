@@ -12,6 +12,7 @@ import Dashboard from "@/pages/Dashboard";
 import SettingsPage from "@/pages/SettingsPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
+import SupportPage from "@/pages/SupportPage";
 import NotFound from "@/pages/not-found";
 import './i18n';
 import { useEffect, useState } from "react";
@@ -95,6 +96,7 @@ function Router() {
       <Route path="/register" component={RegisterPage} />
       <Route path="/forgot-password" component={ForgotPasswordPage} />
       <Route path="/reset-password/:token" component={ResetPasswordPage} />
+      <Route path="/support" component={SupportPage} />
       <Route path="/dashboard" component={ProtectedDashboard} />
       <Route path="/settings" component={ProtectedSettings} />
       <Route component={NotFound} />
