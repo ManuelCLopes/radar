@@ -493,24 +493,22 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA FINAL */}
+      {/* SUPPORT PROJECT CTA */}
       <section className="cta-final" id="cta-final" data-testid="section-cta-final">
         <div className="landing-container">
           <h2 className="section-title">
-            {t('landing.cta.question')}
+            ❤️ {t('landing.support.title')}
           </h2>
           <p className="cta-final-text">
-            {t('landing.cta.requestSampleDescription')}
+            {t('landing.support.description')}
           </p>
-          <a
-            href="mailto:contacto@radarlocal.pt?subject=Pedido de amostra de relatório"
-            className="btn-primary"
-            data-testid="link-cta-request-sample"
-          >
-            {t('landing.cta.requestSample')}
-          </a>
+          <Link href="/support">
+            <button className="btn-primary" data-testid="link-support-project">
+              {t('landing.support.cta')}
+            </button>
+          </Link>
           <p className="cta-final-subtext">
-            {t('landing.cta.noCommitment')}
+            {t('landing.support.footer')}
           </p>
         </div>
       </section>
@@ -519,7 +517,7 @@ export default function LandingPage() {
       <section className="dashboard-link-section" data-testid="section-dashboard-link">
         <div className="landing-container">
           <Link href="/dashboard" className="dashboard-link" data-testid="link-dashboard">
-            {t('landing.cta.existingCustomer')}
+            {t('landing.cta.existingAccount')}
           </Link>
         </div>
       </section>

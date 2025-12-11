@@ -474,12 +474,14 @@
         "answer": "Oui. Demandez un rapport d'exemple par email et nous vous enverrons un exemple pour votre zone."
       }
     },
+    "support": {
+      "title": "Vous aimez Radar? Aidez-nous à le garder gratuit!",
+      "description": "Radar est 100% gratuit et open source. Cela nous coûte environ $65/mois pour le maintenir. Si Radar vous aide, pensez à faire un petit don.",
+      "cta": "Soutenir le Projet",
+      "footer": "Chaque petit geste compte. Merci ! 💜"
+    },
     "cta": {
-      "question": "Voulez-vous voir comment vous vous comparez à vos concurrents ?",
-      "requestSampleDescription": "Envoyez-nous le nom et l'emplacement de votre entreprise et nous vous montrerons un vrai rapport d'exemple.",
-      "requestSample": "Demander un rapport d'exemple",
-      "noCommitment": "Sans engagement. Nous utilisons uniquement des données publiques.",
-      "existingCustomer": "Déjà client ? Accédez à votre tableau de bord ici"
+      "existingAccount": "Vous avez déjà un compte? Accédez à votre tableau de bord ici"
     }
   }
 }

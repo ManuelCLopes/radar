@@ -474,12 +474,14 @@
         "answer": "Sí. Solicita un informe de muestra por email y te enviaremos un ejemplo para tu zona."
       }
     },
+    "support": {
+      "title": "¿Te gusta Radar? ¡Ayúdanos a mantenerlo gratis!",
+      "description": "Radar es 100% gratuito y de código abierto. Nos cuesta unos $65/mes mantenerlo. Si Radar te ayuda, considera hacer una pequeña donación.",
+      "cta": "Apoyar el Proyecto",
+      "footer": "Cada granito de arena ayuda. ¡Gracias! 💜"
+    },
     "cta": {
-      "question": "¿Quieres ver cómo te comparas con tus competidores?",
-      "requestSampleDescription": "Envíanos el nombre y ubicación de tu negocio y te mostraremos una muestra real de informe.",
-      "requestSample": "Solicitar informe de muestra",
-      "noCommitment": "Sin compromiso. Solo usamos datos públicos.",
-      "existingCustomer": "¿Ya eres cliente? Accede a tu panel aquí"
+      "existingAccount": "¿Ya tienes cuenta? Accede a tu panel aquí"
     }
   }
 }

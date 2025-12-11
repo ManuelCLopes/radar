@@ -461,12 +461,14 @@
         "answer": "Sim. Pede uma amostra de relatório por email e enviamos-te um exemplo para a tua zona."
       }
     },
+    "support": {
+      "title": "Gostaste do Radar? Ajuda-nos a mantê-lo gratuito!",
+      "description": "O Radar é 100% gratuito e open source. Custa-nos cerca de $65/mês para manter. Se o Radar te ajuda, considera fazer uma pequena doação.",
+      "cta": "Apoiar o Projeto",
+      "footer": "Qualquer valor ajuda. Obrigado! 💜"
+    },
     "cta": {
-      "question": "Queres ver como estás em relação aos teus concorrentes?",
-      "requestSampleDescription": "Envia o nome e localização do teu negócio e nós mostramos-te uma amostra real de relatório.",
-      "requestSample": "Pedir amostra de relatório",
-      "noCommitment": "Sem compromisso. Usamos apenas dados públicos.",
-      "existingCustomer": "Já és cliente? Acede ao teu painel aqui"
+      "existingAccount": "Já tens conta? Acede ao teu painel aqui"
     }
   },
   "locationStatus": {

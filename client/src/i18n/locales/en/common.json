@@ -461,12 +461,14 @@
         "answer": "Yes. Request a sample report via email and we'll send you an example for your area."
       }
     },
+    "support": {
+      "title": "Love Radar? Help us keep it free!",
+      "description": "Radar is 100% free and open source. It costs us about $65/month to run. If Radar helps you, consider making a small donation.",
+      "cta": "Support the Project",
+      "footer": "Every little bit helps. Thank you! 💜"
+    },
     "cta": {
-      "question": "Want to see how you compare to your competitors?",
-      "requestSampleDescription": "Send us your business name and location and we'll show you a real sample report.",
-      "requestSample": "Request sample report",
-      "noCommitment": "No commitment. We only use public data.",
-      "existingCustomer": "Already a customer? Access your dashboard here"
+      "existingAccount": "Already have an account? Access your dashboard here"
     }
   },
   "locationStatus": {
