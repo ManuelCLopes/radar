@@ -36,30 +36,41 @@ export default function SupportPage() {
                 {/* Why Support */}
                 <Card className="mb-8">
                     <CardHeader>
-                        <CardTitle>Why Support?</CardTitle>
+                        <CardTitle>💜 Why Your Support Matters</CardTitle>
                         <CardDescription>
-                            Radar is completely free with all features unlocked. Your support helps cover running costs.
+                            Radar is a passion project built to help small businesses compete. Every donation keeps the lights on.
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="grid md:grid-cols-3 gap-4">
-                            <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-lg">
-                                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">$56/mo</div>
-                                <div className="text-sm text-muted-foreground">Google Places API</div>
+                        <div className="space-y-3">
+                            <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-900 rounded-lg border-l-4 border-blue-500">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="text-2xl">🗺️</span>
+                                    <div className="font-semibold text-blue-700 dark:text-blue-300">Location Data & Maps</div>
+                                </div>
+                                <div className="text-sm text-muted-foreground">Google Places API powers our competitor discovery</div>
                             </div>
-                            <div className="p-4 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 rounded-lg">
-                                <div className="text-2xl font-bold text-green-600 dark:text-green-400">$7/mo</div>
-                                <div className="text-sm text-muted-foreground">Hosting & Infrastructure</div>
+                            <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-900 rounded-lg border-l-4 border-green-500">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="text-2xl">☁️</span>
+                                    <div className="font-semibold text-green-700 dark:text-green-300">Hosting & Infrastructure</div>
+                                </div>
+                                <div className="text-sm text-muted-foreground">Reliable servers to keep Radar running 24/7</div>
                             </div>
-                            <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 rounded-lg">
-                                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">$0.68/mo</div>
-                                <div className="text-sm text-muted-foreground">AI Analysis (OpenAI)</div>
+                            <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-900 rounded-lg border-l-4 border-purple-500">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="text-2xl">🤖</span>
+                                    <div className="font-semibold text-purple-700 dark:text-purple-300">AI-Powered Insights</div>
+                                </div>
+                                <div className="text-sm text-muted-foreground">OpenAI API generates actionable competitor analysis</div>
                             </div>
                         </div>
-                        <div className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950 dark:to-purple-950 rounded-lg border-2 border-indigo-200 dark:border-indigo-800">
-                            <div className="text-3xl font-bold text-center mb-2">~$65/month</div>
-                            <div className="text-center text-sm text-muted-foreground">
-                                Total running costs • 100% donation funded • No ads, ever
+                        <div className="p-6 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-950 dark:via-purple-950 dark:to-pink-950 rounded-xl border-2 border-indigo-200 dark:border-indigo-800 text-center">
+                            <div className="text-lg font-semibold mb-2 text-indigo-900 dark:text-indigo-100">
+                                🎯 Our Mission: Keep Radar 100% Free Forever
+                            </div>
+                            <div className="text-sm text-muted-foreground max-w-lg mx-auto">
+                                No paywalls. No feature limits. No ads. Just a tool built to help local businesses thrive.
                             </div>
                         </div>
                     </CardContent>

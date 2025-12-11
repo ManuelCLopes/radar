@@ -462,10 +462,10 @@
       }
     },
     "support": {
-      "title": "Love Radar? Help us keep it free!",
-      "description": "Radar is 100% free and open source. It costs us about $65/month to run. If Radar helps you, consider making a small donation.",
+      "title": "Enjoy Radar? Help keep it free",
+      "description": "Radar is 100% free and open source. We need support to cover API costs, hosting, and infrastructure. Every contribution helps.",
       "cta": "Support the Project",
-      "footer": "Every little bit helps. Thank you! 💜"
+      "footer": "Thank you for your support"
     },
     "cta": {
       "existingAccount": "Already have an account? Access your dashboard here"
