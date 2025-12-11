@@ -152,9 +152,9 @@ export default function SupportPage() {
                 {/* Other Ways to Help */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Can't Donate? No Problem!</CardTitle>
+                        <CardTitle>{t('support.other.title')}</CardTitle>
                         <CardDescription>
-                            There are many other ways you can help
+                            {t('support.other.description')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -167,8 +167,8 @@ export default function SupportPage() {
                             >
                                 <Star className="h-5 w-5 text-yellow-500" />
                                 <div>
-                                    <div className="font-semibold">Star on GitHub</div>
-                                    <div className="text-sm text-muted-foreground">It helps a lot!</div>
+                                    <div className="font-semibold">{t('support.other.starGithub')}</div>
+                                    <div className="text-sm text-muted-foreground">{t('support.other.starGithubDesc')}</div>
                                 </div>
                             </a>
                             <a
@@ -179,8 +179,8 @@ export default function SupportPage() {
                             >
                                 <Bug className="h-5 w-5 text-red-500" />
                                 <div>
-                                    <div className="font-semibold">Report Bugs</div>
-                                    <div className="text-sm text-muted-foreground">Help improve quality</div>
+                                    <div className="font-semibold">{t('support.other.reportBugs')}</div>
+                                    <div className="text-sm text-muted-foreground">{t('support.other.reportBugsDesc')}</div>
                                 </div>
                             </a>
                             <a
@@ -191,15 +191,15 @@ export default function SupportPage() {
                             >
                                 <Lightbulb className="h-5 w-5 text-blue-500" />
                                 <div>
-                                    <div className="font-semibold">Suggest Features</div>
-                                    <div className="text-sm text-muted-foreground">Share your ideas</div>
+                                    <div className="font-semibold">{t('support.other.suggestFeatures')}</div>
+                                    <div className="text-sm text-muted-foreground">{t('support.other.suggestFeaturesDesc')}</div>
                                 </div>
                             </a>
                             <div className="p-4 border rounded-lg hover:bg-accent transition-colors flex items-center gap-3 cursor-pointer">
                                 <Share2 className="h-5 w-5 text-green-500" />
                                 <div>
-                                    <div className="font-semibold">Share with Friends</div>
-                                    <div className="text-sm text-muted-foreground">Spread the word</div>
+                                    <div className="font-semibold">{t('support.other.shareWithFriends')}</div>
+                                    <div className="text-sm text-muted-foreground">{t('support.other.shareWithFriendsDesc')}</div>
                                 </div>
                             </div>
                         </div>
@@ -208,9 +208,9 @@ export default function SupportPage() {
 
                 {/* Thank You */}
                 <div className="text-center mt-12 p-6 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950 dark:to-purple-950 rounded-lg">
-                    <h3 className="text-2xl font-bold mb-2">Thank You! ❤️</h3>
+                    <h3 className="text-2xl font-bold mb-2">{t('support.thankYou')} ❤️</h3>
                     <p className="text-muted-foreground">
-                        Your support makes it possible to keep Radar free for everyone
+                        {t('support.thankYouMessage')}
                     </p>
                 </div>
             </main>
