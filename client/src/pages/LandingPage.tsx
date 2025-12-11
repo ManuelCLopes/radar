@@ -533,7 +533,7 @@ export default function LandingPage() {
       {/* LINK PARA DASHBOARD */}
       <section className="dashboard-link-section" data-testid="section-dashboard-link">
         <div className="landing-container">
-          <Link href="/dashboard" className="dashboard-link" data-testid="link-dashboard">
+          <Link href={isAuthenticated ? "/dashboard" : "/login"} className="dashboard-link" data-testid="link-dashboard">
             {t('landing.cta.existingAccount')}
           </Link>
         </div>
