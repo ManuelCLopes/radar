@@ -139,17 +139,30 @@ describe("ReportView", () => {
     });
 
     it("should handle download HTML", () => {
+        const createObjectURLMock = vi.fn().mockReturnValue("blob:url");
+        const revokeObjectURLMock = vi.fn();
+        global.URL.createObjectURL = createObjectURLMock;
+        global.URL.revokeObjectURL = revokeObjectURLMock;
+
+        // Spy on Blob constructor
+        const blobSpy = vi.spyOn(global, "Blob").mockImplementation((content) => {
+            return { size: 0, type: "text/html" } as any;
+        });
+
         render(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
 
         const downloadBtn = screen.getByText("report.view.downloadHtml");
         fireEvent.click(downloadBtn);
 
-        expect(global.URL.createObjectURL).toHaveBeenCalled();
-        expect(global.URL.revokeObjectURL).toHaveBeenCalled();
+        expect(createObjectURLMock).toHaveBeenCalled();
+        expect(revokeObjectURLMock).toHaveBeenCalled();
+
+        // Verify Blob content includes Tailwind CDN
+        const blobContent = blobSpy.mock.calls[0][0] as any[];
+        expect(blobContent[0]).toContain("cdn.tailwindcss.com");
+
+        blobSpy.mockRestore();
     });
-
-
-
 
     it("should render print PDF button", () => {
         render(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);

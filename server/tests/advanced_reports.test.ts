@@ -117,7 +117,7 @@ describe("Advanced Reports", () => {
         // For now, we just check the structure if reviews were present
     });
 
-    it("should NOT include SWOT and Trends in prompt for essential plan", async () => {
+    it("should include all advanced features in prompt for essential plan (upgraded)", async () => {
         // Create a user with essential plan
         const user = await storage.upsertUser({
             email: "essential@example.com",
@@ -141,11 +141,12 @@ describe("Advanced Reports", () => {
         const callArgs = createMock.mock.calls[0][0] as any;
         const prompt = callArgs.messages[1].content;
 
-        expect(prompt).not.toContain("SWOT ANALYSIS");
-        expect(prompt).not.toContain("MARKET TRENDS");
+        expect(prompt).toContain("SWOT ANALYSIS");
+        expect(prompt).toContain("MARKET TRENDS");
+        expect(prompt).toContain("TARGET AUDIENCE PERSONA");
+        expect(prompt).toContain("MARKETING STRATEGY");
 
         // Check that review analysis is included even for essential plan
-        expect(prompt).toContain("REVIEW THEME ANALYSIS");
-        expect(prompt).toContain("QUOTE");
+        expect(prompt).toContain("CUSTOMER SENTIMENT &amp; REVIEW INSIGHTS");
     });
 });

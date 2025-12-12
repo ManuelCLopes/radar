@@ -55,7 +55,7 @@ export async function analyzeCompetitors(
 
   const totalReviews = competitors.reduce((sum, c) => sum + (c.userRatingsTotal || 0), 0);
 
-  const isAdvanced = plan === 'professional' || plan === 'agency';
+  const isAdvanced = true;
 
   const headers = {
     en: {
@@ -173,9 +173,10 @@ MARKET METRICS:
 
 Please provide a detailed analysis including:
 1. ${h.marketOverview} - Summary of the competitive landscape and how ${business.name} compares to competitors
-2. ${h.keyCompetitors} - Analysis of the top competitors, their strengths, ratings, and price positioning
-3. ${h.reviewAnalysis} - Based on the "Recent Reviews" provided, analyze what themes likely dominate customer feedback. QUOTE specific phrases from reviews to support your points (e.g., "As noted in a review for [Competitor], customers appreciate...").
-4. ${h.marketGaps} - Opportunities where competitors may be underserving customers`;
+2. ${h.swot} - Detailed analysis of Strengths, Weaknesses, Opportunities, and Threats (use <h3> for each subsection)
+3. ${h.keyCompetitors} - Analysis of the top competitors, their strengths, ratings, and price positioning
+4. ${h.reviewAnalysis} - Based on the "Recent Reviews" provided, analyze what themes likely dominate customer feedback. QUOTE specific phrases from reviews to support your points (e.g., "As noted in a review for [Competitor], customers appreciate...").
+5. ${h.marketGaps} - Opportunities where competitors may be underserving customers`;
 
   if (isAdvanced) {
     prompt = `

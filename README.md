@@ -16,13 +16,13 @@ Radar Local helps businesses understand their competitive landscape by analyzing
 - **Real-time competitor discovery** using Google Places API
 - **Detailed competitor profiles** with ratings, reviews, and contact information
 - **Geographic visualization** of competitors on interactive maps
-- **AI-powered insights** analyzing market positioning and opportunities
+- **Advanced AI insights** including SWOT Analysis, Market Trends, Target Audience Persona, and Marketing Strategy (available for all plans)
 
 ### 🎨 Modern User Experience
 - **Beautiful, responsive UI** with dark mode support
 - **Multi-language support** (English, Portuguese, Spanish, French, German)
 - **Real-time updates** and interactive dashboards
-- **Export capabilities** (HTML, PDF) for reports
+- **High-fidelity Export** (HTML with Tailwind CSS, PDF) for professional reports
 
 ### 🔐 Flexible Authentication
 - **Email/Password authentication** with secure bcrypt hashing
@@ -197,6 +197,16 @@ npm run build
 
 # Check TypeScript types
 npm run check
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run specific test file
+npm test client/src/components/__tests__/ReportView.test.tsx
 ```
 
 ### Database Setup
