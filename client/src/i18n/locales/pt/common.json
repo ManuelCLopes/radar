@@ -115,8 +115,14 @@
     "sections": {
       "aiAnalysis": "Análise IA",
       "aiPoweredInsights": "Insights Gerados por IA",
+      "marketOverview": "Visão Geral do Mercado",
       "nearbyCompetitors": "Concorrentes Próximos",
-      "noCompetitors": "Não foram encontrados concorrentes na área próxima."
+      "noCompetitors": "Não foram encontrados concorrentes na área próxima.",
+      "keyCompetitors": "Principais Concorrentes",
+      "reviewAnalysis": "Análise de Temas de Avaliação",
+      "marketGaps": "Lacunas de Mercado",
+      "recommendations": "Recomendações Práticas",
+      "differentiation": "Estratégias de Diferenciação"
     },
     "competitor": {
       "reviews": "{{count}} avaliações",

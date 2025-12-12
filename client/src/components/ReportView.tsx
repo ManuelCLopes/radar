@@ -9,6 +9,8 @@ import { Separator } from "@/components/ui/separator";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { AIAnalysisContent } from "@/components/AIAnalysisContent";
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import { PDFReport } from "./PDFReport";
 import type { Report, Competitor } from "@shared/schema";
 
 interface ReportViewProps {
@@ -415,10 +417,29 @@ Local Competitor Analyzer
                     <FileText className="h-4 w-4 mr-2" />
                     {t("report.view.downloadHtml")}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handlePrintPDF} data-testid="button-print-pdf">
-                    <Printer className="h-4 w-4 mr-2" />
-                    {t("report.view.printPdf")}
-                  </DropdownMenuItem>
+
+                  {report && (
+                    <PDFDownloadLink
+                      document={<PDFReport report={report} t={t} />}
+                      fileName={`report-${report.businessName.toLowerCase().replace(/\s+/g, "-")}.pdf`}
+                      style={{ textDecoration: 'none' }}
+                    >
+                      {({ loading, error }) => {
+                        if (error) console.error("PDF Generation Error:", error);
+                        return (
+                          <DropdownMenuItem
+                            onSelect={(e) => e.preventDefault()}
+                            disabled={loading}
+                            data-testid="button-download-pdf"
+                          >
+                            <Printer className="h-4 w-4 mr-2" />
+                            {loading ? "Generating PDF..." : (error ? "Error Generating PDF" : t("report.view.printPdf"))}
+                          </DropdownMenuItem>
+                        )
+                      }}
+                    </PDFDownloadLink>
+                  )}
+
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleEmail} data-testid="button-email-report">
                     <Mail className="h-4 w-4 mr-2" />

@@ -116,7 +116,13 @@
       "aiAnalysis": "Analyse IA",
       "aiPoweredInsights": "Insights Générés par IA",
       "nearbyCompetitors": "Concurrents à Proximité",
-      "noCompetitors": "Aucun concurrent trouvé dans les environs."
+      "noCompetitors": "Aucun concurrent trouvé dans les environs.",
+      "marketOverview": "Aperçu du Marché",
+      "keyCompetitors": "Principaux Concurrents",
+      "reviewAnalysis": "Analyse des Avis",
+      "marketGaps": "Lacunes du Marché",
+      "recommendations": "Recommandations",
+      "differentiation": "Stratégies de Différenciation"
     },
     "competitor": {
       "reviews": "{{count}} avis",

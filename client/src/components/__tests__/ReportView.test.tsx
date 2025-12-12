@@ -36,8 +36,18 @@ vi.mock("@/components/ui/dropdown-menu", () => ({
     DropdownMenu: ({ children }: any) => <div>{children}</div>,
     DropdownMenuTrigger: ({ children }: any) => <div>{children}</div>,
     DropdownMenuContent: ({ children }: any) => <div>{children}</div>,
-    DropdownMenuItem: ({ children, onClick }: any) => <button onClick={onClick}>{children}</button>,
+    DropdownMenuItem: ({ children, onClick, ...props }: any) => <button onClick={onClick} {...props}>{children}</button>,
     DropdownMenuSeparator: () => <hr />,
+}));
+
+vi.mock("@react-pdf/renderer", () => ({
+    PDFDownloadLink: ({ children }: any) => <div>{typeof children === 'function' ? children({ loading: false }) : children}</div>,
+    Document: () => <div>Document</div>,
+    Page: () => <div>Page</div>,
+    Text: () => <div>Text</div>,
+    View: () => <div>View</div>,
+    StyleSheet: { create: () => ({}) },
+    Font: { register: () => { } },
 }));
 
 // Mock URL
@@ -138,21 +148,14 @@ describe("ReportView", () => {
         expect(global.URL.revokeObjectURL).toHaveBeenCalled();
     });
 
-    it("should handle print PDF", () => {
-        const windowOpenMock = vi.fn().mockReturnValue({
-            document: {
-                write: vi.fn(),
-                close: vi.fn(),
-            },
-        });
-        window.open = windowOpenMock;
 
+
+
+    it("should render print PDF button", () => {
         render(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
 
-        const printBtn = screen.getByText("report.view.printPdf");
-        fireEvent.click(printBtn);
-
-        expect(windowOpenMock).toHaveBeenCalled();
+        expect(screen.getByTestId("button-download-pdf")).toBeInTheDocument();
+        expect(screen.getByText("report.view.printPdf")).toBeInTheDocument();
     });
 
     it("should handle email report", () => {

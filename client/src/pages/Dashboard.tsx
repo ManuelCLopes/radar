@@ -116,7 +116,7 @@ export default function Dashboard() {
 
   const updateBusinessMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: InsertBusiness }) => {
-      const res = await apiRequest("PUT", `/ api / businesses / ${id} `, data);
+      const res = await apiRequest("PUT", `/api/businesses/${id}`, data);
       return res.json();
     },
     onSuccess: () => {
@@ -139,7 +139,7 @@ export default function Dashboard() {
   const deleteBusinessMutation = useMutation({
     mutationFn: async (id: string) => {
       setDeletingId(id);
-      const response = await apiRequest("DELETE", `/ api / businesses / ${id} `);
+      const response = await apiRequest("DELETE", `/api/businesses/${id}`);
       return response.json();
     },
     onSuccess: () => {
@@ -164,7 +164,7 @@ export default function Dashboard() {
   const generateReportMutation = useMutation({
     mutationFn: async (id: string) => {
       setGeneratingReportId(id);
-      const response = await apiRequest("POST", `/ api / run - report / ${id} `, { language: i18n.language });
+      const response = await apiRequest("POST", `/api/run-report/${id}`, { language: i18n.language });
       return response.json();
     },
     onSuccess: (report: Report) => {

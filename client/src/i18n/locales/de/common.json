@@ -166,7 +166,13 @@
       "aiAnalysis": "KI-Analyse",
       "aiPoweredInsights": "KI-Gestützte Erkenntnisse",
       "nearbyCompetitors": "Nahegelegene Wettbewerber",
-      "noCompetitors": "Keine Wettbewerber in der Nähe gefunden."
+      "noCompetitors": "Keine Wettbewerber in der Nähe gefunden.",
+      "marketOverview": "Marktübersicht",
+      "keyCompetitors": "Wichtigste Wettbewerber",
+      "reviewAnalysis": "Bewertungsanalyse",
+      "marketGaps": "Marktlücken",
+      "recommendations": "Empfehlungen",
+      "differentiation": "Differenzierungsstrategien"
     },
     "competitor": {
       "reviews": "{{count}} Bewertungen",

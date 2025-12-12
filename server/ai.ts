@@ -57,6 +57,91 @@ export async function analyzeCompetitors(
 
   const isAdvanced = plan === 'professional' || plan === 'agency';
 
+  const headers = {
+    en: {
+      marketOverview: "MARKET OVERVIEW",
+      swot: "SWOT ANALYSIS",
+      strengths: "Strengths",
+      weaknesses: "Weaknesses",
+      opportunities: "Opportunities",
+      threats: "Threats",
+      trends: "MARKET TRENDS",
+      audience: "TARGET AUDIENCE PERSONA",
+      marketing: "MARKETING STRATEGY",
+      keyCompetitors: "KEY COMPETITORS",
+      reviewAnalysis: "REVIEW THEME ANALYSIS",
+      marketGaps: "MARKET GAPS",
+      recommendations: "PRACTICAL RECOMMENDATIONS",
+      differentiation: "DIFFERENTIATION STRATEGIES"
+    },
+    pt: {
+      marketOverview: "VISÃO GERAL DO MERCADO",
+      swot: "ANÁLISE SWOT",
+      strengths: "Pontos Fortes",
+      weaknesses: "Pontos Fracos",
+      opportunities: "Oportunidades",
+      threats: "Ameaças",
+      trends: "TENDÊNCIAS DE MERCADO",
+      audience: "PERSONA DO PÚBLICO-ALVO",
+      marketing: "ESTRATÉGIA DE MARKETING",
+      keyCompetitors: "PRINCIPAIS CONCORRENTES",
+      reviewAnalysis: "ANÁLISE DE TEMAS DE AVALIAÇÃO",
+      marketGaps: "LACUNAS DE MERCADO",
+      recommendations: "RECOMENDAÇÕES PRÁTICAS",
+      differentiation: "ESTRATÉGIAS DE DIFERENCIAÇÃO"
+    },
+    es: {
+      marketOverview: "VISIÓN GENERAL DEL MERCADO",
+      swot: "ANÁLISIS DAFO",
+      strengths: "Fortalezas",
+      weaknesses: "Debilidades",
+      opportunities: "Oportunidades",
+      threats: "Amenazas",
+      trends: "TENDENCIAS DEL MERCADO",
+      audience: "PERSONA DEL PÚBLICO OBJETIVO",
+      marketing: "ESTRATEGIA DE MARKETING",
+      keyCompetitors: "COMPETIDORES CLAVE",
+      reviewAnalysis: "ANÁLISIS DE TEMAS DE RESEÑAS",
+      marketGaps: "BRECHAS DE MERCADO",
+      recommendations: "RECOMENDACIONES PRÁCTICAS",
+      differentiation: "ESTRATEGIAS DE DIFERENCIACIÓN"
+    },
+    fr: {
+      marketOverview: "APERÇU DU MARCHÉ",
+      swot: "ANALYSE SWOT",
+      strengths: "Forces",
+      weaknesses: "Faiblesses",
+      opportunities: "Opportunités",
+      threats: "Menaces",
+      trends: "TENDANCES DU MARCHÉ",
+      audience: "PERSONA DU PUBLIC CIBLE",
+      marketing: "STRATÉGIE MARKETING",
+      keyCompetitors: "PRINCIPAUX CONCURRENTS",
+      reviewAnalysis: "ANALYSE DES THÈMES DES AVIS",
+      marketGaps: "LACUNES DU MARCHÉ",
+      recommendations: "RECOMMANDATIONS PRATIQUES",
+      differentiation: "STRATÉGIES DE DIFFÉRENCIATION"
+    },
+    de: {
+      marketOverview: "MARKTÜBERSICHT",
+      swot: "SWOT-ANALYSE",
+      strengths: "Stärken",
+      weaknesses: "Schwächen",
+      opportunities: "Chancen",
+      threats: "Bedrohungen",
+      trends: "MARKTRENDS",
+      audience: "ZIELGRUPPEN-PERSONA",
+      marketing: "MARKETINGSTRATEGIE",
+      keyCompetitors: "WICHTIGSTE WETTBEWERBER",
+      reviewAnalysis: "ANALYSE DER BEWERTUNGSTHEMEN",
+      marketGaps: "MARKT-LÜCKEN",
+      recommendations: "PRAKTISCHE EMPFEHLUNGEN",
+      differentiation: "DIFFERENZIERUNGSSTRATEGIEN"
+    }
+  };
+
+  const h = headers[normalizedLang as keyof typeof headers] || headers.en;
+
   let prompt = `You are a business strategy consultant analyzing local competition for a small business. Provide a comprehensive, actionable competitive analysis report.
 
 IMPORTANT: Write your entire response in ${languageName}. All text, headers, and recommendations must be in ${languageName}.
@@ -87,10 +172,10 @@ MARKET METRICS:
 - Total market reviews: ${totalReviews.toLocaleString()}
 
 Please provide a detailed analysis including:
-1. MARKET OVERVIEW - Summary of the competitive landscape and how ${business.name} compares to competitors
-2. KEY COMPETITORS - Analysis of the top competitors, their strengths, ratings, and price positioning
-3. REVIEW THEME ANALYSIS - Based on the "Recent Reviews" provided, analyze what themes likely dominate customer feedback. QUOTE specific phrases from reviews to support your points (e.g., "As noted in a review for [Competitor], customers appreciate...").
-4. MARKET GAPS - Opportunities where competitors may be underserving customers`;
+1. ${h.marketOverview} - Summary of the competitive landscape and how ${business.name} compares to competitors
+2. ${h.keyCompetitors} - Analysis of the top competitors, their strengths, ratings, and price positioning
+3. ${h.reviewAnalysis} - Based on the "Recent Reviews" provided, analyze what themes likely dominate customer feedback. QUOTE specific phrases from reviews to support your points (e.g., "As noted in a review for [Competitor], customers appreciate...").
+4. ${h.marketGaps} - Opportunities where competitors may be underserving customers`;
 
   if (isAdvanced) {
     prompt = `
@@ -113,29 +198,32 @@ Please provide a detailed analysis including:
   1.  **FORMATTING**: Output as HTML using semantic tags with Tailwind CSS classes. Use <strong class="font-semibold"> for emphasis. Use <h2> for main sections and <h3> for sub-sections. Use <ul> and <li> for lists.
   2.  **REVIEW ANALYSIS**: You MUST analyze the "Recent Reviews" provided. Do NOT just list them. Synthesize them into actionable insights. Identify patterns in customer satisfaction and dissatisfaction.
   3.  **DETAIL**: Be extensive and specific. Avoid generic advice.
-  4.  **LANGUAGE**: Write section headers in ${languageName}. For example, use "Análise SWOT" in Portuguese, not "SWOT ANALYSIS".
+  4.  **HEADERS**: You MUST use the exact section headers provided below.
   
   Structure the response as HTML with the following sections:
   
-  <h2 class="text-lg font-semibold mt-4 mb-2">${languageName === 'Portuguese (Portugal)' ? 'Análise SWOT' : 'SWOT ANALYSIS'}</h2>
-  <h3 class="text-base font-semibold mt-3 mb-2">Strengths</h3>
+  <h2 class="text-lg font-semibold mt-4 mb-2">${h.marketOverview}</h2>
+  <p class="my-2">Provide a comprehensive summary of the competitive landscape and how ${business.name} compares to competitors.</p>
+
+  <h2 class="text-lg font-semibold mt-4 mb-2">${h.swot}</h2>
+  <h3 class="text-base font-semibold mt-3 mb-2">${h.strengths}</h3>
   <ul class="list-disc list-inside space-y-1 my-2">
     <li>Analyze 3-5 key strengths. Use <strong class="font-semibold"> for the main point of each bullet</li>
   </ul>
-  <h3 class="text-base font-semibold mt-3 mb-2">Weaknesses</h3>
+  <h3 class="text-base font-semibold mt-3 mb-2">${h.weaknesses}</h3>
   <ul class="list-disc list-inside space-y-1 my-2">
     <li>Analyze 3-5 key weaknesses. Use <strong> for the main point</li>
   </ul>
-  <h3 class="text-base font-semibold mt-3 mb-2">Opportunities</h3>
+  <h3 class="text-base font-semibold mt-3 mb-2">${h.opportunities}</h3>
   <ul class="list-disc list-inside space-y-1 my-2">
     <li>Analyze 3-5 opportunities. Use <strong> for the main point. Add <strong>Strategic Implication:</strong> Explain how to capture this</li>
   </ul>
-  <h3 class="text-base font-semibold mt-3 mb-2">Threats</h3>
+  <h3 class="text-base font-semibold mt-3 mb-2">${h.threats}</h3>
   <ul class="list-disc list-inside space-y-1 my-2">
     <li>Analyze 3-5 threats. Use <strong> for the main point. Add <strong>Strategic Implication:</strong> Explain how to mitigate this</li>
   </ul>
   
-  <h2 class="text-lg font-semibold mt-4 mb-2">MARKET TRENDS</h2>
+  <h2 class="text-lg font-semibold mt-4 mb-2">${h.trends}</h2>
   <p class="my-2">Identify 3-5 current trends in this specific niche/location. For each trend, explain the <strong>Business Impact</strong> and reference any relevant competitor reviews that validate this trend</p>
   
   <h2 class="text-lg font-semibold mt-4 mb-2">CUSTOMER SENTIMENT &amp; REVIEW INSIGHTS</h2>
@@ -147,7 +235,7 @@ Please provide a detailed analysis including:
   <h3 class="text-base font-semibold mt-3 mb-2">Unmet Needs</h3>
   <p class="my-2">What are customers asking for that they aren't getting?</p>
   
-  <h2 class="text-lg font-semibold mt-4 mb-2">TARGET AUDIENCE PERSONA</h2>
+  <h2 class="text-lg font-semibold mt-4 mb-2">${h.audience}</h2>
   <h3 class="text-base font-semibold mt-3 mb-2">Demographics</h3>
   <p class="my-2">Age, Income, Location, etc.</p>
   <h3 class="text-base font-semibold mt-3 mb-2">Psychographics</h3>
@@ -155,7 +243,7 @@ Please provide a detailed analysis including:
   <h3 class="text-base font-semibold mt-3 mb-2">Pain Points &amp; Needs</h3>
   <p class="my-2">What problems are they trying to solve?</p>
   
-  <h2 class="text-lg font-semibold mt-4 mb-2">MARKETING STRATEGY</h2>
+  <h2 class="text-lg font-semibold mt-4 mb-2">${h.marketing}</h2>
   <h3 class="text-base font-semibold mt-3 mb-2">Primary Channels</h3>
   <p class="my-2">Best channels to reach this audience</p>
   <h3 class="text-base font-semibold mt-3 mb-2">Content Ideas</h3>
@@ -169,8 +257,8 @@ Please provide a detailed analysis including:
   } else {
     // Append common sections for basic plan
     prompt += `
-5. PRACTICAL RECOMMENDATIONS - Specific, actionable steps for the next month (use <h2> and <ul> with <li> tags)
-6. DIFFERENTIATION STRATEGIES - Ways to stand out from the competition (use <h2> and <ul> with <li> tags)
+6. ${h.recommendations} - Specific, actionable steps for the next month (use <h2> and <ul> with <li> tags)
+7. ${h.differentiation} - Ways to stand out from the competition (use <h2> and <ul> with <li> tags)
 
 Format your response as HTML with proper semantic tags and Tailwind CSS classes as shown above. Use <h2 class="text-lg font-semibold mt-4 mb-2"> for section headers, <p class="my-2"> for paragraphs, and <ul class="list-disc list-inside space-y-1 my-2"> for lists.
 IMPORTANT: Be EXTENSIVE and DETAILED. Use in-depth paragraphs for the Market Overview and Competitor Analysis. Avoid generic advice; provide specific, tailored insights based on the location and business type.
@@ -184,7 +272,7 @@ Remember: Write everything in ${languageName}. Output HTML only (no <html>, <hea
       messages: [
         {
           role: "system",
-          content: `You are an expert business strategist specializing in local market competition analysis. Provide clear, actionable, and extensive insights that help small businesses compete effectively. Always respond in ${languageName}.`
+          content: `You are an expert business strategist specializing in local market competition analysis.Provide clear, actionable, and extensive insights that help small businesses compete effectively.Always respond in ${languageName}.`
         },
         {
           role: "user",
@@ -227,7 +315,7 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
       title: "COMPETITOR ANALYSIS REPORT FOR",
       fallbackNote: "⚠️ BASIC ANALYSIS (OpenAI not configured)",
       marketOverview: "MARKET OVERVIEW",
-      overviewText: `We identified ${totalCompetitors} competitor(s) in your local area. Here's what you need to know:`,
+      overviewText: `We identified ${totalCompetitors} competitor(s) in your local area.Here's what you need to know:`,
       keyMetrics: "KEY METRICS",
       avgRating: "Average competitor rating",
       avgReviews: "Average reviews per competitor",

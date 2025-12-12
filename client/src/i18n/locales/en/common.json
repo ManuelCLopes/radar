@@ -116,7 +116,13 @@
       "aiAnalysis": "AI Analysis",
       "aiPoweredInsights": "AI-Powered Insights",
       "nearbyCompetitors": "Nearby Competitors",
-      "noCompetitors": "No competitors found in the nearby area."
+      "noCompetitors": "No competitors found in the nearby area.",
+      "marketOverview": "Market Overview",
+      "keyCompetitors": "Key Competitors",
+      "reviewAnalysis": "Review Analysis",
+      "marketGaps": "Market Gaps",
+      "recommendations": "Recommendations",
+      "differentiation": "Differentiation Strategies"
     },
     "competitor": {
       "reviews": "{{count}} reviews",
