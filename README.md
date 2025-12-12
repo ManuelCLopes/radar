@@ -16,7 +16,7 @@ Radar Local helps businesses understand their competitive landscape by analyzing
 - **Real-time competitor discovery** using Google Places API
 - **Detailed competitor profiles** with ratings, reviews, and contact information
 - **Geographic visualization** of competitors on interactive maps
-- **Advanced AI insights** including SWOT Analysis, Market Trends, Target Audience Persona, and Marketing Strategy (available for all plans)
+- **Advanced AI insights** including SWOT Analysis, Market Trends, Target Audience Persona, and Marketing Strategy
 
 ### 🎨 Modern User Experience
 - **Beautiful, responsive UI** with dark mode support
