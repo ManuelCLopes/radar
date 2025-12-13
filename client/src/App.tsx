@@ -7,7 +7,6 @@ import { useAuth } from "@/hooks/useAuth";
 import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
-import PreviewReport from "@/pages/PreviewReport";
 import Dashboard from "@/pages/Dashboard";
 import SettingsPage from "@/pages/SettingsPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
@@ -45,39 +44,6 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
   }
 
   return <Component />;
-}
-
-function PreviewReportWrapper() {
-  const [, setLocation] = useLocation();
-  const [previewData, setPreviewData] = useState<any>(null);
-
-  useEffect(() => {
-    const data = sessionStorage.getItem('previewData');
-    if (data) {
-      setPreviewData(JSON.parse(data));
-    } else {
-      setLocation('/');
-    }
-  }, [setLocation]);
-
-  if (!previewData) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  return (
-    <PreviewReport
-      competitors={previewData.competitors}
-      totalFound={previewData.totalFound}
-      aiInsights={previewData.aiInsights}
-      location={previewData.location}
-      radius={previewData.radius}
-      onCreateAccount={() => setLocation('/register')}
-    />
-  );
 }
 
 function ProtectedDashboard() {
