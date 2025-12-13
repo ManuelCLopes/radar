@@ -75,9 +75,11 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
   const [suggestedPlace, setSuggestedPlace] = useState<PlaceResult | null>(null);
   const [pendingSubmitData, setPendingSubmitData] = useState<FormValues | null>(null);
 
+
+
   const formSchema = z.object({
     name: z.string().min(1, t("validation.required")).max(100),
-    type: z.enum(businessTypes, { required_error: t("validation.required") }),
+    type: z.enum(businessTypes).optional(),
     address: z.string().min(1, t("validation.required")),
   });
 
@@ -88,6 +90,7 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
       type: initialValues?.type || undefined,
       address: initialValues?.address || "",
     },
+    mode: "onChange", // Enable validation on change for better UX in wizard
   });
 
   const searchMutation = useMutation({
@@ -109,11 +112,7 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
     const name = form.getValues("name");
 
     if (!address.trim()) {
-      toast({
-        title: t("toast.error.title"),
-        description: t("addressSearch.enterAddress"),
-        variant: "destructive",
-      });
+      form.trigger("address");
       return;
     }
 
@@ -287,15 +286,11 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
         name: data.name,
         type: data.type,
         address: data.address,
-        // Preserve existing coordinates if not changed (handled by backend merge or we pass undefined)
-        // Actually, we should probably pass null or undefined if we don't have new coords, 
-        // but since we don't have the full business object here, we rely on the parent or the fact that we are updating.
-        // For update, we might want to pass only changed fields, but this form submits a full InsertBusiness object.
-        // Let's assume if address is unchanged, we keep existing location status.
-        locationStatus: "validated", // Assuming existing is validated if we are editing
+        locationStatus: "validated",
       };
       await onSubmit(businessData);
       form.reset();
+
       return;
     }
 
@@ -320,6 +315,7 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
     setSelectedPlace(null);
     setManualCoordinates(null);
     setPendingLocationAddress(null);
+
   };
 
   const handleAcceptSuggestedAddress = () => {
@@ -333,6 +329,10 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
     setPendingSubmitData(form.getValues());
     setShowNoResultsDialog(true);
   };
+
+
+
+  const isAddressVerified = !!(selectedPlace || manualCoordinates || pendingLocationAddress);
 
   return (
     <>
@@ -379,8 +379,6 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
                         if (pendingLocationAddress) {
                           setPendingLocationAddress(null);
                         }
-                        // Reset type if address changes and it was auto-filled (optional, but good UX)
-                        // For now, let's keep it simple and just hide it if address is cleared/changed until re-selected
                       }}
                     />
                   </FormControl>
@@ -388,8 +386,9 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
                     type="button"
                     variant="outline"
                     onClick={handleSearchAddress}
-                    disabled={searchMutation.isPending}
+                    disabled={searchMutation.isPending || !form.watch("name")}
                     data-testid="button-search-address"
+                    className={!isAddressVerified && form.watch("name") ? "border-2 border-blue-500 ring-4 ring-blue-400/30 animate-pulse shadow-[0_0_15px_rgba(59,130,246,0.5)]" : ""}
                   >
                     {searchMutation.isPending ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -421,33 +420,14 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
             )}
           />
 
-          {(selectedPlace || manualCoordinates || pendingLocationAddress) && (
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("business.form.type")}</FormLabel>
-                  {field.value ? (
-                    <div className="flex items-center justify-between p-3 border rounded-md bg-muted/50">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">{businessTypeIcons[field.value]}</span>
-                        <span className="font-medium">{getBusinessTypeLabel(field.value)}</span>
-                      </div>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div className="cursor-help p-1">
-                              <Info className="h-4 w-4 text-muted-foreground" />
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="max-w-xs text-sm">{t("business.form.typeAutoDetected")}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  ) : (
+          {isAddressVerified && (
+            !selectedPlace ? (
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("business.form.type")}</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       value={field.value}
@@ -466,17 +446,31 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
                         ))}
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : (
+              <div className="space-y-2">
+                <FormLabel>{t("business.form.type")}</FormLabel>
+                <div className="flex items-center gap-2 p-3 border rounded-md bg-muted/50">
+                  {form.watch("type") ? (
+                    <>
+                      <span className="text-xl">{businessTypeIcons[form.watch("type")!]}</span>
+                      <span className="font-medium">{getBusinessTypeLabel(form.watch("type")!)}</span>
+                    </>
+                  ) : (
+                    <span className="text-muted-foreground italic">{t("business.form.noTypeDetected")}</span>
                   )}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                </div>
+              </div>
+            )
           )}
 
           <Button
             type="submit"
             className="w-full"
-            disabled={isPending || searchMutation.isPending}
+            disabled={isPending || searchMutation.isPending || (!selectedPlace && !manualCoordinates && !pendingLocationAddress)}
             data-testid="button-submit-business"
           >
             {isPending ? (
@@ -485,10 +479,7 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
                 {t("business.form.submitting")}
               </>
             ) : (
-              <>
-                <MapPin className="h-4 w-4 mr-2" />
-                {t("business.form.submit")}
-              </>
+              t("business.form.submit")
             )}
           </Button>
         </form>
