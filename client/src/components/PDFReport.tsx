@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     },
     swotBox: {
         width: '48%',
-        padding: 8,
+        padding: 20,
         marginBottom: 8,
         borderRadius: 4,
         backgroundColor: '#F9FAFB',
@@ -143,6 +143,10 @@ const styles = StyleSheet.create({
     },
     gridItem: {
         width: '48%',
+        marginBottom: 10,
+    },
+    fullWidthItem: {
+        width: '100%',
         marginBottom: 10,
     }
 });
@@ -255,6 +259,21 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
     const recommendations = extractListItems(text, 'PRACTICAL RECOMMENDATIONS|RECOMENDAÇÕES PRÁTICAS|RECOMENDACIONES PRÁCTICAS|RECOMMANDATIONS PRATIQUES|PRAKTISCHE EMPFEHLUNGEN');
     const differentiation = extractListItems(text, 'DIFFERENTIATION STRATEGIES|ESTRATÉGIAS DE DIFERENCIAÇÃO|ESTRATEGIAS DE DIFERENCIACIÓN|STRATÉGIES DE DIFFÉRENCIATION|DIFFERENZIERUNGSSTRATEGIEN');
 
+    // Helper to map keys to translations
+    const getTranslatedKey = (key: string) => {
+        const normalizedKey = key.split('|')[0];
+        const keyMap: Record<string, string> = {
+            'Demographics': 'demographics',
+            'Psychographics': 'psychographics',
+            'Pain Points & Needs': 'painPoints',
+            'Primary Channels': 'primaryChannels',
+            'Content Ideas': 'contentIdeas',
+            'Promotional Tactics': 'promotionalTactics'
+        };
+        const translationKey = keyMap[normalizedKey];
+        return translationKey ? t(`report.sections.${translationKey}`) : normalizedKey;
+    };
+
     return (
         <Document>
             <Page size="A4" style={styles.page}>
@@ -288,6 +307,19 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                     </View>
                 )}
 
+                {/* Market Trends */}
+                {marketTrends.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>{t("report.sections.marketTrends")}</Text>
+                        {marketTrends.map((item, i) => (
+                            <View key={i} style={styles.bulletPoint}>
+                                <View style={[styles.bullet, { backgroundColor: '#4B5563' }]} />
+                                <Text style={styles.text}>{item}</Text>
+                            </View>
+                        ))}
+                    </View>
+                )}
+
                 {/* Key Competitors (Basic Plan) */}
                 {keyCompetitors && (
                     <View style={styles.section}>
@@ -312,14 +344,31 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                     </View>
                 )}
 
+                {/* Target Audience */}
+                {Object.keys(targetAudience).length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>{t("report.sections.targetAudience")}</Text>
+                        <View style={styles.gridContainer}>
+                            {Object.entries(targetAudience).map(([key, items]) => (
+                                <View key={key} style={styles.gridItem}>
+                                    <Text style={styles.subSectionTitle}>{getTranslatedKey(key)}</Text>
+                                    {items.map((item, i) => (
+                                        <Text key={i} style={styles.text}>• {item}</Text>
+                                    ))}
+                                </View>
+                            ))}
+                        </View>
+                    </View>
+                )}
+
                 {/* SWOT Analysis */}
                 {(strengths.length > 0 || weaknesses.length > 0) && (
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>SWOT Analysis</Text>
+                    <View style={styles.section} break>
+                        <Text style={styles.sectionTitle}>{t("report.sections.swotAnalysis")}</Text>
                         <View style={styles.swotContainer}>
                             {strengths.length > 0 && (
                                 <View style={[styles.swotBox, { backgroundColor: '#F0FDF4' }]}>
-                                    <Text style={[styles.swotTitle, { color: '#166534' }]}>Strengths</Text>
+                                    <Text style={[styles.swotTitle, { color: '#166534' }]}>{t("report.sections.strengths")}</Text>
                                     {strengths.map((item, i) => (
                                         <View key={i} style={styles.bulletPoint}>
                                             <View style={[styles.bullet, { backgroundColor: '#166534' }]} />
@@ -330,7 +379,7 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                             )}
                             {weaknesses.length > 0 && (
                                 <View style={[styles.swotBox, { backgroundColor: '#FEF2F2' }]}>
-                                    <Text style={[styles.swotTitle, { color: '#991B1B' }]}>Weaknesses</Text>
+                                    <Text style={[styles.swotTitle, { color: '#991B1B' }]}>{t("report.sections.weaknesses")}</Text>
                                     {weaknesses.map((item, i) => (
                                         <View key={i} style={styles.bulletPoint}>
                                             <View style={[styles.bullet, { backgroundColor: '#991B1B' }]} />
@@ -341,7 +390,7 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                             )}
                             {opportunities.length > 0 && (
                                 <View style={[styles.swotBox, { backgroundColor: '#EFF6FF' }]}>
-                                    <Text style={[styles.swotTitle, { color: '#1E40AF' }]}>Opportunities</Text>
+                                    <Text style={[styles.swotTitle, { color: '#1E40AF' }]}>{t("report.sections.opportunities")}</Text>
                                     {opportunities.map((item, i) => (
                                         <View key={i} style={styles.bulletPoint}>
                                             <View style={[styles.bullet, { backgroundColor: '#1E40AF' }]} />
@@ -352,7 +401,7 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                             )}
                             {threats.length > 0 && (
                                 <View style={[styles.swotBox, { backgroundColor: '#FFF7ED' }]}>
-                                    <Text style={[styles.swotTitle, { color: '#9A3412' }]}>Threats</Text>
+                                    <Text style={[styles.swotTitle, { color: '#9A3412' }]}>{t("report.sections.threats")}</Text>
                                     {threats.map((item, i) => (
                                         <View key={i} style={styles.bulletPoint}>
                                             <View style={[styles.bullet, { backgroundColor: '#9A3412' }]} />
@@ -365,44 +414,15 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                     </View>
                 )}
 
-                {/* Market Trends */}
-                {marketTrends.length > 0 && (
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Market Trends</Text>
-                        {marketTrends.map((item, i) => (
-                            <View key={i} style={styles.bulletPoint}>
-                                <View style={[styles.bullet, { backgroundColor: '#4B5563' }]} />
-                                <Text style={styles.text}>{item}</Text>
-                            </View>
-                        ))}
-                    </View>
-                )}
-
-                {/* Target Audience */}
-                {Object.keys(targetAudience).length > 0 && (
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Target Audience</Text>
-                        <View style={styles.gridContainer}>
-                            {Object.entries(targetAudience).map(([key, items]) => (
-                                <View key={key} style={styles.gridItem}>
-                                    <Text style={styles.subSectionTitle}>{key.split('|')[0]}</Text>
-                                    {items.map((item, i) => (
-                                        <Text key={i} style={styles.text}>• {item}</Text>
-                                    ))}
-                                </View>
-                            ))}
-                        </View>
-                    </View>
-                )}
 
                 {/* Marketing Strategy */}
                 {Object.keys(marketingStrategy).length > 0 && (
                     <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Marketing Strategy</Text>
+                        <Text style={styles.sectionTitle}>{t("report.sections.marketingStrategy")}</Text>
                         <View style={styles.gridContainer}>
                             {Object.entries(marketingStrategy).map(([key, items]) => (
-                                <View key={key} style={styles.gridItem}>
-                                    <Text style={styles.subSectionTitle}>{key.split('|')[0]}</Text>
+                                <View key={key} style={styles.fullWidthItem}>
+                                    <Text style={styles.subSectionTitle}>{getTranslatedKey(key)}</Text>
                                     {items.map((item, i) => (
                                         <Text key={i} style={styles.text}>• {item}</Text>
                                     ))}

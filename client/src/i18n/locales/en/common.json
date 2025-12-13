@@ -122,7 +122,21 @@
       "reviewAnalysis": "Review Analysis",
       "marketGaps": "Market Gaps",
       "recommendations": "Recommendations",
-      "differentiation": "Differentiation Strategies"
+      "differentiation": "Differentiation Strategies",
+      "swotAnalysis": "SWOT Analysis",
+      "strengths": "Strengths",
+      "weaknesses": "Weaknesses",
+      "opportunities": "Opportunities",
+      "threats": "Threats",
+      "marketTrends": "Market Trends",
+      "targetAudience": "Target Audience",
+      "marketingStrategy": "Marketing Strategy",
+      "demographics": "Demographics",
+      "psychographics": "Psychographics",
+      "painPoints": "Pain Points & Needs",
+      "primaryChannels": "Primary Channels",
+      "contentIdeas": "Content Ideas",
+      "promotionalTactics": "Promotional Tactics"
     },
     "competitor": {
       "reviews": "{{count}} reviews",

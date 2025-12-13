@@ -688,7 +688,7 @@ Local Competitor Analyzer
                   {report && (
                     <PDFDownloadLink
                       document={<PDFReport report={report} t={t} />}
-                      fileName={`report-${report.businessName.toLowerCase().replace(/\s+/g, "-")}.pdf`}
+                      fileName={`report-${report.businessName.toLowerCase().replace(/\s+/g, "-")}-${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 16)}.pdf`}
                       style={{ textDecoration: 'none' }}
                     >
                       {({ loading, error }) => {

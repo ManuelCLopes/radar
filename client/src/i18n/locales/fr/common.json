@@ -122,7 +122,21 @@
       "reviewAnalysis": "Analyse des Avis",
       "marketGaps": "Lacunes du Marché",
       "recommendations": "Recommandations",
-      "differentiation": "Stratégies de Différenciation"
+      "differentiation": "Stratégies de Différenciation",
+      "swotAnalysis": "Analyse SWOT",
+      "strengths": "Forces",
+      "weaknesses": "Faiblesses",
+      "opportunities": "Opportunités",
+      "threats": "Menaces",
+      "marketTrends": "Tendances du Marché",
+      "targetAudience": "Public Cible",
+      "marketingStrategy": "Stratégie Marketing",
+      "demographics": "Démographie",
+      "psychographics": "Psychographie",
+      "painPoints": "Points de Douleur et Besoins",
+      "primaryChannels": "Canaux Principaux",
+      "contentIdeas": "Idées de Contenu",
+      "promotionalTactics": "Tactiques Promotionnelles"
     },
     "competitor": {
       "reviews": "{{count}} avis",

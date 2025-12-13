@@ -172,7 +172,21 @@
       "reviewAnalysis": "Bewertungsanalyse",
       "marketGaps": "Marktlücken",
       "recommendations": "Empfehlungen",
-      "differentiation": "Differenzierungsstrategien"
+      "differentiation": "Differenzierungsstrategien",
+      "swotAnalysis": "SWOT-Analyse",
+      "strengths": "Stärken",
+      "weaknesses": "Schwächen",
+      "opportunities": "Chancen",
+      "threats": "Bedrohungen",
+      "marketTrends": "Markttrends",
+      "targetAudience": "Zielgruppe",
+      "marketingStrategy": "Marketingstrategie",
+      "demographics": "Demografie",
+      "psychographics": "Psychografie",
+      "painPoints": "Schmerzpunkte und Bedürfnisse",
+      "primaryChannels": "Hauptkanäle",
+      "contentIdeas": "Inhaltsideen",
+      "promotionalTactics": "Werbetaktiken"
     },
     "competitor": {
       "reviews": "{{count}} Bewertungen",
