@@ -208,7 +208,7 @@ export function ReportView({ report, open, onOpenChange, onPrint }: ReportViewPr
 
   let swotData = { strengths: [], weaknesses: [], opportunities: [], threats: [] } as any;
   let trendsData: string[] = [];
-  let targetAudienceData = { demographics: [], psychographics: [], painPoints: [], needs: [] } as any;
+  let targetAudienceData = { demographics: [], psychographics: [], painPoints: [] } as any;
   let marketingData = { primaryChannels: [], contentIdeas: [], promotionalTactics: [] } as any;
   let customerSentimentData = { commonPraises: [], recurringComplaints: [], unmetNeeds: [] } as any;
 
@@ -744,6 +744,25 @@ Local Competitor Analyzer
               />
             </div>
 
+            <section>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold flex items-center gap-2">
+                  <Brain className="h-6 w-6 text-primary" />
+                  {t("report.sections.aiAnalysis")}
+                </h3>
+                <Badge variant="secondary" className="hidden sm:flex items-center gap-1">
+                  <Brain className="h-3 w-3" />
+                  {t("report.sections.aiPoweredInsights")}
+                </Badge>
+              </div>
+
+              <Card className="border-2 border-primary/20 shadow-lg bg-gradient-to-br from-primary/5 via-background to-background">
+                <CardContent className="p-0" data-testid="text-ai-analysis">
+                  <AIAnalysisContent html={mainContent} />
+                </CardContent>
+              </Card>
+            </section>
+
             <Separator />
 
             {/* SWOT Analysis */}
@@ -796,14 +815,14 @@ Local Competitor Analyzer
               <section>
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <Users className="h-5 w-5 text-primary" />
-                  Target Audience Persona
+                  {t("report.sections.targetAudience")}
                 </h3>
                 <Card>
                   <CardContent className="p-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {Object.entries(targetAudienceData).map(([key, items]: [string, any]) => (
                         <div key={key}>
-                          <h4 className="font-medium text-sm text-muted-foreground mb-2 uppercase tracking-wider">{key}</h4>
+                          <h4 className="font-medium text-sm text-muted-foreground mb-2 uppercase tracking-wider">{getTranslatedKey(key)}</h4>
                           <ul className="space-y-2">
                             {items.map((item: string, i: number) => (
                               <li key={i} className="text-sm flex items-start gap-2">
@@ -826,14 +845,14 @@ Local Competitor Analyzer
               <section>
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <Megaphone className="h-5 w-5 text-primary" />
-                  Marketing Strategy
+                  {t("report.sections.marketingStrategy")}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {Object.entries(marketingData).map(([key, items]: [string, any]) => (
                     <Card key={key} className="bg-primary/5 border-primary/10">
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-primary uppercase tracking-wider">
-                          {key.replace(/([A-Z])/g, ' $1').trim()}
+                          {getTranslatedKey(key)}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -853,24 +872,63 @@ Local Competitor Analyzer
               </section>
             )}
 
-            <section>
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold flex items-center gap-2">
-                  <Brain className="h-6 w-6 text-primary" />
-                  {t("report.sections.aiAnalysis")}
+            {/* Customer Sentiment */}
+            {customerSentimentMatch && (
+              <section>
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-primary" />
+                  {t("report.sections.customerSentiment")}
                 </h3>
-                <Badge variant="secondary" className="hidden sm:flex items-center gap-1">
-                  <Brain className="h-3 w-3" />
-                  {t("report.sections.aiPoweredInsights")}
-                </Badge>
-              </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {Object.entries(customerSentimentData).map(([key, items]: [string, any]) => {
+                    let styles = "bg-primary/5 border-primary/10";
+                    let titleColor = "text-primary";
+                    let Icon = MessageSquare;
+                    let iconColor = "text-primary";
 
-              <Card className="border-2 border-primary/20 shadow-lg bg-gradient-to-br from-primary/5 via-background to-background">
-                <CardContent className="p-0" data-testid="text-ai-analysis">
-                  <AIAnalysisContent html={mainContent} />
-                </CardContent>
-              </Card>
-            </section>
+                    if (key === 'commonPraises') {
+                      styles = "bg-green-50 dark:bg-green-900/10 border-green-100 dark:border-green-900/20";
+                      titleColor = "text-green-700 dark:text-green-300";
+                      Icon = CheckCircle2;
+                      iconColor = "text-green-600 dark:text-green-400";
+                    } else if (key === 'recurringComplaints') {
+                      styles = "bg-red-50 dark:bg-red-900/10 border-red-100 dark:border-red-900/20";
+                      titleColor = "text-red-700 dark:text-red-300";
+                      Icon = XCircle;
+                      iconColor = "text-red-600 dark:text-red-400";
+                    } else if (key === 'unmetNeeds') {
+                      styles = "bg-yellow-50 dark:bg-yellow-900/10 border-yellow-100 dark:border-yellow-900/20";
+                      titleColor = "text-yellow-700 dark:text-yellow-300";
+                      Icon = AlertTriangle;
+                      iconColor = "text-yellow-600 dark:text-yellow-400";
+                    }
+
+                    return (
+                      <Card key={key} className={`${styles} border shadow-sm`}>
+                        <CardHeader className="pb-2">
+                          <CardTitle className={`text-sm font-medium ${titleColor} uppercase tracking-wider`}>
+                            {getTranslatedKey(key)}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <ul className="space-y-2">
+                            {items.map((item: string, i: number) => (
+                              <li key={i} className="text-sm flex items-start gap-2">
+                                <Icon className={`h-4 w-4 ${iconColor} shrink-0 mt-0.5`} />
+                                <span className="text-muted-foreground">{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+                <Separator className="mt-6" />
+              </section>
+            )}
+
+
 
             <Separator />
 
