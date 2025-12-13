@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { User, BarChart3, LogOut, Heart, Eye, EyeOff, Trash2, Shield } from "lucide-react";
@@ -22,6 +22,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 // Plans removed - app is now 100% free with donations
 
@@ -29,6 +30,7 @@ export default function SettingsPage() {
     const { user, logoutMutation } = useAuth();
     const { t } = useTranslation();
     const { toast } = useToast();
+    const [, setLocation] = useLocation();
 
     const [isEditing, setIsEditing] = useState(false);
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -36,6 +38,7 @@ export default function SettingsPage() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     // Plan state removed - using donation model
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const [formData, setFormData] = useState({
         name: user?.firstName || user?.email || "",
@@ -53,15 +56,30 @@ export default function SettingsPage() {
         setIsEditing(false);
     };
 
-    const handleDeleteAccount = () => {
-        toast({
-            title: "Conta removida",
-            description: "A sua conta foi permanentemente removida.",
-            variant: "destructive",
-        });
-        setShowDeleteConfirm(false);
-        // TODO: Implement actual account deletion API call
-        setTimeout(() => logoutMutation.mutate(), 1500);
+    const handleDeleteAccount = async () => {
+        try {
+            setIsDeleting(true);
+            await apiRequest("DELETE", "/api/user");
+
+            toast({
+                title: "Conta removida",
+                description: "A sua conta foi permanentemente removida.",
+                variant: "destructive",
+            });
+
+            // Clear local state
+            queryClient.setQueryData(["/api/auth/user"], null);
+            setLocation("/");
+        } catch (error) {
+            toast({
+                title: "Erro",
+                description: "Não foi possível remover a conta. Tente novamente.",
+                variant: "destructive",
+            });
+            setIsDeleting(false);
+        } finally {
+            setShowDeleteConfirm(false);
+        }
     };
 
     return (

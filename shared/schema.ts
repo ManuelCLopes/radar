@@ -48,6 +48,7 @@ export const businesses = pgTable("businesses", {
   address: text("address"),
   locationStatus: text("location_status").default("validated").$type<LocationStatus>(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const insertBusinessSchema = createInsertSchema(businesses).omit({

@@ -30,6 +30,7 @@ export interface IStorage {
 
   // Search tracking
   trackSearch?(search: InsertSearch): Promise<void>;
+  deleteUser(id: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -156,6 +157,13 @@ export class DatabaseStorage implements IStorage {
 
   async markTokenAsUsed(token: string): Promise<void> {
     await db!.update(passwordResetTokens).set({ used: true }).where(eq(passwordResetTokens.token, token));
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    // Reports and Searches should ideally have ON DELETE CASCADE, but let's be safe
+    await db!.delete(reports).where(eq(reports.userId, id));
+    await db!.delete(searches).where(eq(searches.userId, id));
+    await db!.delete(users).where(eq(users.id, id));
   }
 }
 
@@ -323,6 +331,23 @@ export class MemStorage implements IStorage {
       tokenData.used = true;
       this.resetTokens.set(token, tokenData); // Ensure map is updated
     }
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    // Delete reports
+    Array.from(this.reports.entries()).forEach(([reportId, report]) => {
+      if (report.userId === id) {
+        this.reports.delete(reportId);
+      }
+    });
+    // Delete searches
+    Array.from(this.searches.entries()).forEach(([searchId, search]) => {
+      if (search.userId === id) {
+        this.searches.delete(searchId);
+      }
+    });
+    // Delete user
+    this.users.delete(id);
   }
 }
 

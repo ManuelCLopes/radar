@@ -501,6 +501,25 @@ export async function registerRoutes(
     }
   });
 
+  // Account Deletion
+  app.delete("/api/user", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.user as AppUser).id;
+      await storage.deleteUser(userId);
+
+      req.logout((err) => {
+        if (err) {
+          console.error("Error logging out after account deletion:", err);
+          return res.status(500).json({ error: "Account deleted but failed to log out" });
+        }
+        res.json({ message: "Account deleted successfully" });
+      });
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      res.status(500).json({ error: "Failed to delete account" });
+    }
+  });
+
   startScheduler();
 
   // Authenticated Address Analysis
