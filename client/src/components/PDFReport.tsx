@@ -200,7 +200,7 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
 
         subSections.forEach(sub => {
             // Look for subsection header followed by content (p or ul)
-            const subRegex = new RegExp(`<h[34][^>]*>(${sub})</h[34]>([\\s\\S]*?)(?=<h[34]|$)`, 'i');
+            const subRegex = new RegExp(`<h[34][^>]*>(\\d+\\.\\s*)?(${sub})</h[34]>([\\s\\S]*?)(?=<h[34]|$)`, 'i');
             const subMatch = content.match(subRegex);
 
             if (subMatch) {
@@ -238,6 +238,13 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
     // Parse Market Trends
     const marketTrends = extractListItems(text, 'MARKET TRENDS|TENDÊNCIAS DE MERCADO|TENDENCIAS DEL MERCADO|TENDANCES DU MARCHÉ|MARKTRENDS');
 
+    // Parse Customer Sentiment
+    const customerSentiment = extractComplexSection(text, 'CUSTOMER SENTIMENT & REVIEW INSIGHTS|SENTIMENTO DO CLIENTE & INSIGHTS DE AVALIAÇÕES|SENTIMIENTO DEL CLIENTE E INSIGHTS DE RESEÑAS|SENTIMENT CLIENT & ANALYSE DES AVIS|KUNDENSTIMMUNG & BEWERTUNGSEINBLICKE', [
+        'Common Praises|Elogios Comuns|Elogios Comunes|Éloges Courants|Häufiges Lob',
+        'Recurring Complaints|Reclamações Recorrentes|Quejas Recurrentes|Plaintes Récurrentes|Wiederkehrende Beschwerden',
+        'Unmet Needs|Necessidades Não Atendidas|Necesidades Insatisfechas|Besoins Non Satisfaits|Unerfüllte Bedürfnisse'
+    ]);
+
     // Parse Target Audience
     const targetAudience = extractComplexSection(text, 'TARGET AUDIENCE PERSONA|PERSONA DO PÚBLICO-ALVO|PERSONA DEL PÚBLICO OBJETIVO|PERSONA DU PUBLIC CIBLE|ZIELGRUPPEN-PERSONA', [
         'Demographics|Demografia|Demografía|Démographie|Demografie',
@@ -268,7 +275,10 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
             'Pain Points & Needs': 'painPoints',
             'Primary Channels': 'primaryChannels',
             'Content Ideas': 'contentIdeas',
-            'Promotional Tactics': 'promotionalTactics'
+            'Promotional Tactics': 'promotionalTactics',
+            'Common Praises': 'commonPraises',
+            'Recurring Complaints': 'recurringComplaints',
+            'Unmet Needs': 'unmetNeeds'
         };
         const translationKey = keyMap[normalizedKey];
         return translationKey ? t(`report.sections.${translationKey}`) : normalizedKey;
@@ -317,6 +327,23 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                                 <Text style={styles.text}>{item}</Text>
                             </View>
                         ))}
+                    </View>
+                )}
+
+                {/* Customer Sentiment */}
+                {Object.keys(customerSentiment).length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>{t("report.sections.customerSentiment")}</Text>
+                        <View style={styles.gridContainer}>
+                            {Object.entries(customerSentiment).map(([key, items]) => (
+                                <View key={key} style={styles.fullWidthItem}>
+                                    <Text style={styles.subSectionTitle}>{getTranslatedKey(key)}</Text>
+                                    {items.map((item, i) => (
+                                        <Text key={i} style={styles.text}>• {item}</Text>
+                                    ))}
+                                </View>
+                            ))}
+                        </View>
                     </View>
                 )}
 

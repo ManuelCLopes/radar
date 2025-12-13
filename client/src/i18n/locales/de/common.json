@@ -186,7 +186,11 @@
       "painPoints": "Schmerzpunkte und Bedürfnisse",
       "primaryChannels": "Hauptkanäle",
       "contentIdeas": "Inhaltsideen",
-      "promotionalTactics": "Werbetaktiken"
+      "promotionalTactics": "Werbetaktiken",
+      "customerSentiment": "Kundenstimmung & Bewertungseinblicke",
+      "commonPraises": "Häufiges Lob",
+      "recurringComplaints": "Wiederkehrende Beschwerden",
+      "unmetNeeds": "Unerfüllte Bedürfnisse"
     },
     "competitor": {
       "reviews": "{{count}} Bewertungen",

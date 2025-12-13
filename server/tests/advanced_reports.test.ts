@@ -101,7 +101,7 @@ describe("Advanced Reports", () => {
 
         expect(prompt).toContain("SWOT ANALYSIS");
         expect(prompt).toContain("MARKET TRENDS");
-        expect(prompt).toContain("CUSTOMER SENTIMENT &amp; REVIEW INSIGHTS");
+        expect(prompt).toContain("CUSTOMER SENTIMENT & REVIEW INSIGHTS");
         expect(prompt).toContain("TARGET AUDIENCE PERSONA");
         expect(prompt).toContain("MARKETING STRATEGY");
         expect(prompt).toContain("<h2");
@@ -147,6 +147,6 @@ describe("Advanced Reports", () => {
         expect(prompt).toContain("MARKETING STRATEGY");
 
         // Check that review analysis is included even for essential plan
-        expect(prompt).toContain("CUSTOMER SENTIMENT &amp; REVIEW INSIGHTS");
+        expect(prompt).toContain("CUSTOMER SENTIMENT & REVIEW INSIGHTS");
     });
 });

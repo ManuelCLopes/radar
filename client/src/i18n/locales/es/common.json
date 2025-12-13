@@ -136,7 +136,11 @@
       "painPoints": "Puntos de Dolor y Necesidades",
       "primaryChannels": "Canales Principales",
       "contentIdeas": "Ideas de Contenido",
-      "promotionalTactics": "Tácticas Promocionales"
+      "promotionalTactics": "Táticas Promocionales",
+      "customerSentiment": "Sentimiento del Cliente e Insights de Reseñas",
+      "commonPraises": "Elogios Comunes",
+      "recurringComplaints": "Quejas Recurrentes",
+      "unmetNeeds": "Necesidades Insatisfechas"
     },
     "competitor": {
       "reviews": "{{count}} reseñas",

@@ -82,17 +82,18 @@ describe("ReportView", () => {
           <p class="my-2">Main analysis content here.</p>
           <h3 class="text-base font-semibold mt-3 mb-2">Detailed Analysis</h3>
           <p class="my-2"><strong class="font-semibold">Bold text</strong> and <em>italic</em>.</p>
-          <h3 class="text-base font-semibold mt-3 mb-2">SWOT Analysis</h3>
-          <h4 class="text-sm font-semibold mt-2 mb-1">Strengths</h4>
+          <h2 class="text-lg font-semibold mt-4 mb-2">SWOT ANALYSIS</h2>
+          <h3 class="text-base font-semibold mt-3 mb-2">Strengths</h3>
           <ul class="list-disc list-inside space-y-1 my-2"><li>Strength 1</li></ul>
-          <h3 class="text-base font-semibold mt-3 mb-2">Market Trends</h3>
+          <h2 class="text-lg font-semibold mt-4 mb-2">MARKET TRENDS</h2>
           <ul class="list-disc list-inside space-y-1 my-2"><li>Trend 1</li></ul>
-          <h3 class="text-base font-semibold mt-3 mb-2">Target Audience</h3>
-          <ul class="list-disc list-inside space-y-1 my-2">
-            <li><strong class="font-semibold">Demographics</strong>: Age 20-30</li>
-            <li><strong class="font-semibold">Psychographics</strong>: Lifestyle</li>
-            <li><strong class="font-semibold">Pain Points</strong>: Cost</li>
-          </ul>
+          <h2 class="text-lg font-semibold mt-4 mb-2">TARGET AUDIENCE PERSONA</h2>
+          <h3 class="text-base font-semibold mt-3 mb-2">Demographics</h3>
+          <p class="my-2">Age 20-30</p>
+          <h3 class="text-base font-semibold mt-3 mb-2">Psychographics</h3>
+          <p class="my-2">Lifestyle</p>
+          <h3 class="text-base font-semibold mt-3 mb-2">Pain Points & Needs</h3>
+          <p class="my-2">Cost</p>
         `,
         html: "<div>Report HTML</div>",
         generatedAt: new Date()

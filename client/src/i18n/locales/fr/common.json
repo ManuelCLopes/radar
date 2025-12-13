@@ -136,7 +136,11 @@
       "painPoints": "Points de Douleur et Besoins",
       "primaryChannels": "Canaux Principaux",
       "contentIdeas": "Idées de Contenu",
-      "promotionalTactics": "Tactiques Promotionnelles"
+      "promotionalTactics": "Tactiques Promotionnelles",
+      "customerSentiment": "Sentiment Client et Analyse des Avis",
+      "commonPraises": "Éloges Courants",
+      "recurringComplaints": "Plaintes Récurrentes",
+      "unmetNeeds": "Besoins Non Satisfaits"
     },
     "competitor": {
       "reviews": "{{count}} avis",

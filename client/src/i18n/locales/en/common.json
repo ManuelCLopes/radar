@@ -136,7 +136,11 @@
       "painPoints": "Pain Points & Needs",
       "primaryChannels": "Primary Channels",
       "contentIdeas": "Content Ideas",
-      "promotionalTactics": "Promotional Tactics"
+      "promotionalTactics": "Promotional Tactics",
+      "customerSentiment": "Customer Sentiment & Review Insights",
+      "commonPraises": "Common Praises",
+      "recurringComplaints": "Recurring Complaints",
+      "unmetNeeds": "Unmet Needs"
     },
     "competitor": {
       "reviews": "{{count}} reviews",

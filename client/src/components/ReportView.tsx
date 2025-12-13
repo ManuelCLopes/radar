@@ -193,69 +193,71 @@ export function ReportView({ report, open, onOpenChange, onPrint }: ReportViewPr
     : 0;
 
   // Parse SWOT and Trends
-  const swotRegex = /### SWOT Analysis([\s\S]*?)(?=###|$)/i;
-  const trendsRegex = /### Market Trends([\s\S]*?)(?=###|$)/i;
-  const targetAudienceRegex = /### Target Audience([\s\S]*?)(?=###|$)/i;
-  const marketingRegex = /### Marketing Strategy([\s\S]*?)(?=###|$)/i;
+  // Parse SWOT and Trends (HTML)
+  const swotRegex = /<h2[^>]*>(?:SWOT ANALYSIS|ANÁLISE SWOT|ANÁLISIS DAFO|ANALYSE SWOT|SWOT-ANALYSE)<\/h2>([\s\S]*?)(?=<h2|$)/i;
+  const trendsRegex = /<h2[^>]*>(?:MARKET TRENDS|TENDÊNCIAS DE MERCADO|TENDENCIAS DEL MERCADO|TENDANCES DU MARCHÉ|MARKTRENDS)<\/h2>([\s\S]*?)(?=<h2|$)/i;
+  const targetAudienceRegex = /<h2[^>]*>(?:TARGET AUDIENCE PERSONA|PERSONA DO PÚBLICO-ALVO|PERSONA DEL PÚBLICO OBJETIVO|PERSONA DU PUBLIC CIBLE|ZIELGRUPPEN-PERSONA)<\/h2>([\s\S]*?)(?=<h2|$)/i;
+  const marketingRegex = /<h2[^>]*>(?:MARKETING STRATEGY|ESTRATÉGIA DE MARKETING|ESTRATEGIA DE MARKETING|STRATÉGIE MARKETING|MARKETINGSTRATEGIE)<\/h2>([\s\S]*?)(?=<h2|$)/i;
+  const customerSentimentRegex = /<h2[^>]*>(?:CUSTOMER SENTIMENT & REVIEW INSIGHTS|SENTIMENTO DO CLIENTE & INSIGHTS DE AVALIAÇÕES|SENTIMIENTO DEL CLIENTE E INSIGHTS DE RESEÑAS|SENTIMENT CLIENT & ANALYSE DES AVIS|KUNDENSTIMMUNG & BEWERTUNGSEINBLICKE)<\/h2>([\s\S]*?)(?=<h2|$)/i;
 
   const swotMatch = report.aiAnalysis.match(swotRegex);
   const trendsMatch = report.aiAnalysis.match(trendsRegex);
   const targetAudienceMatch = report.aiAnalysis.match(targetAudienceRegex);
   const marketingMatch = report.aiAnalysis.match(marketingRegex);
+  const customerSentimentMatch = report.aiAnalysis.match(customerSentimentRegex);
 
   let swotData = { strengths: [], weaknesses: [], opportunities: [], threats: [] } as any;
   let trendsData: string[] = [];
   let targetAudienceData = { demographics: [], psychographics: [], painPoints: [], needs: [] } as any;
   let marketingData = { primaryChannels: [], contentIdeas: [], promotionalTactics: [] } as any;
+  let customerSentimentData = { commonPraises: [], recurringComplaints: [], unmetNeeds: [] } as any;
 
   if (swotMatch) {
     const swotContent = swotMatch[1];
     const sections = {
-      strengths: /#### Strengths([\s\S]*?)(?=####|$)/i,
-      weaknesses: /#### Weaknesses([\s\S]*?)(?=####|$)/i,
-      opportunities: /#### Opportunities([\s\S]*?)(?=####|$)/i,
-      threats: /#### Threats([\s\S]*?)(?=####|$)/i
+      strengths: /<h3[^>]*>(?:Strengths|Pontos Fortes|Fortalezas|Forces|Stärken)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+      weaknesses: /<h3[^>]*>(?:Weaknesses|Pontos Fracos|Debilidades|Faiblesses|Schwächen)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+      opportunities: /<h3[^>]*>(?:Opportunities|Oportunidades|Opportunités|Chancen)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+      threats: /<h3[^>]*>(?:Threats|Ameaças|Amenazas|Menaces|Bedrohungen)<\/h3>([\s\S]*?)(?=<h3|$)/i
     };
 
     Object.entries(sections).forEach(([key, regex]) => {
       const match = swotContent.match(regex);
       if (match) {
-        swotData[key] = match[1]
-          .split('\n')
-          .map(line => line.trim())
-          .filter(line => line.startsWith('-'))
-          .map(line => line.substring(1).trim());
+        const listMatch = match[1].match(/<ul[^>]*>([\s\S]*?)<\/ul>/i);
+        if (listMatch) {
+          swotData[key] = listMatch[1]
+            .match(/<li[^>]*>([\s\S]*?)<\/li>/gi)
+            ?.map(item => item.replace(/<[^>]*>/g, '').trim()) || [];
+        }
       }
     });
   }
 
   if (trendsMatch) {
-    trendsData = trendsMatch[1]
-      .split('\n')
-      .map(line => line.trim())
-      .filter(line => line.startsWith('-'))
-      .map(line => line.substring(1).trim());
+    const listMatch = trendsMatch[1].match(/<ul[^>]*>([\s\S]*?)<\/ul>/i);
+    if (listMatch) {
+      trendsData = listMatch[1]
+        .match(/<li[^>]*>([\s\S]*?)<\/li>/gi)
+        ?.map(item => item.replace(/<[^>]*>/g, '').trim()) || [];
+    }
   }
 
   if (targetAudienceMatch) {
     const content = targetAudienceMatch[1];
     const sections = {
-      demographics: /- \*\*Demographics\*\*:([\s\S]*?)(?=- \*\*|$)/i,
-      psychographics: /- \*\*Psychographics\*\*:([\s\S]*?)(?=- \*\*|$)/i,
-      painPoints: /- \*\*Pain Points\*\*:([\s\S]*?)(?=- \*\*|$)/i,
-      needs: /- \*\*Needs\*\*:([\s\S]*?)(?=- \*\*|$)/i
+      demographics: /<h3[^>]*>(?:Demographics|Demografia|Demografía|Démographie|Demografie)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+      psychographics: /<h3[^>]*>(?:Psychographics|Psicografia|Psicografía|Psychographie|Psychografie)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+      painPoints: /<h3[^>]*>(?:Pain Points & Needs|Dores e Necessidades|Pontos de Dor e Necessidades|Puntos de Dolor y Necesidades|Points de Douleur et Besoins|Schmerzpunkte und Bedürfnisse)<\/h3>([\s\S]*?)(?=<h3|$)/i
     };
 
     Object.entries(sections).forEach(([key, regex]) => {
       const match = content.match(regex);
       if (match) {
-        // Handle single line or multi-line list
-        const text = match[1].trim();
+        const text = match[1].replace(/<[^>]*>/g, '').trim();
         if (text.startsWith('[')) {
-          // If it's formatted like [Age, Income], split by comma
           targetAudienceData[key] = text.replace(/^\[|\]$/g, '').split(',').map(s => s.trim());
         } else {
-          // Fallback or other format
           targetAudienceData[key] = [text];
         }
       }
@@ -265,19 +267,46 @@ export function ReportView({ report, open, onOpenChange, onPrint }: ReportViewPr
   if (marketingMatch) {
     const content = marketingMatch[1];
     const sections = {
-      primaryChannels: /- \*\*Primary Channels\*\*:([\s\S]*?)(?=- \*\*|$)/i,
-      contentIdeas: /- \*\*Content Ideas\*\*:([\s\S]*?)(?=- \*\*|$)/i,
-      promotionalTactics: /- \*\*Promotional Tactics\*\*:([\s\S]*?)(?=- \*\*|$)/i
+      primaryChannels: /<h3[^>]*>(?:Primary Channels|Canais Principais|Canales Principales|Canaux Principaux|Hauptkanäle)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+      contentIdeas: /<h3[^>]*>(?:Content Ideas|Ideias de Conteúdo|Ideas de Contenido|Idées de Contenu|Inhaltsideen)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+      promotionalTactics: /<h3[^>]*>(?:Promotional Tactics|Táticas Promocionais|Tácticas Promocionales|Tactiques Promotionnelles|Werbetaktiken)<\/h3>([\s\S]*?)(?=<h3|$)/i
     };
 
     Object.entries(sections).forEach(([key, regex]) => {
       const match = content.match(regex);
       if (match) {
-        const text = match[1].trim();
+        const text = match[1].replace(/<[^>]*>/g, '').trim();
         if (text.startsWith('[')) {
           marketingData[key] = text.replace(/^\[|\]$/g, '').split(',').map(s => s.trim());
         } else {
           marketingData[key] = [text];
+        }
+      }
+    });
+  }
+
+  if (customerSentimentMatch) {
+    const content = customerSentimentMatch[1];
+    const sections = {
+      commonPraises: /<h3[^>]*>(?:Common Praises|Elogios Comuns|Elogios Comunes|Éloges Courants|Häufiges Lob)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+      recurringComplaints: /<h3[^>]*>(?:Recurring Complaints|Reclamações Recorrentes|Quejas Recurrentes|Plaintes Récurrentes|Wiederkehrende Beschwerden)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+      unmetNeeds: /<h3[^>]*>(?:Unmet Needs|Necessidades Não Atendidas|Necesidades Insatisfechas|Besoins Non Satisfaits|Unerfüllte Bedürfnisse)<\/h3>([\s\S]*?)(?=<h3|$)/i
+    };
+
+    Object.entries(sections).forEach(([key, regex]) => {
+      const match = content.match(regex);
+      if (match) {
+        const text = match[1].replace(/<[^>]*>/g, '').trim();
+        // Check if it's a list or paragraph
+        if (match[1].includes('<ul')) {
+          const listMatch = match[1].match(/<ul[^>]*>([\s\S]*?)<\/ul>/i);
+          if (listMatch) {
+            customerSentimentData[key] = listMatch[1]
+              .match(/<li[^>]*>([\s\S]*?)<\/li>/gi)
+              ?.map(item => item.replace(/<[^>]*>/g, '').trim()) || [];
+          }
+        } else {
+          customerSentimentData[key] = [text];
         }
       }
     });
@@ -289,7 +318,41 @@ export function ReportView({ report, open, onOpenChange, onPrint }: ReportViewPr
     .replace(trendsRegex, '')
     .replace(targetAudienceRegex, '')
     .replace(marketingRegex, '')
+    .replace(customerSentimentRegex, '')
     .trim();
+
+  // Helper to map keys to translations
+  const getTranslatedKey = (key: string) => {
+    const normalizedKey = key.split('|')[0];
+    const keyMap: Record<string, string> = {
+      'Demographics': 'demographics',
+      'Psychographics': 'psychographics',
+      'Pain Points & Needs': 'painPoints',
+      'Pain Points': 'painPoints',
+      'Needs': 'painPoints', // Map needs to painPoints as well or create a new key if needed, but for now grouping
+      'Primary Channels': 'primaryChannels',
+      'Content Ideas': 'contentIdeas',
+      'Promotional Tactics': 'promotionalTactics',
+      'Common Praises': 'commonPraises',
+      'Recurring Complaints': 'recurringComplaints',
+      'Unmet Needs': 'unmetNeeds'
+    };
+    // Handle camelCase keys from our data objects
+    if (keyMap[key]) return t(`report.sections.${keyMap[key]}`);
+    if (key === 'demographics') return t('report.sections.demographics');
+    if (key === 'psychographics') return t('report.sections.psychographics');
+    if (key === 'painPoints') return t('report.sections.painPoints');
+    if (key === 'needs') return t('report.sections.painPoints'); // Reuse or add new
+    if (key === 'primaryChannels') return t('report.sections.primaryChannels');
+    if (key === 'contentIdeas') return t('report.sections.contentIdeas');
+    if (key === 'promotionalTactics') return t('report.sections.promotionalTactics');
+    if (key === 'commonPraises') return t('report.sections.commonPraises');
+    if (key === 'recurringComplaints') return t('report.sections.recurringComplaints');
+    if (key === 'unmetNeeds') return t('report.sections.unmetNeeds');
+
+    const translationKey = keyMap[normalizedKey];
+    return translationKey ? t(`report.sections.${translationKey}`) : normalizedKey;
+  };
 
   const handleDownloadHTML = () => {
     const htmlContent = `
@@ -490,65 +553,6 @@ export function ReportView({ report, open, onOpenChange, onPrint }: ReportViewPr
                   ${mainContent}
                 </div>
               </section>
-
-              <hr class="border-gray-200" />
-
-              <!-- Competitors -->
-              <section>
-                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-900">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>
-                  ${t("report.sections.nearbyCompetitors")} (${report.competitors.length})
-                </h3>
-                
-                ${report.competitors.length === 0 ? `
-                  <div class="bg-white rounded-lg border shadow-sm p-6 text-center text-gray-500">
-                    ${t("report.sections.noCompetitors")}
-                  </div>
-                ` : `
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    ${report.competitors.map((competitor: any) => `
-                      <div class="bg-white rounded-lg border shadow-sm p-4 hover:shadow-md transition-shadow">
-                        <div class="space-y-3">
-                          <div class="space-y-2">
-                            <div class="flex items-start justify-between gap-2">
-                              <h4 class="font-medium text-sm leading-tight text-gray-900">${competitor.name}</h4>
-                              ${competitor.rating ? `
-                                <span class="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-900"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                  ${competitor.rating.toFixed(1)}
-                                </span>
-                              ` : ''}
-                            </div>
-                            <p class="text-sm text-gray-500 flex items-start gap-1">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                              <span class="line-clamp-2">${competitor.address}</span>
-                            </p>
-                            ${competitor.userRatingsTotal ? `
-                              <p class="text-xs text-gray-500 flex items-center gap-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                ${t("report.competitor.reviews", { count: competitor.userRatingsTotal.toLocaleString() })}
-                              </p>
-                            ` : ''}
-                            <div class="flex flex-wrap gap-1">
-                              ${competitor.distance ? `
-                                <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground">
-                                  ${competitor.distance}
-                                </span>
-                              ` : ''}
-                              ${competitor.priceLevel ? `
-                                <span class="inline-flex items-center gap-0.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                                  ${competitor.priceLevel}
-                                </span>
-                              ` : ''}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    `).join('')}
-                  </div>
-                `}
-              </section>
             </div>
           </div>
         </body>
@@ -657,6 +661,8 @@ Local Competitor Analyzer
 
 
 
+
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[95vw] max-w-4xl h-[90vh] p-0 flex flex-col rounded-lg overflow-hidden">
@@ -688,7 +694,7 @@ Local Competitor Analyzer
                   {report && (
                     <PDFDownloadLink
                       document={<PDFReport report={report} t={t} />}
-                      fileName={`report-${report.businessName.toLowerCase().replace(/\s+/g, "-")}-${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 16)}.pdf`}
+                      fileName={`report - ${report.businessName.toLowerCase().replace(/\s+/g, "-")} -${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 16)}.pdf`}
                       style={{ textDecoration: 'none' }}
                     >
                       {({ loading, error }) => {

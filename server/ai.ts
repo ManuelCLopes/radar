@@ -72,7 +72,17 @@ export async function analyzeCompetitors(
       reviewAnalysis: "REVIEW THEME ANALYSIS",
       marketGaps: "MARKET GAPS",
       recommendations: "PRACTICAL RECOMMENDATIONS",
-      differentiation: "DIFFERENTIATION STRATEGIES"
+      differentiation: "DIFFERENTIATION STRATEGIES",
+      customerSentiment: "CUSTOMER SENTIMENT & REVIEW INSIGHTS",
+      commonPraises: "Common Praises",
+      recurringComplaints: "Recurring Complaints",
+      unmetNeeds: "Unmet Needs",
+      demographics: "Demographics",
+      psychographics: "Psychographics",
+      painPoints: "Pain Points & Needs",
+      primaryChannels: "Primary Channels",
+      contentIdeas: "Content Ideas",
+      promotionalTactics: "Promotional Tactics"
     },
     pt: {
       marketOverview: "VISÃO GERAL DO MERCADO",
@@ -88,7 +98,17 @@ export async function analyzeCompetitors(
       reviewAnalysis: "ANÁLISE DE TEMAS DE AVALIAÇÃO",
       marketGaps: "LACUNAS DE MERCADO",
       recommendations: "RECOMENDAÇÕES PRÁTICAS",
-      differentiation: "ESTRATÉGIAS DE DIFERENCIAÇÃO"
+      differentiation: "ESTRATÉGIAS DE DIFERENCIAÇÃO",
+      customerSentiment: "SENTIMENTO DO CLIENTE & INSIGHTS DE AVALIAÇÕES",
+      commonPraises: "Elogios Comuns",
+      recurringComplaints: "Reclamações Recorrentes",
+      unmetNeeds: "Necessidades Não Atendidas",
+      demographics: "Demografia",
+      psychographics: "Psicografia",
+      painPoints: "Dores e Necessidades",
+      primaryChannels: "Canais Principais",
+      contentIdeas: "Ideias de Conteúdo",
+      promotionalTactics: "Táticas Promocionais"
     },
     es: {
       marketOverview: "VISIÓN GENERAL DEL MERCADO",
@@ -104,7 +124,17 @@ export async function analyzeCompetitors(
       reviewAnalysis: "ANÁLISIS DE TEMAS DE RESEÑAS",
       marketGaps: "BRECHAS DE MERCADO",
       recommendations: "RECOMENDACIONES PRÁCTICAS",
-      differentiation: "ESTRATEGIAS DE DIFERENCIACIÓN"
+      differentiation: "ESTRATEGIAS DE DIFERENCIACIÓN",
+      customerSentiment: "SENTIMIENTO DEL CLIENTE E INSIGHTS DE RESEÑAS",
+      commonPraises: "Elogios Comunes",
+      recurringComplaints: "Quejas Recurrentes",
+      unmetNeeds: "Necesidades Insatisfechas",
+      demographics: "Demografía",
+      psychographics: "Psicografía",
+      painPoints: "Puntos de Dolor y Necesidades",
+      primaryChannels: "Canales Principales",
+      contentIdeas: "Ideas de Contenido",
+      promotionalTactics: "Tácticas Promocionales"
     },
     fr: {
       marketOverview: "APERÇU DU MARCHÉ",
@@ -120,7 +150,17 @@ export async function analyzeCompetitors(
       reviewAnalysis: "ANALYSE DES THÈMES DES AVIS",
       marketGaps: "LACUNES DU MARCHÉ",
       recommendations: "RECOMMANDATIONS PRATIQUES",
-      differentiation: "STRATÉGIES DE DIFFÉRENCIATION"
+      differentiation: "STRATÉGIES DE DIFFÉRENCIATION",
+      customerSentiment: "SENTIMENT CLIENT & ANALYSE DES AVIS",
+      commonPraises: "Éloges Courants",
+      recurringComplaints: "Plaintes Récurrentes",
+      unmetNeeds: "Besoins Non Satisfaits",
+      demographics: "Démographie",
+      psychographics: "Psychographie",
+      painPoints: "Points de Douleur et Besoins",
+      primaryChannels: "Canaux Principaux",
+      contentIdeas: "Idées de Contenu",
+      promotionalTactics: "Tactiques Promotionnelles"
     },
     de: {
       marketOverview: "MARKTÜBERSICHT",
@@ -136,7 +176,17 @@ export async function analyzeCompetitors(
       reviewAnalysis: "ANALYSE DER BEWERTUNGSTHEMEN",
       marketGaps: "MARKT-LÜCKEN",
       recommendations: "PRAKTISCHE EMPFEHLUNGEN",
-      differentiation: "DIFFERENZIERUNGSSTRATEGIEN"
+      differentiation: "DIFFERENZIERUNGSSTRATEGIEN",
+      customerSentiment: "KUNDENSTIMMUNG & BEWERTUNGSEINBLICKE",
+      commonPraises: "Häufiges Lob",
+      recurringComplaints: "Wiederkehrende Beschwerden",
+      unmetNeeds: "Unerfüllte Bedürfnisse",
+      demographics: "Demografie",
+      psychographics: "Psychografie",
+      painPoints: "Schmerzpunkte und Bedürfnisse",
+      primaryChannels: "Hauptkanäle",
+      contentIdeas: "Inhaltsideen",
+      promotionalTactics: "Werbetaktiken"
     }
   };
 
@@ -227,29 +277,29 @@ Please provide a detailed analysis including:
   <h2 class="text-lg font-semibold mt-4 mb-2">${h.trends}</h2>
   <p class="my-2">Identify 3-5 current trends in this specific niche/location. For each trend, explain the <strong>Business Impact</strong> and reference any relevant competitor reviews that validate this trend</p>
   
-  <h2 class="text-lg font-semibold mt-4 mb-2">CUSTOMER SENTIMENT &amp; REVIEW INSIGHTS</h2>
+  <h2 class="text-lg font-semibold mt-4 mb-2">${h.customerSentiment}</h2>
   <p class="my-2">Synthesize the competitor reviews into key themes</p>
-  <h3 class="text-base font-semibold mt-3 mb-2">Common Praises</h3>
+  <h3 class="text-base font-semibold mt-3 mb-2">${h.commonPraises}</h3>
   <p class="my-2">What are competitors doing well? e.g., "Friendly staff", "Tasty food"</p>
-  <h3 class="text-base font-semibold mt-3 mb-2">Recurring Complaints</h3>
+  <h3 class="text-base font-semibold mt-3 mb-2">${h.recurringComplaints}</h3>
   <p class="my-2">What are the common pain points? e.g., "Long wait times", "High prices"</p>
-  <h3 class="text-base font-semibold mt-3 mb-2">Unmet Needs</h3>
+  <h3 class="text-base font-semibold mt-3 mb-2">${h.unmetNeeds}</h3>
   <p class="my-2">What are customers asking for that they aren't getting?</p>
   
   <h2 class="text-lg font-semibold mt-4 mb-2">${h.audience}</h2>
-  <h3 class="text-base font-semibold mt-3 mb-2">Demographics</h3>
+  <h3 class="text-base font-semibold mt-3 mb-2">${h.demographics}</h3>
   <p class="my-2">Age, Income, Location, etc.</p>
-  <h3 class="text-base font-semibold mt-3 mb-2">Psychographics</h3>
+  <h3 class="text-base font-semibold mt-3 mb-2">${h.psychographics}</h3>
   <p class="my-2">Interests, Values, Lifestyle</p>
-  <h3 class="text-base font-semibold mt-3 mb-2">Pain Points &amp; Needs</h3>
+  <h3 class="text-base font-semibold mt-3 mb-2">${h.painPoints}</h3>
   <p class="my-2">What problems are they trying to solve?</p>
   
   <h2 class="text-lg font-semibold mt-4 mb-2">${h.marketing}</h2>
-  <h3 class="text-base font-semibold mt-3 mb-2">Primary Channels</h3>
+  <h3 class="text-base font-semibold mt-3 mb-2">${h.primaryChannels}</h3>
   <p class="my-2">Best channels to reach this audience</p>
-  <h3 class="text-base font-semibold mt-3 mb-2">Content Ideas</h3>
+  <h3 class="text-base font-semibold mt-3 mb-2">${h.contentIdeas}</h3>
   <p class="my-2">Specific content themes and topics</p>
-  <h3 class="text-base font-semibold mt-3 mb-2">Promotional Tactics</h3>
+  <h3 class="text-base font-semibold mt-3 mb-2">${h.promotionalTactics}</h3>
   <p class="my-2">Actionable ideas to drive traffic</p>
   
   IMPORTANT: Be EXTENSIVE and DETAILED. Use in-depth paragraphs for the Market Overview and Competitor Analysis. Avoid generic advice; provide specific, tailored insights based on the location and business type.
