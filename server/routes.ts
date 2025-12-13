@@ -86,7 +86,7 @@ export async function registerRoutes(
       // Create temporary business object for report generation
       const tempBusiness = {
         id: 'temp-' + Date.now(),
-        name: 'Quick Search',
+        name: address,
         type,
         address,
         latitude: coordinates.latitude,
@@ -99,45 +99,19 @@ export async function registerRoutes(
       // Generate report (this will use existing report logic)
       const report = await runReportForBusiness(tempBusiness.id, language, tempBusiness);
 
-      // Limit to preview mode: only first 3 competitors
-      const previewCompetitors = report.competitors?.slice(0, 3) || [];
-      const totalFound = report.competitors?.length || 0;
-
-      // Truncate AI insights to 200 characters
-      const aiInsights = report.aiAnalysis?.substring(0, 200) + (report.aiAnalysis && report.aiAnalysis.length > 200 ? '...' : '');
-
-      // Track search in database (if available)
-      try {
-        if (storage.trackSearch) {
-          await storage.trackSearch({
-            userId: null,
-            address,
-            type,
-            radius,
-            latitude: coordinates.latitude,
-            longitude: coordinates.longitude,
-            competitorsFound: totalFound,
-            isPreview: true,
-            ipAddress: clientIp
-          });
-        }
-      } catch (trackError) {
-        console.warn('Failed to track search:', trackError);
-        // Continue even if tracking fails
-      }
+      // Return full report for the free preview (limit 1 per user handled on client)
+      // Inject business details so they can be saved later
+      const reportWithBusiness = {
+        ...report,
+        type: tempBusiness.type,
+        address: tempBusiness.address,
+        latitude: tempBusiness.latitude,
+        longitude: tempBusiness.longitude
+      };
 
       res.json({
-        preview: true,
-        competitors: previewCompetitors,
-        totalFound,
-        aiInsights,
-        searchId: 'temp-' + Date.now(),
-        location: {
-          address,
-          latitude: coordinates.latitude,
-          longitude: coordinates.longitude
-        },
-        radius
+        report: reportWithBusiness,
+        searchId: 'temp-' + Date.now()
       });
     } catch (error) {
       console.error("Error in quick search:", error);
@@ -273,6 +247,31 @@ export async function registerRoutes(
         return res.status(404).json({ error: "Business not found" });
       }
       res.status(500).json({ error: "Failed to update business" });
+    }
+  });
+
+  app.post("/api/reports/save-existing", isAuthenticated, async (req, res) => {
+    try {
+      const { businessId, report } = req.body;
+
+      if (!businessId || !report) {
+        return res.status(400).json({ error: "Missing businessId or report data" });
+      }
+
+      // Save report linked to the current user
+      const savedReport = await storage.createReport({
+        userId: (req.user as any).id,
+        businessId,
+        businessName: report.businessName,
+        competitors: report.competitors,
+        aiAnalysis: report.aiAnalysis,
+        html: report.html || "",
+      });
+
+      res.json(savedReport);
+    } catch (error) {
+      console.error("Error saving existing report:", error);
+      res.status(500).json({ error: "Failed to save report" });
     }
   });
 

@@ -101,4 +101,61 @@ describe("RegisterPage", () => {
             });
         });
     });
+    it("saves pending report after registration", async () => {
+        // Mock sessionStorage
+        const mockReport = {
+            businessName: "Test Business",
+            type: "restaurant",
+            address: "Test Address",
+            latitude: 10,
+            longitude: 20,
+            competitors: [],
+            aiAnalysis: "Test Analysis"
+        };
+
+        const getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
+        getItemSpy.mockReturnValue(JSON.stringify(mockReport));
+
+        const removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem');
+
+        // Mock fetch for business creation and report saving
+        global.fetch = vi.fn()
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => ({ id: "business-123" })
+            } as any) // Create business response
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => ({ id: "report-123" })
+            } as any); // Save report response
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <RegisterPage />
+            </QueryClientProvider>
+        );
+
+        fireEvent.change(screen.getByLabelText("auth.firstName"), { target: { value: "Test" } });
+        fireEvent.change(screen.getByLabelText("auth.lastName"), { target: { value: "User" } });
+        fireEvent.change(screen.getByLabelText("auth.email"), { target: { value: "test@example.com" } });
+        fireEvent.change(screen.getByLabelText("auth.password"), { target: { value: "password123" } });
+
+        fireEvent.click(screen.getByRole("button", { name: "auth.signUp" }));
+
+        await waitFor(() => {
+            expect(mockMutateAsync).toHaveBeenCalled();
+            expect(global.fetch).toHaveBeenCalledWith('/api/businesses', expect.objectContaining({
+                method: 'POST',
+                body: expect.stringContaining("Test Business")
+            }));
+            expect(global.fetch).toHaveBeenCalledWith('/api/reports/save-existing', expect.objectContaining({
+                method: 'POST',
+                body: expect.stringContaining("business-123")
+            }));
+            expect(removeItemSpy).toHaveBeenCalledWith('pending_report');
+        });
+
+        getItemSpy.mockRestore();
+        removeItemSpy.mockRestore();
+    });
 });

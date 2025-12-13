@@ -44,13 +44,53 @@ export default function RegisterPage() {
         setLoading(true);
 
         try {
-            await registerMutation.mutateAsync({
+            const user = await registerMutation.mutateAsync({
                 email: data.email,
                 password: data.password,
                 firstName: data.firstName,
                 lastName: data.lastName,
                 plan: "free", // Everyone is free!
             });
+
+            // Check for pending report from landing page
+            const pendingReportJson = sessionStorage.getItem('pending_report');
+            if (pendingReportJson) {
+                try {
+                    const report = JSON.parse(pendingReportJson);
+
+                    // Create business first
+                    const businessRes = await fetch('/api/businesses', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: report.businessName,
+                            type: report.type || 'other',
+                            address: report.address || report.businessName, // Fallback if address missing
+                            latitude: report.latitude || 0,
+                            longitude: report.longitude || 0
+                        })
+                    });
+
+                    if (businessRes.ok) {
+                        const business = await businessRes.json();
+
+                        // Save the report
+                        await fetch(`/api/reports/save-existing`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                businessId: business.id,
+                                report: report
+                            })
+                        });
+                    }
+                } catch (e) {
+                    console.error("Failed to save pending report:", e);
+                } finally {
+                    sessionStorage.removeItem('pending_report');
+                }
+            }
+
             setLocation("/dashboard");
         } catch (err: any) {
             setError(err.message || "Registration failed");

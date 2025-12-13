@@ -113,12 +113,10 @@ describe("API Routes Integration", () => {
                 });
 
             expect(res.status).toBe(200);
-            expect(res.body.preview).toBe(true);
-            expect(res.body.location).toEqual({
-                address: "Test Address",
-                latitude: 10,
-                longitude: 20
-            });
+            expect(res.status).toBe(200);
+            expect(res.body.report).toBeDefined();
+            expect(res.body.searchId).toBeDefined();
+            expect(res.body.report.aiAnalysis).toBe("Test analysis");
         });
 
         it("should handle rate limiting", async () => {

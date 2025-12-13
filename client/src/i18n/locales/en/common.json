@@ -347,7 +347,10 @@
       "allCompetitors": "See all {{count}} competitors",
       "fullAnalysis": "Complete AI analysis",
       "export": "Export to PDF/HTML",
-      "saveTrack": "Save and track changes"
+      "saveTrack": "Save and track changes",
+      "signupToSave": "Sign up to save & export",
+      "limitReachedTitle": "Report Limit Reached",
+      "limitReachedDesc": "You've already generated your free report. Create an account to generate unlimited reports, save your history, and more."
     }
   },
   "landing": {

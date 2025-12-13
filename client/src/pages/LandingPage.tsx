@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, LogIn, Search, Check, X, User, LayoutDashboard, ChevronLeft, ChevronRight, Heart } from "lucide-react";
+import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, LogIn, Search, Check, X, User, LayoutDashboard, ChevronLeft, ChevronRight, Heart, Sparkles, Rocket } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadiusSelector } from "@/components/RadiusSelector";
-import { PreviewReportModal } from "@/components/PreviewReportModal";
+import { ReportView } from "@/components/ReportView";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import "./LandingPage.css";
@@ -27,7 +28,8 @@ export default function LandingPage() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState('');
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [previewData, setPreviewData] = useState<any>(null);
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const [reportData, setReportData] = useState<any>(null);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -58,6 +60,13 @@ export default function LandingPage() {
 
 
   const onSearchSubmit = async (data: SearchFormValues) => {
+    // Check if user has already generated a free report
+    const hasGenerated = localStorage.getItem('radar_free_report_generated');
+    if (hasGenerated) {
+      setShowLimitModal(true);
+      return;
+    }
+
     setSearchError('');
     setIsSearching(true);
 
@@ -94,9 +103,12 @@ export default function LandingPage() {
         return;
       }
 
-      // Show preview in modal instead of navigating
-      setPreviewData(responseData);
+      // Show full report in modal
+      setReportData(responseData.report);
       setShowPreviewModal(true);
+
+      // Mark as generated
+      localStorage.setItem('radar_free_report_generated', 'true');
     } catch (error) {
       console.error('Quick search error:', error);
       setSearchError(t('quickSearch.errors.searchFailed'));
@@ -539,19 +551,72 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Preview Report Modal */}
-      {previewData && (
-        <PreviewReportModal
+      {/* Full Report Modal (Guest Mode) */}
+      {reportData && (
+        <ReportView
           open={showPreviewModal}
-          onClose={() => setShowPreviewModal(false)}
-          competitors={previewData.competitors}
-          totalFound={previewData.totalFound}
-          aiInsights={previewData.aiInsights}
-          location={previewData.location}
-          radius={previewData.radius}
-          onCreateAccount={() => window.location.href = '/register'}
+          onOpenChange={setShowPreviewModal}
+          report={reportData}
+          isGuest={true}
         />
       )}
+
+      {/* Limit Reached Modal */}
+      <Dialog open={showLimitModal} onOpenChange={setShowLimitModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="flex flex-col items-center text-center space-y-4 pt-4">
+            <div className="p-3 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-full">
+              <Sparkles className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div className="space-y-2 text-center w-full">
+              <DialogTitle className="text-center text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                {t("previewReport.benefits.limitReachedTitle")}
+              </DialogTitle>
+              <DialogDescription className="text-center text-base text-gray-600 dark:text-gray-300 max-w-[350px] mx-auto">
+                {t("previewReport.benefits.limitReachedDesc")}
+              </DialogDescription>
+            </div>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 space-y-3 border border-gray-100 dark:border-gray-800">
+              <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
+                <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center flex-shrink-0">
+                  <Check className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
+                </div>
+                {t("previewReport.benefits.fullAnalysis")}
+              </div>
+              <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
+                <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center flex-shrink-0">
+                  <Check className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
+                </div>
+                {t("previewReport.benefits.saveTrack")}
+              </div>
+              <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
+                <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center flex-shrink-0">
+                  <Check className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
+                </div>
+                {t("previewReport.benefits.export")}
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="flex-col gap-3 sm:flex-col">
+            <Button
+              onClick={() => window.location.href = '/register'}
+              className="w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all"
+            >
+              <Rocket className="w-4 h-4 mr-2" />
+              {t("auth.signUp")}
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => setShowLimitModal(false)}
+              className="w-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            >
+              {t("common.cancel")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

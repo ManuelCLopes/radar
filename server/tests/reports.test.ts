@@ -82,10 +82,9 @@ describe("Reports API", () => {
                 });
 
             expect(res.status).toBe(200);
-            expect(res.body.preview).toBe(true);
-            expect(res.body.competitors).toBeDefined();
-            // Should be limited to 3
-            expect(res.body.competitors.length).toBeLessThanOrEqual(3);
+            expect(res.status).toBe(200);
+            expect(res.body.report).toBeDefined();
+            expect(res.body.report.competitors).toBeDefined();
         });
 
         it("should validate required fields", async () => {

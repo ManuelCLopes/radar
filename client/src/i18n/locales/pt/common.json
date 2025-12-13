@@ -347,7 +347,10 @@
       "allCompetitors": "Ver todos os {{count}} concorrentes",
       "fullAnalysis": "Análise IA completa",
       "export": "Exportar para PDF/HTML",
-      "saveTrack": "Guardar e acompanhar alterações"
+      "saveTrack": "Guardar e acompanhar alterações",
+      "signupToSave": "Registe-se para guardar e exportar",
+      "limitReachedTitle": "Limite de Relatórios Atingido",
+      "limitReachedDesc": "Já gerou o seu relatório gratuito. Crie uma conta para gerar relatórios ilimitados, guardar o histórico e muito mais."
     }
   },
   "landing": {

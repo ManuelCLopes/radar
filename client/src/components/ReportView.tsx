@@ -18,6 +18,7 @@ interface ReportViewProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onPrint?: () => void;
+  isGuest?: boolean;
 }
 
 function CompetitorCard({ competitor, index, t }: { competitor: Competitor; index: number; t: (key: string, options?: Record<string, unknown>) => string }) {
@@ -182,7 +183,7 @@ function MarketTrends({ trends }: { trends: string[] }) {
   );
 }
 
-export function ReportView({ report, open, onOpenChange, onPrint }: ReportViewProps) {
+export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: ReportViewProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
 
@@ -678,48 +679,63 @@ Local Competitor Analyzer
               </DialogDescription>
             </div>
             <div className="flex items-center gap-2 sm:mr-12">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" data-testid="button-export-report">
-                    <Download className="h-4 w-4 mr-2" />
-                    {t("report.view.export")}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={handleDownloadHTML} data-testid="button-download-html">
-                    <FileText className="h-4 w-4 mr-2" />
-                    {t("report.view.downloadHtml")}
-                  </DropdownMenuItem>
+              {isGuest ? (
+                <Button
+                  variant="default"
+                  onClick={() => {
+                    // Save report to session storage for post-registration processing
+                    sessionStorage.setItem('pending_report', JSON.stringify(report));
+                    window.location.href = '/register';
+                  }}
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md"
+                >
+                  <ShieldAlert className="h-4 w-4 mr-2" />
+                  {t("previewReport.benefits.signupToSave")}
+                </Button>
+              ) : (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" data-testid="button-export-report">
+                      <Download className="h-4 w-4 mr-2" />
+                      {t("report.view.export")}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={handleDownloadHTML} data-testid="button-download-html">
+                      <FileText className="h-4 w-4 mr-2" />
+                      {t("report.view.downloadHtml")}
+                    </DropdownMenuItem>
 
-                  {report && (
-                    <PDFDownloadLink
-                      document={<PDFReport report={report} t={t} />}
-                      fileName={`report - ${report.businessName.toLowerCase().replace(/\s+/g, "-")} -${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 16)}.pdf`}
-                      style={{ textDecoration: 'none' }}
-                    >
-                      {({ loading, error }) => {
-                        if (error) console.error("PDF Generation Error:", error);
-                        return (
-                          <DropdownMenuItem
-                            onSelect={(e) => e.preventDefault()}
-                            disabled={loading}
-                            data-testid="button-download-pdf"
-                          >
-                            <Printer className="h-4 w-4 mr-2" />
-                            {loading ? "Generating PDF..." : (error ? "Error Generating PDF" : t("report.view.printPdf"))}
-                          </DropdownMenuItem>
-                        )
-                      }}
-                    </PDFDownloadLink>
-                  )}
+                    {report && (
+                      <PDFDownloadLink
+                        document={<PDFReport report={report} t={t} />}
+                        fileName={`report - ${report.businessName.toLowerCase().replace(/\s+/g, "-")} -${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 16)}.pdf`}
+                        style={{ textDecoration: 'none' }}
+                      >
+                        {({ loading, error }) => {
+                          if (error) console.error("PDF Generation Error:", error);
+                          return (
+                            <DropdownMenuItem
+                              onSelect={(e) => e.preventDefault()}
+                              disabled={loading}
+                              data-testid="button-download-pdf"
+                            >
+                              <Printer className="h-4 w-4 mr-2" />
+                              {loading ? "Generating PDF..." : (error ? "Error Generating PDF" : t("report.view.printPdf"))}
+                            </DropdownMenuItem>
+                          )
+                        }}
+                      </PDFDownloadLink>
+                    )}
 
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleEmail} data-testid="button-email-report">
-                    <Mail className="h-4 w-4 mr-2" />
-                    {t("report.view.emailReport")}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleEmail} data-testid="button-email-report">
+                      <Mail className="h-4 w-4 mr-2" />
+                      {t("report.view.emailReport")}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
           </div>
         </DialogHeader>

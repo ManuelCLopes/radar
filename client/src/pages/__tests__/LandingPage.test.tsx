@@ -39,11 +39,11 @@ vi.mock("@/components/RadiusSelector", () => ({
     ),
 }));
 
-vi.mock("@/components/PreviewReportModal", () => ({
-    PreviewReportModal: ({ open, onOpenChange }: any) => (
+vi.mock("@/components/ReportView", () => ({
+    ReportView: ({ open, onOpenChange }: any) => (
         open ? (
-            <div data-testid="preview-modal">
-                Preview Modal
+            <div data-testid="report-view-modal">
+                Report View Modal
                 <button onClick={() => onOpenChange(false)}>Close</button>
             </div>
         ) : null

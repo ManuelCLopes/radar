@@ -360,7 +360,10 @@
       "allCompetitors": "Ver todos los {{count}} competidores",
       "fullAnalysis": "Análisis IA completo",
       "export": "Exportar a PDF/HTML",
-      "saveTrack": "Guardar y seguir cambios"
+      "saveTrack": "Guardar y seguir cambios",
+      "signupToSave": "Regístrate para guardar y exportar",
+      "limitReachedTitle": "Límite de Informes Alcanzado",
+      "limitReachedDesc": "Ya has generado tu informe gratuito. Crea una cuenta para generar informes ilimitados, guardar historial y más."
     }
   },
   "landing": {

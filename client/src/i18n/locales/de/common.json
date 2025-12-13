@@ -410,7 +410,10 @@
       "allCompetitors": "Alle {{count}} Wettbewerber sehen",
       "fullAnalysis": "Vollständige KI-Analyse",
       "export": "Als PDF/HTML exportieren",
-      "saveTrack": "Speichern und Änderungen verfolgen"
+      "saveTrack": "Änderungen speichern und verfolgen",
+      "signupToSave": "Registrieren zum Speichern & Exportieren",
+      "limitReachedTitle": "Berichtslimit erreicht",
+      "limitReachedDesc": "Sie haben Ihren kostenlosen Bericht bereits erstellt. Erstellen Sie ein Konto für unbegrenzte Berichte, Verlaufsspeicherung und mehr."
     }
   },
   "landing": {
