@@ -14,12 +14,20 @@ vi.mock("node-cron", () => ({
 
 vi.mock("../storage", () => ({
     storage: {
-        listBusinesses: vi.fn()
+        listBusinesses: vi.fn(),
+        getReportsByBusinessId: vi.fn(),
+        getUser: vi.fn()
     }
 }));
 
 vi.mock("../reports", () => ({
     runReportForBusiness: vi.fn()
+}));
+
+vi.mock("../email", () => ({
+    emailService: {
+        sendWeeklyReport: vi.fn()
+    }
 }));
 
 describe("Scheduler", () => {
@@ -79,6 +87,7 @@ describe("Scheduler", () => {
             ];
 
             (storage.listBusinesses as any).mockResolvedValue(mockBusinesses);
+            (storage.getReportsByBusinessId as any).mockResolvedValue([]); // No previous reports
             (reports.runReportForBusiness as any).mockResolvedValue({});
 
             const result = await runScheduledReports();

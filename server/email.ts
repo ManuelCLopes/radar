@@ -1,221 +1,77 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
+import { Report, User } from "@shared/schema";
 
-const isProduction = process.env.NODE_ENV === 'production';
+export interface EmailService {
+  sendWeeklyReport(user: User, report: Report): Promise<boolean>;
+}
 
-// Email configuration from environment variables
-const emailConfig = {
-  service: process.env.EMAIL_SERVICE || 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-};
+export class ConsoleEmailService implements EmailService {
+  async sendWeeklyReport(user: User, report: Report): Promise<boolean> {
+    console.log(`
+[EMAIL MOCK] ---------------------------------------------------
+To: ${user.email}
+Subject: Your Weekly Radar Report: ${report.businessName}
+----------------------------------------------------------------
+Hello ${user.firstName || "there"},
 
-// Create reusable transporter
-let transporter: nodemailer.Transporter | null = null;
+Here is your weekly competitor analysis report for ${report.businessName}.
 
-function getTransporter() {
-  if (!transporter) {
-    if (!emailConfig.auth.user || !emailConfig.auth.pass) {
-      console.warn('[Email] Email credentials not configured. Emails will be logged to console.');
-      return null;
+Report ID: ${report.id}
+Generated At: ${report.generatedAt}
+
+View your full report here: https://radar.example.com/dashboard
+
+Best,
+The Radar Team
+----------------------------------------------------------------
+`);
+    return true;
+  }
+}
+
+export class NodemailerEmailService implements EmailService {
+  private transporter: nodemailer.Transporter;
+
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || "587"),
+      secure: process.env.SMTP_SECURE === "true",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+  }
+
+  async sendWeeklyReport(user: User, report: Report): Promise<boolean> {
+    try {
+      await this.transporter.sendMail({
+        from: process.env.SMTP_FROM || '"Radar" <noreply@radar.com>',
+        to: user.email,
+        subject: `Your Weekly Radar Report: ${report.businessName}`,
+        html: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2>Weekly Competitor Analysis</h2>
+            <p>Hello ${user.firstName || "there"},</p>
+            <p>Here is your weekly competitor analysis report for <strong>${report.businessName}</strong>.</p>
+            <p>We've analyzed the latest reviews and trends in your area.</p>
+            <div style="margin: 20px 0;">
+              <a href="https://radar.example.com/dashboard" style="background-color: #7c3aed; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">View Full Report</a>
+            </div>
+            <p style="color: #666; font-size: 12px;">Generated at ${new Date(report.generatedAt).toLocaleString()}</p>
+          </div>
+        `,
+      });
+      return true;
+    } catch (error) {
+      console.error("[EmailService] Failed to send email:", error);
+      return false;
     }
-
-    transporter = nodemailer.createTransport(emailConfig);
-    console.log('[Email] Email service configured successfully');
-  }
-  return transporter;
-}
-
-export interface SendEmailOptions {
-  to: string;
-  subject: string;
-  html: string;
-  text?: string;
-}
-
-export async function sendEmail(options: SendEmailOptions): Promise<boolean> {
-  const transport = getTransporter();
-
-  if (!transport) {
-    // Fallback: log to console in development
-    console.log('[Email] Would send email:', {
-      to: options.to,
-      subject: options.subject,
-      preview: options.text || options.html.substring(0, 100),
-    });
-    return true;
-  }
-
-  try {
-    const info = await transport.sendMail({
-      from: process.env.EMAIL_FROM || '"Radar" <noreply@radar.com>',
-      to: options.to,
-      subject: options.subject,
-      text: options.text,
-      html: options.html,
-    });
-
-    console.log('[Email] Message sent: %s', info.messageId);
-    return true;
-  } catch (error) {
-    console.error('[Email] Failed to send email:', error);
-    return false;
   }
 }
 
-export function generatePasswordResetEmail(resetLink: string, userEmail: string): { html: string; text: string } {
-  const html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
-        .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
-        .button { display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 6px; margin: 20px 0; }
-        .footer { margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px; }
-        .warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px; margin: 20px 0; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1 style="margin: 0;">🔐 Recuperação de Password</h1>
-        </div>
-        <div class="content">
-          <p>Olá,</p>
-          <p>Recebemos um pedido para redefinir a password da sua conta <strong>${userEmail}</strong>.</p>
-          <p>Para criar uma nova password, clique no botão abaixo:</p>
-          <div style="text-align: center;">
-            <a href="${resetLink}" class="button">Redefinir Password</a>
-          </div>
-          <p>Ou copie e cole este link no seu navegador:</p>
-          <p style="background: #fff; padding: 12px; border: 1px solid #e5e7eb; border-radius: 4px; word-break: break-all; font-size: 14px;">${resetLink}</p>
-          <div class="warning">
-            <strong>⚠️ Importante:</strong> Este link expira em <strong>15 minutos</strong> e só pode ser usado uma vez.
-          </div>
-          <p>Se não solicitou esta alteração, pode ignorar este email em segurança. A sua password permanecerá inalterada.</p>
-          <div class="footer">
-            <p>Este é um email automático, por favor não responda.</p>
-            <p>&copy; ${new Date().getFullYear()} Radar - Análise de Concorrência</p>
-          </div>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
-
-  const text = `
-Recuperação de Password - Radar
-
-Olá,
-
-Recebemos um pedido para redefinir a password da sua conta ${userEmail}.
-
-Para criar uma nova password, aceda ao seguinte link:
-${resetLink}
-
-⚠️ IMPORTANTE: Este link expira em 15 minutos e só pode ser usado uma vez.
-
-Se não solicitou esta alteração, pode ignorar este email em segurança.
-
----
-Radar - Análise de Concorrência
-Este é um email automático, por favor não responda.
-  `.trim();
-
-  return { html, text };
-}
-
-export function generateWelcomeEmail(userEmail: string, userName?: string): { html: string; text: string } {
-  const greeting = userName ? `Olá ${userName}` : 'Olá';
-
-  const html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
-        .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
-        .button { display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 6px; margin: 20px 0; }
-        .footer { margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px; }
-        .feature { background: #fff; padding: 16px; margin: 12px 0; border-radius: 8px; border-left: 4px solid #667eea; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1 style="margin: 0;">🎉 Bem-vindo ao Radar!</h1>
-        </div>
-        <div class="content">
-          <p>${greeting},</p>
-          <p>Obrigado por se juntar ao <strong>Radar</strong> - a sua ferramenta de análise de concorrência local!</p>
-          
-          <p>Com o Radar pode:</p>
-          
-          <div class="feature">
-            <strong>📍 Analisar Localizações</strong><br>
-            Adicione os seus negócios e obtenha insights sobre a concorrência nas proximidades.
-          </div>
-          
-          <div class="feature">
-            <strong>📊 Relatórios Automáticos</strong><br>
-            Receba análises SWOT e insights baseados em reviews reais de clientes.
-          </div>
-          
-          <div class="feature">
-            <strong>🤖 Inteligência Artificial</strong><br>
-            Aproveite a análise AI para obter recomendações estratégicas personalizadas.
-          </div>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.APP_URL || 'http://localhost:5173'}/dashboard" class="button">Começar Agora</a>
-          </div>
-          
-          <p>Se tiver alguma dúvida, não hesite em contactar-nos. Estamos aqui para ajudar!</p>
-          
-          <div class="footer">
-            <p>Este é um email automático, por favor não responda.</p>
-            <p>&copy; ${new Date().getFullYear()} Radar - Análise de Concorrência</p>
-          </div>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
-
-  const text = `
-Bem-vindo ao Radar! 🎉
-
-${greeting},
-
-Obrigado por se juntar ao Radar - a sua ferramenta de análise de concorrência local!
-
-Com o Radar pode:
-
-📍 Analisar Localizações
-Adicione os seus negócios e obtenha insights sobre a concorrência nas proximidades.
-
-📊 Relatórios Automáticos
-Receba análises SWOT e insights baseados em reviews reais de clientes.
-
-🤖 Inteligência Artificial
-Aproveite a análise AI para obter recomendações estratégicas personalizadas.
-
-Aceda ao dashboard: ${process.env.APP_URL || 'http://localhost:5173'}/dashboard
-
-Se tiver alguma dúvida, não hesite em contactar-nos!
-
----
-Radar - Análise de Concorrência
-Este é um email automático, por favor não responda.
-  `.trim();
-
-  return { html, text };
-}
+// Export singleton based on env
+export const emailService = process.env.SMTP_HOST
+  ? new NodemailerEmailService()
+  : new ConsoleEmailService();
