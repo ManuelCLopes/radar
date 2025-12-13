@@ -104,7 +104,7 @@
       "title": "Relatório de Análise de Concorrência",
       "export": "Exportar",
       "downloadHtml": "Transferir HTML",
-      "printPdf": "Imprimir / Guardar como PDF",
+      "printPdf": "Guardar como PDF",
       "emailReport": "Enviar por Email"
     },
     "stats": {

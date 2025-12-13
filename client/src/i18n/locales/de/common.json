@@ -154,7 +154,7 @@
       "title": "Wettbewerbsanalysebericht",
       "export": "Exportieren",
       "downloadHtml": "HTML Herunterladen",
-      "printPdf": "Drucken / Als PDF Speichern",
+      "printPdf": "Als PDF speichern",
       "emailReport": "Per E-Mail Senden"
     },
     "stats": {

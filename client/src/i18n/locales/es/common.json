@@ -104,7 +104,7 @@
       "title": "Informe de Análisis de Competencia",
       "export": "Exportar",
       "downloadHtml": "Descargar HTML",
-      "printPdf": "Imprimir / Guardar como PDF",
+      "printPdf": "Guardar como PDF",
       "emailReport": "Enviar por Email"
     },
     "stats": {

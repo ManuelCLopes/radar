@@ -104,7 +104,7 @@
       "title": "Competitor Analysis Report",
       "export": "Export",
       "downloadHtml": "Download HTML",
-      "printPdf": "Print / Save as PDF",
+      "printPdf": "Save as PDF",
       "emailReport": "Email Report"
     },
     "stats": {
