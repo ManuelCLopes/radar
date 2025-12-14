@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import type { Report } from "@shared/schema";
 
 // Register fonts - Disabled due to 404 errors on Google Fonts URLs
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     bullet: {
         width: 3,
         height: 3,
-        borderRadius: 2, // Fixed: React-PDF doesn't support percentage
+        borderRadius: 2,
         marginTop: 4,
         marginRight: 5,
     },
@@ -145,9 +145,55 @@ const styles = StyleSheet.create({
         width: '48%',
         marginBottom: 10,
     },
+    card: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: 6,
+        padding: 10,
+        marginBottom: 8,
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+    },
+    cardHeader: {
+        marginBottom: 6,
+        borderBottomWidth: 1,
+        borderBottomColor: '#F3F4F6',
+        paddingBottom: 4,
+    },
+    cardTitle: {
+        fontSize: 10,
+        fontWeight: 700,
+        color: '#111827',
+        textTransform: 'uppercase',
+        letterSpacing: 0.5,
+    },
+    cardContent: {
+        paddingTop: 0,
+    },
     fullWidthItem: {
         width: '100%',
         marginBottom: 10,
+    },
+
+    aiAnalysisCard: {
+        backgroundColor: '#F0F9FF', // Light blue background (approximate for from-primary/5)
+        borderRadius: 8,
+        padding: 15,
+        borderWidth: 1,
+        borderColor: '#BFDBFE', // Light blue border (approximate for border-primary/20)
+        marginBottom: 20,
+    },
+    aiAnalysisTitle: {
+        fontSize: 14,
+        fontWeight: 700,
+        marginBottom: 10,
+        color: '#111827',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    aiAnalysisText: {
+        fontSize: 10,
+        lineHeight: 1.5,
+        color: '#374151',
     }
 });
 
@@ -164,107 +210,268 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
 
     const totalReviews = competitors.reduce((sum, c) => sum + (c.userRatingsTotal || 0), 0);
 
-    // Helper to extract list items from HTML content
-    const extractListItems = (text: string, sectionTitle: string) => {
-        if (!text) return [];
-        const sectionRegex = new RegExp(`<h[23][^>]*>(\\d+\\.\\s*)?(${sectionTitle})</h[23]>[\\s\\S]*?<ul[^>]*>([\\s\\S]*?)</ul>`, 'i');
-        const match = text.match(sectionRegex);
+    // --- PARSING LOGIC COPIED FROM ReportView.tsx ---
 
-        if (!match) return [];
+    const swotRegex = /<h2[^>]*>(?:SWOT ANALYSIS|ANÁLISE SWOT|ANÁLISIS DAFO|ANALYSE SWOT|SWOT-ANALYSE)<\/h2>([\s\S]*?)(?=<h2|$)/i;
+    const trendsRegex = /<h2[^>]*>(?:MARKET TRENDS|TENDÊNCIAS DE MERCADO|TENDENCIAS DEL MERCADO|TENDANCES DU MARCHÉ|MARKTRENDS)<\/h2>([\s\S]*?)(?=<h2|$)/i;
+    const targetAudienceRegex = /<h2[^>]*>(?:TARGET AUDIENCE|PÚBLICO-ALVO|PÚBLICO OBJETIVO|PUBLIC CIBLE|ZIELGRUPPE)<\/h2>([\s\S]*?)(?=<h2|$)/i;
+    const marketingRegex = /<h2[^>]*>(?:MARKETING STRATEGY|ESTRATÉGIA DE MARKETING|ESTRATEGIA DE MARKETING|STRATÉGIE MARKETING|MARKETINGSTRATEGIE)<\/h2>([\s\S]*?)(?=<h2|$)/i;
+    const customerSentimentRegex = /<h2[^>]*>(?:CUSTOMER SENTIMENT & REVIEW INSIGHTS|SENTIMENTO DO CLIENTE & INSIGHTS DE AVALIAÇÕES|SENTIMIENTO DEL CLIENTE E INSIGHTS DE RESEÑAS|ANALYSE DES THÈMES DES AVIS|KUNDENSTIMMUNG & BEWERTUNGSEINBLICKE)<\/h2>([\s\S]*?)(?=<h2|$)/i;
 
-        const listContentStr = match[3];
-        const items = listContentStr.match(/<li[^>]*>([\s\S]*?)<\/li>/gi) || [];
-        return items.map(item => item.replace(/<[^>]*>/g, '').trim());
+    const swotMatch = report.aiAnalysis.match(swotRegex);
+    const trendsMatch = report.aiAnalysis.match(trendsRegex);
+    const targetAudienceMatch = report.aiAnalysis.match(targetAudienceRegex);
+    const marketingMatch = report.aiAnalysis.match(marketingRegex);
+    const customerSentimentMatch = report.aiAnalysis.match(customerSentimentRegex);
+
+    let swotData = { strengths: [], weaknesses: [], opportunities: [], threats: [] } as any;
+    let trendsData: string[] = [];
+    let targetAudienceData = { demographics: [], psychographics: [], painPoints: [] } as any;
+    let marketingData = { primaryChannels: [], contentIdeas: [], promotionalTactics: [] } as any;
+    let customerSentimentData = { commonPraises: [], recurringComplaints: [], unmetNeeds: [] } as any;
+
+    // Helper to render HTML text with basic styling (bold, italic)
+    const RenderHtmlText = ({ text, style }: { text: string, style?: any }) => {
+        if (!text) return null;
+
+        // First, strip attributes from tags to simplify parsing (e.g. <strong class="..."> -> <strong>)
+        // Also strip <p> tags as they shouldn't be rendered as text in this context
+        const cleanText = text
+            .replace(/<([a-z][a-z0-9]*)[^>]*>/gi, '<$1>')
+            .replace(/<\/?p>/gi, '');
+
+        // Split by tags
+        const parts = cleanText.split(/(<\/?(?:strong|b|em|i)>)/g);
+
+        let isBold = false;
+        let isItalic = false;
+
+        return (
+            <Text style={style}>
+                {parts.map((part, i) => {
+                    if (part.match(/<(?:strong|b)>/i)) {
+                        isBold = true;
+                        return null;
+                    }
+                    if (part.match(/<\/(?:strong|b)>/i)) {
+                        isBold = false;
+                        return null;
+                    }
+                    if (part.match(/<(?:em|i)>/i)) {
+                        isItalic = true;
+                        return null;
+                    }
+                    if (part.match(/<\/(?:em|i)>/i)) {
+                        isItalic = false;
+                        return null;
+                    }
+
+                    if (!part) return null;
+
+                    return (
+                        <Text key={i} style={{
+                            fontWeight: isBold ? 700 : 400,
+                            fontStyle: isItalic ? 'italic' : 'normal',
+                            color: isBold ? '#111827' : style?.color || '#374151'
+                        }}>
+                            {part}
+                        </Text>
+                    );
+                })}
+            </Text>
+        );
     };
 
-    // Helper to extract text content from a section
-    const extractSectionText = (sectionTitle: string) => {
-        if (!report.aiAnalysis) return '';
-        const regex = new RegExp(`<h[23][^>]*>(\\d+\\.\\s*)?(${sectionTitle})</h[23]>([\\s\\S]*?)(?=<h[23]|$)`, 'i');
-        const match = report.aiAnalysis.match(regex);
-        if (!match) return '';
-        return match[3].replace(/<[^>]*>/g, '').trim();
+    // Helper to render main content with proper block structure
+    const MainContentRenderer = ({ html, style }: { html: string, style?: any }) => {
+        if (!html) return null;
+
+        // 1. Clean attributes to simplify parsing
+        const cleanHtml = html.replace(/<([a-z][a-z0-9]*)[^>]*>/gi, '<$1>');
+
+        // 2. Split into blocks based on top-level tags we care about
+        // We'll use a simple regex to find content between tags
+        // This is not a full HTML parser but works for the expected structure
+        const blocks: { type: string, content: string }[] = [];
+
+        const regex = /<(h[23]|p|ul)>([\s\S]*?)<\/\1>/gi;
+        let match;
+        let lastIndex = 0;
+
+        while ((match = regex.exec(cleanHtml)) !== null) {
+            // Add any text before this block as a paragraph (if not empty)
+            const preText = cleanHtml.substring(lastIndex, match.index).trim();
+            if (preText) {
+                blocks.push({ type: 'p', content: preText });
+            }
+
+            blocks.push({ type: match[1].toLowerCase(), content: match[2] });
+            lastIndex = regex.lastIndex;
+        }
+
+        // Add remaining text
+        const remaining = cleanHtml.substring(lastIndex).trim();
+        if (remaining) {
+            blocks.push({ type: 'p', content: remaining });
+        }
+
+        return (
+            <View>
+                {blocks.map((block, i) => {
+                    if (block.type === 'h2') {
+                        return (
+                            <Text key={i} style={{
+                                fontSize: 14,
+                                fontWeight: 700,
+                                color: '#111827',
+                                marginTop: 10,
+                                marginBottom: 6
+                            }}>
+                                {block.content.replace(/<[^>]+>/g, '')}
+                            </Text>
+                        );
+                    }
+                    if (block.type === 'h3') {
+                        return (
+                            <Text key={i} style={{
+                                fontSize: 12,
+                                fontWeight: 700,
+                                color: '#374151',
+                                marginTop: 8,
+                                marginBottom: 4
+                            }}>
+                                {block.content.replace(/<[^>]+>/g, '')}
+                            </Text>
+                        );
+                    }
+                    if (block.type === 'ul') {
+                        const items = block.content.match(/<li>([\s\S]*?)<\/li>/gi)?.map(li => li.replace(/<\/?li>/g, '').trim()) || [];
+                        return (
+                            <View key={i} style={{ marginBottom: 8 }}>
+                                {items.map((item, j) => (
+                                    <View key={j} style={{ flexDirection: 'row', marginBottom: 2, paddingLeft: 4 }}>
+                                        <Text style={{ fontSize: 10, marginRight: 4 }}>•</Text>
+                                        <RenderHtmlText text={item} style={style} />
+                                    </View>
+                                ))}
+                            </View>
+                        );
+                    }
+                    // Default to paragraph
+                    return (
+                        <View key={i} style={{ marginBottom: 8 }}>
+                            <RenderHtmlText text={block.content} style={style} />
+                        </View>
+                    );
+                })}
+            </View>
+        );
     };
 
-    // Helper to extract complex nested sections (like Target Audience)
-    const extractComplexSection = (text: string, mainSectionTitle: string, subSections: string[]) => {
-        if (!text) return {};
-        const result: Record<string, string[]> = {};
+    // Helper to clean HTML tags but keep formatting tags
+    const cleanHtml = (html: string) => html.replace(/<\/?li[^>]*>/gi, '').trim();
 
-        // Find the main section start
-        const mainSectionRegex = new RegExp(`<h[23][^>]*>(\\d+\\.\\s*)?(${mainSectionTitle})</h[23]>([\\s\\S]*?)(?=<h2|$)`, 'i');
-        const mainMatch = text.match(mainSectionRegex);
+    const extractListItems = (html: string) => {
+        const listMatch = html.match(/<ul[^>]*>([\s\S]*?)<\/ul>/i);
+        if (listMatch) {
+            return listMatch[1]
+                .match(/<li[^>]*>([\s\S]*?)<\/li>/gi)
+                ?.map(item => cleanHtml(item)) || [];
+        }
+        return [];
+    };
 
-        if (!mainMatch) return result;
-        const content = mainMatch[3];
+    if (swotMatch) {
+        const swotContent = swotMatch[1];
+        const sections = {
+            strengths: /<h3[^>]*>(?:Strengths|Pontos Fortes|Fortalezas|Forces|Stärken)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+            weaknesses: /<h3[^>]*>(?:Weaknesses|Pontos Fracos|Debilidades|Faiblesses|Schwächen)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+            opportunities: /<h3[^>]*>(?:Opportunities|Oportunidades|Opportunités|Chancen)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+            threats: /<h3[^>]*>(?:Threats|Ameaças|Amenazas|Menaces|Bedrohungen)<\/h3>([\s\S]*?)(?=<h3|$)/i
+        };
 
-        subSections.forEach(sub => {
-            // Look for subsection header followed by content (p or ul)
-            const subRegex = new RegExp(`<h[34][^>]*>(\\d+\\.\\s*)?(${sub})</h[34]>([\\s\\S]*?)(?=<h[34]|$)`, 'i');
-            const subMatch = content.match(subRegex);
+        Object.entries(sections).forEach(([key, regex]) => {
+            const match = swotContent.match(regex);
+            if (match) {
+                swotData[key] = extractListItems(match[1]);
+            }
+        });
+    }
 
-            if (subMatch) {
-                const subContent = subMatch[2];
-                // Check if it's a list
-                if (subContent.includes('<ul')) {
-                    const items = subContent.match(/<li[^>]*>([\s\S]*?)<\/li>/gi) || [];
-                    result[sub] = items.map(item => item.replace(/<[^>]*>/g, '').trim());
+    if (trendsMatch) {
+        trendsData = extractListItems(trendsMatch[1]);
+    }
+
+    if (targetAudienceMatch) {
+        const content = targetAudienceMatch[1];
+        const sections = {
+            demographics: /<h3[^>]*>(?:Demographics|Demografia|Demografía|Démographie|Demografie)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+            psychographics: /<h3[^>]*>(?:Psychographics|Psicografia|Psicografía|Psychographie|Psychografie)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+            painPoints: /<h3[^>]*>(?:Pain Points|Dores|Puntos de Dolor|Points de Douleur|Schmerzpunkte)<\/h3>([\s\S]*?)(?=<h3|$)/i
+        };
+
+        Object.entries(sections).forEach(([key, regex]) => {
+            const match = content.match(regex);
+            if (match) {
+                const text = cleanHtml(match[1]);
+                if (text.startsWith('[')) {
+                    targetAudienceData[key] = text.replace(/^\[|\]$/g, '').split(',').map(s => s.trim());
                 } else {
-                    // It's a paragraph
-                    result[sub] = [subContent.replace(/<[^>]*>/g, '').trim()];
+                    targetAudienceData[key] = [text];
                 }
             }
         });
-        return result;
-    };
-
-    const text = report.aiAnalysis || '';
-
-    // Parse Sections
-    const strengths = extractListItems(text, 'Strengths|Pontos Fortes|Fortalezas|Forces|Stärken|Forças');
-    const weaknesses = extractListItems(text, 'Weaknesses|Pontos Fracos|Debilidades|Faiblesses|Schwächen|Fraquezas');
-    const opportunities = extractListItems(text, 'Opportunities|Oportunidades|Opportunités|Chancen');
-    const threats = extractListItems(text, 'Threats|Ameaças|Amenazas|Menaces|Bedrohungen');
-
-    // Parse Market Overview
-    let marketOverview = extractSectionText('MARKET OVERVIEW|VISÃO GERAL DO MERCADO|VISIÓN GENERAL DEL MERCADO|APERÇU DU MARCHÉ|MARKTÜBERSICHT|Visão Geral do Mercado');
-    if (!marketOverview) {
-        const firstHeaderIndex = text.search(/<h[23]/);
-        if (firstHeaderIndex > 0) {
-            marketOverview = text.substring(0, firstHeaderIndex).replace(/<[^>]*>/g, '').trim();
-        }
     }
 
-    // Parse Market Trends
-    const marketTrends = extractListItems(text, 'MARKET TRENDS|TENDÊNCIAS DE MERCADO|TENDENCIAS DEL MERCADO|TENDANCES DU MARCHÉ|MARKTRENDS');
+    if (marketingMatch) {
+        const content = marketingMatch[1];
+        const sections = {
+            primaryChannels: /<h3[^>]*>(?:Primary Channels|Canais Principais|Canales Principales|Canaux Principaux|Hauptkanäle)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+            contentIdeas: /<h3[^>]*>(?:Content Ideas|Ideias de Conteúdo|Ideas de Contenido|Idées de Contenu|Inhaltsideen)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+            promotionalTactics: /<h3[^>]*>(?:Promotional Tactics|Táticas Promocionais|Tácticas Promocionales|Tactiques Promotionnelles|Werbetaktiken)<\/h3>([\s\S]*?)(?=<h3|$)/i
+        };
 
-    // Parse Customer Sentiment
-    const customerSentiment = extractComplexSection(text, 'CUSTOMER SENTIMENT & REVIEW INSIGHTS|SENTIMENTO DO CLIENTE & INSIGHTS DE AVALIAÇÕES|SENTIMIENTO DEL CLIENTE E INSIGHTS DE RESEÑAS|SENTIMENT CLIENT & ANALYSE DES AVIS|KUNDENSTIMMUNG & BEWERTUNGSEINBLICKE', [
-        'Common Praises|Elogios Comuns|Elogios Comunes|Éloges Courants|Häufiges Lob',
-        'Recurring Complaints|Reclamações Recorrentes|Quejas Recurrentes|Plaintes Récurrentes|Wiederkehrende Beschwerden',
-        'Unmet Needs|Necessidades Não Atendidas|Necesidades Insatisfechas|Besoins Non Satisfaits|Unerfüllte Bedürfnisse'
-    ]);
+        Object.entries(sections).forEach(([key, regex]) => {
+            const match = content.match(regex);
+            if (match) {
+                const text = cleanHtml(match[1]);
+                if (text.startsWith('[')) {
+                    marketingData[key] = text.replace(/^\[|\]$/g, '').split(',').map(s => s.trim());
+                } else {
+                    marketingData[key] = [text];
+                }
+            }
+        });
+    }
 
-    // Parse Target Audience
-    const targetAudience = extractComplexSection(text, 'TARGET AUDIENCE PERSONA|PERSONA DO PÚBLICO-ALVO|PERSONA DEL PÚBLICO OBJETIVO|PERSONA DU PUBLIC CIBLE|ZIELGRUPPEN-PERSONA', [
-        'Demographics|Demografia|Demografía|Démographie|Demografie',
-        'Psychographics|Psicografia|Psicografía|Psychographie|Psychografie',
-        'Pain Points & Needs|Dores e Necessidades|Pontos de Dor e Necessidades|Puntos de Dolor y Necesidades|Points de Douleur et Besoins|Schmerzpunkte und Bedürfnisse'
-    ]);
+    if (customerSentimentMatch) {
+        const content = customerSentimentMatch[1];
+        const sections = {
+            commonPraises: /<h3[^>]*>(?:Common Praises|Elogios Comuns|Elogios Comunes|Éloges Courants|Häufiges Lob)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+            recurringComplaints: /<h3[^>]*>(?:Recurring Complaints|Reclamações Recorrentes|Quejas Recurrentes|Plaintes Récurrentes|Wiederkehrende Beschwerden)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+            unmetNeeds: /<h3[^>]*>(?:Unmet Needs|Necessidades Não Atendidas|Necesidades Insatisfechas|Besoins Non Satisfaits|Unerfüllte Bedürfnisse)<\/h3>([\s\S]*?)(?=<h3|$)/i
+        };
 
-    // Parse Marketing Strategy
-    const marketingStrategy = extractComplexSection(text, 'MARKETING STRATEGY|ESTRATÉGIA DE MARKETING|ESTRATEGIA DE MARKETING|STRATÉGIE MARKETING|MARKETINGSTRATEGIE', [
-        'Primary Channels|Canais Principais|Canales Principales|Canaux Principaux|Hauptkanäle',
-        'Content Ideas|Ideias de Conteúdo|Ideas de Contenido|Idées de Contenu|Inhaltsideen',
-        'Promotional Tactics|Táticas Promocionais|Tácticas Promocionales|Tactiques Promotionnelles|Werbetaktiken'
-    ]);
+        Object.entries(sections).forEach(([key, regex]) => {
+            const match = content.match(regex);
+            if (match) {
+                if (match[1].includes('<ul')) {
+                    customerSentimentData[key] = extractListItems(match[1]);
+                } else {
+                    customerSentimentData[key] = [cleanHtml(match[1])];
+                }
+            }
+        });
+    }
 
-    // Parse Additional Sections (Basic Plan)
-    const keyCompetitors = extractSectionText('KEY COMPETITORS|PRINCIPAIS CONCORRENTES|COMPETIDORES CLAVE|PRINCIPAUX CONCURRENTS|WICHTIGSTE WETTBEWERBER');
-    const reviewAnalysis = extractSectionText('REVIEW THEME ANALYSIS|ANÁLISE DE TEMAS DE AVALIAÇÃO|ANÁLISIS DE TEMAS DE RESEÑAS|ANALYSE DES THÈMES DES AVIS|ANALYSE DER BEWERTUNGSTHEMEN');
-    const marketGaps = extractSectionText('MARKET GAPS|LACUNAS DE MERCADO|BRECHAS DE MERCADO|LACUNES DU MARCHÉ|MARKT-LÜCKEN');
-    const recommendations = extractListItems(text, 'PRACTICAL RECOMMENDATIONS|RECOMENDAÇÕES PRÁTICAS|RECOMENDACIONES PRÁCTICAS|RECOMMANDATIONS PRATIQUES|PRAKTISCHE EMPFEHLUNGEN');
-    const differentiation = extractListItems(text, 'DIFFERENTIATION STRATEGIES|ESTRATÉGIAS DE DIFERENCIAÇÃO|ESTRATEGIAS DE DIFERENCIACIÓN|STRATÉGIES DE DIFFÉRENCIATION|DIFFERENZIERUNGSSTRATEGIEN');
+    // Remove parsed sections from main content display
+    const mainContent = report.aiAnalysis
+        .replace(swotRegex, '')
+        .replace(trendsRegex, '')
+        .replace(targetAudienceRegex, '')
+        .replace(marketingRegex, '')
+        .replace(customerSentimentRegex, '')
+        .trim(); // Removed .replace(/<[^>]*>/g, '') to keep HTML tags
 
     // Helper to map keys to translations
     const getTranslatedKey = (key: string) => {
@@ -273,6 +480,8 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
             'Demographics': 'demographics',
             'Psychographics': 'psychographics',
             'Pain Points & Needs': 'painPoints',
+            'Pain Points': 'painPoints',
+            'Needs': 'painPoints',
             'Primary Channels': 'primaryChannels',
             'Content Ideas': 'contentIdeas',
             'Promotional Tactics': 'promotionalTactics',
@@ -280,6 +489,20 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
             'Recurring Complaints': 'recurringComplaints',
             'Unmet Needs': 'unmetNeeds'
         };
+
+        // Handle camelCase keys
+        if (keyMap[key]) return t(`report.sections.${keyMap[key]}`);
+        if (key === 'demographics') return t('report.sections.demographics');
+        if (key === 'psychographics') return t('report.sections.psychographics');
+        if (key === 'painPoints') return t('report.sections.painPoints');
+        if (key === 'needs') return t('report.sections.painPoints');
+        if (key === 'primaryChannels') return t('report.sections.primaryChannels');
+        if (key === 'contentIdeas') return t('report.sections.contentIdeas');
+        if (key === 'promotionalTactics') return t('report.sections.promotionalTactics');
+        if (key === 'commonPraises') return t('report.sections.commonPraises');
+        if (key === 'recurringComplaints') return t('report.sections.recurringComplaints');
+        if (key === 'unmetNeeds') return t('report.sections.unmetNeeds');
+
         const translationKey = keyMap[normalizedKey];
         return translationKey ? t(`report.sections.${translationKey}`) : normalizedKey;
     };
@@ -309,130 +532,61 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                     </View>
                 </View>
 
-                {/* Market Overview */}
-                {marketOverview && (
+                {/* AI Analysis (Intro) */}
+                {mainContent && (
                     <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>{t("report.sections.marketOverview") || "Market Overview"}</Text>
-                        <Text style={styles.text}>{marketOverview}</Text>
-                    </View>
-                )}
-
-                {/* Market Trends */}
-                {marketTrends.length > 0 && (
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>{t("report.sections.marketTrends")}</Text>
-                        {marketTrends.map((item, i) => (
-                            <View key={i} style={styles.bulletPoint}>
-                                <View style={[styles.bullet, { backgroundColor: '#4B5563' }]} />
-                                <Text style={styles.text}>{item}</Text>
-                            </View>
-                        ))}
-                    </View>
-                )}
-
-                {/* Customer Sentiment */}
-                {Object.keys(customerSentiment).length > 0 && (
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>{t("report.sections.customerSentiment")}</Text>
-                        <View style={styles.gridContainer}>
-                            {Object.entries(customerSentiment).map(([key, items]) => (
-                                <View key={key} style={styles.fullWidthItem}>
-                                    <Text style={styles.subSectionTitle}>{getTranslatedKey(key)}</Text>
-                                    {items.map((item, i) => (
-                                        <Text key={i} style={styles.text}>• {item}</Text>
-                                    ))}
-                                </View>
-                            ))}
-                        </View>
-                    </View>
-                )}
-
-                {/* Key Competitors (Basic Plan) */}
-                {keyCompetitors && (
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>{t("report.sections.keyCompetitors") || "Key Competitors"}</Text>
-                        <Text style={styles.text}>{keyCompetitors}</Text>
-                    </View>
-                )}
-
-                {/* Review Analysis (Basic Plan) */}
-                {reviewAnalysis && (
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>{t("report.sections.reviewAnalysis") || "Review Analysis"}</Text>
-                        <Text style={styles.text}>{reviewAnalysis}</Text>
-                    </View>
-                )}
-
-                {/* Market Gaps (Basic Plan) */}
-                {marketGaps && (
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>{t("report.sections.marketGaps") || "Market Gaps"}</Text>
-                        <Text style={styles.text}>{marketGaps}</Text>
-                    </View>
-                )}
-
-                {/* Target Audience */}
-                {Object.keys(targetAudience).length > 0 && (
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>{t("report.sections.targetAudience")}</Text>
-                        <View style={styles.gridContainer}>
-                            {Object.entries(targetAudience).map(([key, items]) => (
-                                <View key={key} style={styles.gridItem}>
-                                    <Text style={styles.subSectionTitle}>{getTranslatedKey(key)}</Text>
-                                    {items.map((item, i) => (
-                                        <Text key={i} style={styles.text}>• {item}</Text>
-                                    ))}
-                                </View>
-                            ))}
+                        <View style={styles.aiAnalysisCard}>
+                            <Text style={styles.aiAnalysisTitle}>{t("report.sections.aiAnalysis")}</Text>
+                            <MainContentRenderer html={mainContent} style={styles.aiAnalysisText} />
                         </View>
                     </View>
                 )}
 
                 {/* SWOT Analysis */}
-                {(strengths.length > 0 || weaknesses.length > 0) && (
+                {(swotData.strengths.length > 0 || swotData.weaknesses.length > 0) && (
                     <View style={styles.section} break>
                         <Text style={styles.sectionTitle}>{t("report.sections.swotAnalysis")}</Text>
                         <View style={styles.swotContainer}>
-                            {strengths.length > 0 && (
+                            {swotData.strengths.length > 0 && (
                                 <View style={[styles.swotBox, { backgroundColor: '#F0FDF4' }]}>
                                     <Text style={[styles.swotTitle, { color: '#166534' }]}>{t("report.sections.strengths")}</Text>
-                                    {strengths.map((item, i) => (
+                                    {swotData.strengths.map((item: string, i: number) => (
                                         <View key={i} style={styles.bulletPoint}>
                                             <View style={[styles.bullet, { backgroundColor: '#166534' }]} />
-                                            <Text style={styles.text}>{item}</Text>
+                                            <RenderHtmlText text={item} style={styles.text} />
                                         </View>
                                     ))}
                                 </View>
                             )}
-                            {weaknesses.length > 0 && (
+                            {swotData.weaknesses.length > 0 && (
                                 <View style={[styles.swotBox, { backgroundColor: '#FEF2F2' }]}>
                                     <Text style={[styles.swotTitle, { color: '#991B1B' }]}>{t("report.sections.weaknesses")}</Text>
-                                    {weaknesses.map((item, i) => (
+                                    {swotData.weaknesses.map((item: string, i: number) => (
                                         <View key={i} style={styles.bulletPoint}>
                                             <View style={[styles.bullet, { backgroundColor: '#991B1B' }]} />
-                                            <Text style={styles.text}>{item}</Text>
+                                            <RenderHtmlText text={item} style={styles.text} />
                                         </View>
                                     ))}
                                 </View>
                             )}
-                            {opportunities.length > 0 && (
+                            {swotData.opportunities.length > 0 && (
                                 <View style={[styles.swotBox, { backgroundColor: '#EFF6FF' }]}>
                                     <Text style={[styles.swotTitle, { color: '#1E40AF' }]}>{t("report.sections.opportunities")}</Text>
-                                    {opportunities.map((item, i) => (
+                                    {swotData.opportunities.map((item: string, i: number) => (
                                         <View key={i} style={styles.bulletPoint}>
                                             <View style={[styles.bullet, { backgroundColor: '#1E40AF' }]} />
-                                            <Text style={styles.text}>{item}</Text>
+                                            <RenderHtmlText text={item} style={styles.text} />
                                         </View>
                                     ))}
                                 </View>
                             )}
-                            {threats.length > 0 && (
+                            {swotData.threats.length > 0 && (
                                 <View style={[styles.swotBox, { backgroundColor: '#FFF7ED' }]}>
                                     <Text style={[styles.swotTitle, { color: '#9A3412' }]}>{t("report.sections.threats")}</Text>
-                                    {threats.map((item, i) => (
+                                    {swotData.threats.map((item: string, i: number) => (
                                         <View key={i} style={styles.bulletPoint}>
                                             <View style={[styles.bullet, { backgroundColor: '#9A3412' }]} />
-                                            <Text style={styles.text}>{item}</Text>
+                                            <RenderHtmlText text={item} style={styles.text} />
                                         </View>
                                     ))}
                                 </View>
@@ -441,53 +595,104 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                     </View>
                 )}
 
-
-                {/* Marketing Strategy */}
-                {Object.keys(marketingStrategy).length > 0 && (
+                {/* Market Trends */}
+                {trendsData.length > 0 && (
                     <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>{t("report.sections.marketingStrategy")}</Text>
+                        <Text style={styles.sectionTitle}>{t("report.sections.marketTrends")}</Text>
                         <View style={styles.gridContainer}>
-                            {Object.entries(marketingStrategy).map(([key, items]) => (
-                                <View key={key} style={styles.fullWidthItem}>
-                                    <Text style={styles.subSectionTitle}>{getTranslatedKey(key)}</Text>
-                                    {items.map((item, i) => (
-                                        <Text key={i} style={styles.text}>• {item}</Text>
-                                    ))}
+                            {trendsData.map((item: string, i: number) => (
+                                <View key={i} style={[styles.gridItem, styles.card]}>
+                                    <View style={styles.cardContent}>
+                                        <View style={styles.bulletPoint}>
+                                            <View style={[styles.bullet, { backgroundColor: '#4B5563' }]} />
+                                            <RenderHtmlText text={item} style={styles.text} />
+                                        </View>
+                                    </View>
                                 </View>
                             ))}
                         </View>
                     </View>
                 )}
 
-                {/* Recommendations (Basic Plan) */}
-                {recommendations.length > 0 && (
+                {/* Target Audience */}
+                {targetAudienceMatch && (
                     <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>{t("report.sections.recommendations") || "Recommendations"}</Text>
-                        {recommendations.map((item, i) => (
-                            <View key={i} style={styles.bulletPoint}>
-                                <View style={[styles.bullet, { backgroundColor: '#4B5563' }]} />
-                                <Text style={styles.text}>{item}</Text>
-                            </View>
-                        ))}
+                        <Text style={styles.sectionTitle}>{t("report.sections.targetAudience")}</Text>
+                        <View style={styles.gridContainer}>
+                            {Object.entries(targetAudienceData).map(([key, items]: [string, any]) => (
+                                <View key={key} style={[styles.gridItem, styles.card]}>
+                                    <View style={styles.cardHeader}>
+                                        <Text style={styles.cardTitle}>{getTranslatedKey(key)}</Text>
+                                    </View>
+                                    <View style={styles.cardContent}>
+                                        {items.map((item: string, i: number) => (
+                                            <View key={i} style={{ flexDirection: 'row', marginBottom: 2 }}>
+                                                <Text style={styles.text}>• </Text>
+                                                <RenderHtmlText text={item} style={styles.text} />
+                                            </View>
+                                        ))}
+                                    </View>
+                                </View>
+                            ))}
+                        </View>
                     </View>
                 )}
 
-                {/* Differentiation (Basic Plan) */}
-                {differentiation.length > 0 && (
+                {/* Marketing Strategy */}
+                {marketingMatch && (
                     <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>{t("report.sections.differentiation") || "Differentiation Strategies"}</Text>
-                        {differentiation.map((item, i) => (
-                            <View key={i} style={styles.bulletPoint}>
-                                <View style={[styles.bullet, { backgroundColor: '#4B5563' }]} />
-                                <Text style={styles.text}>{item}</Text>
-                            </View>
-                        ))}
+                        <Text style={styles.sectionTitle}>{t("report.sections.marketingStrategy")}</Text>
+                        <View style={styles.gridContainer}>
+                            {Object.entries(marketingData).map(([key, items]: [string, any]) => (
+                                <View key={key} style={[styles.gridItem, styles.card]}>
+                                    <View style={styles.cardHeader}>
+                                        <Text style={styles.cardTitle}>{getTranslatedKey(key)}</Text>
+                                    </View>
+                                    <View style={styles.cardContent}>
+                                        {items.map((item: string, i: number) => (
+                                            <View key={i} style={{ flexDirection: 'row', marginBottom: 2 }}>
+                                                <Text style={styles.text}>• </Text>
+                                                <RenderHtmlText text={item} style={styles.text} />
+                                            </View>
+                                        ))}
+                                    </View>
+                                </View>
+                            ))}
+                        </View>
                     </View>
                 )}
 
-                {/* Competitors List */}
-                <View style={styles.section}>
+                {/* Customer Sentiment */}
+                {customerSentimentMatch && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>{t("report.sections.customerSentiment")}</Text>
+                        <View style={styles.gridContainer}>
+                            {Object.entries(customerSentimentData).map(([key, items]: [string, any]) => (
+                                <View key={key} style={[styles.gridItem, styles.card]}>
+                                    <View style={styles.cardHeader}>
+                                        <Text style={styles.cardTitle}>{getTranslatedKey(key)}</Text>
+                                    </View>
+                                    <View style={styles.cardContent}>
+                                        {items.map((item: string, i: number) => (
+                                            <View key={i} style={{ flexDirection: 'row', marginBottom: 2 }}>
+                                                <Text style={styles.text}>• </Text>
+                                                <RenderHtmlText text={item} style={styles.text} />
+                                            </View>
+                                        ))}
+                                    </View>
+                                </View>
+                            ))}
+                        </View>
+                    </View>
+                )}
+
+                {/* Competitors List & Map */}
+                <View style={styles.section} break>
                     <Text style={styles.sectionTitle}>{t("report.sections.nearbyCompetitors")}</Text>
+
+                    {/* Map Section */}
+
+
                     {report.competitors.slice(0, 10).map((competitor, i) => (
                         <View key={i} style={styles.competitorCard}>
                             <Text style={styles.competitorName}>{competitor.name} ({competitor.rating?.toFixed(1) || "N/A"} ★)</Text>

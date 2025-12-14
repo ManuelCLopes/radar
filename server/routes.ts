@@ -319,6 +319,51 @@ export async function registerRoutes(
   });
   // END: Google Places API status endpoint
 
+  // Proxy for Google Static Maps to avoid exposing API key
+  app.get("/api/static-map", async (req, res) => {
+    const { center, markers } = req.query;
+    const apiKey = process.env.GOOGLE_API_KEY;
+
+    if (!apiKey) {
+      return res.status(500).send("Google API Key not configured");
+    }
+
+    if (!center) {
+      return res.status(400).send("Center is required");
+    }
+
+    // Construct the Google Static Maps URL
+    // Size: 600x400 (standard for PDF)
+    // Scale: 2 (for high DPI)
+    // Maptype: roadmap
+    let url = `https://maps.googleapis.com/maps/api/staticmap?center=${center}&zoom=14&size=600x400&scale=2&maptype=roadmap&key=${apiKey}`;
+
+    // Add main business marker (blue)
+    url += `&markers=color:blue|${center}`;
+
+    // Add competitor markers (red)
+    if (markers) {
+      const markerList = (markers as string).split('|');
+      markerList.forEach(marker => {
+        url += `&markers=color:red|size:small|${marker}`;
+      });
+    }
+
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Google Maps API error: ${response.statusText}`);
+      }
+
+      const buffer = await response.arrayBuffer();
+      res.setHeader("Content-Type", "image/png");
+      res.send(Buffer.from(buffer));
+    } catch (error) {
+      console.error("Error fetching static map:", error);
+      res.status(500).send("Failed to fetch map");
+    }
+  });
+
   // Password reset routes
   app.post("/api/auth/forgot-password", async (req, res) => {
     try {
@@ -574,7 +619,11 @@ export async function registerRoutes(
         businessId: null // Explicitly set to null for ad-hoc analysis
       });
 
-      res.json(savedReport);
+      res.json({
+        ...savedReport,
+        latitude: tempBusiness.latitude,
+        longitude: tempBusiness.longitude
+      });
     } catch (error) {
       console.error("Analysis error details:", error);
       res.status(500).json({ error: "Failed to run analysis" });

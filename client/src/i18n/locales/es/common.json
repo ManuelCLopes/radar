@@ -46,7 +46,15 @@
     "businessCreated": "Negocio Creado",
     "businessCreatedDesc": "El negocio ha sido creado exitosamente.",
     "businessUpdated": "Negocio Actualizado",
-    "businessUpdatedDesc": "Los detalles del negocio han sido actualizados exitosamente."
+    "businessUpdatedDesc": "Los detalles del negocio han sido actualizados exitosamente.",
+    "map": {
+      "title": "Mapa de Competencia",
+      "description": "Visualiza la distribución geográfica de tus competidores.",
+      "selectBusiness": "Selecciona un Negocio",
+      "allBusinesses": "Todos los Negocios",
+      "showingFirst": "Mostrando mapa para: {{name}}",
+      "noLocation": "Este negocio no tiene datos de ubicación válidos."
+    }
   },
   "business": {
     "form": {

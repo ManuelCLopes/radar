@@ -75,3 +75,53 @@ export class NodemailerEmailService implements EmailService {
 export const emailService = process.env.SMTP_HOST
   ? new NodemailerEmailService()
   : new ConsoleEmailService();
+
+export function generatePasswordResetEmail(resetLink: string, email: string) {
+  const html = `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2>Reset Your Password</h2>
+      <p>Hello,</p>
+      <p>We received a request to reset the password for your Radar account associated with ${email}.</p>
+      <p>Click the button below to reset your password:</p>
+      <div style="margin: 20px 0;">
+        <a href="${resetLink}" style="background-color: #7c3aed; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset Password</a>
+      </div>
+      <p>If you didn't request this, you can safely ignore this email.</p>
+      <p>Link expires in 15 minutes.</p>
+    </div>
+  `;
+  const text = `Reset your password: ${resetLink}`;
+  return { html, text };
+}
+
+export async function sendEmail({ to, subject, html, text }: { to: string; subject: string; html: string; text: string }) {
+  if (process.env.SMTP_HOST) {
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || "587"),
+      secure: process.env.SMTP_SECURE === "true",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM || '"Radar" <noreply@radar.com>',
+      to,
+      subject,
+      html,
+      text,
+    });
+  } else {
+    console.log(`
+[EMAIL MOCK] ---------------------------------------------------
+To: ${to}
+Subject: ${subject}
+----------------------------------------------------------------
+${text}
+----------------------------------------------------------------
+    `);
+  }
+  return true;
+}

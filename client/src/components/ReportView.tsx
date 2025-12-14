@@ -11,7 +11,9 @@ import { useToast } from "@/hooks/use-toast";
 import { AIAnalysisContent } from "@/components/AIAnalysisContent";
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { PDFReport } from "./PDFReport";
-import type { Report, Competitor } from "@shared/schema";
+import { CompetitorMap } from "./CompetitorMap";
+import { useQuery } from "@tanstack/react-query";
+import type { Report, Competitor, Business } from "@shared/schema";
 
 interface ReportViewProps {
   report: Report | null;
@@ -187,7 +189,20 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
   const { t } = useTranslation();
   const { toast } = useToast();
 
+  const { data: business } = useQuery<Business>({
+    queryKey: [`/api/businesses/${report?.businessId}`],
+    enabled: !!report?.businessId,
+  });
+
   if (!report) return null;
+
+  // Determine map center
+  let mapCenter = null;
+  if (business?.latitude && business?.longitude) {
+    mapCenter = { lat: business.latitude, lng: business.longitude };
+  } else if ((report as any).latitude && (report as any).longitude) {
+    mapCenter = { lat: (report as any).latitude, lng: (report as any).longitude };
+  }
 
   const avgRating = report.competitors.length > 0
     ? report.competitors.filter(c => c.rating).reduce((sum, c) => sum + (c.rating || 0), 0) / report.competitors.filter(c => c.rating).length
@@ -197,9 +212,9 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
   // Parse SWOT and Trends (HTML)
   const swotRegex = /<h2[^>]*>(?:SWOT ANALYSIS|ANÁLISE SWOT|ANÁLISIS DAFO|ANALYSE SWOT|SWOT-ANALYSE)<\/h2>([\s\S]*?)(?=<h2|$)/i;
   const trendsRegex = /<h2[^>]*>(?:MARKET TRENDS|TENDÊNCIAS DE MERCADO|TENDENCIAS DEL MERCADO|TENDANCES DU MARCHÉ|MARKTRENDS)<\/h2>([\s\S]*?)(?=<h2|$)/i;
-  const targetAudienceRegex = /<h2[^>]*>(?:TARGET AUDIENCE PERSONA|PERSONA DO PÚBLICO-ALVO|PERSONA DEL PÚBLICO OBJETIVO|PERSONA DU PUBLIC CIBLE|ZIELGRUPPEN-PERSONA)<\/h2>([\s\S]*?)(?=<h2|$)/i;
+  const targetAudienceRegex = /<h2[^>]*>(?:TARGET AUDIENCE|PÚBLICO-ALVO|PÚBLICO OBJETIVO|PUBLIC CIBLE|ZIELGRUPPE)<\/h2>([\s\S]*?)(?=<h2|$)/i;
   const marketingRegex = /<h2[^>]*>(?:MARKETING STRATEGY|ESTRATÉGIA DE MARKETING|ESTRATEGIA DE MARKETING|STRATÉGIE MARKETING|MARKETINGSTRATEGIE)<\/h2>([\s\S]*?)(?=<h2|$)/i;
-  const customerSentimentRegex = /<h2[^>]*>(?:CUSTOMER SENTIMENT & REVIEW INSIGHTS|SENTIMENTO DO CLIENTE & INSIGHTS DE AVALIAÇÕES|SENTIMIENTO DEL CLIENTE E INSIGHTS DE RESEÑAS|SENTIMENT CLIENT & ANALYSE DES AVIS|KUNDENSTIMMUNG & BEWERTUNGSEINBLICKE)<\/h2>([\s\S]*?)(?=<h2|$)/i;
+  const customerSentimentRegex = /<h2[^>]*>(?:CUSTOMER SENTIMENT & REVIEW INSIGHTS|SENTIMENTO DO CLIENTE & INSIGHTS DE AVALIAÇÕES|SENTIMIENTO DEL CLIENTE E INSIGHTS DE RESEÑAS|ANALYSE DES THÈMES DES AVIS|KUNDENSTIMMUNG & BEWERTUNGSEINBLICKE)<\/h2>([\s\S]*?)(?=<h2|$)/i;
 
   const swotMatch = report.aiAnalysis.match(swotRegex);
   const trendsMatch = report.aiAnalysis.match(trendsRegex);
@@ -249,7 +264,7 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
     const sections = {
       demographics: /<h3[^>]*>(?:Demographics|Demografia|Demografía|Démographie|Demografie)<\/h3>([\s\S]*?)(?=<h3|$)/i,
       psychographics: /<h3[^>]*>(?:Psychographics|Psicografia|Psicografía|Psychographie|Psychografie)<\/h3>([\s\S]*?)(?=<h3|$)/i,
-      painPoints: /<h3[^>]*>(?:Pain Points & Needs|Dores e Necessidades|Pontos de Dor e Necessidades|Puntos de Dolor y Necesidades|Points de Douleur et Besoins|Schmerzpunkte und Bedürfnisse)<\/h3>([\s\S]*?)(?=<h3|$)/i
+      painPoints: /<h3[^>]*>(?:Pain Points|Dores|Puntos de Dolor|Points de Douleur|Schmerzpunkte)<\/h3>([\s\S]*?)(?=<h3|$)/i
     };
 
     Object.entries(sections).forEach(([key, regex]) => {
@@ -953,6 +968,17 @@ Local Competitor Analyzer
                 <Building2 className="h-5 w-5 text-primary" />
                 {t("report.sections.nearbyCompetitors")} ({report.competitors.length})
               </h3>
+
+              {mapCenter && (
+                <div className="mb-6">
+                  <CompetitorMap
+                    center={mapCenter}
+                    businessName={report.businessName}
+                    competitors={report.competitors}
+                  />
+                </div>
+              )}
+
               {report.competitors.length === 0 ? (
                 <Card>
                   <CardContent className="p-6 text-center">

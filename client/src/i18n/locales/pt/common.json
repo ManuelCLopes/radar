@@ -27,7 +27,8 @@
     "tabs": {
       "businesses": "Negócios",
       "newAnalysis": "Nova Análise",
-      "history": "Histórico"
+      "history": "Histórico",
+      "map": "Mapa"
     },
     "analysis": {
       "title": "Executar Nova Análise",
@@ -46,7 +47,15 @@
     "businessCreated": "Negócio Criado",
     "businessCreatedDesc": "O negócio foi criado com sucesso.",
     "businessUpdated": "Negócio Atualizado",
-    "businessUpdatedDesc": "Os detalhes do negócio foram atualizados com sucesso."
+    "businessUpdatedDesc": "Os detalhes do negócio foram atualizados com sucesso.",
+    "map": {
+      "title": "Mapa de Concorrência",
+      "description": "Visualize a distribuição geográfica dos seus concorrentes.",
+      "selectBusiness": "Selecione um Negócio",
+      "allBusinesses": "Todos os Negócios",
+      "showingFirst": "A mostrar mapa para: {{name}}",
+      "noLocation": "Este negócio não tem dados de localização válidos."
+    }
   },
   "business": {
     "form": {

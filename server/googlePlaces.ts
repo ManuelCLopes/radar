@@ -140,7 +140,9 @@ export async function searchNearby(
           }))
           .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
           .slice(0, 5)
-        : undefined
+        : undefined,
+      latitude: place.location?.latitude,
+      longitude: place.location?.longitude
     }));
   } catch (error) {
     console.error("Error fetching from Google Places:", error);
@@ -235,6 +237,8 @@ function generateMockCompetitors(type: string, lat: number, lng: number, include
         date: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString()
       }))
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      : undefined
+      : undefined,
+    latitude: lat + (Math.random() - 0.5) * 0.02, // Random location within ~2km
+    longitude: lng + (Math.random() - 0.5) * 0.02
   }));
 }

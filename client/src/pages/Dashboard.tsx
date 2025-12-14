@@ -8,6 +8,7 @@ import { BusinessForm } from "@/components/BusinessForm";
 import { BusinessList } from "@/components/BusinessList";
 import { ReportView } from "@/components/ReportView";
 import { ReportHistory } from "@/components/ReportHistory";
+import { CompetitorMap } from "@/components/CompetitorMap";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useToast } from "@/hooks/use-toast";
@@ -63,6 +64,7 @@ export default function Dashboard() {
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const [reportViewOpen, setReportViewOpen] = useState(false);
   const [editingBusiness, setEditingBusiness] = useState<Business | null>(null);
+  const [selectedMapBusinessId, setSelectedMapBusinessId] = useState<string>("all");
 
   const [isAddOpen, setIsAddOpen] = useState(false);
 
@@ -398,6 +400,7 @@ export default function Dashboard() {
               {/* Businesses Tab */}
               <TabsContent value="businesses" className="space-y-6">
 
+                {/* Stats Section */}
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -451,23 +454,97 @@ export default function Dashboard() {
                   </Card>
                 </div>
 
-                <div className="grid gap-6 md:grid-cols-12">
-                  <div className="md:col-span-12 lg:col-span-12">
-                    <BusinessList
-                      businesses={businesses}
-                      isLoading={isLoading}
-                      onDelete={(id) => deleteBusinessMutation.mutate(id)}
-                      onGenerateReport={(id) => generateReportMutation.mutate(id)}
-                      generatingReportId={generatingReportId}
-                      deletingId={deletingId}
-                      onViewHistory={(business) => {
-                        setHistoryBusiness(business);
-                        setHistoryDialogOpen(true);
-                      }}
-                      onEdit={(business) => setEditingBusiness(business)}
-                    />
-                  </div>
-                </div>
+                {/* Business List Section */}
+                <BusinessList
+                  businesses={businesses}
+                  isLoading={isLoading}
+                  onDelete={(id) => deleteBusinessMutation.mutate(id)}
+                  onGenerateReport={(id) => generateReportMutation.mutate(id)}
+                  generatingReportId={generatingReportId}
+                  deletingId={deletingId}
+                  onViewHistory={(business) => {
+                    setHistoryBusiness(business);
+                    setHistoryDialogOpen(true);
+                  }}
+                  onEdit={(business) => setEditingBusiness(business)}
+                />
+
+                {/* Map Section */}
+                <Card className="h-full">
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <div>
+                      <CardTitle>{t("dashboard.map.title")}</CardTitle>
+                      <CardDescription>{t("dashboard.map.description")}</CardDescription>
+                    </div>
+                    <div className="w-[200px]">
+                      <Select
+                        value={selectedMapBusinessId}
+                        onValueChange={setSelectedMapBusinessId}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder={t("dashboard.map.selectBusiness")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">{t("dashboard.map.allBusinesses")}</SelectItem>
+                          {businesses.map((b) => (
+                            <SelectItem key={b.id} value={b.id}>
+                              {b.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    {businesses.length === 0 ? (
+                      <div className="text-center p-8 text-muted-foreground">
+                        {t("business.list.empty")}
+                      </div>
+                    ) : (
+                      <div className="space-y-6">
+                        {(() => {
+                          const businessesToShow = selectedMapBusinessId === "all"
+                            ? businesses
+                            : businesses.filter(b => b.id === selectedMapBusinessId);
+
+                          if (businessesToShow.length === 0) return null;
+
+                          const targetBusiness = selectedMapBusinessId === "all" ? businesses[0] : businesses.find(b => b.id === selectedMapBusinessId);
+
+                          if (!targetBusiness) return null;
+
+                          // Find latest report for this business to get competitors
+                          const latestReport = reportHistory.find(r => r.businessId === targetBusiness.id);
+
+                          if (!targetBusiness.latitude || !targetBusiness.longitude) {
+                            return (
+                              <div className="text-center p-8 text-muted-foreground">
+                                {t("dashboard.map.noLocation")}
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <div className="space-y-4">
+                              {selectedMapBusinessId === "all" && (
+                                <p className="text-sm text-muted-foreground mb-2">
+                                  {t("dashboard.map.showingFirst", { name: targetBusiness.name })}
+                                </p>
+                              )}
+                              <CompetitorMap
+                                center={{ lat: targetBusiness.latitude, lng: targetBusiness.longitude }}
+                                businessName={targetBusiness.name}
+                                competitors={latestReport?.competitors || []}
+                                radius={1500} // Default radius
+                              />
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
               </TabsContent>
 
               <TabsContent value="history">
@@ -542,6 +619,7 @@ export default function Dashboard() {
                   </CardContent>
                 </Card>
               </TabsContent>
+
             </Tabs>
           </div>
         </div>
@@ -605,18 +683,20 @@ export default function Dashboard() {
       />
 
       {/* Business History Dialog */}
-      {historyBusiness && (
-        <ReportHistory
-          business={historyBusiness}
-          open={historyDialogOpen}
-          onOpenChange={setHistoryDialogOpen}
-          onViewReport={(report) => {
-            setCurrentReport(report);
-            setReportDialogOpen(true);
-            setHistoryDialogOpen(false);
-          }}
-        />
-      )}
+      {
+        historyBusiness && (
+          <ReportHistory
+            business={historyBusiness}
+            open={historyDialogOpen}
+            onOpenChange={setHistoryDialogOpen}
+            onViewReport={(report) => {
+              setCurrentReport(report);
+              setReportDialogOpen(true);
+              setHistoryDialogOpen(false);
+            }}
+          />
+        )
+      }
     </div>
   );
 }

@@ -46,7 +46,15 @@
     "businessCreated": "Geschäft Erstellt",
     "businessCreatedDesc": "Das Geschäft wurde erfolgreich erstellt.",
     "businessUpdated": "Geschäft Aktualisiert",
-    "businessUpdatedDesc": "Die Geschäftsdetails wurden erfolgreich aktualisiert."
+    "businessUpdatedDesc": "Die Geschäftsdetails wurden erfolgreich aktualisiert.",
+    "map": {
+      "title": "Wettbewerbskarte",
+      "description": "Visualisieren Sie die geografische Verteilung Ihrer Wettbewerber.",
+      "selectBusiness": "Wählen Sie ein Unternehmen",
+      "allBusinesses": "Alle Unternehmen",
+      "showingFirst": "Karte wird angezeigt für: {{name}}",
+      "noLocation": "Dieses Unternehmen hat keine gültigen Standortdaten."
+    }
   },
   "business": {
     "form": {

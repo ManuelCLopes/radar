@@ -105,6 +105,8 @@ export interface Competitor {
   distance?: string;
   priceLevel?: string;
   reviews?: Review[];
+  latitude?: number;
+  longitude?: number;
 }
 
 export const reports = pgTable("reports", {
@@ -135,6 +137,8 @@ export const competitorSchema = z.object({
   distance: z.string().optional(),
   priceLevel: z.string().optional(),
   reviews: z.array(reviewSchema).optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
 });
 
 export const insertReportSchema = z.object({

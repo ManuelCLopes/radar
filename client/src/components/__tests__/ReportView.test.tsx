@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { ReportView } from "../ReportView";
 import { type Report } from "@shared/schema";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Mock hooks
 vi.mock("react-i18next", () => ({
@@ -99,13 +100,29 @@ describe("ReportView", () => {
         generatedAt: new Date()
     };
 
+    const queryClient = new QueryClient({
+        defaultOptions: {
+            queries: {
+                retry: false,
+            },
+        },
+    });
+
+    const renderWithClient = (ui: React.ReactElement) => {
+        return render(
+            <QueryClientProvider client={queryClient}>
+                {ui}
+            </QueryClientProvider>
+        );
+    };
+
     it("renders nothing when closed", () => {
-        render(<ReportView report={mockReport} open={false} onOpenChange={vi.fn()} />);
+        renderWithClient(<ReportView report={mockReport} open={false} onOpenChange={vi.fn()} />);
         expect(screen.queryByTestId("dialog")).not.toBeInTheDocument();
     });
 
     it("renders report details when open", () => {
-        render(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
+        renderWithClient(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
 
         expect(screen.getByText(/Test Business/)).toBeInTheDocument();
         expect(screen.getByText(/Comp 1/)).toBeInTheDocument();
@@ -116,18 +133,18 @@ describe("ReportView", () => {
     });
 
     it("renders competitor ratings", () => {
-        render(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
+        renderWithClient(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
         expect(screen.getByText("4.5")).toBeInTheDocument();
         expect(screen.getByText("3.0")).toBeInTheDocument();
     });
 
     it("should render nothing if report is null", () => {
-        const { container } = render(<ReportView report={null} open={true} onOpenChange={vi.fn()} />);
+        const { container } = renderWithClient(<ReportView report={null} open={true} onOpenChange={vi.fn()} />);
         expect(container).toBeEmptyDOMElement();
     });
 
     it("should render report content correctly", () => {
-        render(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
+        renderWithClient(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
 
         expect(screen.getByText("report.view.title")).toBeInTheDocument();
         expect(screen.getByText(/Test Business/)).toBeInTheDocument();
@@ -150,7 +167,7 @@ describe("ReportView", () => {
             return { size: 0, type: "text/html" } as any;
         });
 
-        render(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
+        renderWithClient(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
 
         const downloadBtn = screen.getByText("report.view.downloadHtml");
         fireEvent.click(downloadBtn);
@@ -166,7 +183,7 @@ describe("ReportView", () => {
     });
 
     it("should render print PDF button", () => {
-        render(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
+        renderWithClient(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
 
         expect(screen.getByTestId("button-download-pdf")).toBeInTheDocument();
         expect(screen.getByText("report.view.printPdf")).toBeInTheDocument();
@@ -176,7 +193,7 @@ describe("ReportView", () => {
         const windowOpenMock = vi.fn();
         window.open = windowOpenMock;
 
-        render(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
+        renderWithClient(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
 
         const emailBtn = screen.getByText("report.view.emailReport");
         fireEvent.click(emailBtn);
@@ -185,7 +202,7 @@ describe("ReportView", () => {
     });
 
     it("should toggle review translation", () => {
-        render(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
+        renderWithClient(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
 
         expect(screen.getByText('"Great food"')).toBeInTheDocument();
 
@@ -198,7 +215,7 @@ describe("ReportView", () => {
 
     it("should render no competitors message when list is empty", () => {
         const reportWithNoCompetitors = { ...mockReport, competitors: [] };
-        render(
+        renderWithClient(
             <ReportView
                 report={reportWithNoCompetitors}
                 open={true}
@@ -234,7 +251,7 @@ describe("ReportView", () => {
         `
         };
 
-        render(
+        renderWithClient(
             <ReportView
                 report={mockReportAdvanced}
                 open={true}

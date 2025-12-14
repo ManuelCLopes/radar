@@ -46,7 +46,15 @@
     "businessCreated": "Business Created",
     "businessCreatedDesc": "The business has been successfully created.",
     "businessUpdated": "Business Updated",
-    "businessUpdatedDesc": "The business details have been successfully updated."
+    "businessUpdatedDesc": "The business details have been successfully updated.",
+    "map": {
+      "title": "Competitor Map",
+      "description": "Visualize the geographic distribution of your competitors.",
+      "selectBusiness": "Select a Business",
+      "allBusinesses": "All Businesses",
+      "showingFirst": "Showing map for: {{name}}",
+      "noLocation": "This business does not have valid location data."
+    }
   },
   "business": {
     "form": {

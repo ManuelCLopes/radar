@@ -46,7 +46,15 @@
     "businessCreated": "Entreprise Créée",
     "businessCreatedDesc": "L'entreprise a été créée avec succès.",
     "businessUpdated": "Entreprise Mise à Jour",
-    "businessUpdatedDesc": "Les détails de l'entreprise ont été mis à jour avec succès."
+    "businessUpdatedDesc": "Les détails de l'entreprise ont été mis à jour avec succès.",
+    "map": {
+      "title": "Carte de la Concurrence",
+      "description": "Visualisez la répartition géographique de vos concurrents.",
+      "selectBusiness": "Sélectionnez une Entreprise",
+      "allBusinesses": "Toutes les Entreprises",
+      "showingFirst": "Affichage de la carte pour : {{name}}",
+      "noLocation": "Cette entreprise n'a pas de données de localisation valides."
+    }
   },
   "business": {
     "form": {
