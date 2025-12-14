@@ -18,7 +18,7 @@ const languages = [
 
 export function LanguageSelector() {
   const { i18n, t } = useTranslation();
-  const currentLang = languages.find((l) => l.code === i18n.language) || languages[0];
+  const currentLang = languages.find((l) => i18n.language?.startsWith(l.code)) || languages[0];
 
   const handleLanguageChange = (langCode: string) => {
     i18n.changeLanguage(langCode);

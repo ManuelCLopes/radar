@@ -5,10 +5,12 @@ import { LanguageSelector } from "../LanguageSelector";
 
 // Mock react-i18next
 const mockChangeLanguage = vi.fn();
+let mockLanguage = "en";
+
 vi.mock("react-i18next", () => ({
     useTranslation: () => ({
         i18n: {
-            language: "en",
+            language: mockLanguage,
             changeLanguage: mockChangeLanguage,
         },
         t: (key: string) => key,
@@ -18,6 +20,16 @@ vi.mock("react-i18next", () => ({
 describe("LanguageSelector", () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        mockLanguage = "en";
+    });
+
+    it("should handle regional language codes (e.g. pt-BR)", () => {
+        mockLanguage = "pt-BR";
+        render(<LanguageSelector />);
+
+        // Should show PT
+        const badges = screen.getAllByText("PT");
+        expect(badges.length).toBeGreaterThan(0);
     });
 
     it("should render language selector button", () => {
