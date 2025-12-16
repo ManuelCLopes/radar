@@ -572,5 +572,55 @@
     },
     "thankYou": "Vielen Dank!",
     "thankYouMessage": "Ihre Unterstützung macht es möglich, Radar für alle kostenlos zu halten"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "subtitle": "Verwalten Sie Ihr Konto und Ihre Einstellungen",
+    "account": {
+      "title": "Kontoinformationen",
+      "description": "Aktualisieren Sie Ihre persönlichen Daten und Anmeldeinformationen",
+      "name": "Name",
+      "email": "E-Mail",
+      "currentPassword": "Aktuelles Passwort",
+      "newPassword": "Neues Passwort",
+      "confirmPassword": "Neues Passwort bestätigen",
+      "save": "Änderungen speichern",
+      "cancel": "Abbrechen",
+      "edit": "Profil bearbeiten"
+    },
+    "support": {
+      "title": "Radar unterstützen",
+      "description": "Radar ist zu 100% kostenlos und Open Source. Helfen Sie, das Projekt am Leben zu erhalten!",
+      "message": "<strong>Alle Funktionen</strong> sind für jeden freigeschaltet. Wenn Radar Ihnen hilft, ziehen Sie eine Spende in Betracht.",
+      "button": "Unterstützungsoptionen anzeigen",
+      "footer": "💜 GitHub Sponsors • ☕ Ko-fi • 🎁 Buy Me a Coffee"
+    },
+    "danger": {
+      "title": "Gefahrenzone",
+      "description": "Irreversible Aktionen bezüglich Ihres Kontos",
+      "deleteAccount": "Konto löschen",
+      "deleteDesc": "Löschen Sie Ihr Konto und alle Daten dauerhaft",
+      "button": "Konto löschen",
+      "dialog": {
+        "title": "Konto löschen",
+        "description": "Diese Aktion ist <strong class=\"text-destructive\">dauerhaft und irreversibel</strong>. Alle Ihre Daten, Berichte und Einstellungen werden gelöscht. Sind Sie sicher, dass Sie fortfahren möchten?",
+        "cancel": "Abbrechen",
+        "confirm": "Ja, Konto löschen"
+      }
+    },
+    "toast": {
+      "profileUpdated": {
+        "title": "Profil aktualisiert",
+        "description": "Ihre Informationen wurden erfolgreich gespeichert."
+      },
+      "accountDeleted": {
+        "title": "Konto gelöscht",
+        "description": "Ihr Konto wurde dauerhaft entfernt."
+      },
+      "error": {
+        "title": "Fehler",
+        "delete": "Konto konnte nicht entfernt werden. Bitte versuchen Sie es erneut."
+      }
+    }
   }
 }

@@ -50,8 +50,8 @@ export default function SettingsPage() {
 
     const handleSaveProfile = async () => {
         toast({
-            title: "Perfil atualizado",
-            description: "As suas informações foram guardadas com sucesso.",
+            title: t('settings.toast.profileUpdated.title'),
+            description: t('settings.toast.profileUpdated.description'),
         });
         setIsEditing(false);
     };
@@ -62,8 +62,8 @@ export default function SettingsPage() {
             await apiRequest("DELETE", "/api/user");
 
             toast({
-                title: "Conta removida",
-                description: "A sua conta foi permanentemente removida.",
+                title: t('settings.toast.accountDeleted.title'),
+                description: t('settings.toast.accountDeleted.description'),
                 variant: "destructive",
             });
 
@@ -72,8 +72,8 @@ export default function SettingsPage() {
             setLocation("/");
         } catch (error) {
             toast({
-                title: "Erro",
-                description: "Não foi possível remover a conta. Tente novamente.",
+                title: t('settings.toast.error.title'),
+                description: t('settings.toast.error.delete'),
                 variant: "destructive",
             });
             setIsDeleting(false);
@@ -111,9 +111,9 @@ export default function SettingsPage() {
 
             <main className="container max-w-4xl mx-auto px-4 py-8 space-y-8">
                 <div>
-                    <h1 className="text-3xl font-bold">Definições</h1>
+                    <h1 className="text-3xl font-bold">{t('settings.title')}</h1>
                     <p className="text-muted-foreground mt-2">
-                        Gerir a sua conta e preferências
+                        {t('settings.subtitle')}
                     </p>
                 </div>
 
@@ -122,15 +122,15 @@ export default function SettingsPage() {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <User className="h-5 w-5" />
-                            Informação da Conta
+                            {t('settings.account.title')}
                         </CardTitle>
                         <CardDescription>
-                            Atualize os seus dados pessoais e credenciais
+                            {t('settings.account.description')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="name">Nome</Label>
+                            <Label htmlFor="name">{t('settings.account.name')}</Label>
                             <Input
                                 id="name"
                                 value={formData.name}
@@ -140,7 +140,7 @@ export default function SettingsPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
+                            <Label htmlFor="email">{t('settings.account.email')}</Label>
                             <Input
                                 id="email"
                                 type="email"
@@ -154,7 +154,7 @@ export default function SettingsPage() {
                             <>
                                 <Separator />
                                 <div className="space-y-2">
-                                    <Label htmlFor="current-password">Password Atual</Label>
+                                    <Label htmlFor="current-password">{t('settings.account.currentPassword')}</Label>
                                     <div className="relative">
                                         <Input
                                             id="current-password"
@@ -173,7 +173,7 @@ export default function SettingsPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="new-password">Nova Password</Label>
+                                    <Label htmlFor="new-password">{t('settings.account.newPassword')}</Label>
                                     <div className="relative">
                                         <Input
                                             id="new-password"
@@ -192,7 +192,7 @@ export default function SettingsPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="confirm-password">Confirmar Nova Password</Label>
+                                    <Label htmlFor="confirm-password">{t('settings.account.confirmPassword')}</Label>
                                     <div className="relative">
                                         <Input
                                             id="confirm-password"
@@ -215,13 +215,13 @@ export default function SettingsPage() {
                         <div className="flex gap-2 pt-4">
                             {isEditing ? (
                                 <>
-                                    <Button onClick={handleSaveProfile}>Guardar Alterações</Button>
+                                    <Button onClick={handleSaveProfile}>{t('settings.account.save')}</Button>
                                     <Button variant="outline" onClick={() => setIsEditing(false)}>
-                                        Cancelar
+                                        {t('settings.account.cancel')}
                                     </Button>
                                 </>
                             ) : (
-                                <Button onClick={() => setIsEditing(true)}>Editar Perfil</Button>
+                                <Button onClick={() => setIsEditing(true)}>{t('settings.account.edit')}</Button>
                             )}
                         </div>
                     </CardContent>
@@ -232,27 +232,24 @@ export default function SettingsPage() {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Heart className="h-5 w-5 text-red-500" />
-                            Apoiar o Radar
+                            {t('settings.support.title')}
                         </CardTitle>
                         <CardDescription>
-                            O Radar é 100% gratuito e open source. Ajude a manter o projeto!
+                            {t('settings.support.description')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950 rounded-lg">
-                            <p className="text-sm mb-3">
-                                <strong>Todas as funcionalidades</strong> estão desbloqueadas para todos.
-                                Se o Radar te ajuda, considera apoiar com uma doação.
-                            </p>
+                            <p className="text-sm mb-3" dangerouslySetInnerHTML={{ __html: t('settings.support.message') }} />
                             <Link href="/support">
                                 <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
                                     <Heart className="mr-2 h-4 w-4" />
-                                    Ver Opções de Apoio
+                                    {t('settings.support.button')}
                                 </Button>
                             </Link>
                         </div>
                         <div className="text-sm text-muted-foreground">
-                            <p>💜 GitHub Sponsors • ☕ Ko-fi • 🎁 Buy Me a Coffee</p>
+                            <p>{t('settings.support.footer')}</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -262,24 +259,24 @@ export default function SettingsPage() {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-destructive">
                             <Shield className="h-5 w-5" />
-                            Zona de Perigo
+                            {t('settings.danger.title')}
                         </CardTitle>
                         <CardDescription>
-                            Ações irreversíveis relacionadas com a sua conta
+                            {t('settings.danger.description')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="font-semibold">Remover Conta</p>
-                                <p className="text-sm text-muted-foreground">Eliminar permanentemente a sua conta e todos os dados</p>
+                                <p className="font-semibold">{t('settings.danger.deleteAccount')}</p>
+                                <p className="text-sm text-muted-foreground">{t('settings.danger.deleteDesc')}</p>
                             </div>
                             <Button
                                 variant="destructive"
                                 onClick={() => setShowDeleteConfirm(true)}
                             >
                                 <Trash2 className="h-4 w-4 mr-2" />
-                                Eliminar Conta
+                                {t('settings.danger.button')}
                             </Button>
                         </div>
                     </CardContent>
@@ -289,20 +286,16 @@ export default function SettingsPage() {
                 <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
                     <AlertDialogContent>
                         <AlertDialogHeader>
-                            <AlertDialogTitle>Eliminar Conta</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                Esta ação é <strong className="text-destructive">permanente e irreversível</strong>.
-                                Todos os seus dados, relatórios e configurações serão eliminados.
-                                Tem a certeza absoluta que pretende continuar?
-                            </AlertDialogDescription>
+                            <AlertDialogTitle>{t('settings.danger.dialog.title')}</AlertDialogTitle>
+                            <AlertDialogDescription dangerouslySetInnerHTML={{ __html: t('settings.danger.dialog.description') }} />
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogCancel>{t('settings.danger.dialog.cancel')}</AlertDialogCancel>
                             <AlertDialogAction
                                 onClick={handleDeleteAccount}
                                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                             >
-                                Sim, Eliminar Conta
+                                {t('settings.danger.dialog.confirm')}
                             </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>

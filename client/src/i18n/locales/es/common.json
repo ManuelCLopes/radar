@@ -570,5 +570,55 @@
     },
     "thankYou": "¡Gracias!",
     "thankYouMessage": "Tu apoyo hace posible mantener Radar gratuito para todos"
+  },
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Gestiona tu cuenta y preferencias",
+    "account": {
+      "title": "Información de la Cuenta",
+      "description": "Actualiza tus datos personales y credenciales",
+      "name": "Nombre",
+      "email": "Correo electrónico",
+      "currentPassword": "Contraseña Actual",
+      "newPassword": "Nueva Contraseña",
+      "confirmPassword": "Confirmar Nueva Contraseña",
+      "save": "Guardar Cambios",
+      "cancel": "Cancelar",
+      "edit": "Editar Perfil"
+    },
+    "support": {
+      "title": "Apoyar a Radar",
+      "description": "Radar es 100% gratuito y de código abierto. ¡Ayuda a mantener el proyecto!",
+      "message": "<strong>Todas las funciones</strong> están desbloqueadas para todos. Si Radar te ayuda, considera apoyar con una donación.",
+      "button": "Ver Opciones de Apoyo",
+      "footer": "💜 GitHub Sponsors • ☕ Ko-fi • 🎁 Buy Me a Coffee"
+    },
+    "danger": {
+      "title": "Zona de Peligro",
+      "description": "Acciones irreversibles relacionadas con tu cuenta",
+      "deleteAccount": "Eliminar Cuenta",
+      "deleteDesc": "Eliminar permanentemente tu cuenta y todos los datos",
+      "button": "Eliminar Cuenta",
+      "dialog": {
+        "title": "Eliminar Cuenta",
+        "description": "Esta acción es <strong class=\"text-destructive\">permanente e irreversible</strong>. Todos tus datos, informes y configuraciones serán eliminados. ¿Estás absolutamente seguro de que quieres continuar?",
+        "cancel": "Cancelar",
+        "confirm": "Sí, Eliminar Cuenta"
+      }
+    },
+    "toast": {
+      "profileUpdated": {
+        "title": "Perfil actualizado",
+        "description": "Tu información se ha guardado correctamente."
+      },
+      "accountDeleted": {
+        "title": "Cuenta eliminada",
+        "description": "Tu cuenta ha sido eliminada permanentemente."
+      },
+      "error": {
+        "title": "Error",
+        "delete": "No se pudo eliminar la cuenta. Por favor, inténtalo de nuevo."
+      }
+    }
   }
 }

@@ -74,8 +74,8 @@ describe('SettingsPage', () => {
     describe('Donation Card (Replaces Plan Selection)', () => {
         it('should display donation/support card', () => {
             renderSettingsPage();
-            // Test that donation card exists (in Portuguese)
-            expect(screen.getByText(/Apoiar o Radar/i)).toBeInTheDocument();
+            // Test that donation card exists (in English)
+            expect(screen.getByText(/Support Radar/i)).toBeInTheDocument();
         });
 
         it('should have link to support page', () => {
@@ -90,7 +90,7 @@ describe('SettingsPage', () => {
         it('should display heart icon in donation card', () => {
             renderSettingsPage();
             // Heart icon should be rendered
-            const donationSection = screen.getByText(/Apoiar o Radar/i).closest('div');
+            const donationSection = screen.getByText(/Support Radar/i).closest('div');
             expect(donationSection).toBeInTheDocument();
         });
     });
@@ -130,7 +130,7 @@ describe('SettingsPage', () => {
     describe('Danger Zone', () => {
         it('should display delete account button', () => {
             renderSettingsPage();
-            expect(screen.getByText(/Eliminar Conta/i)).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /Delete Account/i })).toBeInTheDocument();
         });
     });
 });

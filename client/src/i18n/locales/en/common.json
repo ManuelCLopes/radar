@@ -572,5 +572,55 @@
     },
     "thankYou": "Thank You!",
     "thankYouMessage": "Your support makes it possible to keep Radar free for everyone"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account and preferences",
+    "account": {
+      "title": "Account Information",
+      "description": "Update your personal details and credentials",
+      "name": "Name",
+      "email": "Email",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "edit": "Edit Profile"
+    },
+    "support": {
+      "title": "Support Radar",
+      "description": "Radar is 100% free and open source. Help keep the project alive!",
+      "message": "<strong>All features</strong> are unlocked for everyone. If Radar helps you, consider supporting with a donation.",
+      "button": "View Support Options",
+      "footer": "💜 GitHub Sponsors • ☕ Ko-fi • 🎁 Buy Me a Coffee"
+    },
+    "danger": {
+      "title": "Danger Zone",
+      "description": "Irreversible actions related to your account",
+      "deleteAccount": "Delete Account",
+      "deleteDesc": "Permanently delete your account and all data",
+      "button": "Delete Account",
+      "dialog": {
+        "title": "Delete Account",
+        "description": "This action is <strong class=\"text-destructive\">permanent and irreversible</strong>. All your data, reports, and settings will be deleted. Are you absolutely sure you want to continue?",
+        "cancel": "Cancel",
+        "confirm": "Yes, Delete Account"
+      }
+    },
+    "toast": {
+      "profileUpdated": {
+        "title": "Profile updated",
+        "description": "Your information has been saved successfully."
+      },
+      "accountDeleted": {
+        "title": "Account deleted",
+        "description": "Your account has been permanently removed."
+      },
+      "error": {
+        "title": "Error",
+        "delete": "Could not remove account. Please try again."
+      }
+    }
   }
 }

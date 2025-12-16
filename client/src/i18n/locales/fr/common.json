@@ -570,5 +570,55 @@
     },
     "thankYou": "Merci !",
     "thankYouMessage": "Votre soutien rend possible de garder Radar gratuit pour tous"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Gérer votre compte et vos préférences",
+    "account": {
+      "title": "Informations du Compte",
+      "description": "Mettez à jour vos informations personnelles et vos identifiants",
+      "name": "Nom",
+      "email": "Email",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le nouveau mot de passe",
+      "save": "Enregistrer les modifications",
+      "cancel": "Annuler",
+      "edit": "Modifier le profil"
+    },
+    "support": {
+      "title": "Soutenir Radar",
+      "description": "Radar est 100% gratuit et open source. Aidez à maintenir le projet !",
+      "message": "<strong>Toutes les fonctionnalités</strong> sont débloquées pour tout le monde. Si Radar vous aide, envisagez de soutenir avec un don.",
+      "button": "Voir les options de soutien",
+      "footer": "💜 GitHub Sponsors • ☕ Ko-fi • 🎁 Buy Me a Coffee"
+    },
+    "danger": {
+      "title": "Zone de Danger",
+      "description": "Actions irréversibles liées à votre compte",
+      "deleteAccount": "Supprimer le compte",
+      "deleteDesc": "Supprimer définitivement votre compte et toutes les données",
+      "button": "Supprimer le compte",
+      "dialog": {
+        "title": "Supprimer le compte",
+        "description": "Cette action est <strong class=\"text-destructive\">permanente et irréversible</strong>. Toutes vos données, rapports et paramètres seront supprimés. Êtes-vous absolument sûr de vouloir continuer ?",
+        "cancel": "Annuler",
+        "confirm": "Oui, supprimer le compte"
+      }
+    },
+    "toast": {
+      "profileUpdated": {
+        "title": "Profil mis à jour",
+        "description": "Vos informations ont été enregistrées avec succès."
+      },
+      "accountDeleted": {
+        "title": "Compte supprimé",
+        "description": "Votre compte a été définitivement supprimé."
+      },
+      "error": {
+        "title": "Erreur",
+        "delete": "Impossible de supprimer le compte. Veuillez réessayer."
+      }
+    }
   }
 }
