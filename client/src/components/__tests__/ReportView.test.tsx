@@ -199,6 +199,11 @@ describe("ReportView", () => {
         fireEvent.click(emailBtn);
 
         expect(windowOpenMock).toHaveBeenCalledWith(expect.stringContaining("mailto:"), "_blank");
+
+        // Verify body contains plain text converted from HTML
+        const openCall = windowOpenMock.mock.calls[0][0];
+        expect(openCall).toContain("Main%20analysis%20content%20here"); // Plain text
+        expect(openCall).not.toContain("%3Cp%3E"); // No <p> tags
     });
 
     it("should toggle review translation", () => {

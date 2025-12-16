@@ -649,8 +649,31 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
     });
   };
 
+  const convertHtmlToPlainText = (html: string) => {
+    // Replace headers with capitalized text and newlines
+    let text = html
+      .replace(/<h[1-6][^>]*>(.*?)<\/h[1-6]>/gi, '\n\n$1\n-------------------\n')
+      // Replace list items with bullet points
+      .replace(/<li[^>]*>(.*?)<\/li>/gi, '\n• $1')
+      // Replace paragraphs with double newlines
+      .replace(/<p[^>]*>(.*?)<\/p>/gi, '\n\n$1')
+      // Replace strong/bold tags with asterisks
+      .replace(/<strong[^>]*>(.*?)<\/strong>/gi, '*$1*')
+      .replace(/<b[^>]*>(.*?)<\/b>/gi, '*$1*')
+      // Remove all other tags
+      .replace(/<[^>]+>/g, '')
+      // Fix multiple newlines
+      .replace(/\n\s*\n/g, '\n\n')
+      .trim();
+
+    return text;
+  };
+
   const handleEmail = () => {
     const subject = encodeURIComponent(`${t("report.view.title")} - ${report.businessName}`);
+
+    const plainTextAnalysis = convertHtmlToPlainText(report.aiAnalysis);
+
     const body = encodeURIComponent(`
 ${t("report.view.title")} - ${report.businessName}
 
@@ -660,7 +683,7 @@ ${t("report.stats.avgRating")}: ${report.competitors.length > 0
         : 'N/A'}
 
 ${t("report.sections.aiAnalysis")}:
-${report.aiAnalysis}
+${plainTextAnalysis}
 
 ---
 Local Competitor Analyzer
