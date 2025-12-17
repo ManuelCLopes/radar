@@ -120,7 +120,7 @@ export default function SupportPage() {
 
                             {/* Ko-fi */}
                             <a
-                                href="https://ko-fi.com/radarapp"
+                                href="https://ko-fi.com/manuel_clopes"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="block"
@@ -139,7 +139,7 @@ export default function SupportPage() {
 
                             {/* Buy Me a Coffee */}
                             <a
-                                href="https://buymeacoffee.com/radarapp"
+                                href="https://buymeacoffee.com/manuel_clopes"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="block"
