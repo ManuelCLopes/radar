@@ -123,7 +123,7 @@ export async function registerRoutes(
   // Protected API routes
   app.get("/api/businesses", isAuthenticated, async (req, res) => {
     try {
-      const businesses = await storage.listBusinesses(Number((req.user as AppUser).id));
+      const businesses = await storage.listBusinesses((req.user as AppUser).id);
       res.json(businesses);
     } catch (error) {
       console.error("Error listing businesses:", error);
