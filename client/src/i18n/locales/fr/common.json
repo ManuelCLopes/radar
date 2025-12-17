@@ -418,10 +418,14 @@
     },
     "sampleSection": {
       "title": "Un petit échantillon de ce que vous recevrez",
-      "description": "Dans l'image d'exemple, vous voyez un rapport pour un restaurant dans un rayon de 3 km :",
+      "description": "Explorez l'exemple ci-contre pour voir les principaux insights que vous recevrez : carte des concurrents, analyse SWOT, tendances du marché et analyse des sentiments. Chaque rapport est personnalisé pour votre entreprise et envoyé directement à votre email.",
       "features": {
-        "list": "– liste des concurrents à proximité\n– graphiques simples montrant la 'force de la marque' dans la zone\n– résumé de ce que les clients louent le plus",
-        "personalized": "Chaque rapport est personnalisé pour votre entreprise et envoyé en PDF à votre email."
+        "keyPoints": {
+          "map": "Carte Interactive des Concurrents",
+          "swot": "Analyse SWOT",
+          "trends": "Tendances du Marché Local",
+          "sentiment": "Analyse du Sentiment Client"
+        }
       }
     },
     "targetAudience": {

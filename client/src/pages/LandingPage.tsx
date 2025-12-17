@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, LogIn, Search, Check, X, User, LayoutDashboard, ChevronLeft, ChevronRight, Heart, Sparkles, Rocket } from "lucide-react";
+import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, LogIn, Search, Check, X, User, LayoutDashboard, ChevronLeft, ChevronRight, Heart, Sparkles, Rocket, Target, TrendingUp } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -404,18 +404,33 @@ export default function LandingPage() {
               <p>
                 {t('landing.sampleSection.description')}
               </p>
-              <ul>
-                {t('landing.sampleSection.features.list').split('\n').map((item, i) => (
-                  <li key={i}>{item}</li>
-                ))}
-              </ul>
-              <p>
-                {t('landing.sampleSection.features.personalized')}
-              </p>
+
             </div>
-            <div className="sample-image-placeholder" data-testid="sample-image-placeholder">
-              Screenshot do relatório<br />
-              (imagem de exemplo)
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 w-full max-w-lg" data-testid="sample-features-grid">
+              <div className="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
+                  <Map className="w-5 h-5" />
+                </div>
+                <span className="font-medium text-gray-700 dark:text-gray-200">{t('landing.sampleSection.features.keyPoints.map')}</span>
+              </div>
+              <div className="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-purple-600 dark:text-purple-400">
+                  <Target className="w-5 h-5" />
+                </div>
+                <span className="font-medium text-gray-700 dark:text-gray-200">{t('landing.sampleSection.features.keyPoints.swot')}</span>
+              </div>
+              <div className="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600 dark:text-green-400">
+                  <TrendingUp className="w-5 h-5" />
+                </div>
+                <span className="font-medium text-gray-700 dark:text-gray-200">{t('landing.sampleSection.features.keyPoints.trends')}</span>
+              </div>
+              <div className="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg text-orange-600 dark:text-orange-400">
+                  <MessageSquare className="w-5 h-5" />
+                </div>
+                <span className="font-medium text-gray-700 dark:text-gray-200">{t('landing.sampleSection.features.keyPoints.sentiment')}</span>
+              </div>
             </div>
           </div>
         </div>

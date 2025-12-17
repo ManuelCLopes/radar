@@ -405,10 +405,14 @@
     },
     "sampleSection": {
       "title": "A small sample of what you'll receive",
-      "description": "In the example image, you see a report for a restaurant within a 3 km radius:",
+      "description": "Explore the example to the side to see the key insights you will receive: competitor map, SWOT analysis, market trends, and sentiment analysis. Each report is personalized for your business and sent directly to your email.",
       "features": {
-        "list": "– list of nearby competitors\n– simple charts showing 'brand strength' in the area\n– summary of what customers praise most",
-        "personalized": "Each report is personalized for your business and sent as PDF to your email."
+        "keyPoints": {
+          "map": "Interactive Competitor Map",
+          "swot": "SWOT Analysis",
+          "trends": "Local Market Trends",
+          "sentiment": "Customer Sentiment Analysis"
+        }
       }
     },
     "targetAudience": {

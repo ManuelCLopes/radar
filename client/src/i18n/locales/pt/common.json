@@ -365,23 +365,23 @@
   "landing": {
     "brandName": "Radar Local",
     "heroFeatures": {
-      "competitors": "Concorrentes num raio à tua escolha",
+      "competitors": "Concorrentes num raio à sua escolha",
       "ratings": "Ratings, reviews e preços",
-      "monthlyReport": "Relatório mensal no teu email"
+      "monthlyReport": "Relatório mensal no seu email"
     },
     "howItWorks": {
       "title": "Como funciona?",
       "step1": {
-        "title": "Adiciona o teu negócio",
+        "title": "Adicione o seu negócio",
         "description": "Nome, morada e tipo de negócio. Validamos a localização para garantir dados precisos."
       },
       "step2": {
-        "title": "Recebe um relatório mensal",
-        "description": "Enviado automaticamente para o teu email. Não precisas de iniciar sessão nem verificar nada."
+        "title": "Receba um relatório mensal",
+        "description": "Enviado automaticamente para o seu email. Não precisa de iniciar sessão nem verificar nada."
       },
       "step3": {
-        "title": "Toma melhores decisões",
-        "description": "Usa os insights para melhorar o teu negócio e manteres-te à frente da concorrência."
+        "title": "Tome melhores decisões",
+        "description": "Use os insights para melhorar o seu negócio e manter-se à frente da concorrência."
       }
     },
     "reportFeatures": {
@@ -389,11 +389,11 @@
       "subtitle": "Não é mais uma folha de Excel. É um resumo que qualquer pessoa do staff consegue entender.",
       "map": {
         "title": "Mapa de concorrência local",
-        "description": "Vê quem está à tua volta, a que distância, e como se comparam."
+        "description": "Veja quem está à sua volta, a que distância, e como se comparam."
       },
       "comparison": {
-        "title": "Comparação directa contigo",
-        "description": "Ratings, número de reviews, nível de preço. Sabe onde estás posicionado."
+        "title": "Comparação direta com o seu negócio",
+        "description": "Ratings, número de reviews, nível de preço. Saiba onde está posicionado."
       },
       "reviews": {
         "title": "Análise de temas das reviews",
@@ -405,11 +405,15 @@
       }
     },
     "sampleSection": {
-      "title": "Uma pequena amostra do que vais receber",
-      "description": "Na imagem de exemplo, vês um relatório para um restaurante num raio de 3 km:",
+      "title": "Uma pequena amostra do que irá receber",
+      "description": "Explore o exemplo ao lado para ver os principais insights que receberá: mapa de concorrentes, análise SWOT, tendências de mercado e análise de sentimento. Cada relatório é personalizado para o seu negócio e enviado diretamente para o seu email.",
       "features": {
-        "list": "– lista de concorrentes próximos\n– gráficos simples com 'força da marca' na zona\n– resumo do que os clientes mais elogiam",
-        "personalized": "Cada relatório é personalizado para o teu negócio e enviado em PDF para o teu email."
+        "keyPoints": {
+          "map": "Mapa Interativo de Concorrentes",
+          "swot": "Análise SWOT",
+          "trends": "Tendências de Mercado Local",
+          "sentiment": "Análise de Sentimento do Cliente"
+        }
       }
     },
     "targetAudience": {
@@ -420,12 +424,12 @@
       "fitness": "Ginásios e estúdios de treino",
       "hotels": "Pequenos hotéis, alojamentos locais, guesthouses",
       "retail": "Lojas físicas que competem em zonas comerciais",
-      "conclusion": "Se tens um negócio local e tens concorrência à tua volta, o Radar foi feito para ti."
+      "conclusion": "Se tem um negócio local e tem concorrência à sua volta, o Radar foi feito para si."
     },
     "pricing": {
       "title": "Planos e Preços",
-      "subtitle": "Encontra o plano ideal para o teu negócio — quer estejas a começar ou a gerir múltiplas localizações.",
-      "noContracts": "Sem contratos. Cancela quando quiseres.",
+      "subtitle": "Encontra o plano ideal para o seu negócio — quer esteja a começar ou a gerir múltiplas localizações.",
+      "noContracts": "Sem contratos. Cancele quando quiser.",
       "perMonth": "/mês",
       "essential": {
         "subtitle": "Perfeito para pequenos negócios que querem começar a analisar a concorrência de forma simples.",
@@ -482,19 +486,19 @@
       },
       "q2": {
         "question": "Preciso de instalar alguma coisa?",
-        "answer": "Não. Tudo funciona por email. Recebes apenas o relatório na tua caixa de entrada."
+        "answer": "Não. Tudo funciona por email. Recebe apenas o relatório na sua caixa de entrada."
       },
       "q3": {
         "question": "Isto substitui um consultor de marketing?",
-        "answer": "Não. É uma ferramenta para te poupar tempo. Para estratégia e execução, um consultor acrescenta mais valor."
+        "answer": "Não. É uma ferramenta para lhe poupar tempo. Para estratégia e execução, um consultor acrescenta mais valor."
       },
       "q4": {
         "question": "Posso cancelar quando quiser?",
-        "answer": "Sim. Sem compromisso. Cancela quando quiseres, directamente do teu painel."
+        "answer": "Sim. Sem compromisso. Cancele quando quiser, directamente do seu painel."
       },
       "q5": {
         "question": "Posso experimentar antes de pagar?",
-        "answer": "Sim. Pede uma amostra de relatório por email e enviamos-te um exemplo para a tua zona."
+        "answer": "Sim. Pede uma amostra de relatório por email e enviamos-lhe um exemplo para a sua zona."
       }
     },
     "support": {
@@ -504,7 +508,7 @@
       "footer": "Obrigado pelo seu apoio"
     },
     "cta": {
-      "existingAccount": "Já tens conta? Acede ao teu painel aqui"
+      "existingAccount": "Já tem conta? Aceda ao seu painel aqui"
     }
   },
   "locationStatus": {
@@ -592,7 +596,7 @@
     "support": {
       "title": "Apoiar o Radar",
       "description": "O Radar é 100% gratuito e open source. Ajude a manter o projeto!",
-      "message": "<strong>Todas as funcionalidades</strong> estão desbloqueadas para todos. Se o Radar te ajuda, considera apoiar com uma doação.",
+      "message": "<strong>Todas as funcionalidades</strong> estão desbloqueadas para todos. Se o Radar ajuda o seu negócio, considera apoiar com uma doação.",
       "button": "Ver Opções de Apoio",
       "footer": "💜 GitHub Sponsors • ☕ Ko-fi • 🎁 Buy Me a Coffee"
     },

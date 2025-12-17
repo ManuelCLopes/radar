@@ -468,10 +468,14 @@
     },
     "sampleSection": {
       "title": "Eine kleine Probe dessen, was Sie erhalten werden",
-      "description": "Im Beispielbild sehen Sie einen Bericht für ein Restaurant in einem Radius von 3 km:",
+      "description": "Erkunden Sie das nebenstehende Beispiel, um die wichtigsten Erkenntnisse zu sehen, die Sie erhalten werden: Wettbewerberkarte, SWOT-Analyse, Markttrends und Stimmungsanalyse. Jeder Bericht ist auf Ihr Unternehmen zugeschnitten und wird direkt an Ihre E-Mail gesendet.",
       "features": {
-        "list": "– Liste der Wettbewerber in der Nähe\n– einfache Diagramme zur 'Markenstärke' in der Gegend\n– Zusammenfassung dessen, was Kunden am meisten loben",
-        "personalized": "Jeder Bericht ist auf Ihr Geschäft zugeschnitten und wird als PDF an Ihre E-Mail gesendet."
+        "keyPoints": {
+          "map": "Interaktive Wettbewerberkarte",
+          "swot": "SWOT-Analyse",
+          "trends": "Lokale Markttrends",
+          "sentiment": "Kundenstimmungsanalyse"
+        }
       }
     },
     "targetAudience": {
