@@ -195,6 +195,10 @@
       "deleteBusiness": "Échec de la suppression de l'entreprise",
       "generateReport": "Échec de la génération du rapport",
       "fetchReports": "Échec du chargement des rapports"
+    },
+    "linkCopied": {
+      "title": "Lien copié !",
+      "description": "Le lien vers la page d'accueil a été copié dans le presse-papiers."
     }
   },
   "language": {

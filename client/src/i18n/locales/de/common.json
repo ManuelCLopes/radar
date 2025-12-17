@@ -245,6 +245,10 @@
       "deleteBusiness": "Fehler beim Löschen des Unternehmens",
       "generateReport": "Fehler beim Erstellen des Berichts",
       "fetchReports": "Fehler beim Laden der Berichte"
+    },
+    "linkCopied": {
+      "title": "Link kopiert!",
+      "description": "Der Link zur Startseite wurde in die Zwischenablage kopiert."
     }
   },
   "language": {

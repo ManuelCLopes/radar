@@ -196,6 +196,10 @@
       "deleteBusiness": "Falha ao eliminar negócio",
       "generateReport": "Falha ao gerar relatório",
       "fetchReports": "Falha ao carregar relatórios"
+    },
+    "linkCopied": {
+      "title": "Link copiado!",
+      "description": "O link para a página inicial foi copiado para a área de transferência."
     }
   },
   "language": {

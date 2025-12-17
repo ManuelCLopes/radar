@@ -195,6 +195,10 @@
       "deleteBusiness": "Error al eliminar negocio",
       "generateReport": "Error al generar informe",
       "fetchReports": "Error al cargar informes"
+    },
+    "linkCopied": {
+      "title": "¡Enlace copiado!",
+      "description": "El enlace a la página de inicio se ha copiado al portapapeles."
     }
   },
   "language": {

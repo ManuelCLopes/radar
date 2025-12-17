@@ -4,9 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { BarChart3 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useToast } from "@/hooks/use-toast";
 
 export default function SupportPage() {
     const { t } = useTranslation();
+    const { toast } = useToast();
+
+    const handleShare = () => {
+        navigator.clipboard.writeText(window.location.origin);
+        toast({
+            title: t('toast.linkCopied.title'),
+            description: t('toast.linkCopied.description'),
+        });
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -195,7 +205,10 @@ export default function SupportPage() {
                                     <div className="text-sm text-muted-foreground">{t('support.other.suggestFeaturesDesc')}</div>
                                 </div>
                             </a>
-                            <div className="p-4 border rounded-lg hover:bg-accent transition-colors flex items-center gap-3 cursor-pointer">
+                            <div
+                                onClick={handleShare}
+                                className="p-4 border rounded-lg hover:bg-accent transition-colors flex items-center gap-3 cursor-pointer"
+                            >
                                 <Share2 className="h-5 w-5 text-green-500" />
                                 <div>
                                     <div className="font-semibold">{t('support.other.shareWithFriends')}</div>

@@ -195,6 +195,10 @@
       "deleteBusiness": "Failed to delete business",
       "generateReport": "Failed to generate report",
       "fetchReports": "Failed to load reports"
+    },
+    "linkCopied": {
+      "title": "Link copied!",
+      "description": "The home page link has been copied to your clipboard."
     }
   },
   "language": {
