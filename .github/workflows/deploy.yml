@@ -45,7 +45,8 @@ jobs:
           deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
           if [ -z "$deploy_url" ]; then
-            echo "RENDER_DEPLOY_HOOK_URL not set. Please add it to GitHub Secrets to enable auto-deployment."
-            exit 0
+            echo "Error: RENDER_DEPLOY_HOOK_URL is not set in GitHub Secrets."
+            echo "Please go to Settings > Secrets and variables > Actions > New repository secret."
+            exit 1
           fi
           curl -X POST "$deploy_url"
