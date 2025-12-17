@@ -41,6 +41,7 @@ export type LocationStatus = typeof locationStatusValues[number];
 
 export const businesses = pgTable("businesses", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id), // Link business to user
   name: text("name").notNull(),
   type: text("type").notNull().$type<BusinessType>(),
   latitude: real("latitude"),
@@ -61,6 +62,7 @@ export const insertBusinessSchema = createInsertSchema(businesses).omit({
   longitude: z.number().min(-180).max(180).nullable().optional(),
   address: z.string().min(1, "Address is required"),
   locationStatus: z.enum(locationStatusValues).default("validated"),
+  userId: z.string().optional(), // Optional in schema, enforced in backend
 });
 
 export interface PlaceResult {

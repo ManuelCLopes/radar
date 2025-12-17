@@ -11,7 +11,7 @@ export interface IStorage {
   updateUserPassword(userId: string, passwordHash: string): Promise<void>;
 
   getBusiness(id: string): Promise<Business | undefined>;
-  listBusinesses(): Promise<Business[]>;
+  listBusinesses(userId: string): Promise<Business[]>;
   addBusiness(business: InsertBusiness): Promise<Business>;
   updateBusiness(id: string, business: Partial<InsertBusiness>): Promise<Business>;
   deleteBusiness(id: string): Promise<boolean>;
@@ -65,8 +65,12 @@ export class DatabaseStorage implements IStorage {
     return business || undefined;
   }
 
-  async listBusinesses(): Promise<Business[]> {
-    return await db!.select().from(businesses).orderBy(desc(businesses.createdAt));
+  async listBusinesses(userId: string): Promise<Business[]> {
+    return await db!
+      .select()
+      .from(businesses)
+      .where(eq(businesses.userId, userId))
+      .orderBy(desc(businesses.createdAt));
   }
 
   async addBusiness(insertBusiness: InsertBusiness): Promise<Business> {
@@ -212,10 +216,10 @@ export class MemStorage implements IStorage {
     return this.businesses.get(id);
   }
 
-  async listBusinesses(): Promise<Business[]> {
-    return Array.from(this.businesses.values()).sort((a, b) =>
-      b.createdAt.getTime() - a.createdAt.getTime()
-    );
+  async listBusinesses(userId: string): Promise<Business[]> {
+    return Array.from(this.businesses.values())
+      .filter((business) => business.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
   async addBusiness(business: InsertBusiness): Promise<Business> {
@@ -227,7 +231,8 @@ export class MemStorage implements IStorage {
       updatedAt: new Date(),
       latitude: business.latitude ?? null,
       longitude: business.longitude ?? null,
-      locationStatus: business.locationStatus ?? "validated"
+      locationStatus: business.locationStatus ?? "validated",
+      userId: business.userId || null // Add userId to MemStorage
     };
     this.businesses.set(id, newBusiness);
     return newBusiness;

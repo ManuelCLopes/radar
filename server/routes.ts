@@ -93,7 +93,8 @@ export async function registerRoutes(
         longitude: coordinates.longitude,
         locationStatus: 'validated' as const,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        userId: null // Temp business has no user
       };
 
       // Generate report (this will use existing report logic)
@@ -122,7 +123,7 @@ export async function registerRoutes(
   // Protected API routes
   app.get("/api/businesses", isAuthenticated, async (req, res) => {
     try {
-      const businesses = await storage.listBusinesses();
+      const businesses = await storage.listBusinesses((req.user as AppUser).id);
       res.json(businesses);
     } catch (error) {
       console.error("Error listing businesses:", error);
@@ -174,7 +175,10 @@ export async function registerRoutes(
         }
       }
 
-      const business = await storage.addBusiness(data);
+      const business = await storage.addBusiness({
+        ...data,
+        userId: (req.user as AppUser).id
+      });
       res.status(201).json(business);
     } catch (error) {
       console.error("Error creating business:", error);
@@ -190,6 +194,11 @@ export async function registerRoutes(
         return res.status(404).json({ error: "Business not found" });
       }
 
+      // Verify ownership
+      if (business.userId && business.userId !== (req.user as AppUser).id) {
+        return res.status(403).json({ error: "Unauthorized access to this business" });
+      }
+
       res.json(business);
     } catch (error) {
       console.error("Error getting business:", error);
@@ -199,6 +208,15 @@ export async function registerRoutes(
 
   app.delete("/api/businesses/:id", isAuthenticated, async (req, res) => {
     try {
+      const business = await storage.getBusiness(req.params.id);
+      if (!business) {
+        return res.status(404).json({ error: "Business not found" });
+      }
+
+      if (business.userId && business.userId !== (req.user as AppUser).id) {
+        return res.status(403).json({ error: "Unauthorized access to this business" });
+      }
+
       const deleted = await storage.deleteBusiness(req.params.id);
 
       if (!deleted) {
@@ -237,6 +255,15 @@ export async function registerRoutes(
         if (lng !== undefined && lng !== null && (typeof lng !== 'number' || !Number.isFinite(lng) || Math.abs(lng) > 180)) {
           return res.status(400).json({ error: "Invalid longitude" });
         }
+      }
+
+      const existingBusiness = await storage.getBusiness(req.params.id);
+      if (!existingBusiness) {
+        return res.status(404).json({ error: "Business not found" });
+      }
+
+      if (existingBusiness.userId && existingBusiness.userId !== (req.user as AppUser).id) {
+        return res.status(403).json({ error: "Unauthorized access to this business" });
       }
 
       const updatedBusiness = await storage.updateBusiness(req.params.id, data);
@@ -305,7 +332,7 @@ export async function registerRoutes(
 
   app.get("/api/reports", isAuthenticated, async (req, res) => {
     try {
-      const reports = await storage.listAllReports();
+      const reports = await storage.getReportsByUserId((req.user as AppUser).id);
       res.json(reports);
     } catch (error) {
       console.error("Error listing reports:", error);
@@ -603,7 +630,8 @@ export async function registerRoutes(
         longitude: coordinates.longitude,
         locationStatus: 'validated' as const,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        userId: null // Temp business has no user
       };
 
       // Generate report

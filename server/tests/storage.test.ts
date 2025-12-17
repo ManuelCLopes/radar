@@ -54,7 +54,8 @@ describe("Storage", () => {
                     address: "123 Test St",
                     latitude: 10,
                     longitude: 20,
-                    locationStatus: "validated"
+                    locationStatus: "validated",
+                    userId: "user-123"
                 };
 
                 // Create
@@ -68,7 +69,7 @@ describe("Storage", () => {
                 expect(retrievedBusiness).toEqual(createdBusiness);
 
                 // List
-                const allBusinesses = await storage.listBusinesses();
+                const allBusinesses = await storage.listBusinesses("user-123");
                 expect(allBusinesses).toContainEqual(createdBusiness);
 
                 // Wait a bit to ensure timestamp difference

@@ -100,18 +100,8 @@ export default function LoginPage() {
         }
     };
 
-    const handleGoogleLogin = async () => {
-        try {
-            const response = await fetch("/api/auth/google");
-            if (!response.ok) {
-                const data = await response.json();
-                setError(data.message || "Google login is not available");
-                return;
-            }
-            window.location.href = "/api/auth/google";
-        } catch (err) {
-            setError("Google login is not available. Please use email/password.");
-        }
+    const handleGoogleLogin = () => {
+        window.location.href = "/api/auth/google";
     };
 
     return (
