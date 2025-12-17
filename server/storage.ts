@@ -11,7 +11,7 @@ export interface IStorage {
   updateUserPassword(userId: string, passwordHash: string): Promise<void>;
 
   getBusiness(id: string): Promise<Business | undefined>;
-  listBusinesses(userId: string): Promise<Business[]>;
+  listBusinesses(userId?: number): Promise<Business[]>;
   addBusiness(business: InsertBusiness): Promise<Business>;
   updateBusiness(id: string, business: Partial<InsertBusiness>): Promise<Business>;
   deleteBusiness(id: string): Promise<boolean>;
@@ -65,12 +65,11 @@ export class DatabaseStorage implements IStorage {
     return business || undefined;
   }
 
-  async listBusinesses(userId: string): Promise<Business[]> {
-    return await db!
-      .select()
-      .from(businesses)
-      .where(eq(businesses.userId, userId))
-      .orderBy(desc(businesses.createdAt));
+  async listBusinesses(userId?: number): Promise<Business[]> {
+    if (userId) {
+      return await db!.select().from(businesses).where(eq(businesses.userId, String(userId))).orderBy(desc(businesses.createdAt));
+    }
+    return await db!.select().from(businesses).orderBy(desc(businesses.createdAt));
   }
 
   async addBusiness(insertBusiness: InsertBusiness): Promise<Business> {
@@ -216,10 +215,13 @@ export class MemStorage implements IStorage {
     return this.businesses.get(id);
   }
 
-  async listBusinesses(userId: string): Promise<Business[]> {
-    return Array.from(this.businesses.values())
-      .filter((business) => business.userId === userId)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  async listBusinesses(userId?: number): Promise<Business[]> {
+    const all = Array.from(this.businesses.values());
+    let businessesToReturn = all;
+    if (userId) {
+      businessesToReturn = all.filter(b => b.userId === String(userId));
+    }
+    return businessesToReturn.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
   async addBusiness(business: InsertBusiness): Promise<Business> {

@@ -43,7 +43,9 @@ describe("BusinessList", () => {
             latitude: 10,
             longitude: 20,
             locationStatus: "validated",
-            createdAt: new Date()
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            userId: "1"
         },
         {
             id: "2",
@@ -53,7 +55,9 @@ describe("BusinessList", () => {
             latitude: null,
             longitude: null,
             locationStatus: "pending",
-            createdAt: new Date()
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            userId: "1"
         }
     ];
 

@@ -189,7 +189,7 @@ export async function setupAuth(app: Express) {
             (async () => {
                 try {
                     const { sendEmail, generateWelcomeEmail } = await import("./email");
-                    const { html, text } = generateWelcomeEmail(email, firstName);
+                    const { html, text } = generateWelcomeEmail(firstName || email);
                     await sendEmail({
                         to: email,
                         subject: "Bem-vindo ao Radar! 🎉",

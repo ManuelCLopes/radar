@@ -60,7 +60,7 @@ window.PointerEvent = class PointerEvent extends Event {
         this.pointerType = props.pointerType || "";
         this.isPrimary = props.isPrimary || false;
     }
-};
+} as any;
 
 // Mock HTMLElement methods
 window.HTMLElement.prototype.scrollIntoView = vi.fn();

@@ -94,6 +94,22 @@ export function generatePasswordResetEmail(resetLink: string, email: string) {
   return { html, text };
 }
 
+export function generateWelcomeEmail(name: string) {
+  const html = `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2>Welcome to Radar!</h2>
+      <p>Hello ${name || "there"},</p>
+      <p>Thank you for signing up for Radar. We're excited to help you track your competitors and grow your business.</p>
+      <p>Get started by adding your first business to your dashboard.</p>
+      <div style="margin: 20px 0;">
+        <a href="https://radar.example.com/dashboard" style="background-color: #7c3aed; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Go to Dashboard</a>
+      </div>
+    </div>
+  `;
+  const text = `Welcome to Radar, ${name || "there"}! We're excited to have you.`;
+  return { html, text };
+}
+
 export async function sendEmail({ to, subject, html, text }: { to: string; subject: string; html: string; text: string }) {
   if (process.env.SMTP_HOST) {
     const transporter = nodemailer.createTransport({
