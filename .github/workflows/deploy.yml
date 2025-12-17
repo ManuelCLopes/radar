@@ -34,3 +34,18 @@ jobs:
 
     - name: Build
       run: npm run build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Trigger Render Deployment
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$deploy_url" ]; then
+            echo "RENDER_DEPLOY_HOOK_URL not set. Please add it to GitHub Secrets to enable auto-deployment."
+            exit 0
+          fi
+          curl -X POST "$deploy_url"
