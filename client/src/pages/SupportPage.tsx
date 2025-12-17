@@ -91,7 +91,7 @@ export default function SupportPage() {
                         <div className="grid md:grid-cols-3 gap-4">
                             {/* GitHub Sponsors */}
                             <a
-                                href="https://github.com/sponsors/YourUsername"
+                                href="https://github.com/sponsors/ManuelCLopes"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="block"
@@ -160,7 +160,7 @@ export default function SupportPage() {
                     <CardContent>
                         <div className="grid md:grid-cols-2 gap-4">
                             <a
-                                href="https://github.com/YourUsername/radar"
+                                href="https://github.com/ManuelCLopes/radar"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-4 border rounded-lg hover:bg-accent transition-colors flex items-center gap-3"
@@ -172,7 +172,7 @@ export default function SupportPage() {
                                 </div>
                             </a>
                             <a
-                                href="https://github.com/YourUsername/radar/issues"
+                                href="https://github.com/ManuelCLopes/radar/issues"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-4 border rounded-lg hover:bg-accent transition-colors flex items-center gap-3"
@@ -184,7 +184,7 @@ export default function SupportPage() {
                                 </div>
                             </a>
                             <a
-                                href="https://github.com/YourUsername/radar/issues"
+                                href="https://github.com/ManuelCLopes/radar/issues"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-4 border rounded-lg hover:bg-accent transition-colors flex items-center gap-3"
