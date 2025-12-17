@@ -208,7 +208,7 @@ export default function SupportPage() {
 
                 {/* Thank You */}
                 <div className="text-center mt-12 p-6 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950 dark:to-purple-950 rounded-lg">
-                    <h3 className="text-2xl font-bold mb-2">{t('support.thankYou')} ❤️</h3>
+                    <h3 className="text-2xl font-bold mb-2">{t('support.thankYou')}</h3>
                     <p className="text-muted-foreground">
                         {t('support.thankYouMessage')}
                     </p>

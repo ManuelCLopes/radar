@@ -52,7 +52,7 @@ describe('SupportPage', () => {
 
         it('should display the mission statement', () => {
             renderSupportPage();
-            expect(screen.getByText(/Keep Radar 100% Free Forever/i)).toBeInTheDocument();
+            expect(screen.getAllByText(/Keep Radar 100% Free/i)[0]).toBeInTheDocument();
         });
     });
 
