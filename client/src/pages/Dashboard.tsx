@@ -6,6 +6,7 @@ import { MapPin, Star, Plus, Edit, Trash2, BarChart3, LogOut, FileText, History,
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { BusinessForm } from "@/components/BusinessForm";
 import { BusinessList } from "@/components/BusinessList";
+import { RadiusSelector } from "@/components/RadiusSelector";
 import { ReportView } from "@/components/ReportView";
 import { ReportHistory } from "@/components/ReportHistory";
 import { CompetitorMap } from "@/components/CompetitorMap";
@@ -331,7 +332,7 @@ export default function Dashboard() {
                                         <SelectValue placeholder={t("business.form.typePlaceholder")} />
                                       </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
+                                    <SelectContent className="z-[100]" usePortal={false}>
                                       <SelectItem value="restaurant">🍽️ {t("businessTypes.restaurant")}</SelectItem>
                                       <SelectItem value="cafe">☕ {t("businessTypes.cafe")}</SelectItem>
                                       <SelectItem value="retail">🛍️ {t("businessTypes.retail")}</SelectItem>
@@ -361,19 +362,12 @@ export default function Dashboard() {
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel>{t("quickSearch.selectRadius")}</FormLabel>
-                                  <Select onValueChange={(val) => field.onChange(parseInt(val))} defaultValue={field.value.toString()}>
-                                    <FormControl>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder={t("quickSearch.selectRadius")} />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      <SelectItem value="500">{t("radiusOptions.500m")}</SelectItem>
-                                      <SelectItem value="1000">{t("radiusOptions.1km")}</SelectItem>
-                                      <SelectItem value="2000">{t("radiusOptions.2km")}</SelectItem>
-                                      <SelectItem value="5000">{t("radiusOptions.5km")}</SelectItem>
-                                    </SelectContent>
-                                  </Select>
+                                  <FormControl>
+                                    <RadiusSelector
+                                      value={typeof field.value === 'string' ? parseInt(field.value) : field.value}
+                                      onChange={field.onChange}
+                                    />
+                                  </FormControl>
                                   <FormMessage />
                                 </FormItem>
                               )}
@@ -576,7 +570,7 @@ export default function Dashboard() {
                           <Card key={report.id}>
                             <CardContent className="flex items-center justify-between p-4">
                               <div className="flex items-center gap-3">
-                                <div className={`p - 2 rounded - full ${report.businessId ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400' : 'bg-orange-100 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400'} `}>
+                                <div className={`p-2 rounded-full ${report.businessId ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400' : 'bg-orange-100 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400'}`}>
                                   {report.businessId ? <Building2 className="h-4 w-4" /> : <MapPin className="h-4 w-4" />}
                                 </div>
                                 <div>
@@ -590,8 +584,16 @@ export default function Dashboard() {
                                   </p>
                                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                     <span>{new Date(report.generatedAt).toLocaleDateString()}</span>
+                                    <span className="mx-1">•</span>
+                                    <span>{new Date(report.generatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                    {report.radius && (
+                                      <>
+                                        <span className="mx-1">•</span>
+                                        <span>{report.radius >= 1000 ? `${report.radius / 1000}km` : `${report.radius}m`}</span>
+                                      </>
+                                    )}
                                     {report.businessId && (
-                                      <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full border border-blue-100 dark:bg-blue-900/10 dark:text-blue-400 dark:border-blue-900/20">
+                                      <span className="ml-2 text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full border border-blue-100 dark:bg-blue-900/10 dark:text-blue-400 dark:border-blue-900/20">
                                         {t("dashboard.analysis.businessReport")}
                                       </span>
                                     )}

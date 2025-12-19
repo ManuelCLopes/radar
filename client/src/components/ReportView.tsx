@@ -714,6 +714,11 @@ Local Competitor Analyzer
               </DialogTitle>
               <DialogDescription>
                 {report.businessName} - {new Date(report.generatedAt).toLocaleString()}
+                {report.radius && (
+                  <span className="ml-2 text-muted-foreground">
+                    | {t("report.sections.radius")}: {report.radius >= 1000 ? `${report.radius / 1000}km` : `${report.radius}m`}
+                  </span>
+                )}
               </DialogDescription>
             </div>
             <div className="flex items-center gap-2 sm:mr-12">

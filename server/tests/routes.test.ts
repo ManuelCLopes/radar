@@ -184,7 +184,8 @@ describe("API Routes Integration", () => {
                     type: "restaurant",
                     address: "Test Address"
                 }),
-                "test-user-id" // Verify userId is passed
+                "test-user-id", // Verify userId is passed
+                1000 // Verify radius is passed
             );
         });
     });

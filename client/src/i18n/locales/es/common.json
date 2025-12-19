@@ -121,6 +121,7 @@
       "totalReviews": "Total de Reseñas"
     },
     "sections": {
+      "radius": "Radio",
       "aiAnalysis": "Análisis IA",
       "aiPoweredInsights": "Insights Generados por IA",
       "nearbyCompetitors": "Competidores Cercanos",

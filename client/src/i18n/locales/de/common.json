@@ -171,6 +171,7 @@
       "totalReviews": "Gesamte Bewertungen"
     },
     "sections": {
+      "radius": "Radius",
       "aiAnalysis": "KI-Analyse",
       "aiPoweredInsights": "KI-Gestützte Erkenntnisse",
       "nearbyCompetitors": "Nahegelegene Wettbewerber",

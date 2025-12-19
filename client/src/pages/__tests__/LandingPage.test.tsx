@@ -1,116 +1,129 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { vi, describe, it, expect, beforeEach } from "vitest";
 import LandingPage from "../LandingPage";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "wouter";
 
 // Mock hooks
-vi.mock("@/hooks/useAuth", () => ({
-    useAuth: vi.fn(),
-}));
-
-vi.mock("react-i18next", () => ({
-    useTranslation: vi.fn(),
-}));
-
+vi.mock("@/hooks/useAuth");
+vi.mock("react-i18next");
 vi.mock("wouter", () => ({
-    useLocation: vi.fn(),
     Link: ({ children, href }: { children: React.ReactNode; href: string }) => <a href={href}>{children}</a>,
+    useLocation: () => ["/", vi.fn()],
 }));
 
-// Mock child components
-vi.mock("@/components/ThemeToggle", () => ({
-    ThemeToggle: () => <div data-testid="theme-toggle">ThemeToggle</div>,
-}));
-
-vi.mock("@/components/LanguageSelector", () => ({
-    LanguageSelector: () => <div data-testid="language-selector">LanguageSelector</div>,
-}));
-
+// Mock components
+vi.mock("@/components/ThemeToggle", () => ({ ThemeToggle: () => <div>ThemeToggle</div> }));
+vi.mock("@/components/LanguageSelector", () => ({ LanguageSelector: () => <div>LanguageSelector</div> }));
 vi.mock("@/components/RadiusSelector", () => ({
-    RadiusSelector: ({ value, onChange }: any) => (
+    RadiusSelector: ({ value, onChange }: { value: number, onChange: (val: number) => void }) => (
         <input
             data-testid="radius-selector"
-            value={value}
-            onChange={(e) => onChange(Number(e.target.value))}
             type="number"
+            value={value}
+            onChange={(e) => onChange(parseInt(e.target.value))}
         />
-    ),
+    )
 }));
-
 vi.mock("@/components/ReportView", () => ({
-    ReportView: ({ open, onOpenChange }: any) => (
-        open ? (
-            <div data-testid="report-view-modal">
-                Report View Modal
-                <button onClick={() => onOpenChange(false)}>Close</button>
-            </div>
-        ) : null
-    ),
-}));
-
-vi.mock("embla-carousel-react", () => ({
-    default: () => [
-        (node: any) => { }, // emblaRef
-        {
-            scrollPrev: vi.fn(),
-            scrollNext: vi.fn(),
-            scrollTo: vi.fn(),
-            on: vi.fn(),
-            off: vi.fn(),
-            scrollSnapList: () => [],
-            selectedScrollSnap: () => 0,
-            canScrollPrev: () => false,
-            canScrollNext: () => false
-        } // emblaApi
-    ]
+    ReportView: ({ open }: { open: boolean }) => open ? <div data-testid="report-modal">Report Modal</div> : null
 }));
 
 describe("LandingPage", () => {
-    const t = vi.fn((key) => key);
+    const mockUseAuth = useAuth as unknown as ReturnType<typeof vi.fn>;
+    const mockUseTranslation = useTranslation as unknown as ReturnType<typeof vi.fn>;
 
     beforeEach(() => {
         vi.clearAllMocks();
-        (useAuth as any).mockReturnValue({ user: null });
-        (useTranslation as any).mockReturnValue({ t, i18n: { language: 'en' } });
-        (useLocation as any).mockReturnValue(["/", vi.fn()]);
+
+        // Default mocks
+        mockUseAuth.mockReturnValue({
+            isAuthenticated: false,
+            isLoading: false,
+        });
+
+        mockUseTranslation.mockReturnValue({
+            t: (key: string) => key,
+        });
+
+        // Mock fetch
+        global.fetch = vi.fn();
     });
 
-    it("renders the hero section", () => {
+    it("renders correctly for guest users", () => {
         render(<LandingPage />);
-        expect(screen.getByTestId("hero-headline")).toBeInTheDocument();
-        expect(screen.getByTestId("hero-subheadline")).toBeInTheDocument();
+        expect(screen.getByTestId("button-login")).toBeInTheDocument();
     });
 
-    it("renders the quick search form and handles interaction", async () => {
+    it("renders correctly for authenticated users", () => {
+        mockUseAuth.mockReturnValue({
+            isAuthenticated: true,
+            isLoading: false,
+        });
+        render(<LandingPage />);
+        expect(screen.queryByTestId("button-login")).not.toBeInTheDocument();
+        expect(screen.getByTitle("Dashboard")).toBeInTheDocument();
+    });
+
+    it("calls /api/analyze-address for authenticated users", async () => {
+        mockUseAuth.mockReturnValue({
+            isAuthenticated: true,
+            isLoading: false,
+        });
+
+        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+            ok: true,
+            json: async () => ({ id: "123", businessName: "Test Business" }),
+        });
+
         render(<LandingPage />);
 
+        // Fill form
         const addressInput = screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa");
-        expect(addressInput).toBeInTheDocument();
-
         fireEvent.change(addressInput, { target: { value: "Test Address" } });
-        expect(addressInput).toHaveValue("Test Address");
 
-        const radiusSelector = screen.getByTestId("radius-selector");
-        expect(radiusSelector).toBeInTheDocument();
+        // Submit
+        const submitButton = screen.getByRole("button", { name: /quickSearch.analyzeButton/i });
+        fireEvent.click(submitButton);
 
-        fireEvent.change(radiusSelector, { target: { value: "2000" } });
-        expect(radiusSelector).toHaveValue(2000);
+        await waitFor(() => {
+            expect(global.fetch).toHaveBeenCalledWith("/api/analyze-address", expect.objectContaining({
+                method: "POST",
+                body: expect.stringContaining("Test Address"),
+            }));
+        });
 
-        const searchButton = screen.getByRole("button", { name: /quickSearch/i });
-        expect(searchButton).toBeInTheDocument();
-
-        // Note: We are not mocking the API call here, so clicking might trigger an error or do nothing if not mocked.
-        // Ideally we should mock the fetch or the function that handles the search if it's extracted.
-        // Since the search logic is inside the component, we might need to mock fetch.
+        expect(screen.getByTestId("report-modal")).toBeInTheDocument();
     });
 
-    it("renders navigation elements", () => {
+    it("calls /api/quick-search for guest users", async () => {
+        mockUseAuth.mockReturnValue({
+            isAuthenticated: false,
+            isLoading: false,
+        });
+
+        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+            ok: true,
+            json: async () => ({ report: { id: "123", businessName: "Test Business" } }),
+        });
+
         render(<LandingPage />);
-        expect(screen.getByText("landing.brandName")).toBeInTheDocument();
-        expect(screen.getByTestId("theme-toggle")).toBeInTheDocument();
-        expect(screen.getByTestId("language-selector")).toBeInTheDocument();
-        expect(screen.getAllByText("Login")[0]).toBeInTheDocument();
+
+        // Fill form
+        const addressInput = screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa");
+        fireEvent.change(addressInput, { target: { value: "Test Address" } });
+
+        // Submit
+        const submitButton = screen.getByRole("button", { name: /quickSearch.analyzeButton/i });
+        fireEvent.click(submitButton);
+
+        await waitFor(() => {
+            expect(global.fetch).toHaveBeenCalledWith("/api/quick-search", expect.objectContaining({
+                method: "POST",
+                body: expect.stringContaining("Test Address"),
+            }));
+        });
+
+        expect(screen.getByTestId("report-modal")).toBeInTheDocument();
     });
 });

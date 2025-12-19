@@ -122,6 +122,7 @@
       "totalReviews": "Total de Avaliações"
     },
     "sections": {
+      "radius": "Raio",
       "aiAnalysis": "Análise IA",
       "aiPoweredInsights": "Insights Gerados por IA",
       "marketOverview": "Visão Geral do Mercado",

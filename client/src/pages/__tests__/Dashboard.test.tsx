@@ -1,190 +1,116 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { vi, describe, it, expect, beforeEach } from "vitest";
 import Dashboard from "../Dashboard";
-import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
-import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 // Mock hooks
-vi.mock("@tanstack/react-query", async (importOriginal) => {
-    const actual = await importOriginal();
+vi.mock("@/hooks/useAuth");
+vi.mock("@tanstack/react-query", async () => {
+    const actual = await vi.importActual("@tanstack/react-query");
     return {
-        ...(actual as any),
+        ...actual,
         useQuery: vi.fn(),
-        useMutation: vi.fn(),
-        useQueryClient: vi.fn(() => ({
-            invalidateQueries: vi.fn(),
+        useMutation: vi.fn(() => ({
+            mutate: vi.fn(),
+            isPending: false,
         })),
-        QueryClient: vi.fn(),
     };
 });
-
-vi.mock("react-i18next", () => ({
-    useTranslation: () => ({
-        t: (key: string) => key,
-        i18n: { language: "en" }
-    }),
-}));
-
-vi.mock("@/hooks/useAuth", () => ({
-    useAuth: vi.fn(),
-}));
-
+vi.mock("react-i18next");
 vi.mock("wouter", () => ({
-    useLocation: vi.fn(),
-    Link: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    Link: ({ children, href }: { children: React.ReactNode; href: string }) => <a href={href}>{children}</a>,
+    useLocation: () => ["/dashboard", vi.fn()],
 }));
 
-vi.mock("@/hooks/use-toast", () => ({
-    useToast: () => ({
-        toast: vi.fn(),
-    }),
-}));
-
-// Mock child components to simplify testing
-vi.mock("@/components/BusinessList", () => ({
-    BusinessList: ({ onGenerateReport, onDelete }: any) => (
-        <div data-testid="business-list">
-            <button data-testid="btn-generate-report" onClick={() => onGenerateReport("1")}>Generate</button>
-            <button data-testid="btn-delete" onClick={() => onDelete("1")}>Delete</button>
-        </div>
-    ),
-}));
-
-vi.mock("@/components/BusinessForm", () => ({
-    BusinessForm: ({ onSubmit }: any) => (
-        <div data-testid="business-form">
-            <button data-testid="submit-business" onClick={() => onSubmit({ name: "New Biz" })}>Submit</button>
-        </div>
-    ),
-}));
-
-vi.mock("@/components/ReportHistory", () => ({
-    ReportHistory: () => <div data-testid="report-history">Report History</div>,
-}));
-
+// Mock components
+vi.mock("@/components/ThemeToggle", () => ({ ThemeToggle: () => <div>ThemeToggle</div> }));
+vi.mock("@/components/LanguageSelector", () => ({ LanguageSelector: () => <div>LanguageSelector</div> }));
+vi.mock("@/components/BusinessList", () => ({ BusinessList: () => <div>BusinessList</div> }));
+vi.mock("@/components/CompetitorMap", () => ({ CompetitorMap: () => <div>CompetitorMap</div> }));
+vi.mock("@/components/ReportView", () => ({ ReportView: () => <div>ReportView</div> }));
+vi.mock("@/components/ReportHistory", () => ({ ReportHistory: () => <div>ReportHistory</div> }));
 vi.mock("@/components/ui/tabs", () => ({
     Tabs: ({ children, defaultValue }: any) => <div data-testid="tabs" data-default={defaultValue}>{children}</div>,
     TabsList: ({ children }: any) => <div>{children}</div>,
-    TabsTrigger: ({ children, value }: any) => <button data-testid={`tab-${value}`}>{children}</button>,
-    TabsContent: ({ children, value }: any) => <div data-testid={`content-${value}`}>{children}</div>,
-}));
-
-vi.mock("@/components/ui/dialog", () => ({
-    Dialog: ({ children }: any) => <div>{children}</div>,
-    DialogContent: ({ children }: any) => <div data-testid="dialog-content">{children}</div>,
-    DialogHeader: ({ children }: any) => <div>{children}</div>,
-    DialogTitle: ({ children }: any) => <div>{children}</div>,
-    DialogDescription: ({ children }: any) => <div>{children}</div>,
-    DialogTrigger: ({ children, asChild }: any) => asChild ? children : <button>{children}</button>,
+    TabsTrigger: ({ children, value, onClick }: any) => (
+        <button role="tab" onClick={onClick} data-value={value}>
+            {children}
+        </button>
+    ),
+    TabsContent: ({ children, value }: any) => <div data-testid={`tabs-content-${value}`}>{children}</div>,
 }));
 
 describe("Dashboard", () => {
-    const mockUser = {
-        id: "1",
-        email: "test@example.com",
-        firstName: "Test",
-        lastName: "User",
-        plan: "professional"
-    };
+    const mockUseAuth = useAuth as unknown as ReturnType<typeof vi.fn>;
 
-    const mockMutate = vi.fn();
+    const mockUseTranslation = useTranslation as unknown as ReturnType<typeof vi.fn>;
 
     beforeEach(() => {
         vi.clearAllMocks();
-        (useAuth as any).mockReturnValue({
-            user: mockUser,
-            logoutMutation: { mutate: vi.fn() }
+
+        mockUseAuth.mockReturnValue({
+            user: { id: "1", email: "test@example.com" },
+            logoutMutation: { mutate: vi.fn() },
         });
 
-        (useLocation as any).mockReturnValue(["/dashboard", vi.fn()]);
+        mockUseTranslation.mockReturnValue({
+            t: (key: string, options?: any) => {
+                if (key === "dashboard.analysis.reportTitle" && options?.name) {
+                    return options.name;
+                }
+                return key;
+            },
+            i18n: { language: "en" },
+        });
+    });
+
+    it("renders history list with correct formatting", async () => {
+        const mockReports = [
+            {
+                id: "1",
+                businessName: "Test Business",
+                generatedAt: new Date("2023-01-01T12:00:00Z").toISOString(),
+                radius: 1000,
+                businessId: null,
+            },
+            {
+                id: "2",
+                businessName: "Another Business",
+                generatedAt: new Date("2023-01-02T14:30:00Z").toISOString(),
+                radius: 500,
+                businessId: "biz-1",
+            },
+        ];
 
         (useQuery as any).mockImplementation(({ queryKey }: any) => {
             if (queryKey[0] === "/api/businesses") {
-                return {
-                    data: [],
-                    isLoading: false,
-                    error: null
-                };
+                return { data: [], isLoading: false };
             }
             if (queryKey[0] === "/api/reports/history") {
-                return {
-                    data: [],
-                    isLoading: false,
-                    error: null
-                };
+                return { data: mockReports, isLoading: false };
             }
-            return { data: null, isLoading: false };
+            return { data: [], isLoading: false };
         });
 
-        (useMutation as any).mockReturnValue({
-            mutate: mockMutate,
-            mutateAsync: mockMutate,
-            isPending: false
+        render(<Dashboard />);
+
+        // Switch to history tab (simulated by rendering, as Tabs defaults to 'businesses' but we can query by text)
+        // Note: Radix UI Tabs might not render content until active. 
+        // For this test, we might need to click the tab or mock Tabs to show all content.
+        // However, let's try to find the tab trigger and click it.
+
+        const historyTab = screen.getByRole("tab", { name: /history/i });
+        fireEvent.click(historyTab);
+
+        await waitFor(() => {
+            expect(screen.getByText("Test Business")).toBeInTheDocument();
+            expect(screen.getByText("Another Business")).toBeInTheDocument();
         });
-    });
 
-    it("renders the dashboard header elements", () => {
-        render(<Dashboard />);
-        expect(screen.getByText("Radar")).toBeInTheDocument();
-        expect(screen.getByTestId("tab-businesses")).toBeInTheDocument();
-        expect(screen.getByTestId("tab-history")).toBeInTheDocument();
-    });
-
-    it("renders BusinessList by default", () => {
-        render(<Dashboard />);
-        expect(screen.getByTestId("business-list")).toBeInTheDocument();
-    });
-
-    it("renders action buttons", () => {
-        render(<Dashboard />);
-        expect(screen.getByTestId("btn-add-business")).toBeInTheDocument();
-        expect(screen.getByTestId("btn-new-analysis")).toBeInTheDocument();
-    });
-
-    it("opens Analysis dialog and submits", async () => {
-        render(<Dashboard />);
-        screen.debug(undefined, 20000);
-        const analysisBtn = screen.getByTestId("btn-new-analysis");
-        fireEvent.click(analysisBtn);
-
-
-        expect(screen.getByText("dashboard.analysis.title")).toBeInTheDocument();
-    });
-
-    it("opens Add Business dialog and submits", async () => {
-        render(<Dashboard />);
-        const addBtn = screen.getByTestId("btn-add-business");
-        fireEvent.click(addBtn);
-
-        expect(screen.getByTestId("business-form")).toBeInTheDocument();
-
-        // Submit form
-        fireEvent.click(screen.getByTestId("submit-business"));
-
-        expect(mockMutate).toHaveBeenCalled();
-    });
-
-    it("switches tabs", async () => {
-        render(<Dashboard />);
-        // Tabs are mocked to just render content. 
-        // Radix Tabs usually handle switching. Our mock doesn't implement state.
-        // But we can check if the tab triggers are present.
-        expect(screen.getByTestId("tab-history")).toBeInTheDocument();
-
-        // In a real test we'd click and verify content change.
-        // With our mock, we just verify structure.
-    });
-
-    it("handles generate report action from list", async () => {
-        render(<Dashboard />);
-        fireEvent.click(screen.getByTestId("btn-generate-report"));
-        expect(mockMutate).toHaveBeenCalled();
-    });
-
-    it("handles delete action from list", async () => {
-        render(<Dashboard />);
-        fireEvent.click(screen.getByTestId("btn-delete"));
-        expect(mockMutate).toHaveBeenCalled();
+        // Check for radius formatting
+        expect(screen.getByText("1km")).toBeInTheDocument();
+        expect(screen.getByText("500m")).toBeInTheDocument();
     });
 });

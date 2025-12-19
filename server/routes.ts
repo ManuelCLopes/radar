@@ -98,7 +98,7 @@ export async function registerRoutes(
       };
 
       // Generate report (this will use existing report logic)
-      const report = await runReportForBusiness(tempBusiness.id, language, tempBusiness);
+      const report = await runReportForBusiness(tempBusiness.id, language, tempBusiness, undefined, radius);
 
       // Return full report for the free preview (limit 1 per user handled on client)
       // Inject business details so they can be saved later
@@ -635,7 +635,7 @@ export async function registerRoutes(
       };
 
       // Generate report
-      const report = await runReportForBusiness(tempBusiness.id, language, tempBusiness, (req.user as AppUser).id);
+      const report = await runReportForBusiness(tempBusiness.id, language, tempBusiness, (req.user as AppUser).id, radius);
 
       // Save report with userId
       // Exclude id and generatedAt to let DB handle them
@@ -644,7 +644,8 @@ export async function registerRoutes(
       const savedReport = await storage.createReport({
         ...reportData,
         userId: (req.user as AppUser).id,
-        businessId: null // Explicitly set to null for ad-hoc analysis
+        businessId: null, // Explicitly set to null for ad-hoc analysis
+        radius: reportData.radius || undefined
       });
 
       res.json({

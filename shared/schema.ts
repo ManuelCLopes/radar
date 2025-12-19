@@ -120,6 +120,7 @@ export const reports = pgTable("reports", {
   aiAnalysis: text("ai_analysis").notNull(),
   generatedAt: timestamp("generated_at").defaultNow().notNull(),
   html: text("html").notNull(),
+  radius: integer("radius"), // Added radius field
 });
 
 export const reviewSchema = z.object({
@@ -150,6 +151,7 @@ export const insertReportSchema = z.object({
   competitors: z.array(competitorSchema),
   aiAnalysis: z.string(),
   html: z.string(),
+  radius: z.number().optional(),
 });
 
 export type InsertReport = z.infer<typeof insertReportSchema>;

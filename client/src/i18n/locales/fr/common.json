@@ -121,6 +121,7 @@
       "totalReviews": "Total des Avis"
     },
     "sections": {
+      "radius": "Rayon",
       "aiAnalysis": "Analyse IA",
       "aiPoweredInsights": "Insights Générés par IA",
       "nearbyCompetitors": "Concurrents à Proximité",

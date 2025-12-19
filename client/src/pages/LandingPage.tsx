@@ -59,24 +59,31 @@ export default function LandingPage() {
 
 
 
+
+
   const onSearchSubmit = async (data: SearchFormValues) => {
-    // Check if user has already generated a free report
-    const hasGenerated = localStorage.getItem('radar_free_report_generated');
-    if (hasGenerated) {
-      setShowLimitModal(true);
-      return;
+    // Check if user has already generated a free report (only for guests)
+    if (!isAuthenticated) {
+      const hasGenerated = localStorage.getItem('radar_free_report_generated');
+      if (hasGenerated) {
+        setShowLimitModal(true);
+        return;
+      }
     }
 
     setSearchError('');
     setIsSearching(true);
 
     try {
-      const response = await fetch('/api/quick-search', {
+      // Determine which endpoint to use based on auth status
+      const endpoint = isAuthenticated ? '/api/analyze-address' : '/api/quick-search';
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...data,
-          language: t('common.language', { defaultValue: 'en' }) // Pass current language code
+          language: t('common.language', { defaultValue: 'en' })
         }),
       });
 
@@ -86,14 +93,15 @@ export default function LandingPage() {
         // Map backend error messages to translated versions
         let errorMessage = t('quickSearch.error');
 
-        if (responseData.message) {
-          if (responseData.message.includes('Could not find coordinates')) {
+        if (responseData.message || responseData.error) {
+          const msg = responseData.message || responseData.error;
+          if (msg.includes('Could not find coordinates') || msg.includes('Address not found')) {
             errorMessage = t('quickSearch.errors.addressNotFound');
-          } else if (responseData.message.includes('Radius must be')) {
+          } else if (msg.includes('Radius must be')) {
             errorMessage = t('quickSearch.errors.invalidRadius');
-          } else if (responseData.message.includes('required')) {
+          } else if (msg.includes('required') || msg.includes('Missing')) {
             errorMessage = t('quickSearch.errors.missingFields');
-          } else if (responseData.message.includes('Too many searches')) {
+          } else if (msg.includes('Too many searches')) {
             errorMessage = t('quickSearch.errors.rateLimitExceeded');
           }
         }
@@ -104,13 +112,19 @@ export default function LandingPage() {
       }
 
       // Show full report in modal
-      setReportData(responseData.report);
+      // For authenticated users, the response is the report directly (or wrapped)
+      // For guests, it's { report: ... }
+      const report = isAuthenticated ? responseData : responseData.report;
+
+      setReportData(report);
       setShowPreviewModal(true);
 
-      // Mark as generated
-      localStorage.setItem('radar_free_report_generated', 'true');
+      // Mark as generated only for guests
+      if (!isAuthenticated) {
+        localStorage.setItem('radar_free_report_generated', 'true');
+      }
     } catch (error) {
-      console.error('Quick search error:', error);
+      console.error('Search error:', error);
       setSearchError(t('quickSearch.errors.searchFailed'));
     } finally {
       setIsSearching(false);
@@ -572,7 +586,7 @@ export default function LandingPage() {
           open={showPreviewModal}
           onOpenChange={setShowPreviewModal}
           report={reportData}
-          isGuest={true}
+          isGuest={!isAuthenticated}
         />
       )}
 

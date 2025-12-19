@@ -121,6 +121,7 @@
       "totalReviews": "Total Reviews"
     },
     "sections": {
+      "radius": "Radius",
       "aiAnalysis": "AI Analysis",
       "aiPoweredInsights": "AI-Powered Insights",
       "nearbyCompetitors": "Nearby Competitors",

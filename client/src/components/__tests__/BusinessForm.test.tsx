@@ -47,11 +47,12 @@ vi.mock("@/components/ui/alert-dialog", () => ({
 }));
 
 vi.mock("@/components/ui/select", () => ({
-    Select: ({ children, onValueChange, value }: any) => (
+    Select: ({ children, onValueChange, value, ...props }: any) => (
         <select
             data-testid="mock-select"
             value={value}
             onChange={(e) => onValueChange(e.target.value)}
+            {...props}
         >
             {children}
         </select>
@@ -121,28 +122,34 @@ describe("BusinessForm", () => {
         await user.type(screen.getByTestId("input-address"), "Test Address");
 
         mockMutateAsync.mockResolvedValue({
-            results: [{ placeId: "1", name: "P", address: "A", latitude: 0, longitude: 0 }],
+            results: [{
+                placeId: "1",
+                name: "Test Place",
+                address: "Test Address, City",
+                latitude: 10,
+                longitude: 20,
+                types: ["restaurant"]
+            }],
             apiKeyMissing: false
         });
 
         await user.click(screen.getByTestId("button-search-address"));
         await waitFor(() => expect(mockMutateAsync).toHaveBeenCalled());
 
-        // Wait for type selection to appear (after search but before selection if we didn't select place)
-        // In this test flow, we are simulating a search that returns results but we haven't clicked one yet?
-        // Wait, if we search and get results, the modal opens.
-        // If we want to test the "Dropdown" case, we should simulate "No Results" or "Proceed with Address".
-        // Or if we just search, `hasSearched` is true. So Dropdown should be visible behind the modal.
+        // Select the place from suggestions
+        await user.click(screen.getByText("addressSearch.suggestion.useThis"));
 
-        // Let's adjust this test to simulate "No Results" flow so we can use the dropdown.
-        // Or we can just select a place and verify read-only.
+        const submitButton = screen.getByTestId("button-submit-business");
+        expect(submitButton).not.toBeDisabled();
+        fireEvent.submit(submitButton.closest("form")!);
 
-        // If we want to test submitting with a type, let's use the "No Results" flow or manual entry flow.
-        // But the previous test was selecting type.
-
-        // Let's assume we want to test the "Dropdown" visibility.
-        // If we search and get results, the modal blocks interaction?
-        // Let's mock "No Results" for this test to keep it simple and test the dropdown submission.
+        await waitFor(() => {
+            expect(mockOnSubmit).toHaveBeenCalledWith(expect.objectContaining({
+                name: "Test Business",
+                address: "Test Address, City",
+                type: "restaurant"
+            }));
+        });
     });
 
     it("submits the form with valid data (Manual Entry)", async () => {
