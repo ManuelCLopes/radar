@@ -54,7 +54,8 @@ This is the market overview.
     `,
         generatedAt: new Date(),
         html: '',
-        userId: 'user1'
+        userId: 'user1',
+        radius: null
     };
 
     const mockT = (key: string) => key;

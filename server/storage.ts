@@ -271,7 +271,8 @@ export class MemStorage implements IStorage {
       id,
       generatedAt: new Date(),
       userId: insertReport.userId || null,
-      businessId: insertReport.businessId || null
+      businessId: insertReport.businessId || null,
+      radius: insertReport.radius ?? null
     };
     this.reports.set(id, report);
     return report;

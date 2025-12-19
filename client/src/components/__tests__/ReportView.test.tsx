@@ -97,7 +97,8 @@ describe("ReportView", () => {
           <p class="my-2">Cost</p>
         `,
         html: "<div>Report HTML</div>",
-        generatedAt: new Date()
+        generatedAt: new Date(),
+        radius: null
     };
 
     const queryClient = new QueryClient({
