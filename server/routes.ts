@@ -281,8 +281,8 @@ export async function registerRoutes(
     try {
       const { businessId, report } = req.body;
 
-      if (!businessId || !report) {
-        return res.status(400).json({ error: "Missing businessId or report data" });
+      if (!report) {
+        return res.status(400).json({ error: "Missing report data" });
       }
 
       // Save report linked to the current user

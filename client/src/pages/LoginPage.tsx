@@ -50,32 +50,15 @@ export default function LoginPage() {
                 try {
                     const report = JSON.parse(pendingReportJson);
 
-                    // Create business first
-                    const businessRes = await fetch('/api/businesses', {
+                    // Save the report directly without creating a business
+                    await fetch(`/api/reports/save-existing`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            name: report.businessName,
-                            type: report.type || 'other',
-                            address: report.address || report.businessName,
-                            latitude: report.latitude || 0,
-                            longitude: report.longitude || 0
+                            businessId: null,
+                            report: report
                         })
                     });
-
-                    if (businessRes.ok) {
-                        const business = await businessRes.json();
-
-                        // Save the report
-                        await fetch(`/api/reports/save-existing`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                businessId: business.id,
-                                report: report
-                            })
-                        });
-                    }
                 } catch (e) {
                     console.error("Failed to save pending report:", e);
                 } finally {

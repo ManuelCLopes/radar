@@ -118,12 +118,8 @@ describe("RegisterPage", () => {
 
         const removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem');
 
-        // Mock fetch for business creation and report saving
+        // Mock fetch for report saving only
         global.fetch = vi.fn()
-            .mockResolvedValueOnce({
-                ok: true,
-                json: async () => ({ id: "business-123" })
-            } as any) // Create business response
             .mockResolvedValueOnce({
                 ok: true,
                 json: async () => ({ id: "report-123" })
@@ -144,13 +140,13 @@ describe("RegisterPage", () => {
 
         await waitFor(() => {
             expect(mockMutateAsync).toHaveBeenCalled();
-            expect(global.fetch).toHaveBeenCalledWith('/api/businesses', expect.objectContaining({
-                method: 'POST',
-                body: expect.stringContaining("Test Business")
-            }));
+            // Should NOT create business
+            expect(global.fetch).not.toHaveBeenCalledWith('/api/businesses', expect.anything());
+
+            // Should save report directly
             expect(global.fetch).toHaveBeenCalledWith('/api/reports/save-existing', expect.objectContaining({
                 method: 'POST',
-                body: expect.stringContaining("business-123")
+                body: expect.stringContaining('"businessId":null')
             }));
             expect(removeItemSpy).toHaveBeenCalledWith('pending_report');
         });
