@@ -114,7 +114,7 @@ export default function RegisterPage() {
                 <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 p-8 space-y-6">
                     {/* Logo and Title */}
                     <Link href="/" className="flex flex-col items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity">
-                        <img src="/logo.png" alt="Competitive Watcher" className="h-14 w-auto object-contain" />
+                        <img src="/logo.png" alt="Competitor Watcher" className="h-14 w-auto object-contain" />
                         <p className="text-sm text-gray-600 dark:text-gray-400">
                             {t("auth.createAccount")}
                         </p>

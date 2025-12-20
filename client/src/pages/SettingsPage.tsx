@@ -88,7 +88,7 @@ export default function SettingsPage() {
             <header className="border-b sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                     <Link href="/dashboard" className="flex items-center cursor-pointer transition-opacity hover:opacity-80">
-                        <img src="/logo.png" alt="Competitive Watcher" className="h-10 w-auto dark:invert-0 invert" />
+                        <img src="/logo.png" alt="Competitor Watcher" className="h-10 w-auto dark:invert-0 invert" />
                     </Link>
 
                     <div className="flex items-center gap-2">
@@ -226,7 +226,7 @@ export default function SettingsPage() {
                     </CardContent>
                 </Card>
 
-                {/* Support Competitive Watcher - Donation Card */}
+                {/* Support Competitor Watcher - Donation Card */}
                 <Card className="border-purple-200 dark:border-purple-800">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">

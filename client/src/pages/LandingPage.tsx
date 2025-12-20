@@ -64,7 +64,7 @@ export default function LandingPage() {
   const onSearchSubmit = async (data: SearchFormValues) => {
     // Check if user has already generated a free report (only for guests)
     if (!isAuthenticated) {
-      const hasGenerated = localStorage.getItem('competitive_watcher_free_report_generated');
+      const hasGenerated = localStorage.getItem('competitor_watcher_free_report_generated');
       if (hasGenerated) {
         setShowLimitModal(true);
         return;
@@ -138,7 +138,7 @@ export default function LandingPage() {
         <div className="landing-container">
           <div className="landing-header-brand">
             <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-              <img src="/logo.png" alt="Competitive Watcher" className="h-14 w-auto" />
+              <img src="/logo.png" alt="Competitor Watcher" className="h-14 w-auto" />
             </Link>
           </div>
           <div className="landing-header-actions">

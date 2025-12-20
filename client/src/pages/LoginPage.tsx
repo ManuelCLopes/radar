@@ -107,7 +107,7 @@ export default function LoginPage() {
                     {/* Logo and Title */}
                     <div className="text-center space-y-4">
                         <Link href="/" className="flex justify-center cursor-pointer hover:opacity-80 transition-opacity">
-                            <img src="/logo.png" alt="Competitive Watcher" className="h-16 w-auto object-contain dark:invert-0 invert" />
+                            <img src="/logo.png" alt="Competitor Watcher" className="h-16 w-auto object-contain dark:invert-0 invert" />
                         </Link>
                         <div>
                             <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">

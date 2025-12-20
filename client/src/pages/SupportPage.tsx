@@ -23,7 +23,7 @@ export default function SupportPage() {
             <header className="border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm sticky top-0 z-50">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                     <Link href="/" className="flex items-center cursor-pointer transition-opacity hover:opacity-80">
-                        <img src="/logo.png" alt="Competitive Watcher" className="h-10 w-auto dark:invert-0 invert" />
+                        <img src="/logo.png" alt="Competitor Watcher" className="h-10 w-auto dark:invert-0 invert" />
                     </Link>
                     <Link href="/dashboard">
                         <Button variant="outline">{t('support.back')}</Button>
@@ -168,7 +168,7 @@ export default function SupportPage() {
                     <CardContent>
                         <div className="grid md:grid-cols-2 gap-4">
                             <a
-                                href="https://github.com/ManuelCLopes/competitive-watcher"
+                                href="https://github.com/ManuelCLopes/radar"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-4 border rounded-lg hover:bg-accent transition-colors flex items-center gap-3"
@@ -180,7 +180,7 @@ export default function SupportPage() {
                                 </div>
                             </a>
                             <a
-                                href="https://github.com/ManuelCLopes/competitive-watcher/issues"
+                                href="https://github.com/ManuelCLopes/radar/issues"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-4 border rounded-lg hover:bg-accent transition-colors flex items-center gap-3"
@@ -192,7 +192,7 @@ export default function SupportPage() {
                                 </div>
                             </a>
                             <a
-                                href="https://github.com/ManuelCLopes/competitive-watcher/issues"
+                                href="https://github.com/ManuelCLopes/radar/issues"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-4 border rounded-lg hover:bg-accent transition-colors flex items-center gap-3"

@@ -96,7 +96,7 @@ export default function ResetPasswordPage() {
             <header className="border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm">
                 <div className="container mx-auto px-4 h-16 flex items-center">
                     <Link href="/" className="flex items-center cursor-pointer transition-opacity hover:opacity-80">
-                        <img src="/logo.png" alt="Competitive Watcher" className="h-10 w-auto dark:invert-0 invert" />
+                        <img src="/logo.png" alt="Competitor Watcher" className="h-10 w-auto dark:invert-0 invert" />
                     </Link>
                 </div>
             </header>

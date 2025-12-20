@@ -1,12 +1,12 @@
 <div align="center">
-  <img src="client/public/logo.png" alt="Competitive Watcher Logo" width="200" />
+  <img src="client/public/logo.png" alt="Competitor Watcher Logo" width="200" />
 </div>
 
-# 🎯 Competitive Watcher
+# 🎯 Competitor Watcher
 
 **AI-powered local competitor analysis platform**
 
-Competitive Watcher helps businesses understand their competitive landscape by analyzing nearby competitors using Google Places data and AI-driven insights. Register your business, generate comprehensive reports, and make data-driven decisions to stay ahead of the competition.
+Competitor Watcher helps businesses understand their competitive landscape by analyzing nearby competitors using Google Places data and AI-driven insights. Register your business, generate comprehensive reports, and make data-driven decisions to stay ahead of the competition.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
@@ -239,7 +239,7 @@ The application adapts based on available configuration:
 
 ## 🌍 Internationalization
 
-Competitive Watcher supports 5 languages:
+Competitor Watcher supports 5 languages:
 
 - 🇬🇧 English (EN)
 - 🇵🇹 Portuguese (PT)

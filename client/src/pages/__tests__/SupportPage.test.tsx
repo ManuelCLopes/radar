@@ -23,7 +23,7 @@ describe('SupportPage', () => {
     describe('Page Structure', () => {
         it('should render the support page', () => {
             renderSupportPage();
-            expect(screen.getByAltText("Competitive Watcher")).toBeInTheDocument();
+            expect(screen.getByAltText("Competitor Watcher")).toBeInTheDocument();
         });
 
         it('should render the back button', () => {
@@ -33,7 +33,7 @@ describe('SupportPage', () => {
 
         it('should render the hero section', () => {
             renderSupportPage();
-            expect(screen.getByText(/Help keep Competitive Watcher 100% free and open source/i)).toBeInTheDocument();
+            expect(screen.getByText(/Help keep Competitor Watcher 100% free and open source/i)).toBeInTheDocument();
         });
     });
 
@@ -52,7 +52,7 @@ describe('SupportPage', () => {
 
         it('should display the mission statement', () => {
             renderSupportPage();
-            expect(screen.getAllByText(/Keep Competitive Watcher 100% Free/i)[0]).toBeInTheDocument();
+            expect(screen.getAllByText(/Keep Competitor Watcher 100% Free/i)[0]).toBeInTheDocument();
         });
     });
 
@@ -111,7 +111,7 @@ describe('SupportPage', () => {
         it('should render thank you message', () => {
             renderSupportPage();
             expect(screen.getByText(/Thank You!/i)).toBeInTheDocument();
-            expect(screen.getByText(/Your support makes it possible to keep Competitive Watcher free/i)).toBeInTheDocument();
+            expect(screen.getByText(/Your support makes it possible to keep Competitor Watcher free/i)).toBeInTheDocument();
         });
     });
 
@@ -119,31 +119,31 @@ describe('SupportPage', () => {
         it('should render in English by default', async () => {
             await i18n.changeLanguage('en');
             renderSupportPage();
-            expect(screen.getByAltText('Competitive Watcher')).toBeInTheDocument();
+            expect(screen.getByAltText('Competitor Watcher')).toBeInTheDocument();
         });
 
         it('should switch to Portuguese', async () => {
             await i18n.changeLanguage('pt');
             renderSupportPage();
-            expect(screen.getByText('Apoiar o Competitive Watcher')).toBeInTheDocument();
+            expect(screen.getByText('Apoiar o Competitor Watcher')).toBeInTheDocument();
         });
 
         it('should switch to Spanish', async () => {
             await i18n.changeLanguage('es');
             renderSupportPage();
-            expect(screen.getByText('Apoyar Competitive Watcher')).toBeInTheDocument();
+            expect(screen.getByText('Apoyar Competitor Watcher')).toBeInTheDocument();
         });
 
         it('should switch to French', async () => {
             await i18n.changeLanguage('fr');
             renderSupportPage();
-            expect(screen.getByText('Soutenir Competitive Watcher')).toBeInTheDocument();
+            expect(screen.getByText('Soutenir Competitor Watcher')).toBeInTheDocument();
         });
 
         it('should switch to German', async () => {
             await i18n.changeLanguage('de');
             renderSupportPage();
-            expect(screen.getByText('Competitive Watcher Unterstützen')).toBeInTheDocument();
+            expect(screen.getByText('Competitor Watcher Unterstützen')).toBeInTheDocument();
         });
     });
 });

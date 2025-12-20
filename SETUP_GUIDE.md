@@ -1,4 +1,4 @@
-# 🚀 Setup Guide - Competitive Watcher
+# 🚀 Setup Guide - Competitor Watcher
 
 This guide helps you configure the application to test with real data.
 
@@ -27,7 +27,7 @@ cp .env.example .env
 #### Step 1: Create Google Cloud Project
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Click "Select a project" → "New Project"
-3. Name: "Competitive Watcher" (or your choice)
+3. Name: "Competitor Watcher" (or your choice)
 4. Click "Create"
 
 #### Step 2: Enable Required APIs
@@ -130,7 +130,7 @@ psql competitor_watcher
 
 ### Alternative: Docker
 ```bash
-docker run --name competitive-watcher-postgres \
+docker run --name competitor-watcher-postgres \
   -e POSTGRES_DB=competitor_watcher \
   -e POSTGRES_PASSWORD=watcher123 \
   -p 5432:5432 \
@@ -150,7 +150,7 @@ To enable "Sign in with Google".
 1. In Google Cloud Console, go to **APIs & Services** → **OAuth consent screen**
 2. Choose **External** → Create
 3. Fill in:
-   - App name: "Competitive Watcher"
+   - App name: "Competitor Watcher"
    - User support email: your_email@example.com
    - Developer contact: your_email@example.com
 4. Click "Save and Continue"

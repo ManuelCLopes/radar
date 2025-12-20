@@ -368,7 +368,7 @@
     }
   },
   "landing": {
-    "brandName": "Competitive Watcher",
+    "brandName": "Competitor Watcher",
     "heroFeatures": {
       "competitors": "Concorrentes num raio à sua escolha",
       "ratings": "Ratings, reviews e preços",
@@ -422,14 +422,14 @@
       }
     },
     "targetAudience": {
-      "title": "Para quem é o Competitive Watcher?",
+      "title": "Para quem é o Competitor Watcher?",
       "subtitle": "Ideal para negócios locais que dependem de reputação e reviews",
       "restaurants": "Restaurantes, cafés e pastelarias",
       "beauty": "Clínicas de estética, cabeleireiros, barbearias",
       "fitness": "Ginásios e estúdios de treino",
       "hotels": "Pequenos hotéis, alojamentos locais, guesthouses",
       "retail": "Lojas físicas que competem em zonas comerciais",
-      "conclusion": "Se tem um negócio local e tem concorrência à sua volta, o Competitive Watcher foi feito para si."
+      "conclusion": "Se tem um negócio local e tem concorrência à sua volta, o Competitor Watcher foi feito para si."
     },
     "pricing": {
       "title": "Planos e Preços",
@@ -507,8 +507,8 @@
       }
     },
     "support": {
-      "title": "Gosta do Competitive Watcher? Ajude a mantê-lo gratuito",
-      "description": "O Competitive Watcher é 100% gratuito e open source. Precisamos de apoio para cobrir custos de APIs, hosting e infraestrutura. Cada contribuição ajuda.",
+      "title": "Gosta do Competitor Watcher? Ajude a mantê-lo gratuito",
+      "description": "O Competitor Watcher é 100% gratuito e open source. Precisamos de apoio para cobrir custos de APIs, hosting e infraestrutura. Cada contribuição ajuda.",
       "cta": "Apoiar o Projeto",
       "footer": "Obrigado pelo seu apoio"
     },
@@ -533,21 +533,21 @@
   },
   "support": {
     "back": "Voltar",
-    "title": "Apoiar o Competitive Watcher",
-    "subtitle": "Ajude a manter o Competitive Watcher 100% gratuito e open source para todos",
+    "title": "Apoiar o Competitor Watcher",
+    "subtitle": "Ajude a manter o Competitor Watcher 100% gratuito e open source para todos",
     "whySupport": {
       "title": "Porquê Apoiar?",
-      "description": "O Competitive Watcher é um projeto de paixão construído para ajudar pequenos negócios a competir. Cada doação mantém as luzes acesas."
+      "description": "O Competitor Watcher é um projeto de paixão construído para ajudar pequenos negócios a competir. Cada doação mantém as luzes acesas."
     },
     "costs": {
       "maps": "Dados de Localização & Mapas",
       "mapsDesc": "Google Places API alimenta a descoberta de concorrentes",
       "hosting": "Hosting & Infraestrutura",
-      "hostingDesc": "Servidores confiáveis para manter o Competitive Watcher a funcionar 24/7",
+      "hostingDesc": "Servidores confiáveis para manter o Competitor Watcher a funcionar 24/7",
       "ai": "Insights AI",
       "aiDesc": "OpenAI API gera análise acionável de concorrentes"
     },
-    "mission": "Nossa Missão: Manter o Competitive Watcher 100% Gratuito",
+    "mission": "Nossa Missão: Manter o Competitor Watcher 100% Gratuito",
     "missionDesc": "Sem paywalls. Sem limites de funcionalidades. Sem anúncios. Apenas uma ferramenta para ajudar negócios locais a prosperar.",
     "howToSupport": "Escolha Como Apoiar",
     "everyContribution": "Cada contribuição ajuda, não importa o tamanho!",
@@ -581,7 +581,7 @@
       "shareWithFriendsDesc": "Espalhe a palavra"
     },
     "thankYou": "Obrigado!",
-    "thankYouMessage": "O seu apoio torna possível manter o Competitive Watcher gratuito para todos"
+    "thankYouMessage": "O seu apoio torna possível manter o Competitor Watcher gratuito para todos"
   },
   "settings": {
     "title": "Definições",
@@ -599,9 +599,9 @@
       "edit": "Editar Perfil"
     },
     "support": {
-      "title": "Apoiar o Competitive Watcher",
-      "description": "O Competitive Watcher é 100% gratuito e open source. Ajude a manter o projeto!",
-      "message": "<strong>Todas as funcionalidades</strong> estão desbloqueadas para todos. Se o Competitive Watcher ajuda o seu negócio, considera apoiar com uma doação.",
+      "title": "Apoiar o Competitor Watcher",
+      "description": "O Competitor Watcher é 100% gratuito e open source. Ajude a manter o projeto!",
+      "message": "<strong>Todas as funcionalidades</strong> estão desbloqueadas para todos. Se o Competitor Watcher ajuda o seu negócio, considera apoiar com uma doação.",
       "button": "Ver Opções de Apoio",
       "footer": "💜 GitHub Sponsors • ☕ Ko-fi • 🎁 Buy Me a Coffee"
     },

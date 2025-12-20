@@ -367,7 +367,7 @@
     }
   },
   "landing": {
-    "brandName": "Competitive Watcher",
+    "brandName": "Competitor Watcher",
     "heroFeatures": {
       "competitors": "Competitors within your chosen radius",
       "ratings": "Ratings, reviews and prices",
@@ -421,14 +421,14 @@
       }
     },
     "targetAudience": {
-      "title": "Who is Competitive Watcher for?",
+      "title": "Who is Competitor Watcher for?",
       "subtitle": "Ideal for local businesses that depend on reputation and reviews:",
       "restaurants": "Restaurants, cafes and bakeries",
       "beauty": "Beauty clinics, hairdressers, barbershops",
       "fitness": "Gyms and training studios",
       "hotels": "Small hotels, local accommodations, guesthouses",
       "retail": "Physical stores competing in commercial areas",
-      "conclusion": "If you have a local business and competition around you, Competitive Watcher was made for you."
+      "conclusion": "If you have a local business and competition around you, Competitor Watcher was made for you."
     },
     "pricing": {
       "title": "Plans and Pricing",
@@ -506,8 +506,8 @@
       }
     },
     "support": {
-      "title": "Enjoy Competitive Watcher? Help keep it free",
-      "description": "Competitive Watcher is 100% free and open source. We need support to cover API costs, hosting, and infrastructure. Every contribution helps.",
+      "title": "Enjoy Competitor Watcher? Help keep it free",
+      "description": "Competitor Watcher is 100% free and open source. We need support to cover API costs, hosting, and infrastructure. Every contribution helps.",
       "cta": "Support the Project",
       "footer": "Thank you for your support"
     },
@@ -532,21 +532,21 @@
   },
   "support": {
     "back": "Back",
-    "title": "Support Competitive Watcher",
-    "subtitle": "Help keep Competitive Watcher 100% free and open source for everyone",
+    "title": "Support Competitor Watcher",
+    "subtitle": "Help keep Competitor Watcher 100% free and open source for everyone",
     "whySupport": {
       "title": "Why Your Support Matters",
-      "description": "Competitive Watcher is a passion project built to help small businesses compete. Every donation keeps the lights on."
+      "description": "Competitor Watcher is a passion project built to help small businesses compete. Every donation keeps the lights on."
     },
     "costs": {
       "maps": "Location Data & Maps",
       "mapsDesc": "Google Places API powers our competitor discovery",
       "hosting": "Hosting & Infrastructure",
-      "hostingDesc": "Reliable servers to keep Competitive Watcher running 24/7",
+      "hostingDesc": "Reliable servers to keep Competitor Watcher running 24/7",
       "ai": "AI-Powered Insights",
       "aiDesc": "OpenAI API generates actionable competitor analysis"
     },
-    "mission": "Our Mission: Keep Competitive Watcher 100% Free",
+    "mission": "Our Mission: Keep Competitor Watcher 100% Free",
     "missionDesc": "No paywalls. No feature limits. No ads. Just a tool built to help local businesses thrive.",
     "howToSupport": "Choose How to Support",
     "everyContribution": "Every contribution helps, no matter the size!",
@@ -580,7 +580,7 @@
       "shareWithFriendsDesc": "Spread the word"
     },
     "thankYou": "Thank You!",
-    "thankYouMessage": "Your support makes it possible to keep Competitive Watcher free for everyone"
+    "thankYouMessage": "Your support makes it possible to keep Competitor Watcher free for everyone"
   },
   "settings": {
     "title": "Settings",
@@ -598,9 +598,9 @@
       "edit": "Edit Profile"
     },
     "support": {
-      "title": "Support Competitive Watcher",
-      "description": "Competitive Watcher is 100% free and open source. Help keep the project alive!",
-      "message": "<strong>All features</strong> are unlocked for everyone. If Competitive Watcher helps you, consider supporting with a donation.",
+      "title": "Support Competitor Watcher",
+      "description": "Competitor Watcher is 100% free and open source. Help keep the project alive!",
+      "message": "<strong>All features</strong> are unlocked for everyone. If Competitor Watcher helps you, consider supporting with a donation.",
       "button": "View Support Options",
       "footer": "💜 GitHub Sponsors • ☕ Ko-fi • 🎁 Buy Me a Coffee"
     },
