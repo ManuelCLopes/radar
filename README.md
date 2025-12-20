@@ -1,8 +1,12 @@
-# 🎯 Radar Local
+<div align="center">
+  <img src="client/public/logo.png" alt="Competitive Watcher Logo" width="200" />
+</div>
+
+# 🎯 Competitive Watcher
 
 **AI-powered local competitor analysis platform**
 
-Radar Local helps businesses understand their competitive landscape by analyzing nearby competitors using Google Places data and AI-driven insights. Register your business, generate comprehensive reports, and make data-driven decisions to stay ahead of the competition.
+Competitive Watcher helps businesses understand their competitive landscape by analyzing nearby competitors using Google Places data and AI-driven insights. Register your business, generate comprehensive reports, and make data-driven decisions to stay ahead of the competition.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
@@ -99,7 +103,7 @@ GOOGLE_PLACES_API_KEY=
 OPENAI_API_KEY=
 
 # Database (for data persistence)
-DATABASE_URL=postgresql://user:password@localhost:5432/radar
+DATABASE_URL=postgresql://user:password@localhost:5432/competitor_watcher
 
 # Google OAuth (for "Sign in with Google")
 GOOGLE_CLIENT_ID=
@@ -115,7 +119,7 @@ SESSION_SECRET=
 ## 📁 Project Structure
 
 ```
-radar/
+competitor-watcher/
 ├── client/                 # React frontend
 │   ├── src/
 │   │   ├── components/    # Reusable UI components
@@ -217,10 +221,10 @@ brew install postgresql@15
 brew services start postgresql@15
 
 # Create database
-createdb radar
+createdb competitor_watcher
 
 # Add to .env
-DATABASE_URL=postgresql://your_username@localhost:5432/radar
+DATABASE_URL=postgresql://your_username@localhost:5432/competitor_watcher
 ```
 
 ### Environment Modes
@@ -235,7 +239,7 @@ The application adapts based on available configuration:
 
 ## 🌍 Internationalization
 
-Radar Local supports 5 languages:
+Competitive Watcher supports 5 languages:
 
 - 🇬🇧 English (EN)
 - 🇵🇹 Portuguese (PT)

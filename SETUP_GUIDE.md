@@ -1,4 +1,4 @@
-# 🚀 Setup Guide - Radar Local
+# 🚀 Setup Guide - Competitive Watcher
 
 This guide helps you configure the application to test with real data.
 
@@ -27,7 +27,7 @@ cp .env.example .env
 #### Step 1: Create Google Cloud Project
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Click "Select a project" → "New Project"
-3. Name: "Radar Local" (or your choice)
+3. Name: "Competitive Watcher" (or your choice)
 4. Click "Create"
 
 #### Step 2: Enable Required APIs
@@ -114,30 +114,30 @@ brew services start postgresql@15
 
 #### 2. Create Database
 ```bash
-createdb radar
+createdb competitor_watcher
 ```
 
 #### 3. Add to .env
 ```bash
-DATABASE_URL=postgresql://your_username@localhost:5432/radar
+DATABASE_URL=postgresql://your_username@localhost:5432/competitor_watcher
 ```
 
 ### Verify Connection
 ```bash
-psql radar
+psql competitor_watcher
 # If it connects successfully, type \q to exit
 ```
 
 ### Alternative: Docker
 ```bash
-docker run --name radar-postgres \
-  -e POSTGRES_DB=radar \
-  -e POSTGRES_PASSWORD=radar123 \
+docker run --name competitive-watcher-postgres \
+  -e POSTGRES_DB=competitor_watcher \
+  -e POSTGRES_PASSWORD=watcher123 \
   -p 5432:5432 \
   -d postgres:15
 
 # .env
-DATABASE_URL=postgresql://postgres:radar123@localhost:5432/radar
+DATABASE_URL=postgresql://postgres:watcher123@localhost:5432/competitor_watcher
 ```
 
 ---
@@ -150,7 +150,7 @@ To enable "Sign in with Google".
 1. In Google Cloud Console, go to **APIs & Services** → **OAuth consent screen**
 2. Choose **External** → Create
 3. Fill in:
-   - App name: "Radar Local"
+   - App name: "Competitive Watcher"
    - User support email: your_email@example.com
    - Developer contact: your_email@example.com
 4. Click "Save and Continue"
@@ -238,7 +238,7 @@ GOOGLE_CALLBACK_URL=http://127.0.0.1:5000/api/auth/google/callback
 
 ### Database connection error
 - Check if PostgreSQL is running: `brew services list`
-- Test connection: `psql radar`
+- Test connection: `psql competitor_watcher`
 - Verify DATABASE_URL in .env
 
 ---
