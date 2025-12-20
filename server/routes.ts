@@ -429,7 +429,7 @@ export async function registerRoutes(
       const { html, text } = generatePasswordResetEmail(resetLink, email);
       await sendEmail({
         to: email,
-        subject: "Recuperação de Password - Radar",
+        subject: "Recuperação de Password - Competitive Watcher",
         html,
         text,
       });

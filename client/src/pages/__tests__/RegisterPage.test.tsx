@@ -44,7 +44,7 @@ describe("RegisterPage", () => {
             </QueryClientProvider>
         );
 
-        expect(screen.getByText("Radar Local")).toBeInTheDocument();
+        expect(screen.getByAltText("Competitive Watcher")).toBeInTheDocument();
         expect(screen.getByLabelText("auth.firstName")).toBeInTheDocument();
         expect(screen.getByLabelText("auth.lastName")).toBeInTheDocument();
         expect(screen.getByLabelText("auth.email")).toBeInTheDocument();

@@ -10,7 +10,7 @@ export class ConsoleEmailService implements EmailService {
     console.log(`
 [EMAIL MOCK] ---------------------------------------------------
 To: ${user.email}
-Subject: Your Weekly Radar Report: ${report.businessName}
+Subject: Your Weekly Competitive Watcher Report: ${report.businessName}
 ----------------------------------------------------------------
 Hello ${user.firstName || "there"},
 
@@ -19,10 +19,10 @@ Here is your weekly competitor analysis report for ${report.businessName}.
 Report ID: ${report.id}
 Generated At: ${report.generatedAt}
 
-View your full report here: https://radar.example.com/dashboard
+View your full report here: https://competitorwatcher.pt/dashboard
 
 Best,
-The Radar Team
+The Competitive Watcher Team
 ----------------------------------------------------------------
 `);
     return true;
@@ -47,9 +47,9 @@ export class NodemailerEmailService implements EmailService {
   async sendWeeklyReport(user: User, report: Report): Promise<boolean> {
     try {
       await this.transporter.sendMail({
-        from: process.env.SMTP_FROM || '"Radar" <noreply@radar.com>',
+        from: process.env.SMTP_FROM || '"Competitive Watcher" <noreply@competitorwatcher.pt>',
         to: user.email,
-        subject: `Your Weekly Radar Report: ${report.businessName}`,
+        subject: `Your Weekly Competitive Watcher Report: ${report.businessName}`,
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
             <h2>Weekly Competitor Analysis</h2>
@@ -57,7 +57,7 @@ export class NodemailerEmailService implements EmailService {
             <p>Here is your weekly competitor analysis report for <strong>${report.businessName}</strong>.</p>
             <p>We've analyzed the latest reviews and trends in your area.</p>
             <div style="margin: 20px 0;">
-              <a href="https://radar.example.com/dashboard" style="background-color: #7c3aed; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">View Full Report</a>
+              <a href="https://competitorwatcher.pt/dashboard" style="background-color: #7c3aed; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">View Full Report</a>
             </div>
             <p style="color: #666; font-size: 12px;">Generated at ${new Date(report.generatedAt).toLocaleString()}</p>
           </div>
@@ -81,7 +81,7 @@ export function generatePasswordResetEmail(resetLink: string, email: string) {
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
       <h2>Reset Your Password</h2>
       <p>Hello,</p>
-      <p>We received a request to reset the password for your Radar account associated with ${email}.</p>
+      <p>We received a request to reset the password for your Competitive Watcher account associated with ${email}.</p>
       <p>Click the button below to reset your password:</p>
       <div style="margin: 20px 0;">
         <a href="${resetLink}" style="background-color: #7c3aed; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset Password</a>
@@ -97,16 +97,16 @@ export function generatePasswordResetEmail(resetLink: string, email: string) {
 export function generateWelcomeEmail(name: string) {
   const html = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2>Welcome to Radar!</h2>
+      <h2>Welcome to Competitive Watcher!</h2>
       <p>Hello ${name || "there"},</p>
-      <p>Thank you for signing up for Radar. We're excited to help you track your competitors and grow your business.</p>
+      <p>Thank you for signing up for Competitive Watcher. We're excited to help you track your competitors and grow your business.</p>
       <p>Get started by adding your first business to your dashboard.</p>
       <div style="margin: 20px 0;">
-        <a href="https://radar.example.com/dashboard" style="background-color: #7c3aed; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Go to Dashboard</a>
+        <a href="https://competitorwatcher.pt/dashboard" style="background-color: #7c3aed; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Go to Dashboard</a>
       </div>
     </div>
   `;
-  const text = `Welcome to Radar, ${name || "there"}! We're excited to have you.`;
+  const text = `Welcome to Competitive Watcher, ${name || "there"}! We're excited to have you.`;
   return { html, text };
 }
 
@@ -123,7 +123,7 @@ export async function sendEmail({ to, subject, html, text }: { to: string; subje
     });
 
     await transporter.sendMail({
-      from: process.env.SMTP_FROM || '"Radar" <noreply@radar.com>',
+      from: process.env.SMTP_FROM || '"Competitive Watcher" <noreply@competitorwatcher.pt>',
       to,
       subject,
       html,

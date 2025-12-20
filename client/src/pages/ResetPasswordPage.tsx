@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { CheckCircle2, Loader2, BarChart3, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { CheckCircle2, Loader2, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { apiRequest } from "@/lib/queryClient";
 
 export default function ResetPasswordPage() {
+    const { t } = useTranslation();
     const [, params] = useLocation() as any;
     const token = params?.split('/')[2]; // Extract token from /reset-password/:token
 
@@ -93,9 +95,8 @@ export default function ResetPasswordPage() {
             {/* Header */}
             <header className="border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm">
                 <div className="container mx-auto px-4 h-16 flex items-center">
-                    <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary cursor-pointer transition-opacity hover:opacity-80">
-                        <BarChart3 className="h-6 w-6" />
-                        <span>Radar</span>
+                    <Link href="/" className="flex items-center cursor-pointer transition-opacity hover:opacity-80">
+                        <img src="/logo.png" alt="Competitive Watcher" className="h-10 w-auto dark:invert-0 invert" />
                     </Link>
                 </div>
             </header>

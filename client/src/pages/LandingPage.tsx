@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { MapPin, Star, Mail, Map, BarChart3, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, LogIn, Search, Check, X, User, LayoutDashboard, ChevronLeft, ChevronRight, Heart, Sparkles, Rocket, Target, TrendingUp } from "lucide-react";
+import { MapPin, Star, Mail, Map, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, LogIn, Search, Check, X, User, LayoutDashboard, ChevronLeft, ChevronRight, Heart, Sparkles, Rocket, Target, TrendingUp } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -64,7 +64,7 @@ export default function LandingPage() {
   const onSearchSubmit = async (data: SearchFormValues) => {
     // Check if user has already generated a free report (only for guests)
     if (!isAuthenticated) {
-      const hasGenerated = localStorage.getItem('radar_free_report_generated');
+      const hasGenerated = localStorage.getItem('competitive_watcher_free_report_generated');
       if (hasGenerated) {
         setShowLimitModal(true);
         return;
@@ -121,7 +121,7 @@ export default function LandingPage() {
 
       // Mark as generated only for guests
       if (!isAuthenticated) {
-        localStorage.setItem('radar_free_report_generated', 'true');
+        localStorage.setItem('competitive_watcher_free_report_generated', 'true');
       }
     } catch (error) {
       console.error('Search error:', error);
@@ -137,10 +137,9 @@ export default function LandingPage() {
       <header className={`landing-header ${isScrolled ? 'scrolled' : ''}`}>
         <div className="landing-container">
           <div className="landing-header-brand">
-            <div className="landing-header-logo">
-              <BarChart3 />
-            </div>
-            <span className="landing-header-title">{t('landing.brandName')}</span>
+            <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
+              <img src="/logo.png" alt="Competitive Watcher" className="h-14 w-auto" />
+            </Link>
           </div>
           <div className="landing-header-actions">
             <LanguageSelector />
@@ -350,7 +349,7 @@ export default function LandingPage() {
             </div>
             <div className="step-card">
               <div className="step-icon">
-                <BarChart3 />
+                <TrendingUp />
               </div>
               <h3 className="step-title">{t('landing.howItWorks.step3.title')}</h3>
               <p className="step-description">
@@ -380,7 +379,7 @@ export default function LandingPage() {
             </div>
             <div className="report-card">
               <div className="report-card-icon">
-                <BarChart3 />
+                <TrendingUp />
               </div>
               <h3 className="report-card-title">{t('landing.reportFeatures.comparison.title')}</h3>
               <p className="report-card-description">

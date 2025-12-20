@@ -59,9 +59,9 @@ describe('SettingsPage', () => {
             expect(document.body).toBeInTheDocument();
         });
 
-        it('should display the Radar header', () => {
+        it('should display the Competitive Watcher logo', () => {
             renderSettingsPage();
-            expect(screen.getByText('Radar')).toBeInTheDocument();
+            expect(screen.getByAltText('Competitive Watcher')).toBeInTheDocument();
         });
 
         it('should have a logout button', () => {
@@ -75,7 +75,7 @@ describe('SettingsPage', () => {
         it('should display donation/support card', () => {
             renderSettingsPage();
             // Test that donation card exists (in English)
-            expect(screen.getByText(/Support Radar/i)).toBeInTheDocument();
+            expect(screen.getByText(/Support Competitive Watcher/i)).toBeInTheDocument();
         });
 
         it('should have link to support page', () => {
@@ -90,7 +90,7 @@ describe('SettingsPage', () => {
         it('should display heart icon in donation card', () => {
             renderSettingsPage();
             // Heart icon should be rendered
-            const donationSection = screen.getByText(/Support Radar/i).closest('div');
+            const donationSection = screen.getByText(/Support Competitive Watcher/i).closest('div');
             expect(donationSection).toBeInTheDocument();
         });
     });

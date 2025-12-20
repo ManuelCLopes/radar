@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { MapPin, Star, Plus, Edit, Trash2, BarChart3, LogOut, FileText, History, AlertCircle, Settings, Building2, Search, Loader2, TrendingUp } from "lucide-react";
+import { MapPin, Star, Plus, Edit, Trash2, LogOut, FileText, History, AlertCircle, Settings, Building2, Search, Loader2, TrendingUp } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { BusinessForm } from "@/components/BusinessForm";
 import { BusinessList } from "@/components/BusinessList";
@@ -231,9 +231,8 @@ export default function Dashboard() {
       {/* Header */}
       <header className="border-b sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary cursor-pointer transition-opacity hover:opacity-80">
-            <BarChart3 className="h-6 w-6" />
-            <span>Radar</span>
+          <Link href="/" className="flex items-center cursor-pointer transition-opacity hover:opacity-80">
+            <img src="/logo.png" alt="Competitive Watcher" className="h-10 w-auto dark:invert-0 invert" />
           </Link>
 
           <div className="flex items-center gap-2">
@@ -412,7 +411,7 @@ export default function Dashboard() {
                       <CardTitle className="text-sm font-medium">
                         {t("dashboard.stats.analysisStatus")}
                       </CardTitle>
-                      <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                      <TrendingUp className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.totalReports}</div>

@@ -23,17 +23,17 @@ describe('SupportPage', () => {
     describe('Page Structure', () => {
         it('should render the support page', () => {
             renderSupportPage();
-            expect(screen.getByText(/Support Radar/i)).toBeInTheDocument();
+            expect(screen.getByAltText("Competitive Watcher")).toBeInTheDocument();
         });
 
-        it('should render the back to dashboard button', () => {
+        it('should render the back button', () => {
             renderSupportPage();
-            expect(screen.getByText(/Back to Dashboard/i)).toBeInTheDocument();
+            expect(screen.getByText(/Back/i)).toBeInTheDocument();
         });
 
         it('should render the hero section', () => {
             renderSupportPage();
-            expect(screen.getByText(/Help keep Radar 100% free and open source/i)).toBeInTheDocument();
+            expect(screen.getByText(/Help keep Competitive Watcher 100% free and open source/i)).toBeInTheDocument();
         });
     });
 
@@ -52,7 +52,7 @@ describe('SupportPage', () => {
 
         it('should display the mission statement', () => {
             renderSupportPage();
-            expect(screen.getAllByText(/Keep Radar 100% Free/i)[0]).toBeInTheDocument();
+            expect(screen.getAllByText(/Keep Competitive Watcher 100% Free/i)[0]).toBeInTheDocument();
         });
     });
 
@@ -111,7 +111,7 @@ describe('SupportPage', () => {
         it('should render thank you message', () => {
             renderSupportPage();
             expect(screen.getByText(/Thank You!/i)).toBeInTheDocument();
-            expect(screen.getByText(/Your support makes it possible to keep Radar free/i)).toBeInTheDocument();
+            expect(screen.getByText(/Your support makes it possible to keep Competitive Watcher free/i)).toBeInTheDocument();
         });
     });
 
@@ -119,31 +119,31 @@ describe('SupportPage', () => {
         it('should render in English by default', async () => {
             await i18n.changeLanguage('en');
             renderSupportPage();
-            expect(screen.getByText('Support Radar')).toBeInTheDocument();
+            expect(screen.getByAltText('Competitive Watcher')).toBeInTheDocument();
         });
 
         it('should switch to Portuguese', async () => {
             await i18n.changeLanguage('pt');
             renderSupportPage();
-            expect(screen.getByText('Apoiar o Radar')).toBeInTheDocument();
+            expect(screen.getByText('Apoiar o Competitive Watcher')).toBeInTheDocument();
         });
 
         it('should switch to Spanish', async () => {
             await i18n.changeLanguage('es');
             renderSupportPage();
-            expect(screen.getByText('Apoyar Radar')).toBeInTheDocument();
+            expect(screen.getByText('Apoyar Competitive Watcher')).toBeInTheDocument();
         });
 
         it('should switch to French', async () => {
             await i18n.changeLanguage('fr');
             renderSupportPage();
-            expect(screen.getByText('Soutenir Radar')).toBeInTheDocument();
+            expect(screen.getByText('Soutenir Competitive Watcher')).toBeInTheDocument();
         });
 
         it('should switch to German', async () => {
             await i18n.changeLanguage('de');
             renderSupportPage();
-            expect(screen.getByText('Radar Unterstützen')).toBeInTheDocument();
+            expect(screen.getByText('Competitive Watcher Unterstützen')).toBeInTheDocument();
         });
     });
 });

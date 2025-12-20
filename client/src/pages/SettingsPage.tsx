@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
-import { User, BarChart3, LogOut, Heart, Eye, EyeOff, Trash2, Shield } from "lucide-react";
+import { User, LogOut, Heart, Eye, EyeOff, Trash2, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -87,9 +87,8 @@ export default function SettingsPage() {
             {/* Header */}
             <header className="border-b sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                    <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-primary cursor-pointer transition-opacity hover:opacity-80">
-                        <BarChart3 className="h-6 w-6" />
-                        <span>Radar</span>
+                    <Link href="/dashboard" className="flex items-center cursor-pointer transition-opacity hover:opacity-80">
+                        <img src="/logo.png" alt="Competitive Watcher" className="h-10 w-auto dark:invert-0 invert" />
                     </Link>
 
                     <div className="flex items-center gap-2">
@@ -227,7 +226,7 @@ export default function SettingsPage() {
                     </CardContent>
                 </Card>
 
-                {/* Support Radar - Donation Card */}
+                {/* Support Competitive Watcher - Donation Card */}
                 <Card className="border-purple-200 dark:border-purple-800">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">

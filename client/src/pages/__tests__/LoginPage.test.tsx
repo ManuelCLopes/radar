@@ -43,7 +43,7 @@ describe("LoginPage", () => {
             </QueryClientProvider>
         );
 
-        expect(screen.getByText("Radar Local")).toBeInTheDocument();
+        expect(screen.getByAltText("Competitive Watcher")).toBeInTheDocument();
         expect(screen.getByLabelText("auth.email")).toBeInTheDocument();
         expect(screen.getByLabelText("auth.password")).toBeInTheDocument();
         expect(screen.getByRole("button", { name: "auth.login" })).toBeInTheDocument();

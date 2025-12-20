@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BarChart3, Mail, Lock, User, Sparkles, Loader2, AlertCircle } from "lucide-react";
+import { Mail, Lock, User, Sparkles, Loader2, AlertCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -113,22 +113,12 @@ export default function RegisterPage() {
             <div className="w-full px-4 relative z-10 max-w-md">
                 <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 p-8 space-y-6">
                     {/* Logo and Title */}
-                    <div className="flex items-center justify-center gap-4">
-                        <div className="relative">
-                            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur-lg opacity-50 animate-pulse"></div>
-                            <div className="relative w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
-                                <BarChart3 className="w-7 h-7 text-white" />
-                            </div>
-                        </div>
-                        <div className="text-left">
-                            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                                Radar Local
-                            </h1>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                                {t("auth.createAccount")}
-                            </p>
-                        </div>
-                    </div>
+                    <Link href="/" className="flex flex-col items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity">
+                        <img src="/logo.png" alt="Competitive Watcher" className="h-14 w-auto object-contain" />
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                            {t("auth.createAccount")}
+                        </p>
+                    </Link>
 
                     {/* 100% Free Badge */}
                     <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border border-green-200 dark:border-green-800 rounded-xl p-3 text-center">

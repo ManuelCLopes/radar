@@ -192,7 +192,7 @@ export async function setupAuth(app: Express) {
                     const { html, text } = generateWelcomeEmail(firstName || email);
                     await sendEmail({
                         to: email,
-                        subject: "Bem-vindo ao Radar! 🎉",
+                        subject: "Bem-vindo ao Competitive Watcher! 🎉",
                         html,
                         text,
                     });

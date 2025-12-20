@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BarChart3, Mail, Lock, Sparkles } from "lucide-react";
+import { Mail, Lock, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -106,18 +106,10 @@ export default function LoginPage() {
                 <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 p-8 space-y-6">
                     {/* Logo and Title */}
                     <div className="text-center space-y-4">
-                        <div className="flex justify-center">
-                            <div className="relative">
-                                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur-lg opacity-50 animate-pulse"></div>
-                                <div className="relative w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
-                                    <BarChart3 className="w-9 h-9 text-white" />
-                                </div>
-                            </div>
-                        </div>
+                        <Link href="/" className="flex justify-center cursor-pointer hover:opacity-80 transition-opacity">
+                            <img src="/logo.png" alt="Competitive Watcher" className="h-16 w-auto object-contain dark:invert-0 invert" />
+                        </Link>
                         <div>
-                            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                                Radar Local
-                            </h1>
                             <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
                                 {t("auth.login")}
                             </p>

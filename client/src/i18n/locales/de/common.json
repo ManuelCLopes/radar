@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Lokaler Wettbewerbsanalysator",
+    "title": "Competitive Watcher",
     "description": "Analysieren Sie Ihre lokale Konkurrenz mit KI-gestützten Erkenntnissen"
   },
   "nav": {
@@ -8,7 +8,7 @@
   },
   "dashboard": {
     "header": {
-      "title": "Lokaler Wettbewerbsanalysator",
+      "title": "Competitive Watcher",
       "subtitle": "Registrieren Sie Ihr Unternehmen und entdecken Sie nahegelegene Wettbewerber mit KI-gestützter Analyse"
     },
     "stats": {
@@ -430,7 +430,7 @@
     }
   },
   "landing": {
-    "brandName": "Radar Local",
+    "brandName": "Competitive Watcher",
     "heroFeatures": {
       "competitors": "Wettbewerber im Radius Ihrer Wahl",
       "ratings": "Bewertungen, Rezensionen und Preise",
@@ -484,14 +484,14 @@
       }
     },
     "targetAudience": {
-      "title": "Für wen ist der Lokale Wettbewerbs-Radar?",
+      "title": "Für wen ist der Competitive Watcher?",
       "subtitle": "Ideal für lokale Unternehmen, die auf Reputation und Bewertungen angewiesen sind:",
       "restaurants": "Restaurants, Cafés und Bäckereien",
       "beauty": "Schönheitskliniken, Friseure, Barbiere",
       "fitness": "Fitnessstudios und Trainingsstudios",
       "hotels": "Kleine Hotels, lokale Unterkünfte, Pensionen",
       "retail": "Physische Geschäfte im Wettbewerb in Geschäftsvierteln",
-      "conclusion": "Wenn Sie ein lokales Geschäft haben und Konkurrenz um sich herum, wurde Radar für Sie gemacht."
+      "conclusion": "Wenn Sie ein lokales Geschäft haben und Konkurrenz um sich herum, wurde Competitive Watcher für Sie gemacht."
     },
     "pricing": {
       "title": "Pläne und Preise",
@@ -521,8 +521,8 @@
       }
     },
     "support": {
-      "title": "Mögen Sie Radar? Helfen Sie uns, es kostenlos zu halten",
-      "description": "Radar ist 100% kostenlos und Open Source. Wir benötigen Unterstützung für API-Kosten, Hosting und Infrastruktur. Jeder Beitrag hilft.",
+      "title": "Mögen Sie Competitive Watcher? Helfen Sie uns, es kostenlos zu halten",
+      "description": "Competitive Watcher ist 100% kostenlos und Open Source. Wir benötigen Unterstützung für API-Kosten, Hosting und Infrastruktur. Jeder Beitrag hilft.",
       "cta": "Projekt unterstützen",
       "footer": "Vielen Dank für Ihre Unterstützung"
     },
@@ -531,22 +531,22 @@
     }
   },
   "support": {
-    "backToDashboard": "Zurück zum Dashboard",
-    "title": "Radar Unterstützen",
-    "subtitle": "Helfen Sie, Radar 100% kostenlos und Open Source für alle zu halten",
+    "back": "Zurück",
+    "title": "Competitive Watcher Unterstützen",
+    "subtitle": "Helfen Sie, Competitive Watcher 100% kostenlos und Open Source für alle zu halten",
     "whySupport": {
       "title": "Warum Ihre Unterstützung Wichtig Ist",
-      "description": "Radar ist ein Leidenschaftsprojekt, das kleinen Unternehmen beim Wettbewerb hilft. Jede Spende hält die Lichter an."
+      "description": "Competitive Watcher ist ein Leidenschaftsprojekt, das kleinen Unternehmen beim Wettbewerb hilft. Jede Spende hält die Lichter an."
     },
     "costs": {
       "maps": "Standortdaten & Karten",
       "mapsDesc": "Google Places API treibt unsere Konkurrenzentdeckung an",
       "hosting": "Hosting & Infrastruktur",
-      "hostingDesc": "Zuverlässige Server, um Radar 24/7 am Laufen zu halten",
+      "hostingDesc": "Zuverlässige Server, um Competitive Watcher 24/7 am Laufen zu halten",
       "ai": "KI-gestützte Einblicke",
       "aiDesc": "OpenAI API generiert umsetzbare Wettbewerbsanalysen"
     },
-    "mission": "Unsere Mission: Radar 100% Kostenlos Halten",
+    "mission": "Unsere Mission: Competitive Watcher 100% Kostenlos Halten",
     "missionDesc": "Keine Bezahlschranken. Keine Funktionslimits. Keine Werbung. Nur ein Tool, um lokalen Unternehmen beim Gedeihen zu helfen.",
     "howToSupport": "Wählen Sie, Wie Sie Unterstützen Möchten",
     "everyContribution": "Jeder Beitrag hilft, egal wie groß!",
@@ -580,7 +580,7 @@
       "shareWithFriendsDesc": "Verbreiten Sie die Nachricht"
     },
     "thankYou": "Vielen Dank!",
-    "thankYouMessage": "Ihre Unterstützung macht es möglich, Radar für alle kostenlos zu halten"
+    "thankYouMessage": "Ihre Unterstützung macht es möglich, Competitive Watcher für alle kostenlos zu halten"
   },
   "settings": {
     "title": "Einstellungen",
@@ -598,9 +598,9 @@
       "edit": "Profil bearbeiten"
     },
     "support": {
-      "title": "Radar unterstützen",
-      "description": "Radar ist zu 100% kostenlos und Open Source. Helfen Sie, das Projekt am Leben zu erhalten!",
-      "message": "<strong>Alle Funktionen</strong> sind für jeden freigeschaltet. Wenn Radar Ihnen hilft, ziehen Sie eine Spende in Betracht.",
+      "title": "Competitive Watcher unterstützen",
+      "description": "Competitive Watcher ist zu 100% kostenlos und Open Source. Helfen Sie, das Projekt am Leben zu erhalten!",
+      "message": "<strong>Alle Funktionen</strong> sind für jeden freigeschaltet. Wenn Competitive Watcher Ihnen hilft, ziehen Sie eine Spende in Betracht.",
       "button": "Unterstützungsoptionen anzeigen",
       "footer": "💜 GitHub Sponsors • ☕ Ko-fi • 🎁 Buy Me a Coffee"
     },

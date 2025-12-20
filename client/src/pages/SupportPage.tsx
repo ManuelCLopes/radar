@@ -2,7 +2,6 @@ import { Heart, Github, Coffee, Gift, Star, Bug, Lightbulb, Share2 } from "lucid
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { BarChart3 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
 
@@ -23,12 +22,11 @@ export default function SupportPage() {
             {/* Header */}
             <header className="border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm sticky top-0 z-50">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary cursor-pointer transition-opacity hover:opacity-80">
-                        <BarChart3 className="h-6 w-6" />
-                        <span>Radar</span>
+                    <Link href="/" className="flex items-center cursor-pointer transition-opacity hover:opacity-80">
+                        <img src="/logo.png" alt="Competitive Watcher" className="h-10 w-auto dark:invert-0 invert" />
                     </Link>
                     <Link href="/dashboard">
-                        <Button variant="outline">{t('support.backToDashboard')}</Button>
+                        <Button variant="outline">{t('support.back')}</Button>
                     </Link>
                 </div>
             </header>
@@ -170,7 +168,7 @@ export default function SupportPage() {
                     <CardContent>
                         <div className="grid md:grid-cols-2 gap-4">
                             <a
-                                href="https://github.com/ManuelCLopes/radar"
+                                href="https://github.com/ManuelCLopes/competitive-watcher"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-4 border rounded-lg hover:bg-accent transition-colors flex items-center gap-3"
@@ -182,7 +180,7 @@ export default function SupportPage() {
                                 </div>
                             </a>
                             <a
-                                href="https://github.com/ManuelCLopes/radar/issues"
+                                href="https://github.com/ManuelCLopes/competitive-watcher/issues"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-4 border rounded-lg hover:bg-accent transition-colors flex items-center gap-3"
@@ -194,7 +192,7 @@ export default function SupportPage() {
                                 </div>
                             </a>
                             <a
-                                href="https://github.com/ManuelCLopes/radar/issues"
+                                href="https://github.com/ManuelCLopes/competitive-watcher/issues"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-4 border rounded-lg hover:bg-accent transition-colors flex items-center gap-3"
