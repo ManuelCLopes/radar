@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="client/public/logo.png" alt="Competitor Watcher Logo" width="200" />
+  <img src="client/public/logo-dark.png" alt="Competitor Watcher Logo" width="200" />
 </div>
 
 # 🎯 Competitor Watcher
