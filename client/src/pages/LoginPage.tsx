@@ -86,7 +86,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
+        <div className="min-h-screen flex items-center justify-center py-20 relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
             {/* Theme and Language Toggle */}
             <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
                 <LanguageSelector />
@@ -104,7 +104,8 @@ export default function LoginPage() {
                     {/* Logo and Title */}
                     <div className="text-center space-y-4">
                         <Link href="/" className="flex justify-center cursor-pointer hover:opacity-80 transition-opacity">
-                            <img src="/logo.png" alt="Competitor Watcher" className="h-16 w-auto object-contain" />
+                            <img src="/logo-dark.png" alt="Competitor Watcher" className="h-16 w-auto object-contain dark:hidden" />
+                            <img src="/logo.png" alt="Competitor Watcher" className="h-16 w-auto object-contain hidden dark:block" />
                         </Link>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
                             {t("auth.login")}

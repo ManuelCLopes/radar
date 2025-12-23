@@ -45,7 +45,7 @@ describe("RegisterPage", () => {
             </QueryClientProvider>
         );
 
-        expect(screen.getByAltText("Competitor Watcher")).toBeInTheDocument();
+        expect(screen.getAllByAltText("Competitor Watcher")[0]).toBeInTheDocument();
         expect(screen.getByLabelText("auth.firstName")).toBeInTheDocument();
         expect(screen.getByLabelText("auth.lastName")).toBeInTheDocument();
         expect(screen.getByLabelText("auth.email")).toBeInTheDocument();

@@ -44,7 +44,7 @@ describe("LoginPage", () => {
             </QueryClientProvider>
         );
 
-        expect(screen.getByAltText("Competitor Watcher")).toBeInTheDocument();
+        expect(screen.getAllByAltText("Competitor Watcher")[0]).toBeInTheDocument();
         expect(screen.getByLabelText("auth.email")).toBeInTheDocument();
         expect(screen.getByLabelText("auth.password")).toBeInTheDocument();
         expect(screen.getByRole("button", { name: "auth.login" })).toBeInTheDocument();

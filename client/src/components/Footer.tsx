@@ -15,7 +15,8 @@ export default function Footer() {
                     {/* Brand and Mission */}
                     <div className="col-span-1 md:col-span-1">
                         <Link href="/" className="flex items-center">
-                            <img src="/logo.png" alt="Competitor Watcher" className="h-8 w-auto mb-4" />
+                            <img src="/logo-dark.png" alt="Competitor Watcher" className="h-8 w-auto mb-4 dark:hidden" />
+                            <img src="/logo.png" alt="Competitor Watcher" className="h-8 w-auto mb-4 hidden dark:block" />
                         </Link>
                         <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xs mb-6 leading-relaxed">
                             {t("footer.mission", { defaultValue: "Empowering local businesses with AI-driven competitor insights. 100% free and open source." })}

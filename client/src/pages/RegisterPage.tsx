@@ -97,7 +97,7 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
+        <div className="min-h-screen flex items-center justify-center py-20 relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
             {/* Theme and Language Toggle */}
             <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
                 <LanguageSelector />
@@ -114,7 +114,8 @@ export default function RegisterPage() {
                 <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 p-8 space-y-6">
                     {/* Logo and Title */}
                     <Link href="/" className="flex flex-col items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity">
-                        <img src="/logo.png" alt="Competitor Watcher" className="h-14 w-auto object-contain" />
+                        <img src="/logo-dark.png" alt="Competitor Watcher" className="h-14 w-auto object-contain dark:hidden" />
+                        <img src="/logo.png" alt="Competitor Watcher" className="h-14 w-auto object-contain hidden dark:block" />
                         <p className="text-sm text-gray-600 dark:text-gray-400">
                             {t("auth.createAccount")}
                         </p>

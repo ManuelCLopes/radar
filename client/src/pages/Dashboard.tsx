@@ -232,7 +232,8 @@ export default function Dashboard() {
       <header className="border-b sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center cursor-pointer transition-opacity hover:opacity-80">
-            <img src="/logo.png" alt="Competitor Watcher" className="h-10 w-auto dark:invert-0 invert" />
+            <img src="/logo-dark.png" alt="Competitor Watcher" className="h-10 w-auto dark:hidden" />
+            <img src="/logo.png" alt="Competitor Watcher" className="h-10 w-auto hidden dark:block" />
           </Link>
 
           <div className="flex items-center gap-2">
