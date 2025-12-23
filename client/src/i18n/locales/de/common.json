@@ -649,6 +649,22 @@
       }
     }
   },
+  "footer": {
+    "mission": "Unterstützung lokaler Unternehmen mit KI-gestützten Wettbewerbsanalysen. 100 % kostenlos und quelloffen.",
+    "sections": {
+      "project": "Projekt",
+      "account": "Konto",
+      "legal": "Rechtliches"
+    },
+    "links": {
+      "support": "Unterstützen Sie uns",
+      "home": "Startseite",
+      "dashboard": "Dashboard"
+    },
+    "allRightsReserved": "Alle Rechte vorbehalten.",
+    "madeWith": "Hergestellt mit",
+    "forSmallBusinesses": "für kleine Unternehmen."
+  },
   "legal": {
     "privacy": {
       "title": "Datenschutzerklärung",

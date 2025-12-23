@@ -649,6 +649,22 @@
       }
     }
   },
+  "footer": {
+    "mission": "Donner aux entreprises locales les moyens d'agir grâce à des analyses concurrentielles via l'IA. 100 % gratuit et open source.",
+    "sections": {
+      "project": "Projet",
+      "account": "Compte",
+      "legal": "Légal"
+    },
+    "links": {
+      "support": "Soutenez-nous",
+      "home": "Accueil",
+      "dashboard": "Tableau de bord"
+    },
+    "allRightsReserved": "Tous droits réservés.",
+    "madeWith": "Fait avec",
+    "forSmallBusinesses": "pour les petites entreprises."
+  },
   "legal": {
     "privacy": {
       "title": "Politique de Confidentialité",

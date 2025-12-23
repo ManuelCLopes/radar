@@ -572,14 +572,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* LINK PARA DASHBOARD */}
-      <section className="dashboard-link-section" data-testid="section-dashboard-link">
-        <div className="landing-container">
-          <Link href={isAuthenticated ? "/dashboard" : "/login"} className="dashboard-link" data-testid="link-dashboard">
-            {t('landing.cta.existingAccount')}
-          </Link>
-        </div>
-      </section>
 
       {/* Full Report Modal (Guest Mode) */}
       {reportData && (

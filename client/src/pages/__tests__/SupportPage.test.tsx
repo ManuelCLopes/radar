@@ -4,7 +4,15 @@ import SupportPage from '../SupportPage';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n';
 
-// Mock wouter
+// Mock hooks
+vi.mock('@/hooks/useAuth', () => ({
+    useAuth: () => ({
+        isAuthenticated: false,
+        isLoading: false,
+        user: null,
+    }),
+}));
+
 vi.mock('wouter', () => ({
     Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
         <a href={href}>{children}</a>

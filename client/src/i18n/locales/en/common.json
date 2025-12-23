@@ -649,6 +649,22 @@
       }
     }
   },
+  "footer": {
+    "mission": "Empowering local businesses with AI-driven competitor insights. 100% free and open source.",
+    "sections": {
+      "project": "Project",
+      "account": "Account",
+      "legal": "Legal"
+    },
+    "links": {
+      "support": "Support Us",
+      "home": "Home",
+      "dashboard": "Dashboard"
+    },
+    "allRightsReserved": "All rights reserved.",
+    "madeWith": "Made with",
+    "forSmallBusinesses": "for small businesses."
+  },
   "legal": {
     "privacy": {
       "title": "Privacy Policy",

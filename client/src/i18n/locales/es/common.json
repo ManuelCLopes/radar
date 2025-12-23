@@ -649,6 +649,22 @@
       }
     }
   },
+  "footer": {
+    "mission": "Empoderando a los negocios locales con análisis de competidores por IA. 100% gratuito y de código abierto.",
+    "sections": {
+      "project": "Proyecto",
+      "account": "Cuenta",
+      "legal": "Legal"
+    },
+    "links": {
+      "support": "Apóyanos",
+      "home": "Inicio",
+      "dashboard": "Panel"
+    },
+    "allRightsReserved": "Todos los derechos reservados.",
+    "madeWith": "Hecho con",
+    "forSmallBusinesses": "para pequeños negocios."
+  },
   "legal": {
     "privacy": {
       "title": "Política de Privacidad",

@@ -637,21 +637,6 @@
   font-size: 0.9rem;
 }
 
-.dashboard-link-section {
-  text-align: center;
-  padding: 2rem 0;
-  background: #111827;
-}
-
-.dashboard-link {
-  color: #60a5fa;
-  font-size: 1rem;
-  text-decoration: none;
-}
-
-.dashboard-link:hover {
-  text-decoration: underline;
-}
 
 @media (min-width: 640px) {
   .hero-headline {
