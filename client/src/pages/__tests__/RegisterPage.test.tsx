@@ -17,6 +17,7 @@ vi.mock("@/hooks/useAuth", () => ({
 vi.mock("react-i18next", () => ({
     useTranslation: () => ({
         t: (key: string) => key,
+        i18n: { language: 'en', changeLanguage: vi.fn() }
     }),
 }));
 
@@ -58,8 +59,7 @@ describe("RegisterPage", () => {
             </QueryClientProvider>
         );
 
-        expect(screen.getByText(/100% Gratuito/i)).toBeInTheDocument();
-        expect(screen.getByText(/Todas as funcionalidades desbloqueadas/i)).toBeInTheDocument();
+        expect(screen.getByText(/auth.freeBadge/i)).toBeInTheDocument();
     });
 
     it("validates required fields", async () => {

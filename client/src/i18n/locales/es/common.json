@@ -1,15 +1,15 @@
 {
   "app": {
-    "title": "Competitor Watcher",
-    "description": "Analiza tu competencia local con insights basados en IA"
+    "title": "Analizador de Competencia Local",
+    "description": "Analiza tu competencia local con insights impulsados por IA"
   },
   "nav": {
     "dashboard": "Panel"
   },
   "dashboard": {
     "header": {
-      "title": "Competitor Watcher",
-      "subtitle": "Registra tu negocio y descubre competidores cercanos con análisis basado en IA"
+      "title": "Analizador de Competencia Local",
+      "subtitle": "Registra tu negocio y descubre competidores cercanos con análisis impulsado por IA"
     },
     "stats": {
       "registeredBusinesses": "Negocios Registrados",
@@ -23,7 +23,7 @@
       "logout": "Cerrar sesión"
     },
     "registerBusiness": "Registrar Negocio",
-    "registerBusinessDesc": "Añade un nuevo negocio para rastrear",
+    "registerBusinessDesc": "Añade un nuevo negocio para seguir",
     "tabs": {
       "businesses": "Negocios",
       "newAnalysis": "Nuevo Análisis",
@@ -33,22 +33,22 @@
       "title": "Ejecutar Nuevo Análisis",
       "description": "Analiza cualquier ubicación sin registrar un negocio.",
       "historyTitle": "Historial de Análisis",
-      "historyDescription": "Vea y exporte sus informes anteriores.",
-      "noReports": "No se encontraron informes. Ejecute un análisis para comenzar.",
-      "addressPlaceholder": "Introduzca la dirección para el análisis",
+      "historyDescription": "Mira y exporta tus informes anteriores.",
+      "noReports": "No se encontraron informes. Ejecuta un análisis para empezar.",
+      "addressPlaceholder": "Introduce la dirección para el análisis",
       "reportTitle": "Análisis: {{name}}",
       "businessReport": "Informe de Negocio"
     },
     "addBusiness": "Añadir Negocio",
-    "addBusinessDesc": "Ingrese los detalles del nuevo negocio.",
+    "addBusinessDesc": "Introduce los detalles del nuevo negocio.",
     "editBusiness": "Editar Negocio",
-    "editBusinessDesc": "Actualice los detalles de su negocio.",
+    "editBusinessDesc": "Actualiza los detalles de tu negocio.",
     "businessCreated": "Negocio Creado",
-    "businessCreatedDesc": "El negocio ha sido creado exitosamente.",
+    "businessCreatedDesc": "El negocio se ha creado correctamente.",
     "businessUpdated": "Negocio Actualizado",
-    "businessUpdatedDesc": "Los detalles del negocio han sido actualizados exitosamente.",
+    "businessUpdatedDesc": "Los detalles del negocio se han actualizado correctamente.",
     "map": {
-      "title": "Mapa de Competencia",
+      "title": "Mapa de Competidores",
       "description": "Visualiza la distribución geográfica de tus competidores.",
       "selectBusiness": "Selecciona un Negocio",
       "allBusinesses": "Todos los Negocios",
@@ -60,18 +60,18 @@
     "form": {
       "title": "Registrar Nuevo Negocio",
       "name": "Nombre del Negocio",
-      "namePlaceholder": "Ingresa el nombre del negocio",
+      "namePlaceholder": "Introduce el nombre del negocio",
       "type": "Tipo de Negocio",
       "typePlaceholder": "Selecciona un tipo",
       "latitude": "Latitud",
-      "latitudePlaceholder": "ej., 40.4168",
+      "latitudePlaceholder": "por ejemplo, 40.7128",
       "longitude": "Longitud",
-      "longitudePlaceholder": "ej., -3.7038",
+      "longitudePlaceholder": "por ejemplo, -74.0060",
       "address": "Dirección",
       "addressPlaceholder": "Introduce la dirección de tu negocio",
       "submit": "Registrar Negocio",
       "submitting": "Registrando...",
-      "typeAutoDetected": "Este tipo de negocio fue detectado automáticamente de registros públicos."
+      "typeAutoDetected": "Este tipo de negocio se detectó automáticamente a partir de registros públicos."
     },
     "types": {
       "restaurant": "Restaurante",
@@ -93,7 +93,7 @@
     },
     "list": {
       "title": "Tus Negocios",
-      "empty": "Aún no hay negocios registrados. Agrega tu primer negocio.",
+      "empty": "Aún no hay negocios registrados. Añade tu primer negocio.",
       "generateReport": "Generar Informe",
       "report": "Informe",
       "generating": "Generando...",
@@ -102,7 +102,7 @@
     },
     "deleteDialog": {
       "title": "Eliminar Negocio",
-      "description": "¿Estás seguro de que deseas eliminar \"{{name}}\"? Esta acción no se puede deshacer y también eliminará todos los informes asociados.",
+      "description": "¿Estás seguro de que quieres eliminar \"{{name}}\"? Esta acción no se puede deshacer y también eliminará todos los informes asociados.",
       "cancel": "Cancelar",
       "confirm": "Eliminar"
     }
@@ -113,23 +113,23 @@
       "export": "Exportar",
       "downloadHtml": "Descargar HTML",
       "printPdf": "Guardar como PDF",
-      "emailReport": "Enviar por Email"
+      "emailReport": "Enviar Informe por Email"
     },
     "stats": {
       "competitorsFound": "Competidores Encontrados",
-      "avgRating": "Calificación Promedio",
+      "avgRating": "Calificación Media",
       "totalReviews": "Total de Reseñas"
     },
     "sections": {
       "radius": "Radio",
       "aiAnalysis": "Análisis IA",
-      "aiPoweredInsights": "Insights Generados por IA",
+      "aiPoweredInsights": "Insights impulsados por IA",
       "nearbyCompetitors": "Competidores Cercanos",
       "noCompetitors": "No se encontraron competidores en el área cercana.",
-      "marketOverview": "Visión General del Mercado",
+      "marketOverview": "Resumen del Mercado",
       "keyCompetitors": "Competidores Clave",
       "reviewAnalysis": "Análisis de Reseñas",
-      "marketGaps": "Brechas de Mercado",
+      "marketGaps": "Huecos en el Mercado",
       "recommendations": "Recomendaciones",
       "differentiation": "Estrategias de Diferenciación",
       "swotAnalysis": "Análisis DAFO",
@@ -145,11 +145,11 @@
       "painPoints": "Puntos de Dolor y Necesidades",
       "primaryChannels": "Canales Principales",
       "contentIdeas": "Ideas de Contenido",
-      "promotionalTactics": "Táticas Promocionales",
+      "promotionalTactics": "Tácticas Promocionales",
       "customerSentiment": "Sentimiento del Cliente e Insights de Reseñas",
       "commonPraises": "Elogios Comunes",
       "recurringComplaints": "Quejas Recurrentes",
-      "unmetNeeds": "Necesidades Insatisfechas"
+      "unmetNeeds": "Necesidades no Satisfechas"
     },
     "competitor": {
       "reviews": "{{count}} reseñas",
@@ -157,7 +157,7 @@
     },
     "history": {
       "title": "Historial de Informes",
-      "description": "Informes de análisis de competencia anteriores para {{name}}",
+      "description": "Informes de análisis de competencia pasados para {{name}}",
       "empty": "Aún no se han generado informes para este negocio.",
       "competitorsAnalyzed": "{{count}} competidores analizados",
       "view": "Ver",
@@ -167,7 +167,7 @@
   "toast": {
     "businessRegistered": {
       "title": "Negocio registrado",
-      "description": "Tu negocio ha sido registrado exitosamente."
+      "description": "Tu negocio se ha registrado correctamente."
     },
     "businessDeleted": {
       "title": "Negocio eliminado",
@@ -179,7 +179,7 @@
     },
     "reportDownloaded": {
       "title": "Informe descargado",
-      "description": "El informe HTML ha sido guardado en tus descargas."
+      "description": "El informe HTML se ha guardado en tus descargas."
     },
     "printDialogOpened": {
       "title": "Diálogo de impresión abierto",
@@ -187,19 +187,19 @@
     },
     "emailClientOpened": {
       "title": "Cliente de email abierto",
-      "description": "Tu aplicación de email ha sido abierta con el resumen del informe."
+      "description": "Tu aplicación de email predeterminada se ha abierto con el resumen del informe."
     },
     "error": {
       "title": "Error",
-      "fetchBusinesses": "Error al cargar negocios",
-      "registerBusiness": "Error al registrar negocio",
-      "deleteBusiness": "Error al eliminar negocio",
-      "generateReport": "Error al generar informe",
-      "fetchReports": "Error al cargar informes"
+      "fetchBusinesses": "Error al cargar los negocios",
+      "registerBusiness": "Error al registrar el negocio",
+      "deleteBusiness": "Error al eliminar el negocio",
+      "generateReport": "Error al generar el informe",
+      "fetchReports": "Error al cargar los informes"
     },
     "linkCopied": {
       "title": "¡Enlace copiado!",
-      "description": "El enlace a la página de inicio se ha copiado al portapapeles."
+      "description": "El enlace de la página de inicio se ha copiado al portapapeles."
     }
   },
   "language": {
@@ -216,29 +216,31 @@
     "system": "Sistema"
   },
   "common": {
+    "language": "es",
     "cancel": "Cancelar",
     "refresh": "Actualizar",
     "loading": "Cargando...",
     "change": "Cambiar"
   },
   "addressSearch": {
-    "enterAddress": "Por favor, ingresa una dirección para buscar",
-    "searchFailed": "Error al buscar dirección. Por favor, intenta de nuevo.",
+    "enterAddress": "Por favor, introduce una dirección para buscar",
+    "searchFailed": "Error al buscar la dirección. Por favor, inténtalo de nuevo.",
     "placeSelected": "Dirección verificada",
     "addressVerified": "Dirección verificada y ubicación confirmada",
+    "typeAutoSelected": "Dirección verificada. Tipo de negocio establecido en {{type}}",
     "usingCurrentLocation": "Usando tu ubicación actual",
     "useCurrentLocation": "Usar Ubicación Actual",
     "locationObtained": "Ubicación obtenida",
-    "locationObtainedDesc": "Tu ubicación actual ha sido capturada con éxito.",
-    "locationFailed": "No se pudo obtener tu ubicación. Por favor, verifica la configuración de tu navegador e intenta de nuevo.",
-    "locationDenied": "Se denegó el acceso a la ubicación. Por favor, habilita los permisos de ubicación en la configuración de tu navegador.",
-    "coordinatesRequired": "Se requieren coordenadas válidas para el análisis de competencia.",
+    "locationObtainedDesc": "Tu ubicación actual se ha capturado correctamente.",
+    "locationFailed": "No se pudo obtener tu ubicación. Por favor, comprueba los ajustes del navegador e inténtalo de nuevo.",
+    "locationDenied": "Se denegó el acceso a la ubicación. Por favor, habilita los permisos de ubicación en los ajustes de tu navegador para usar esta función.",
+    "coordinatesRequired": "Se requieren coordenadas de ubicación válidas para el análisis de competencia.",
     "proceedWithAddress": "Continuar con la Dirección",
     "proceedingWithAddress": "Dirección guardada",
-    "proceedingWithAddressDesc": "El negocio será registrado con ubicación pendiente. Los informes no pueden ser generados hasta que la ubicación sea verificada.",
+    "proceedingWithAddressDesc": "El negocio se registrará con la ubicación pendiente. Los informes no estarán disponibles hasta que se verifique la ubicación.",
     "pendingVerification": "Ubicación pendiente de verificación - informes no disponibles",
     "multipleResults": {
-      "title": "Múltiples Ubicaciones Encontradas",
+      "title": "Varias Ubicaciones Encontradas",
       "description": "Encontramos varios negocios en esta dirección. Por favor, selecciona el correcto:"
     },
     "suggestion": {
@@ -249,12 +251,12 @@
     },
     "noResults": {
       "title": "Dirección No Encontrada",
-      "description": "No pudimos verificar esta dirección. Puedes intentar con una dirección más específica, usar tu ubicación actual, o continuar con la dirección ingresada (los informes no estarán disponibles hasta que la ubicación sea verificada).",
+      "description": "No pudimos verificar esta dirección. Puedes probar con una dirección más específica, usar tu ubicación actual o continuar con la dirección introducida (los informes no estarán disponibles hasta que se verifique la ubicación).",
       "editAddress": "Editar Dirección"
     },
     "apiKeyMissing": {
       "title": "Validación de Dirección No Disponible",
-      "description": "La validación de direcciones está temporalmente no disponible. Puedes usar tu ubicación actual o continuar con la dirección ingresada (los informes no estarán disponibles hasta que la ubicación sea verificada)."
+      "description": "La validación de la dirección no está disponible temporalmente. Puedes usar tu ubicación actual o continuar con la dirección introducida (los informes no estarán disponibles hasta que se verifique la ubicación)."
     }
   },
   "validation": {
@@ -262,35 +264,52 @@
     "emailInvalid": "Por favor, introduce una dirección de correo electrónico válida",
     "passwordMin": "La contraseña debe tener al menos {{min}} caracteres",
     "passwordMismatch": "Las contraseñas no coinciden",
-    "radiusMin": "El radio debe ser de al menos {{min}} metros",
-    "radiusMax": "El radio no puede exceder {{max}} metros"
+    "radiusMin": "El radio debe tener al menos {{min}} metros",
+    "radiusMax": "El radio no puede exceder los {{max}} metros"
   },
   "auth": {
     "login": "Iniciar Sesión",
-    "signUp": "Crear Cuenta",
-    "email": "Email",
+    "signUp": "Registrarse",
+    "email": "Correo electrónico",
     "password": "Contraseña",
     "confirmPassword": "Confirmar Contraseña",
     "firstName": "Nombre",
-    "lastName": "Apellido",
+    "lastName": "Apellidos",
     "loggingIn": "Iniciando sesión...",
     "creatingAccount": "Creando cuenta...",
     "createAccount": "Crear Cuenta",
     "orContinueWith": "O continuar con",
     "continueWithGoogle": "Continuar con Google",
-    "noAccount": "¿No tienes cuenta?",
-    "haveAccount": "¿Ya tienes cuenta?",
+    "noAccount": "¿No tienes una cuenta?",
+    "haveAccount": "¿Ya tienes una cuenta?",
     "passwordMismatch": "Las contraseñas no coinciden",
     "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
     "passwordMinChars": "Mínimo 6 caracteres",
+    "freeBadge": "✨ 100% Gratis • Todas las funciones desbloqueadas",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "forgotPasswordTitle": "Recuperar Contraseña",
+    "forgotPasswordDesc": "Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña",
+    "sendResetLink": "Enviar Enlace de Restablecimiento",
+    "sendingLink": "Enviando...",
+    "resetSuccess": "Si existe una cuenta con este correo, recibirás un enlace de recuperación pronto. Por favor, revisa también tu carpeta de spam.",
+    "backToLogin": "Volver al Inicio de Sesión",
+    "resetPasswordTitle": "Restablecer Contraseña",
+    "resetPasswordDesc": "Elige una nueva contraseña para tu cuenta",
+    "newPassword": "Nueva Contraseña",
+    "resetting": "Restableciendo...",
+    "resetComplete": "¡Contraseña restablecida con éxito! Ahora puedes iniciar sesión con tu nueva contraseña.",
+    "goToLogin": "Ir al Inicio de Sesión",
+    "invalidToken": "Enlace inválido o expirado",
+    "validatingToken": "Validando enlace...",
+    "requestNewLink": "Solicitar nuevo enlace",
     "errors": {
-      "invalidCredentials": "El correo electrónico o la contraseña son incorrectos.",
-      "useGoogle": "Por favor, usa el inicio de sesión con Google para esta cuenta",
+      "invalidCredentials": "El correo electrónico o la contraseña que introdujiste son incorrectos.",
+      "useGoogle": "Por favor, usa el inicio de sesión de Google para esta cuenta",
       "generic": "Ocurrió un error. Por favor, inténtalo de nuevo."
     },
     "continue": "Continuar",
     "back": "Volver",
-    "backToHome": "← Volver al inicio",
+    "backToHome": "Volver al inicio",
     "stepAccount": "Cuenta",
     "stepPlan": "Plan",
     "stepPayment": "Pago",
@@ -303,21 +322,6 @@
     "multibanco": "Multibanco",
     "multibancoDesc": "Referencia MB",
     "perMonth": "/mes"
-  },
-  "locationStatus": {
-    "validated": "Ubicación verificada",
-    "pending": "Ubicación pendiente",
-    "pendingNote": "Informes no disponibles hasta que la ubicación sea verificada"
-  },
-  "radiusOptions": {
-    "immediate": "Vecindad inmediata",
-    "walking": "Distancia a pie",
-    "drive": "Corto trayecto en coche",
-    "extended": "Área extendida",
-    "500m": "500m (Caminando)",
-    "1km": "1km (Barrio)",
-    "2km": "2km (Local)",
-    "5km": "5km (Área)"
   },
   "quickSearch": {
     "title": "Descubre tu Competencia Local",
@@ -528,6 +532,21 @@
       "existingAccount": "¿Ya tiene cuenta? Acceda a su panel aquí"
     }
   },
+  "locationStatus": {
+    "validated": "Ubicación verificada",
+    "pending": "Ubicación pendiente",
+    "pendingNote": "Informes no disponibles hasta que la ubicación sea verificada"
+  },
+  "radiusOptions": {
+    "immediate": "Vecindad inmediata",
+    "walking": "Distancia a pie",
+    "drive": "Corto trayecto en coche",
+    "extended": "Área extendida",
+    "500m": "500m (Caminando)",
+    "1km": "1km (Barrio)",
+    "2km": "2km (Local)",
+    "5km": "5km (Área)"
+  },
   "support": {
     "back": "Volver",
     "title": "Apoyar Competitor Watcher",
@@ -629,5 +648,41 @@
         "delete": "No se pudo eliminar la cuenta. Por favor, inténtalo de nuevo."
       }
     }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Política de Privacidad",
+      "lastUpdated": "Última actualización: Diciembre 2023",
+      "intro": "Valoramos su privacidad y estamos comprometidos a proteger sus datos personales. Esta política explica cómo recopilamos, utilizamos y salvaguardamos su información al utilizar nuestros servicios de análisis de competencia. Al utilizar nuestra plataforma, usted acepta la recopilación y el uso de información de acuerdo con esta política.",
+      "dataCollection": "Recopilamos información que usted nos proporciona directamente, como su nombre y correo electrónico al crear una cuenta. Además, podemos recopilar datos de uso, tipo de navegador e información de ubicación a través de nuestras funciones de búsqueda de direcciones para proporcionar informes de competencia precisos. También recibimos información de servicios de terceros si elige iniciar sesión a través de Google.",
+      "useOfInfo": "La información que recopilamos se utiliza para proporcionar y mejorar nuestro servicio, incluida la generación de sus informes mensuales de competencia. Utilizamos sus datos para personalizar su experiencia, enviar actualizaciones importantes del servicio y monitorear el rendimiento de nuestra plataforma para garantizar una experiencia fluida para todos los usuarios.",
+      "userRights": "Usted tiene derecho a acceder, actualizar o eliminar su información personal en cualquier momento a través de la configuración de su cuenta. Cumplimos con el RGPD y otras regulaciones de privacidad, asegurando que tenga un control total sobre sus datos. Si tiene alguna pregunta sobre sus derechos, comuníquese con nuestro equipo de soporte.",
+      "sections": {
+        "dataCollection": "1. Recopilación de Datos",
+        "useOfInfo": "2. Uso de Información",
+        "userRights": "3. Derechos del Usuario",
+        "contact": "Contáctenos"
+      },
+      "contactDesc": "Si tiene alguna pregunta sobre esta Política de Privacidad, contáctenos en support@competitorwatcher.com"
+    },
+    "cookies": {
+      "title": "Política de Cookies",
+      "lastUpdated": "Última actualización: Diciembre 2023",
+      "intro": "Esta política explica cómo utilizamos las cookies y tecnologías similares para mejorar su experiencia. Las cookies son pequeños archivos de datos almacenados en su dispositivo que nos ayudan a comprender cómo interactúa con nuestro sitio. Utilizamos tanto cookies de sesión como cookies persistentes para proporcionar una plataforma funcional y optimizada.",
+      "essential": "Estas cookies son estrictamente necesarias para que la plataforma funcione correctamente. Gestionan la autenticación de usuarios, las funciones de seguridad y las preferencias persistentes como la elección de idioma y tema. Sin estas cookies, las funciones básicas de Competitor Watcher no estarían disponibles.",
+      "analytical": "Las cookies analíticas nos ayudan a comprender cómo los visitantes utilizan nuestro sitio mediante la recopilación de información anónima. Utilizamos estos datos para mejorar nuestros mapas de competencia, realizar un seguimiento del rendimiento de la generación de informes e identificar áreas de mejora. Todos los datos recopilados son agregados y no lo identifican personalmente.",
+      "sections": {
+        "essential": "Cookies Esenciales",
+        "analytical": "Cookies Analíticas",
+        "managing": "Gestión de Cookies"
+      },
+      "managingDesc": "Puede gestionar sus preferencias de cookies a través del banner que apareció cuando visitó por primera vez, o a través de la configuración de su navegador."
+    }
+  },
+  "cookies": {
+    "banner": "Utilizamos cookies para mejorar su experiencia y analizar el tráfico del sitio.",
+    "accept": "Aceptar",
+    "decline": "Rechazar",
+    "learnMore": "Saber más"
   }
 }

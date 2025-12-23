@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mail, Lock, User, Sparkles, Loader2, AlertCircle } from "lucide-react";
+import { Mail, Lock, User, Sparkles, Loader2, AlertCircle, ChevronLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -123,7 +123,7 @@ export default function RegisterPage() {
                     {/* 100% Free Badge */}
                     <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border border-green-200 dark:border-green-800 rounded-xl p-3 text-center">
                         <p className="text-sm font-semibold text-green-700 dark:text-green-400">
-                            ✨ 100% Gratuito • Todas as funcionalidades desbloqueadas
+                            {t("auth.freeBadge")}
                         </p>
                     </div>
 
@@ -286,12 +286,13 @@ export default function RegisterPage() {
 
                 {/* Back to home link */}
                 <div className="mt-6 text-center">
-                    <a
+                    <Link
                         href="/"
-                        className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+                        className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
                     >
-                        {t("auth.backToHome")}
-                    </a>
+                        <ChevronLeft className="h-4 w-4" />
+                        <span>{t("auth.backToHome")}</span>
+                    </Link>
                 </div>
             </div>
         </div>

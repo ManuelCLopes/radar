@@ -1,5 +1,6 @@
 import { Heart, Github, Coffee, Gift, Star, Bug, Lightbulb, Share2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
@@ -225,6 +226,7 @@ export default function SupportPage() {
                     </p>
                 </div>
             </main>
+            <Footer />
         </div>
     );
 }

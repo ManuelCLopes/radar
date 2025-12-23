@@ -286,6 +286,23 @@
     "passwordMismatch": "As palavras-passe não coincidem",
     "passwordTooShort": "A palavra-passe deve ter pelo menos 6 caracteres",
     "passwordMinChars": "Mínimo de 6 caracteres",
+    "freeBadge": "✨ 100% Gratuito • Todas as funcionalidades desbloqueadas",
+    "forgotPassword": "Esqueceu a password?",
+    "forgotPasswordTitle": "Recuperar Password",
+    "forgotPasswordDesc": "Introduza o seu email e enviaremos um link para redefinir a sua password",
+    "sendResetLink": "Enviar Link de Recuperação",
+    "sendingLink": "A enviar...",
+    "resetSuccess": "Se existe uma conta com este email, receberá um link de recuperação em breve. Por favor verifique também a pasta de spam.",
+    "backToLogin": "Voltar para Login",
+    "resetPasswordTitle": "Redefinir Password",
+    "resetPasswordDesc": "Escolha uma nova password para a sua conta",
+    "newPassword": "Nova Password",
+    "resetting": "A redefinir...",
+    "resetComplete": "Password redefinida com sucesso! Pode agora fazer login com a sua nova password.",
+    "goToLogin": "Ir para Login",
+    "invalidToken": "Token inválido ou expirado",
+    "validatingToken": "A validar token...",
+    "requestNewLink": "Solicitar novo link",
     "errors": {
       "invalidCredentials": "O email ou a palavra-passe estão incorretos.",
       "useGoogle": "Por favor, usa o login com Google para esta conta",
@@ -293,7 +310,7 @@
     },
     "continue": "Continuar",
     "back": "Voltar",
-    "backToHome": "← Voltar à página inicial",
+    "backToHome": "Voltar à página inicial",
     "stepAccount": "Conta",
     "stepPlan": "Plano",
     "stepPayment": "Pagamento",
@@ -461,7 +478,7 @@
           "Análise IA Avançada",
           "Histórico de Concorrentes",
           "Alertas de Concorrentes",
-          "Comparação Mensal Automática",
+          "Comparação Mensual Automática",
           "Análise de Sentimento das Reviews",
           "~ Branding personalizado nos PDFs",
           "~ Dashboard multi-negócio",
@@ -632,5 +649,41 @@
         "delete": "Não foi possível remover a conta. Tente novamente."
       }
     }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Política de Privacidade",
+      "lastUpdated": "Última atualização: Dezembro 2023",
+      "intro": "Valorizamos a sua privacidade e estamos empenhados em proteger os seus dados pessoais. Esta política explica como recolhemos, utilizamos e salvaguardamos a sua informação ao utilizar os nossos serviços de análise de concorrência. Ao utilizar a nossa plataforma, concorda com a recolha e utilização de informações de acordo com esta política.",
+      "dataCollection": "Recolhemos informações que nos fornece diretamente, como o seu nome e email ao criar uma conta. Além disso, podemos recolher dados de utilização, tipo de navegador e informações de localização através das nossas funcionalidades de pesquisa de morada para fornecer relatórios de concorrência precisos. Também recebemos informações de serviços de terceiros se optar por fazer login através do Google.",
+      "useOfInfo": "As informações que recolhemos são utilizadas para fornecer e melhorar o nosso serviço, incluindo a geração dos seus relatórios mensais de concorrência. Utilizamos os seus dados para personalizar a sua experiência, enviar atualizações importantes do serviço e monitorizar o desempenho da nossa plataforma para garantir uma experiência sem falhas para todos os utilizadores.",
+      "userRights": "Tem o direito de aceder, atualizar ou eliminar as suas informações pessoais a qualquer momento através das definições da sua conta. Cumprimos o RGPD e outros regulamentos de privacidade, garantindo que tem total controlo sobre os seus dados. Se tiver alguma dúvida sobre os seus direitos, contacte a nossa equipa de suporte.",
+      "sections": {
+        "dataCollection": "1. Recolha de Dados",
+        "useOfInfo": "2. Utilização de Informação",
+        "userRights": "3. Direitos do Utilizador",
+        "contact": "Contacte-nos"
+      },
+      "contactDesc": "Se tiver alguma dúvida sobre esta Política de Privacidade, contacte-nos em support@competitorwatcher.com"
+    },
+    "cookies": {
+      "title": "Política de Cookies",
+      "lastUpdated": "Última atualização: Dezembro 2023",
+      "intro": "Esta política explica como utilizamos cookies e tecnologias semelhantes para melhorar a sua experiência. Os cookies são pequenos ficheiros de dados armazenados no seu dispositivo que nos ajudam a compreender como interage com o nosso site. Utilizamos tanto cookies de sessão como cookies persistentes para fornecer uma plataforma funcional e otimizada.",
+      "essential": "Estes cookies são estritamente necessários para o funcionamento correto da plataforma. Eles gerem a autenticação do utilizador, funcionalidades de segurança e preferências persistentes como a sua escolha de idioma e tema. Sem estes cookies, as funcionalidades básicas do Competitor Watcher não estariam disponíveis.",
+      "analytical": "Os cookies analíticos ajudam-nos a compreender como os visitantes utilizam o nosso site através da recolha de informações anónimas. Utilizamos estes dados para melhorar os nossos mapas de concorrência, acompanhar o desempenho da geração de relatórios e identificar áreas de melhoria. Todos os dados recolhidos são agregados e não o identificam pessoalmente.",
+      "sections": {
+        "essential": "Cookies Essenciais",
+        "analytical": "Cookies Analíticos",
+        "managing": "Gestão de Cookies"
+      },
+      "managingDesc": "Pode gerir as suas preferências de cookies através do banner que apareceu quando visitou pela primeira vez, ou através das definições do seu navegador."
+    }
+  },
+  "cookies": {
+    "banner": "Utilizamos cookies para melhorar a sua experiência e analisar o tráfego do site.",
+    "accept": "Aceitar",
+    "decline": "Recusar",
+    "learnMore": "Saber mais"
   }
 }

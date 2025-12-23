@@ -5,7 +5,10 @@ import * as queryClient from '@/lib/queryClient';
 
 // Mock hooks
 vi.mock('react-i18next', () => ({
-    useTranslation: () => ({ t: (key: string) => key }),
+    useTranslation: () => ({
+        t: (key: string) => key,
+        i18n: { language: 'en', changeLanguage: vi.fn() }
+    }),
 }));
 
 vi.mock('wouter', () => ({
@@ -28,9 +31,9 @@ describe('ForgotPasswordPage', () => {
     it('renders correctly', () => {
         render(<ForgotPasswordPage />);
 
-        expect(screen.getByText('Recuperar Password')).toBeInTheDocument();
-        expect(screen.getByLabelText('Email')).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /enviar link/i })).toBeInTheDocument();
+        expect(screen.getByText('auth.forgotPasswordTitle')).toBeInTheDocument();
+        expect(screen.getByLabelText('auth.email')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /auth.sendResetLink/i })).toBeInTheDocument();
     });
 
     it('handles successful submission', async () => {
@@ -41,14 +44,14 @@ describe('ForgotPasswordPage', () => {
 
         render(<ForgotPasswordPage />);
 
-        const emailInput = screen.getByLabelText('Email');
+        const emailInput = screen.getByLabelText('auth.email');
         fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
 
-        const submitButton = screen.getByRole('button', { name: /enviar link/i });
+        const submitButton = screen.getByRole('button', { name: /auth.sendResetLink/i });
         fireEvent.click(submitButton);
 
         await waitFor(() => {
-            expect(screen.getByText(/receberá um link/i)).toBeInTheDocument();
+            expect(screen.getByText(/auth.resetSuccess/i)).toBeInTheDocument();
         });
     });
 
@@ -60,10 +63,10 @@ describe('ForgotPasswordPage', () => {
 
         render(<ForgotPasswordPage />);
 
-        const emailInput = screen.getByLabelText('Email');
+        const emailInput = screen.getByLabelText('auth.email');
         fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
 
-        const submitButton = screen.getByRole('button', { name: /enviar link/i });
+        const submitButton = screen.getByRole('button', { name: /auth.sendResetLink/i });
         fireEvent.click(submitButton);
 
         await waitFor(() => {

@@ -1,166 +1,166 @@
 {
   "app": {
-    "title": "Competitor Watcher",
-    "description": "Analysez votre concurrence locale avec des insights basés sur l'IA"
+    "title": "Local Competitor Analyzer",
+    "description": "Analysez votre concurrence locale grâce à des informations générées par l'IA"
   },
   "nav": {
     "dashboard": "Tableau de bord"
   },
   "dashboard": {
     "header": {
-      "title": "Competitor Watcher",
-      "subtitle": "Enregistrez votre entreprise et découvrez les concurrents à proximité avec une analyse basée sur l'IA"
+      "title": "Local Competitor Analyzer",
+      "subtitle": "Enregistrez votre entreprise et découvrez les concurrents à proximité grâce à une analyse par IA"
     },
     "stats": {
-      "registeredBusinesses": "Entreprises Enregistrées",
-      "analysisStatus": "État de l'Analyse",
+      "registeredBusinesses": "Entreprises enregistrées",
+      "analysisStatus": "État de l'analyse",
       "uniqueLocations": "Emplacements Uniques",
-      "businessTypes": "Types d'Entreprise",
+      "businessTypes": "Types d'entreprises",
       "active": "Actif"
     },
     "user": {
       "guest": "Invité",
       "logout": "Se déconnecter"
     },
-    "registerBusiness": "Enregistrer une Entreprise",
-    "registerBusinessDesc": "Ajoutez une nouvelle entreprise à suivre",
+    "registerBusiness": "Enregistrer l'entreprise",
+    "registerBusinessDesc": "Ajouter une nouvelle entreprise à suivre",
     "tabs": {
       "businesses": "Entreprises",
-      "newAnalysis": "Nouvelle Analyse",
+      "newAnalysis": "Nouvelle analyse",
       "history": "Historique"
     },
     "analysis": {
-      "title": "Lancer une Nouvelle Analyse",
+      "title": "Lancer une nouvelle analyse",
       "description": "Analysez n'importe quel emplacement sans enregistrer d'entreprise.",
-      "historyTitle": "Historique des Analyses",
-      "historyDescription": "Consultez et exportez vos rapports précédents.",
+      "historyTitle": "Historique des analyses",
+      "historyDescription": "Consultez et exportez vos rapports passés.",
       "noReports": "Aucun rapport trouvé. Lancez une analyse pour commencer.",
-      "addressPlaceholder": "Entrez l'adresse pour l'analyse",
+      "addressPlaceholder": "Saisissez l'adresse pour l'analyse",
       "reportTitle": "Analyse : {{name}}",
-      "businessReport": "Rapport d'Entreprise"
+      "businessReport": "Rapport d'entreprise"
     },
-    "addBusiness": "Ajouter une Entreprise",
-    "addBusinessDesc": "Entrez les détails de la nouvelle entreprise.",
-    "editBusiness": "Modifier l'Entreprise",
-    "editBusinessDesc": "Mettez à jour les détails de votre entreprise.",
-    "businessCreated": "Entreprise Créée",
+    "addBusiness": "Ajouter une entreprise",
+    "addBusinessDesc": "Saisissez les détails de la nouvelle entreprise.",
+    "editBusiness": "Modifier l'entreprise",
+    "editBusinessDesc": "Mettre à jour les détails de votre entreprise.",
+    "businessCreated": "Entreprise créée",
     "businessCreatedDesc": "L'entreprise a été créée avec succès.",
-    "businessUpdated": "Entreprise Mise à Jour",
+    "businessUpdated": "Entreprise mise à jour",
     "businessUpdatedDesc": "Les détails de l'entreprise ont été mis à jour avec succès.",
     "map": {
-      "title": "Carte de la Concurrence",
+      "title": "Carte des concurrents",
       "description": "Visualisez la répartition géographique de vos concurrents.",
-      "selectBusiness": "Sélectionnez une Entreprise",
-      "allBusinesses": "Toutes les Entreprises",
+      "selectBusiness": "Sélectionner une entreprise",
+      "allBusinesses": "Toutes les entreprises",
       "showingFirst": "Affichage de la carte pour : {{name}}",
-      "noLocation": "Cette entreprise n'a pas de données de localisation valides."
+      "noLocation": "Cette entreprise ne dispose pas de données de localisation valides."
     }
   },
   "business": {
     "form": {
-      "title": "Enregistrer une Nouvelle Entreprise",
-      "name": "Nom de l'Entreprise",
-      "namePlaceholder": "Entrez le nom de l'entreprise",
-      "type": "Type d'Entreprise",
+      "title": "Enregistrer une nouvelle entreprise",
+      "name": "Nom de l'entreprise",
+      "namePlaceholder": "Saisissez le nom de l'entreprise",
+      "type": "Type d'entreprise",
       "typePlaceholder": "Sélectionnez un type",
       "latitude": "Latitude",
-      "latitudePlaceholder": "ex., 48.8566",
+      "latitudePlaceholder": "ex. : 40.7128",
       "longitude": "Longitude",
-      "longitudePlaceholder": "ex., 2.3522",
+      "longitudePlaceholder": "ex. : -74.0060",
       "address": "Adresse",
-      "addressPlaceholder": "Entrez l'adresse de votre entreprise",
-      "submit": "Enregistrer l'Entreprise",
-      "submitting": "Enregistrement...",
-      "typeAutoDetected": "Ce type d'entreprise a été détecté automatiquement à partir des registres publics."
+      "addressPlaceholder": "Saisissez l'adresse de votre entreprise",
+      "submit": "Enregistrer l'entreprise",
+      "submitting": "Enregistrement en cours...",
+      "typeAutoDetected": "Ce type d'entreprise a été automatiquement détecté à partir des registres publics."
     },
     "types": {
       "restaurant": "Restaurant",
       "cafe": "Café",
-      "retail": "Commerce de Détail",
-      "gym": "Salle de Sport / Fitness",
-      "salon": "Salon / Spa",
+      "retail": "Magasin de détail",
+      "gym": "Salle de sport",
+      "salon": "Salon de coiffure / Spa",
       "hotel": "Hôtel",
       "bar": "Bar / Pub",
       "bakery": "Boulangerie",
       "pharmacy": "Pharmacie",
       "supermarket": "Supermarché",
-      "clinic": "Clinique Médicale",
+      "clinic": "Clinique médicale",
       "dentist": "Dentiste",
       "bank": "Banque",
       "gas_station": "Station-service",
-      "car_repair": "Réparation Automobile",
+      "car_repair": "Réparation automobile",
       "other": "Autre"
     },
     "list": {
-      "title": "Vos Entreprises",
-      "empty": "Aucune entreprise enregistrée. Ajoutez votre première entreprise.",
-      "generateReport": "Générer un Rapport",
+      "title": "Vos entreprises",
+      "empty": "Aucune entreprise enregistrée pour le moment. Ajoutez votre première entreprise.",
+      "generateReport": "Générer le rapport",
       "report": "Rapport",
-      "generating": "Génération...",
-      "viewHistory": "Voir l'Historique des Rapports",
+      "generating": "Génération en cours...",
+      "viewHistory": "Voir l'historique des rapports",
       "delete": "Supprimer"
     },
     "deleteDialog": {
-      "title": "Supprimer l'Entreprise",
-      "description": "Êtes-vous sûr de vouloir supprimer \"{{name}}\" ? Cette action ne peut pas être annulée et supprimera également tous les rapports associés.",
+      "title": "Supprimer l'entreprise",
+      "description": "Voulez-vous vraiment supprimer « {{name}} » ? Cette action est irréversible et supprimera également tous les rapports associés.",
       "cancel": "Annuler",
       "confirm": "Supprimer"
     }
   },
   "report": {
     "view": {
-      "title": "Rapport d'Analyse de la Concurrence",
+      "title": "Rapport d'analyse de la concurrence",
       "export": "Exporter",
-      "downloadHtml": "Télécharger HTML",
+      "downloadHtml": "Télécharger l'HTML",
       "printPdf": "Enregistrer en PDF",
-      "emailReport": "Envoyer par Email"
+      "emailReport": "Envoyer le rapport par e-mail"
     },
     "stats": {
-      "competitorsFound": "Concurrents Trouvés",
-      "avgRating": "Note Moyenne",
-      "totalReviews": "Total des Avis"
+      "competitorsFound": "Concurrents trouvés",
+      "avgRating": "Note moyenne",
+      "totalReviews": "Total des avis"
     },
     "sections": {
       "radius": "Rayon",
-      "aiAnalysis": "Analyse IA",
-      "aiPoweredInsights": "Insights Générés par IA",
-      "nearbyCompetitors": "Concurrents à Proximité",
-      "noCompetitors": "Aucun concurrent trouvé dans les environs.",
-      "marketOverview": "Aperçu du Marché",
-      "keyCompetitors": "Principaux Concurrents",
-      "reviewAnalysis": "Analyse des Avis",
-      "marketGaps": "Lacunes du Marché",
+      "aiAnalysis": "Analyse par IA",
+      "aiPoweredInsights": "Informations générées par l'IA",
+      "nearbyCompetitors": "Concurrents à proximité",
+      "noCompetitors": "Aucun concurrent trouvé dans la zone proche.",
+      "marketOverview": "Aperçu du marché",
+      "keyCompetitors": "Concurrents clés",
+      "reviewAnalysis": "Analyse des avis",
+      "marketGaps": "Lacunes du marché",
       "recommendations": "Recommandations",
-      "differentiation": "Stratégies de Différenciation",
+      "differentiation": "Stratégies de différenciation",
       "swotAnalysis": "Analyse SWOT",
       "strengths": "Forces",
       "weaknesses": "Faiblesses",
       "opportunities": "Opportunités",
       "threats": "Menaces",
-      "marketTrends": "Tendances du Marché",
-      "targetAudience": "Public Cible",
-      "marketingStrategy": "Stratégie Marketing",
+      "marketTrends": "Tendances du marché",
+      "targetAudience": "Public cible",
+      "marketingStrategy": "Stratégie marketing",
       "demographics": "Démographie",
       "psychographics": "Psychographie",
-      "painPoints": "Points de Douleur et Besoins",
-      "primaryChannels": "Canaux Principaux",
-      "contentIdeas": "Idées de Contenu",
-      "promotionalTactics": "Tactiques Promotionnelles",
-      "customerSentiment": "Sentiment Client et Analyse des Avis",
-      "commonPraises": "Éloges Courants",
-      "recurringComplaints": "Plaintes Récurrentes",
-      "unmetNeeds": "Besoins Non Satisfaits"
+      "painPoints": "Points de douleur et besoins",
+      "primaryChannels": "Canaux principaux",
+      "contentIdeas": "Idées de contenu",
+      "promotionalTactics": "Tactiques promotionnelles",
+      "customerSentiment": "Sentiment des clients et analyse des avis",
+      "commonPraises": "Éloges récurrents",
+      "recurringComplaints": "Plaintes récurrentes",
+      "unmetNeeds": "Besoins non satisfaits"
     },
     "competitor": {
       "reviews": "{{count}} avis",
-      "recentReviews": "Avis Récents"
+      "recentReviews": "Avis récents"
     },
     "history": {
-      "title": "Historique des Rapports",
-      "description": "Rapports d'analyse de la concurrence précédents pour {{name}}",
-      "empty": "Aucun rapport n'a encore été généré pour cette entreprise.",
+      "title": "Historique des rapports",
+      "description": "Rapports d'analyse de la concurrence passés pour {{name}}",
+      "empty": "Aucun rapport n'a été généré pour cette entreprise pour le moment.",
       "competitorsAnalyzed": "{{count}} concurrents analysés",
-      "view": "Voir",
+      "view": "Consulter",
       "download": "Télécharger"
     }
   },
@@ -182,12 +182,12 @@
       "description": "Le rapport HTML a été enregistré dans vos téléchargements."
     },
     "printDialogOpened": {
-      "title": "Dialogue d'impression ouvert",
-      "description": "Utilisez l'option 'Enregistrer en PDF' pour sauvegarder en PDF."
+      "title": "Boîte de dialogue d'impression ouverte",
+      "description": "Utilisez l'option « Enregistrer au format PDF » pour enregistrer en PDF."
     },
     "emailClientOpened": {
-      "title": "Client email ouvert",
-      "description": "Votre application email a été ouverte avec le résumé du rapport."
+      "title": "Client de messagerie ouvert",
+      "description": "Votre application de messagerie par défaut a été ouverte avec le résumé du rapport."
     },
     "error": {
       "title": "Erreur",
@@ -199,7 +199,7 @@
     },
     "linkCopied": {
       "title": "Lien copié !",
-      "description": "Le lien vers la page d'accueil a été copié dans le presse-papiers."
+      "description": "Le lien de la page d'accueil a été copié dans votre presse-papiers."
     }
   },
   "language": {
@@ -216,121 +216,125 @@
     "system": "Système"
   },
   "common": {
+    "language": "fr",
     "cancel": "Annuler",
     "refresh": "Actualiser",
     "loading": "Chargement...",
     "change": "Modifier"
   },
   "addressSearch": {
-    "enterAddress": "Veuillez entrer une adresse à rechercher",
+    "enterAddress": "Veuillez saisir une adresse à rechercher",
     "searchFailed": "Échec de la recherche d'adresse. Veuillez réessayer.",
     "placeSelected": "Adresse vérifiée",
     "addressVerified": "Adresse vérifiée et emplacement confirmé",
-    "usingCurrentLocation": "Utilisation de votre position actuelle",
-    "useCurrentLocation": "Utiliser Ma Position",
-    "locationObtained": "Position obtenue",
-    "locationObtainedDesc": "Votre position actuelle a été capturée avec succès.",
-    "locationFailed": "Impossible d'obtenir votre position. Veuillez vérifier les paramètres de votre navigateur et réessayer.",
-    "locationDenied": "L'accès à la localisation a été refusé. Veuillez activer les autorisations de localisation dans les paramètres de votre navigateur.",
-    "coordinatesRequired": "Des coordonnées valides sont requises pour l'analyse de la concurrence.",
-    "proceedWithAddress": "Continuer avec l'Adresse",
+    "typeAutoSelected": "Adresse vérifiée. Type d'entreprise défini sur {{type}}",
+    "usingCurrentLocation": "Utilisation de votre emplacement actuel",
+    "useCurrentLocation": "Utiliser l'emplacement actuel",
+    "locationObtained": "Emplacement obtenu",
+    "locationObtainedDesc": "Votre emplacement actuel a été capturé avec succès.",
+    "locationFailed": "Impossible d'obtenir votre emplacement. Veuillez vérifier les paramètres de votre navigateur et réessayer.",
+    "locationDenied": "L'accès à l'emplacement a été refusé. Veuillez activer les autorisations de localisation dans les paramètres de votre navigateur pour utiliser cette fonctionnalité.",
+    "coordinatesRequired": "Des coordonnées de localisation valides sont requises pour l'analyse de la concurrence.",
+    "proceedWithAddress": "Poursuivre avec l'adresse",
     "proceedingWithAddress": "Adresse enregistrée",
-    "proceedingWithAddressDesc": "L'entreprise sera enregistrée avec un emplacement en attente. Les rapports ne peuvent pas être générés tant que l'emplacement n'est pas vérifié.",
-    "pendingVerification": "Emplacement en attente de vérification - rapports indisponibles",
+    "proceedingWithAddressDesc": "L'entreprise sera enregistrée avec une localisation en attente. Les rapports ne pourront pas être générés tant que l'emplacement n'aura pas été vérifié.",
+    "pendingVerification": "Localisation en attente de vérification - rapports indisponibles",
     "multipleResults": {
-      "title": "Plusieurs Emplacements Trouvés",
-      "description": "Nous avons trouvé plusieurs entreprises à cette adresse. Veuillez sélectionner la bonne:"
+      "title": "Plusieurs emplacements trouvés",
+      "description": "Nous avons trouvé plusieurs entreprises à cette adresse. Veuillez sélectionner la bonne :"
     },
     "suggestion": {
-      "title": "Adresse Trouvée",
-      "description": "Nous avons trouvé une entreprise correspondante avec une adresse plus complète. Souhaitez-vous l'utiliser?",
-      "useThis": "Utiliser Cette Adresse",
-      "keepOriginal": "Garder Mon Adresse"
+      "title": "Adresse trouvée",
+      "description": "Nous avons trouvé une entreprise correspondante avec une adresse plus complète. Souhaitez-vous l'utiliser ?",
+      "useThis": "Utiliser cette adresse",
+      "keepOriginal": "Conserver mon adresse"
     },
     "noResults": {
-      "title": "Adresse Non Trouvée",
-      "description": "Nous n'avons pas pu vérifier cette adresse. Vous pouvez essayer une adresse plus spécifique, utiliser votre position actuelle, ou continuer avec l'adresse saisie (les rapports seront indisponibles jusqu'à ce que l'emplacement soit vérifié).",
-      "editAddress": "Modifier l'Adresse"
+      "title": "Adresse non trouvée",
+      "description": "Nous n'avons pas pu vérifier cette adresse. Vous pouvez essayer une adresse plus précise, utiliser votre emplacement actuel ou poursuivre avec l'adresse saisie (les rapports ne seront pas disponibles tant que la localisation ne sera pas vérifiée).",
+      "editAddress": "Modifier l'adresse"
     },
     "apiKeyMissing": {
-      "title": "Validation d'Adresse Indisponible",
-      "description": "La validation d'adresse est temporairement indisponible. Vous pouvez utiliser votre position actuelle ou continuer avec l'adresse saisie (les rapports seront indisponibles jusqu'à ce que l'emplacement soit vérifié)."
+      "title": "Validation d'adresse indisponible",
+      "description": "La validation d'adresse est temporairement indisponible. Vous pouvez utiliser votre emplacement actuel ou poursuivre avec l'adresse saisie (les rapports ne seront pas disponibles tant que la localisation ne sera pas vérifiée)."
     }
   },
   "validation": {
     "required": "Ce champ est obligatoire",
-    "emailInvalid": "Veuillez entrer une adresse email valide",
-    "passwordMin": "Le mot de passe doit contenir au moins {{min}} caractères",
+    "emailInvalid": "Veuillez saisir une adresse e-mail valide",
+    "passwordMin": "Le mot de passe doit comporter au moins {{min}} caractères",
     "passwordMismatch": "Les mots de passe ne correspondent pas",
     "radiusMin": "Le rayon doit être d'au moins {{min}} mètres",
     "radiusMax": "Le rayon ne peut pas dépasser {{max}} mètres"
   },
   "auth": {
-    "login": "Se Connecter",
-    "signUp": "Créer un Compte",
-    "email": "Email",
+    "login": "Se connecter",
+    "signUp": "S'inscrire",
+    "email": "E-mail",
     "password": "Mot de passe",
-    "confirmPassword": "Confirmer le Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
     "firstName": "Prénom",
     "lastName": "Nom",
-    "loggingIn": "Connexion...",
-    "creatingAccount": "Création du compte...",
-    "createAccount": "Créer un Compte",
+    "loggingIn": "Connexion en cours...",
+    "creatingAccount": "Création du compte en cours...",
+    "createAccount": "Créer un compte",
     "orContinueWith": "Ou continuer avec",
     "continueWithGoogle": "Continuer avec Google",
-    "noAccount": "Vous n'avez pas de compte?",
-    "haveAccount": "Vous avez déjà un compte?",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "haveAccount": "Vous avez déjà un compte ?",
     "passwordMismatch": "Les mots de passe ne correspondent pas",
-    "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères",
+    "passwordTooShort": "Le mot de passe doit comporter au moins 6 caractères",
     "passwordMinChars": "Minimum 6 caractères",
+    "freeBadge": "✨ 100% Gratuit • Toutes les fonctionnalités débloquées",
+    "forgotPassword": "Mot de passe oublié ?",
+    "forgotPasswordTitle": "Récupérer le mot de passe",
+    "forgotPasswordDesc": "Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe",
+    "sendResetLink": "Envoyer le lien de réinitialisation",
+    "sendingLink": "Envoi en cours...",
+    "resetSuccess": "Si un compte existe avec cet e-mail, vous recevrez bientôt un lien de récupération. Veuillez également vérifier votre dossier de courrier indésirable.",
+    "backToLogin": "Retour à la connexion",
+    "resetPasswordTitle": "Réinitialiser le mot de passe",
+    "resetPasswordDesc": "Choisissez un nouveau mot de passe pour votre compte",
+    "newPassword": "Nouveau mot de passe",
+    "resetting": "Réinitialisation en cours...",
+    "resetComplete": "Mot de passe réinitialisé avec succès ! Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+    "goToLogin": "Aller à la connexion",
+    "invalidToken": "Lien invalide ou expiré",
+    "validatingToken": "Validation du lien...",
+    "requestNewLink": "Demander un nouveau lien",
     "errors": {
-      "invalidCredentials": "L'email ou le mot de passe est incorrect.",
+      "invalidCredentials": "L'adresse e-mail ou le mot de passe saisi est incorrect.",
       "useGoogle": "Veuillez utiliser la connexion Google pour ce compte",
-      "generic": "Une erreur s'est produite. Veuillez réessayer."
+      "generic": "Une erreur est survenue. Veuillez réessayer."
     },
     "continue": "Continuer",
     "back": "Retour",
-    "backToHome": "← Retour à l'accueil",
+    "backToHome": "Retour à l'accueil",
     "stepAccount": "Compte",
-    "stepPlan": "Plan",
+    "stepPlan": "Forfait",
     "stepPayment": "Paiement",
-    "choosePlan": "Choisissez votre plan",
-    "paymentMethod": "Méthode de paiement",
-    "selectedPlan": "Plan sélectionné",
+    "choosePlan": "Choisissez votre forfait",
+    "paymentMethod": "Mode de paiement",
+    "selectedPlan": "Forfait sélectionné",
     "popular": "Populaire",
-    "creditCard": "Carte de Crédit/Débit",
+    "creditCard": "Carte de crédit/débit",
     "creditCardDesc": "Visa, Mastercard, Amex",
     "multibanco": "Multibanco",
     "multibancoDesc": "Référence MB",
     "perMonth": "/mois"
   },
-  "locationStatus": {
-    "validated": "Emplacement vérifié",
-    "pending": "Emplacement en attente",
-    "pendingNote": "Rapports non disponibles jusqu'à ce que l'emplacement soit vérifié"
-  },
-  "radiusOptions": {
-    "immediate": "Voisinage immédiat",
-    "walking": "Distance de marche",
-    "drive": "Court trajet en voiture",
-    "extended": "Zone étendue",
-    "500m": "500m (À pied)",
-    "1km": "1km (Quartier)",
-    "2km": "2km (Local)",
-    "5km": "5km (Zone)"
-  },
   "quickSearch": {
-    "title": "Découvrez votre Concurrence Locale",
-    "subtitle": "Analysez les concurrents dans n'importe quel emplacement instantanément",
-    "addressPlaceholder": "Entrez l'adresse de l'entreprise",
+    "title": "Découvrez votre concurrence locale",
+    "subtitle": "Analysez instantanément vos concurrents dans n'importe quel lieu",
+    "addressPlaceholder": "Saisissez l'adresse de l'entreprise",
     "selectType": "Type d'entreprise",
     "selectRadius": "Rayon de recherche",
-    "analyzeButton": "Analyser la Concurrence",
-    "noSignupRequired": "Aucune inscription requise",
+    "analyzeButton": "Analyser la concurrence",
+    "noSignupRequired": "Pas d'inscription requise",
     "searching": "Recherche en cours...",
-    "error": "Recherche échouée. Veuillez réessayer.",
+    "error": "Échec de la recherche. Veuillez réessayer.",
     "errors": {
-      "addressNotFound": "Impossible de trouver les coordonnées pour l'adresse fournie",
+      "addressNotFound": "Impossible de trouver les coordonnées de l'adresse fournie",
       "invalidRadius": "Le rayon doit être l'un des suivants : 500, 1000, 2000, 5000 mètres",
       "missingFields": "L'adresse, le type et le rayon sont obligatoires",
       "rateLimitExceeded": "Trop de recherches. Créez un compte gratuit pour des recherches illimitées.",
@@ -340,43 +344,43 @@
   "businessTypes": {
     "restaurant": "Restaurant",
     "cafe": "Café",
-    "retail": "Magasin de Détail",
-    "gym": "Salle de Sport / Fitness",
-    "salon": "Salon / Spa",
+    "retail": "Magasin de détail",
+    "gym": "Salle de sport",
+    "salon": "Salon de coiffure / Spa",
     "hotel": "Hôtel",
     "bar": "Bar / Pub",
     "bakery": "Boulangerie",
     "pharmacy": "Pharmacie",
     "supermarket": "Supermarché",
-    "clinic": "Clinique Médicale",
+    "clinic": "Clinique médicale",
     "dentist": "Dentiste",
     "bank": "Banque",
     "gas_station": "Station-service",
-    "car_repair": "Réparation Automobile",
+    "car_repair": "Réparation automobile",
     "other": "Autre"
   },
   "previewReport": {
-    "title": "Rapport de Prévisualisation",
+    "title": "Aperçu du rapport",
     "radius": "rayon",
-    "avgRating": "Note Moyenne",
-    "nearbyCompetitors": "Concurrents à Proximité",
+    "avgRating": "Note moyenne",
+    "nearbyCompetitors": "Concurrents à proximité",
     "reviews": "avis",
     "competitorsFound": "{{count}} concurrents trouvés",
-    "showingPreview": "Affichage des {{count}} premiers",
+    "showingPreview": "Affichage des premiers {{count}}",
     "moreCompetitors": "+{{count}} concurrents supplémentaires",
-    "unlockFull": "Débloquer le Rapport Complet",
+    "unlockFull": "Débloquer le rapport complet",
     "getCompleteAccess": "Obtenez un accès complet à toutes les fonctionnalités",
-    "aiPreview": "Insights IA (Prévisualisation)",
-    "createAccount": "Créer un Compte Gratuit - C'est Gratuit !",
-    "noCreditCard": "Aucune carte de crédit requise • Accès instantané • Annulez à tout moment",
+    "aiPreview": "Insights IA (Aperçu)",
+    "createAccount": "Créer un compte gratuit - C'est gratuit !",
+    "noCreditCard": "Pas de carte de crédit requise • Accès instantané • Annulez quand vous voulez",
     "benefits": {
-      "allCompetitors": "Voir tous les {{count}} concurrents",
-      "fullAnalysis": "Analyse IA complète",
+      "allCompetitors": "Voir les {{count}} concurrents",
+      "fullAnalysis": "Analyse complète par IA",
       "export": "Exporter en PDF/HTML",
-      "saveTrack": "Sauvegarder et suivre les changements",
+      "saveTrack": "Enregistrer et suivre les modifications",
       "signupToSave": "Inscrivez-vous pour enregistrer et exporter",
-      "limitReachedTitle": "Limite de Rapports Atteinte",
-      "limitReachedDesc": "Vous avez déjà généré votre rapport gratuit. Créez un compte pour générer des rapports illimités, sauvegarder l'historique et plus encore."
+      "limitReachedTitle": "Limite de rapports atteinte",
+      "limitReachedDesc": "Vous avez déjà généré votre rapport gratuit. Créez un compte pour générer des rapports illimités, enregistrer votre historique, et plus encore."
     }
   },
   "landing": {
@@ -384,7 +388,7 @@
     "heroFeatures": {
       "competitors": "Concurrents dans le rayon de votre choix",
       "ratings": "Notes, avis et prix",
-      "monthlyReport": "Rapport mensuel dans votre email"
+      "monthlyReport": "Rapport mensuel dans votre e-mail"
     },
     "howItWorks": {
       "title": "Comment ça marche ?",
@@ -394,116 +398,116 @@
       },
       "step2": {
         "title": "Recevez un rapport mensuel",
-        "description": "Envoyé automatiquement à votre email. Pas besoin de vous connecter ni de vérifier quoi que ce soit."
+        "description": "Envoyé automatiquement sur votre e-mail. Pas besoin de vous connecter ou de vérifier quoi que ce soit."
       },
       "step3": {
         "title": "Prenez de meilleures décisions",
-        "description": "Utilisez les insights pour améliorer votre entreprise et rester en avance sur la concurrence."
+        "description": "Utilisez les informations pour améliorer votre entreprise et devancer la concurrence."
       }
     },
     "reportFeatures": {
       "title": "Que contient le rapport mensuel ?",
-      "subtitle": "Ce n'est pas une autre feuille Excel. C'est un résumé que n'importe qui dans votre équipe peut comprendre.",
+      "subtitle": "Pas un énième tableau Excel. Un résumé compréhensible par tous les membres de votre équipe.",
       "map": {
         "title": "Carte de la concurrence locale",
-        "description": "Voyez qui est autour de vous, à quelle distance et comment ils se comparent."
+        "description": "Voyez qui se trouve autour de vous, à quelle distance et comment se comparent-ils."
       },
       "comparison": {
         "title": "Comparaison directe avec vous",
         "description": "Notes, nombre d'avis, niveau de prix. Sachez où vous vous situez."
       },
       "reviews": {
-        "title": "Analyse des thèmes des avis",
-        "description": "Ce que les clients disent de la concurrence. Identifiez les opportunités."
+        "title": "Analyse thématique des avis",
+        "description": "Ce que les clients disent des concurrents. Identifiez les opportunités."
       },
       "recommendations": {
-        "title": "3-5 recommandations pratiques",
-        "description": "Insights actionnables basés sur les données. Quoi améliorer, quoi maintenir."
+        "title": "3 à 5 recommandations pratiques",
+        "description": "Des informations exploitables basées sur les données. Ce qu'il faut améliorer, ce qu'il faut maintenir."
       }
     },
     "sampleSection": {
-      "title": "Un petit échantillon de ce que vous recevrez",
-      "description": "Explorez l'exemple ci-contre pour voir les principaux insights que vous recevrez : carte des concurrents, analyse SWOT, tendances du marché et analyse des sentiments. Chaque rapport est personnalisé pour votre entreprise et envoyé directement à votre email.",
+      "title": "Un petit aperçu de ce que vous recevrez",
+      "description": "Découvrez l'exemple ci-contre pour voir les informations clés que vous recevrez : carte des concurrents, analyse SWOT, tendances du marché local et analyse du sentiment des clients. Chaque rapport est personnalisé pour votre entreprise et envoyé directement sur votre e-mail.",
       "features": {
         "keyPoints": {
-          "map": "Carte Interactive des Concurrents",
+          "map": "Carte interactive des concurrents",
           "swot": "Analyse SWOT",
-          "trends": "Tendances du Marché Local",
-          "sentiment": "Analyse du Sentiment Client"
+          "trends": "Tendances du marché local",
+          "sentiment": "Analyse du sentiment des clients"
         }
       }
     },
     "targetAudience": {
-      "title": "Pour qui est le Competitor Watcher ?",
-      "subtitle": "Idéal pour les entreprises locales qui dépendent de la réputation et des avis :",
+      "title": "À qui s'adresse Competitor Watcher ?",
+      "subtitle": "Idéal pour les entreprises locales qui dépendent de leur réputation et de leurs avis :",
       "restaurants": "Restaurants, cafés et boulangeries",
-      "beauty": "Cliniques esthétiques, coiffeurs, barbiers",
+      "beauty": "Cliniques de beauté, salons de coiffure, barbiers",
       "fitness": "Salles de sport et studios d'entraînement",
-      "hotels": "Petits hôtels, hébergements locaux, maisons d'hôtes",
+      "hotels": "Petits hôtels, hébergements locaux, chambres d'hôtes",
       "retail": "Magasins physiques en concurrence dans les zones commerciales",
-      "conclusion": "Si vous avez une entreprise locale et de la concurrence autour de vous, Competitor Watcher a été fait pour vous."
+      "conclusion": "Si vous avez une entreprise locale avec de la concurrence autour, Competitor Watcher est fait pour vous."
     },
     "pricing": {
-      "title": "Plans et Tarifs",
-      "subtitle": "Trouvez le plan idéal pour votre entreprise, que vous débutiez ou gériez plusieurs emplacements.",
+      "title": "Forfaits et tarifs",
+      "subtitle": "Trouvez le forfait idéal pour votre entreprise, que vous débutiez ou que vous gériez plusieurs emplacements.",
       "noContracts": "Sans engagement. Annulez à tout moment.",
       "perMonth": "/mois",
       "essential": {
         "subtitle": "Parfait pour les petites entreprises qui souhaitent commencer à analyser la concurrence simplement.",
-        "button": "Commencer maintenant",
+        "button": "Démarrer maintenant",
         "features": [
           "1 Emplacement",
-          "Rapports bimensuels (PDF)",
+          "Rapports bi-hebdomadaires (PDF)",
           "Rayon jusqu'à 5 km",
           "Alertes de nouveaux avis",
-          "Analyse IA Basique",
-          "~ Historique des Concurrents",
-          "~ Alertes Concurrents",
-          "~ Analyse des Sentiments des Avis",
-          "Support inclus"
+          "Analyse IA de base",
+          "~ Historique des concurrents",
+          "~ Alertes de concurrents",
+          "~ Analyse du sentiment des avis",
+          "Assistance incluse"
         ]
       },
       "professional": {
-        "subtitle": "Pour les entreprises en croissance qui ont besoin d'une analyse approfondie et d'alertes intelligentes.",
-        "button": "Essayer Professionnel",
+        "subtitle": "Pour les entreprises en croissance qui ont besoin d'analyses approfondies et d'alertes intelligentes.",
+        "button": "Essayer Professional",
         "features": [
-          "Jusqu'à 3 Emplacements",
+          "Jusqu'à 3 emplacements",
           "10 Rapports/mois (PDF et HTML)",
           "Rayon jusqu'à 20 km",
-          "Analyse IA Avancée",
-          "Historique des Concurrents",
-          "Alertes Concurrents",
-          "Comparaison Mensuelle Automatique",
-          "Analyse des Sentiments des Avis",
-          "~ Marque personnalisée sur les PDF",
+          "Analyse IA avancée",
+          "Historique des concurrents",
+          "Alertes de concurrents",
+          "Comparaison automatique mois par mois",
+          "Analyse du sentiment des avis",
+          "~ Image de marque personnalisée sur les PDF",
           "~ Tableau de bord multi-entreprises",
-          "Support inclus"
+          "Assistance incluse"
         ]
       },
       "agency": {
-        "subtitle": "Pour les consultants, agences et réseaux d'entreprises nécessitant échelle, organisation et rapports professionnels.",
-        "button": "Devenir Partenaire",
+        "subtitle": "Pour les consultants, les agences et les réseaux d'entreprises ayant besoin d'envergure, d'organisation et de rapports professionnels.",
+        "button": "Devenir partenaire",
         "features": [
-          "Jusqu'à 10 Emplacements",
+          "Jusqu'à 10 emplacements",
           "Rapports illimités (PDF, HTML, CSV)",
           "Rayon jusqu'à 50 km",
-          "Analyse IA Avancée + Stratégie",
-          "Historique et Alertes Premium",
-          "Marque personnalisée sur les PDF",
+          "Analyse IA avancée + Stratégie",
+          "Historique et alertes Premium",
+          "Image de marque personnalisée sur les PDF",
           "Tableau de bord multi-entreprises",
-          "Support Prioritaire"
+          "Assistance prioritaire"
         ]
       }
     },
     "faq": {
-      "title": "Questions fréquentes",
+      "title": "Foire aux questions",
       "q1": {
-        "question": "D'où viennent les données ?",
-        "answer": "De sources publiques comme Google Maps. Nous n'accédons pas aux informations privées ou confidentielles."
+        "question": "D'où proviennent les données ?",
+        "answer": "De sources publiques comme Google Maps. Nous n'accédons à aucune information privée ou confidentielle."
       },
       "q2": {
         "question": "Dois-je installer quelque chose ?",
-        "answer": "Non. Tout fonctionne par email. Vous recevez simplement le rapport dans votre boîte de réception."
+        "answer": "Non. Tout fonctionne par e-mail. Vous recevez simplement le rapport dans votre boîte de réception."
       },
       "q3": {
         "question": "Cela remplace-t-il un consultant en marketing ?",
@@ -511,83 +515,98 @@
       },
       "q4": {
         "question": "Puis-je annuler à tout moment ?",
-        "answer": "Oui. Sans engagement. Annulez quand vous voulez, directement depuis votre tableau de bord."
+        "answer": "Oui. Sans engagement. Annulez quand vous le souhaitez, directement depuis votre tableau de bord."
       },
       "q5": {
         "question": "Puis-je essayer avant de payer ?",
-        "answer": "Oui. Demandez un rapport d'exemple par email et nous vous enverrons un exemple pour votre zone."
+        "answer": "Oui. Demandez un exemple de rapport par e-mail et nous vous enverrons un exemple pour votre zone."
       }
     },
     "support": {
-      "title": "Vous aimez Competitor Watcher? Aidez-nous à le garder gratuit",
-      "description": "Competitor Watcher est 100% gratuit et open source. Nous avons besoin de soutien pour couvrir les coûts d'API, l'hébergement et l'infrastructure. Chaque contribution aide.",
-      "cta": "Soutenir le Projet",
+      "title": "Vous aimez Competitor Watcher ? Aidez-nous à le maintenir gratuit",
+      "description": "Competitor Watcher est 100 % gratuit et open source. Nous avons besoin de soutien pour couvrir les coûts des API, de l'hébergement et de l'infrastructure. Chaque contribution compte.",
+      "cta": "Soutenir le projet",
       "footer": "Merci pour votre soutien"
     },
     "cta": {
-      "existingAccount": "Vous avez déjà un compte? Accédez à votre tableau de bord ici"
+      "existingAccount": "Vous avez déjà un compte ? Accédez à votre tableau de bord ici"
     }
+  },
+  "locationStatus": {
+    "validated": "Localisation vérifiée",
+    "pending": "Localisation en attente",
+    "pendingNote": "Rapports indisponibles tant que l'emplacement n'a pas été vérifié"
+  },
+  "radiusOptions": {
+    "immediate": "Voisinage immédiat",
+    "walking": "Distance de marche",
+    "drive": "Court trajet en voiture",
+    "extended": "Zone étendue",
+    "500m": "500m (Marche)",
+    "1km": "1km (Quartier)",
+    "2km": "2km (Local)",
+    "5km": "5km (Zone)"
   },
   "support": {
     "back": "Retour",
     "title": "Soutenir Competitor Watcher",
-    "subtitle": "Aidez à garder Competitor Watcher 100% gratuit et open source pour tout le monde",
+    "subtitle": "Aidez à maintenir Competitor Watcher 100 % gratuit et open source pour tous",
     "whySupport": {
-      "title": "Pourquoi Votre Soutien Compte",
-      "description": "Competitor Watcher est un projet passionné conçu pour aider les petites entreprises à compétir. Chaque don maintient les lumières allumées."
+      "title": "Pourquoi votre soutien est important",
+      "description": "Competitor Watcher est un projet passionné conçu pour aider les petites entreprises à être compétitives. Chaque don contribue à le maintenir en vie."
     },
     "costs": {
-      "maps": "Données de Localisation et Cartes",
-      "mapsDesc": "L'API Google Places alimente notre découverte de concurrents",
-      "hosting": "Hébergement et Infrastructure",
-      "hostingDesc": "Serveurs fiables pour maintenir Competitor Watcher en fonctionnement 24/7",
-      "ai": "Insights IA",
-      "aiDesc": "L'API OpenAI génère une analyse actionnelle des concurrents"
+      "maps": "Données de localisation et cartes",
+      "mapsDesc": "L'API Google Places alimente notre découverte des concurrents",
+      "hosting": "Hébergement et infrastructure",
+      "hostingDesc": "Des serveurs fiables pour faire fonctionner Competitor Watcher 24h/24, 7j/7",
+      "ai": "Informations générées par l'IA",
+      "aiDesc": "L'API OpenAI génère des analyses exploitables des concurrents"
     },
-    "mission": "Notre Mission : Garder Competitor Watcher 100% Gratuit",
-    "missionDesc": "Pas de paywall. Pas de limites de fonctionnalités. Pas de publicités. Juste un outil pour aider les entreprises locales à prospérer.",
-    "howToSupport": "Choisissez Comment Soutenir",
-    "everyContribution": "Chaque contribution aide, quelle que soit sa taille !",
+    "mission": "Notre mission : maintenir Competitor Watcher 100 % gratuit",
+    "missionDesc": "Pas d'abonnement. Pas de limites de fonctionnalités. Pas de publicité. Juste un outil conçu pour aider les entreprises locales à prospérer.",
+    "howToSupport": "Choisissez comment nous soutenir",
+    "everyContribution": "Chaque contribution compte, quelle que soit sa taille !",
     "platforms": {
       "github": {
         "name": "GitHub Sponsors",
-        "desc": "Soutien mensuel récurrent • 0% de frais",
-        "cta": "Parrainer"
+        "desc": "Soutien mensuel récurrent • 0 % de frais",
+        "cta": "Sponsoriser"
       },
       "kofi": {
         "name": "Ko-fi",
-        "desc": "Café unique • 0% de frais",
-        "cta": "Acheter un Café"
+        "desc": "Café ponctuel • 0 % de frais",
+        "cta": "Offrir un café"
       },
       "bmac": {
         "name": "Buy Me a Coffee",
-        "desc": "Soutien unique • 5% de frais",
+        "desc": "Soutien ponctuel • 5 % de frais",
         "cta": "Soutenir"
       }
     },
     "other": {
-      "title": "Vous Ne Pouvez Pas Faire de Don ? Pas de Problème !",
-      "description": "Il existe de nombreuses autres façons d'aider",
+      "title": "Vous ne pouvez pas faire de don ? Pas de problème !",
+      "description": "Il existe de nombreuses autres façons de nous aider",
       "starGithub": "Étoiler sur GitHub",
-      "starGithubDesc": "Ça aide beaucoup !",
-      "reportBugs": "Signaler des Bugs",
+      "starGithubDesc": "Cela aide beaucoup !",
+      "reportBugs": "Signaler des bugs",
       "reportBugsDesc": "Aider à améliorer la qualité",
-      "suggestFeatures": "Suggérer des Fonctionnalités",
+      "suggestFeatures": "Suggérer des fonctionnalités",
       "suggestFeaturesDesc": "Partagez vos idées",
-      "shareWithFriends": "Partager avec des Amis",
+      "shareWithFriends": "Partager avec des amis",
       "shareWithFriendsDesc": "Faites passer le mot"
     },
     "thankYou": "Merci !",
-    "thankYouMessage": "Votre soutien rend possible de garder Competitor Watcher gratuit pour tous"
+    "thankYouMessage": "Votre soutien permet de maintenir Competitor Watcher gratuit pour tous"
   },
   "settings": {
     "title": "Paramètres",
     "subtitle": "Gérer votre compte et vos préférences",
     "account": {
-      "title": "Informations du Compte",
+      "title": "Informations du compte",
       "description": "Mettez à jour vos informations personnelles et vos identifiants",
       "name": "Nom",
-      "email": "Email",
+      "email": "E-mail",
       "currentPassword": "Mot de passe actuel",
       "newPassword": "Nouveau mot de passe",
       "confirmPassword": "Confirmer le nouveau mot de passe",
@@ -597,20 +616,20 @@
     },
     "support": {
       "title": "Soutenir Competitor Watcher",
-      "description": "Competitor Watcher est 100% gratuit et open source. Aidez à maintenir le projet !",
-      "message": "<strong>Toutes les fonctionnalités</strong> sont débloquées pour tout le monde. Si Competitor Watcher vous aide, envisagez de soutenir avec un don.",
+      "description": "Competitor Watcher est 100 % gratuit et open source. Aidez à maintenir le projet en vie !",
+      "message": "<strong>Toutes les fonctionnalités</strong> sont débloquées pour tout le monde. Si Competitor Watcher aide votre entreprise, envisagez de faire un don.",
       "button": "Voir les options de soutien",
       "footer": "💜 GitHub Sponsors • ☕ Ko-fi • 🎁 Buy Me a Coffee"
     },
     "danger": {
-      "title": "Zone de Danger",
+      "title": "Zone de danger",
       "description": "Actions irréversibles liées à votre compte",
       "deleteAccount": "Supprimer le compte",
-      "deleteDesc": "Supprimer définitivement votre compte et toutes les données",
+      "deleteDesc": "Supprimer définitivement votre compte et toutes ses données",
       "button": "Supprimer le compte",
       "dialog": {
         "title": "Supprimer le compte",
-        "description": "Cette action est <strong class=\"text-destructive\">permanente et irréversible</strong>. Toutes vos données, rapports et paramètres seront supprimés. Êtes-vous absolument sûr de vouloir continuer ?",
+        "description": "Cette action est <strong class=\"text-destructive\">définitive et irréversible</strong>. Toutes vos données, rapports et paramètres seront supprimés. Êtes-vous absolument sûr de vouloir continuer ?",
         "cancel": "Annuler",
         "confirm": "Oui, supprimer le compte"
       }
@@ -629,5 +648,41 @@
         "delete": "Impossible de supprimer le compte. Veuillez réessayer."
       }
     }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Politique de Confidentialité",
+      "lastUpdated": "Dernière mise à jour : Décembre 2023",
+      "intro": "Nous accordons une grande importance à votre vie privée et nous nous engageons à protéger vos données personnelles. Cette politique explique comment nous collectons, utilisons et protégeons vos informations lorsque vous utilisez nos services d'analyse de la concurrence. En utilisant notre plateforme, vous acceptez la collecte et l'utilisation d'informations conformément à cette politique.",
+      "dataCollection": "Nous collectons les informations que vous nous fournissez directement, telles que votre nom et votre adresse e-mail lors de la création d'un compte. De plus, nous pouvons collecter des données d'utilisation, le type de navigateur et des informations de localisation via nos fonctionnalités de recherche d'adresse pour fournir des rapports précis sur la concurrence. Nous recevons également des informations de services tiers si vous choisissez de vous connecter via Google.",
+      "useOfInfo": "Les informations que nous collectons sont utilisées pour fournir et améliorer notre service, y compris la génération de vos rapports mensuels sur la concurrence. Nous utilisons vos données pour personnaliser votre expérience, envoyer des mises à jour importantes sur le service et surveiller les performances de notre plateforme afin de garantir une expérience fluide pour tous les utilisateurs.",
+      "userRights": "Vous avez le droit d'accéder à vos informations personnelles, de les mettre à jour ou de les supprimer à tout moment via les paramètres de votre compte. Nous respectons le RGPD et d'autres réglementations sur la protection de la vie privée, garantissant que vous avez un contrôle total sur vos données. Si vous avez des questions sur vos droits, veuillez contacter notre équipe d'assistance.",
+      "sections": {
+        "dataCollection": "1. Collecte de Données",
+        "useOfInfo": "2. Utilisation des Informations",
+        "userRights": "3. Droits de l'Utilisateur",
+        "contact": "Contactez-nous"
+      },
+      "contactDesc": "Si vous avez des questions concernant cette politique de confidentialité, veuillez nous contacter à l'adresse support@competitorwatcher.com"
+    },
+    "cookies": {
+      "title": "Politique de Cookies",
+      "lastUpdated": "Dernière mise à jour : Décembre 2023",
+      "intro": "Cette politique explique comment nous utilisons les cookies et les technologies similaires pour améliorer votre expérience. Les cookies sont de petits fichiers de données stockés sur votre appareil qui nous aident à comprendre comment vous interagissez avec notre site. Nous utilisons des cookies de session et des cookies persistants pour fournir une plateforme fonctionnelle et optimisée.",
+      "essential": "Ces cookies sont strictement nécessaires au bon fonctionnement de la plateforme. Ils gèrent l'authentification des utilisateurs, les fonctions de sécurité et les préférences persistantes telles que votre choix de langue et de thème. Sans ces cookies, les fonctionnalités de base de Competitor Watcher ne seraient pas disponibles.",
+      "analytical": "Les cookies analytiques nous aident à comprendre comment les visiteurs utilisent notre site en collectant des informations anonymes. Nous utilisons ces données pour améliorer nos cartes de concurrence, suivre les performances de la génération de rapports et identifier les domaines à améliorer. Toutes les données collectées sont agrégées et ne vous identifient pas personnellement.",
+      "sections": {
+        "essential": "Cookies Essentiels",
+        "analytical": "Cookies Analytiques",
+        "managing": "Gestion des Cookies"
+      },
+      "managingDesc": "Vous pouvez gérer vos préférences en matière de cookies via la bannière qui s'est affichée lors de votre première visite, ou via les paramètres de votre navigateur."
+    }
+  },
+  "cookies": {
+    "banner": "Nous utilisons des cookies pour améliorer votre expérience et analyser le trafic du site.",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "learnMore": "En savoir plus"
   }
 }

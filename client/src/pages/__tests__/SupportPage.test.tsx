@@ -23,7 +23,7 @@ describe('SupportPage', () => {
     describe('Page Structure', () => {
         it('should render the support page', () => {
             renderSupportPage();
-            expect(screen.getByAltText("Competitor Watcher")).toBeInTheDocument();
+            expect(screen.getAllByAltText("Competitor Watcher")[0]).toBeInTheDocument();
         });
 
         it('should render the back button', () => {
@@ -119,7 +119,7 @@ describe('SupportPage', () => {
         it('should render in English by default', async () => {
             await i18n.changeLanguage('en');
             renderSupportPage();
-            expect(screen.getByAltText('Competitor Watcher')).toBeInTheDocument();
+            expect(screen.getAllByAltText('Competitor Watcher')[0]).toBeInTheDocument();
         });
 
         it('should switch to Portuguese', async () => {
@@ -143,7 +143,7 @@ describe('SupportPage', () => {
         it('should switch to German', async () => {
             await i18n.changeLanguage('de');
             renderSupportPage();
-            expect(screen.getByText('Competitor Watcher Unterstützen')).toBeInTheDocument();
+            expect(screen.getByText(/Competitor Watcher unterstützen/i)).toBeInTheDocument();
         });
     });
 });
