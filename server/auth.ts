@@ -89,12 +89,21 @@ export async function setupAuth(app: Express) {
 
     // Google OAuth Strategy
     if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+        const callbackURL = process.env.GOOGLE_CALLBACK_URL || "/api/auth/google/callback";
+        console.log(`[Auth] Google OAuth configured with callback: ${callbackURL}`);
+
+        if (process.env.NODE_ENV === "production") {
+            if (callbackURL.includes("localhost") || callbackURL.includes("127.0.0.1")) {
+                console.warn("\x1b[33m%s\x1b[0m", `[WARNING] Google Callback URL (${callbackURL}) appears to be a local address but environment is production. Redirection will fail on the live site!`);
+            }
+        }
+
         passport.use(
             new GoogleStrategy(
                 {
                     clientID: process.env.GOOGLE_CLIENT_ID,
                     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-                    callbackURL: process.env.GOOGLE_CALLBACK_URL || "/api/auth/google/callback",
+                    callbackURL: callbackURL,
                 },
                 async (accessToken, refreshToken, profile, done) => {
                     try {
