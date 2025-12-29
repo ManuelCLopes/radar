@@ -71,7 +71,8 @@
       "addressPlaceholder": "Enter your business address",
       "submit": "Register Business",
       "submitting": "Registering...",
-      "typeAutoDetected": "This business type was automatically detected from public records."
+      "typeAutoDetected": "This business type was automatically detected from public records.",
+      "noTypeDetected": "No type automatically detected"
     },
     "types": {
       "restaurant": "Restaurant",

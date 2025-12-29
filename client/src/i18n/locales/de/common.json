@@ -71,7 +71,8 @@
       "addressPlaceholder": "Geben Sie Ihre Geschäftsadresse ein",
       "submit": "Unternehmen registrieren",
       "submitting": "Registrierung läuft...",
-      "typeAutoDetected": "Diese Unternehmensart wurde automatisch aus öffentlichen Aufzeichnungen erkannt."
+      "typeAutoDetected": "Diese Unternehmensart wurde automatisch aus öffentlichen Aufzeichnungen erkannt.",
+      "noTypeDetected": "Kein Typ automatisch erkannt"
     },
     "types": {
       "restaurant": "Restaurant",

@@ -74,7 +74,7 @@ describe("BusinessForm", () => {
         render(<BusinessForm onSubmit={mockOnSubmit} />);
         expect(screen.getByTestId("input-business-name")).toBeInTheDocument();
         expect(screen.getByTestId("input-address")).toBeInTheDocument();
-        // Type field SHOULD be hidden initially (before search/validation)
+        // Type field should be hidden initially (before address verification)
         expect(screen.queryByTestId("select-business-type")).not.toBeInTheDocument();
         expect(screen.getByTestId("button-submit-business")).toBeInTheDocument();
     });
@@ -249,10 +249,11 @@ describe("BusinessForm", () => {
             expect(mockMutateAsync).toHaveBeenCalled();
         });
 
-        // Verify type is set and displayed as text (read-only)
+        // Verify type is set and displayed in the select (no longer read-only)
         await waitFor(() => {
-            expect(screen.getByText("business.types.restaurant")).toBeInTheDocument();
-            expect(screen.queryByTestId("select-business-type")).not.toBeInTheDocument();
+            expect(screen.getByTestId("select-business-type")).toBeInTheDocument();
+            const select = screen.getByTestId("mock-select") as HTMLSelectElement;
+            expect(select.value).toBe("restaurant");
         });
     });
 

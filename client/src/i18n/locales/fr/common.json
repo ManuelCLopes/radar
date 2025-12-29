@@ -71,7 +71,8 @@
       "addressPlaceholder": "Saisissez l'adresse de votre entreprise",
       "submit": "Enregistrer l'entreprise",
       "submitting": "Enregistrement en cours...",
-      "typeAutoDetected": "Ce type d'entreprise a été automatiquement détecté à partir des registres publics."
+      "typeAutoDetected": "Ce type d'entreprise a été automatiquement détecté à partir des registres publics.",
+      "noTypeDetected": "Aucun type détecté automatiquement"
     },
     "types": {
       "restaurant": "Restaurant",

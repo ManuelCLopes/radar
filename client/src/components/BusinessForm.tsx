@@ -215,6 +215,18 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
       gas_station: "gas_station",
       car_repair: "car_repair",
       car_service: "car_repair",
+      shoe_store: "retail",
+      electronics_store: "retail",
+      home_goods_store: "retail",
+      hardware_store: "retail",
+      furniture_store: "retail",
+      department_store: "retail",
+      book_store: "retail",
+      liquor_store: "retail",
+      pet_store: "retail",
+      jewelry_store: "retail",
+      bicycle_store: "retail",
+      florist: "retail",
     };
 
     for (const type of googleTypes) {
@@ -469,50 +481,53 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
           />
 
           {isAddressVerified && (
-            !selectedPlace ? (
-              <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("business.form.type")}</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger data-testid="select-business-type">
-                          <SelectValue placeholder={t("business.form.typePlaceholder")} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {businessTypes.map((type) => (
-                          <SelectItem key={type} value={type} data-testid={`option-type-${type}`}>
-                            <span className="mr-2">{businessTypeIcons[type]}</span>
-                            {getBusinessTypeLabel(type)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            ) : (
-              <div className="space-y-2">
-                <FormLabel>{t("business.form.type")}</FormLabel>
-                <div className="flex items-center gap-2 p-3 border rounded-md bg-muted/50">
-                  {form.watch("type") ? (
-                    <>
-                      <span className="text-xl">{businessTypeIcons[form.watch("type")!]}</span>
-                      <span className="font-medium">{getBusinessTypeLabel(form.watch("type")!)}</span>
-                    </>
-                  ) : (
-                    <span className="text-muted-foreground italic">{t("business.form.noTypeDetected")}</span>
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    {t("business.form.type")}
+                    {selectedPlace && form.watch("type") && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="text-xs">{t("business.form.typeAutoDetected")}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger data-testid="select-business-type">
+                        <SelectValue placeholder={t("business.form.typePlaceholder")} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {businessTypes.map((type) => (
+                        <SelectItem key={type} value={type} data-testid={`option-type-${type}`}>
+                          <span className="mr-2">{businessTypeIcons[type]}</span>
+                          {getBusinessTypeLabel(type)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {!field.value && selectedPlace && (
+                    <p className="text-[0.8rem] font-medium text-yellow-600 dark:text-yellow-400 mt-1 italic">
+                      {t("business.form.noTypeDetected")}
+                    </p>
                   )}
-                </div>
-              </div>
-            )
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
 
           <Button

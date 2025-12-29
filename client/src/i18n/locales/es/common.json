@@ -71,7 +71,8 @@
       "addressPlaceholder": "Introduce la dirección de tu negocio",
       "submit": "Registrar Negocio",
       "submitting": "Registrando...",
-      "typeAutoDetected": "Este tipo de negocio se detectó automáticamente a partir de registros públicos."
+      "typeAutoDetected": "Este tipo de negocio se detectó automáticamente a partir de registros públicos.",
+      "noTypeDetected": "No se ha detectado ningún tipo automáticamente"
     },
     "types": {
       "restaurant": "Restaurante",
