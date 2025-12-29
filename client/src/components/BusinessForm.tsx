@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -103,17 +103,39 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
     },
   });
 
+  const addressValue = form.watch("address");
+  const nameValue = form.watch("name");
+
+  // Auto-verify address on debounce
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    const subscription = form.watch((value, { name }) => {
+      if (name === "address" || name === "name") {
+        clearTimeout(timer);
+        if (value.address && value.name && !selectedPlace && !manualCoordinates && !pendingLocationAddress) {
+          timer = setTimeout(() => {
+            handleSearchAddress();
+          }, 1500); // 1.5s debounce to avoid too many API calls
+        }
+      }
+    });
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timer);
+    };
+  }, [selectedPlace, manualCoordinates, pendingLocationAddress]);
+
   const getBusinessTypeLabel = (type: BusinessType): string => {
     return t(`business.types.${type}`) as string;
   };
 
-  const handleSearchAddress = async () => {
+  const handleSearchAddress = async (isAutoSubmit = false) => {
     const address = form.getValues("address");
     const name = form.getValues("name");
 
     if (!address.trim()) {
       form.trigger("address");
-      return;
+      return null;
     }
 
     const searchQuery = name ? `${name}, ${address}` : address;
@@ -124,12 +146,13 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
       if (result.apiKeyMissing) {
         setPendingSubmitData(form.getValues());
         setShowApiKeyMissingDialog(true);
-        return;
+        return null;
       }
 
       if (result.results.length === 0) {
         setPendingSubmitData(form.getValues());
         setShowNoResultsDialog(true);
+        return null;
       } else if (result.results.length === 1) {
         const place = result.results[0];
         const inputAddress = address.toLowerCase().trim();
@@ -138,12 +161,15 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
         if (inputAddress !== foundAddress && foundAddress.includes(inputAddress.split(",")[0])) {
           setSuggestedPlace(place);
           setShowAddressSuggestionDialog(true);
+          return null;
         } else {
           selectPlace(place);
+          return place;
         }
       } else {
         setSearchResults(result.results);
         setShowMultipleResultsModal(true);
+        return null;
       }
     } catch (error) {
       toast({
@@ -151,6 +177,7 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
         description: t("addressSearch.searchFailed"),
         variant: "destructive",
       });
+      return null;
     }
   };
 
@@ -295,7 +322,22 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
     }
 
     if (!selectedPlace && !manualCoordinates && !pendingLocationAddress) {
-      await handleSearchAddress();
+      const verifiedPlace = await handleSearchAddress(true);
+      if (!verifiedPlace) return; // Wait for user interaction with dialogs
+
+      // If we got a verified place, use it immediately
+      const businessData: InsertBusiness = {
+        name: data.name,
+        type: data.type || mapGoogleTypeToBusinessType(verifiedPlace.types),
+        address: verifiedPlace.address,
+        latitude: verifiedPlace.latitude,
+        longitude: verifiedPlace.longitude,
+        locationStatus: "validated",
+      };
+
+      await onSubmit(businessData);
+      form.reset();
+      setSelectedPlace(null);
       return;
     }
 
@@ -363,29 +405,35 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
               <FormItem>
                 <FormLabel>{t("business.form.address")}</FormLabel>
                 <div className="flex gap-2">
-                  <FormControl>
-                    <Input
-                      placeholder={t("business.form.addressPlaceholder")}
-                      data-testid="input-address"
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        if (selectedPlace) {
-                          setSelectedPlace(null);
-                        }
-                        if (manualCoordinates) {
-                          setManualCoordinates(null);
-                        }
-                        if (pendingLocationAddress) {
-                          setPendingLocationAddress(null);
-                        }
-                      }}
-                    />
-                  </FormControl>
+                  <div className="relative flex-1">
+                    <FormControl>
+                      <Input
+                        placeholder={t("business.form.addressPlaceholder")}
+                        data-testid="input-address"
+                        {...field}
+                        className={selectedPlace ? "pr-10 border-green-500 ring-green-500/10" : ""}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          if (selectedPlace) {
+                            setSelectedPlace(null);
+                          }
+                          if (manualCoordinates) {
+                            setManualCoordinates(null);
+                          }
+                          if (pendingLocationAddress) {
+                            setPendingLocationAddress(null);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    {selectedPlace && (
+                      <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-green-500 animate-in zoom-in duration-300" />
+                    )}
+                  </div>
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={handleSearchAddress}
+                    onClick={() => handleSearchAddress()}
                     disabled={searchMutation.isPending || !form.watch("name")}
                     data-testid="button-search-address"
                     className={!isAddressVerified && form.watch("name") ? "border-2 border-blue-500 ring-4 ring-blue-400/30 animate-pulse shadow-[0_0_15px_rgba(59,130,246,0.5)]" : ""}
