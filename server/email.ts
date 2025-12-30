@@ -8,7 +8,9 @@ export interface EmailService {
 export class ConsoleEmailService implements EmailService {
   async sendWeeklyReport(user: User, report: Report): Promise<boolean> {
     console.log(`
-[EMAIL MOCK] ---------------------------------------------------
+\x1b[33m[EMAIL MOCK] ---------------------------------------------------\x1b[0m
+\x1b[33mIMPORTANT: Real email sending is NOT configured. \x1b[0m
+\x1b[33mSee SETUP_GUIDE.md to enable SMTP.\x1b[0m
 To: ${user.email}
 Subject: Your Weekly Competitor Watcher Report: ${report.businessName}
 ----------------------------------------------------------------
@@ -33,15 +35,26 @@ export class NodemailerEmailService implements EmailService {
   private transporter: nodemailer.Transporter;
 
   constructor() {
-    this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || "587"),
-      secure: process.env.SMTP_SECURE === "true",
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+    const service = process.env.EMAIL_SERVICE;
+    const host = process.env.EMAIL_HOST || process.env.SMTP_HOST;
+    const port = parseInt(process.env.EMAIL_PORT || process.env.SMTP_PORT || "587");
+    const user = process.env.EMAIL_USER || process.env.SMTP_USER;
+    const pass = process.env.EMAIL_PASS || process.env.SMTP_PASS;
+    const secure = (process.env.EMAIL_SECURE || process.env.SMTP_SECURE) === "true";
+
+    const config: any = {
+      auth: { user, pass }
+    };
+
+    if (service) {
+      config.service = service;
+    } else {
+      config.host = host;
+      config.port = port;
+      config.secure = secure;
+    }
+
+    this.transporter = nodemailer.createTransport(config);
   }
 
   async sendWeeklyReport(user: User, report: Report): Promise<boolean> {
@@ -72,7 +85,7 @@ export class NodemailerEmailService implements EmailService {
 }
 
 // Export singleton based on env
-export const emailService = process.env.SMTP_HOST
+export const emailService = (process.env.EMAIL_SERVICE || process.env.EMAIL_HOST || process.env.SMTP_HOST)
   ? new NodemailerEmailService()
   : new ConsoleEmailService();
 
@@ -111,19 +124,32 @@ export function generateWelcomeEmail(name: string) {
 }
 
 export async function sendEmail({ to, subject, html, text }: { to: string; subject: string; html: string; text: string }) {
-  if (process.env.SMTP_HOST) {
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || "587"),
-      secure: process.env.SMTP_SECURE === "true",
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+  const service = process.env.EMAIL_SERVICE;
+  const host = process.env.EMAIL_HOST || process.env.SMTP_HOST;
+  const user = process.env.EMAIL_USER || process.env.SMTP_USER;
+  const pass = process.env.EMAIL_PASS || process.env.SMTP_PASS;
+  const from = process.env.EMAIL_FROM || process.env.SMTP_FROM || '"Competitor Watcher" <noreply@competitorwatcher.pt>';
+
+  if (service || host) {
+    const port = parseInt(process.env.EMAIL_PORT || process.env.SMTP_PORT || "587");
+    const secure = (process.env.EMAIL_SECURE || process.env.SMTP_SECURE) === "true";
+
+    const config: any = {
+      auth: { user, pass }
+    };
+
+    if (service) {
+      config.service = service;
+    } else {
+      config.host = host;
+      config.port = port;
+      config.secure = secure;
+    }
+
+    const transporter = nodemailer.createTransport(config);
 
     await transporter.sendMail({
-      from: process.env.SMTP_FROM || '"Competitor Watcher" <noreply@competitorwatcher.pt>',
+      from,
       to,
       subject,
       html,
@@ -131,7 +157,9 @@ export async function sendEmail({ to, subject, html, text }: { to: string; subje
     });
   } else {
     console.log(`
-[EMAIL MOCK] ---------------------------------------------------
+\x1b[33m[EMAIL MOCK] ---------------------------------------------------\x1b[0m
+\x1b[33mIMPORTANT: Real email sending is NOT configured. \x1b[0m
+\x1b[33mSee SETUP_GUIDE.md to enable SMTP.\x1b[0m
 To: ${to}
 Subject: ${subject}
 ----------------------------------------------------------------

@@ -9,7 +9,8 @@ This guide helps you configure the application to test with real data.
 3. [OpenAI API (Optional)](#openai-api)
 4. [PostgreSQL Database (Optional)](#postgresql-database)
 5. [Google OAuth (Optional)](#google-oauth)
-6. [Testing with Real Businesses](#testing-with-real-businesses)
+6. [Email Configuration (SMTP)](#email-configuration-smtp)
+7. [Testing with Real Businesses](#testing-with-real-businesses)
 
 ---
 
@@ -175,6 +176,41 @@ GOOGLE_CLIENT_ID=your_client_id.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=your_client_secret
 GOOGLE_CALLBACK_URL=http://127.0.0.1:5000/api/auth/google/callback
 ```
+
+---
+
+## Email Configuration (SMTP)
+
+For password recovery emails and scheduled reports.
+
+### 1. Default Behavior (Console Mock)
+By default, if no SMTP settings are provided, the application will log emails to the terminal console instead of sending them. This is useful for development.
+
+### 2. Configure Email (Recommended)
+To send actual emails, add the following to your `.env` file:
+
+#### Option A: Simple (for Gmail)
+```bash
+EMAIL_SERVICE=gmail
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-app-password
+EMAIL_FROM="Radar <noreply@your-domain.com>"
+```
+
+#### Option B: Customizable (for other SMTP)
+```bash
+EMAIL_HOST=smtp.sendgrid.net
+EMAIL_PORT=587
+EMAIL_USER=your_username
+EMAIL_PASS=your_password
+EMAIL_FROM="Radar <noreply@your-domain.com>"
+```
+
+### 3. Example: Gmail Setup
+1. Go to your Google Account settings.
+2. Search for **App Passwords**.
+3. Create a new password for "Other (Custom name)" → "Radar".
+4. Use the generated 16-character password in `EMAIL_PASS`.
 
 ---
 

@@ -12,7 +12,7 @@ describe("Calendar", () => {
     it("should select a date", () => {
         const onSelect = vi.fn();
         const today = new Date();
-        render(<Calendar mode="single" selected={today} onSelect={onSelect} />);
+        render(<Calendar mode="single" selected={today} onSelect={onSelect} showOutsideDays={false} />);
 
         const dayButton = screen.getByRole("gridcell", { name: today.getDate().toString() });
         expect(dayButton).toHaveAttribute("aria-selected", "true");
