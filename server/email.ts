@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { Report, User } from "@shared/schema";
+import { log } from "./log";
 
 export interface EmailService {
   sendWeeklyReport(user: User, report: Report): Promise<boolean>;
@@ -128,9 +129,11 @@ export async function sendEmail({ to, subject, html, text }: { to: string; subje
   const host = process.env.EMAIL_HOST || process.env.SMTP_HOST;
   const user = process.env.EMAIL_USER || process.env.SMTP_USER;
   const pass = process.env.EMAIL_PASS || process.env.SMTP_PASS;
-  const from = process.env.EMAIL_FROM || process.env.SMTP_FROM || '"Competitor Watcher" <noreply@competitorwatcher.pt>';
+  const from = process.env.EMAIL_FROM || process.env.SMTP_FROM || (user ? `Radar <${user}>` : '"Competitor Watcher" <noreply@competitorwatcher.pt>');
 
   if (service || host) {
+    log(`Attempting to send email via ${service ? `service: ${service}` : `host: ${host}`} to ${to}...`, "email");
+
     const port = parseInt(process.env.EMAIL_PORT || process.env.SMTP_PORT || "587");
     const secure = (process.env.EMAIL_SECURE || process.env.SMTP_SECURE) === "true";
 
@@ -146,15 +149,22 @@ export async function sendEmail({ to, subject, html, text }: { to: string; subje
       config.secure = secure;
     }
 
-    const transporter = nodemailer.createTransport(config);
+    try {
+      const transporter = nodemailer.createTransport(config);
 
-    await transporter.sendMail({
-      from,
-      to,
-      subject,
-      html,
-      text,
-    });
+      const info = await transporter.sendMail({
+        from,
+        to,
+        subject,
+        html,
+        text,
+      });
+
+      log(`✅ Success! Message sent: ${info.messageId}`, "email");
+    } catch (error) {
+      log(`❌ Failed to send email to ${to}: ${error}`, "email");
+      throw error; // Re-throw to be caught by route handler
+    }
   } else {
     console.log(`
 \x1b[33m[EMAIL MOCK] ---------------------------------------------------\x1b[0m

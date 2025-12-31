@@ -8,11 +8,13 @@ import { type InsertBusiness, insertBusinessSchema, type User as AppUser } from 
 
 
 import { setupAuth, isAuthenticated } from "./auth";
+import { log } from "./log";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  log("Registering routes...", "express");
 
   // Setup authentication (Google OAuth + Email/Password)
   await setupAuth(app);
@@ -394,7 +396,7 @@ export async function registerRoutes(
   // Password reset routes
   app.post("/api/auth/forgot-password", async (req, res) => {
     try {
-      const { email } = req.body;
+      const email = req.body.email?.toLowerCase();
 
       if (!email) {
         return res.status(400).json({ error: "Email is required" });
@@ -403,13 +405,18 @@ export async function registerRoutes(
       const { sendEmail, generatePasswordResetEmail } = await import("./email");
       const crypto = await import("crypto");
 
+      log(`Password Reset Request received for: ${email}`, "auth");
+
       // Find user by email
       const user = await storage.findUserByEmail(email);
 
       // Always return success to prevent email enumeration
       if (!user) {
+        log(`Password Reset: User not found for email: ${email}`, "auth");
         return res.json({ message: "If that email exists, a reset link has been sent." });
       }
+
+      log(`Password Reset: User ${user.id} found. Attempting email...`, "auth");
 
       // Generate secure token
       const token = crypto.randomBytes(32).toString("hex");

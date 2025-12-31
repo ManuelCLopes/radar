@@ -41,18 +41,22 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    const [user] = await db!.select().from(users).where(eq(users.email, email));
+    const [user] = await db!.select().from(users).where(eq(users.email, email.toLowerCase()));
     return user || undefined;
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
+    const normalizedData = {
+      ...userData,
+      email: userData.email.toLowerCase(),
+    };
     const [user] = await db!
       .insert(users)
-      .values(userData)
+      .values(normalizedData)
       .onConflictDoUpdate({
         target: users.id,
         set: {
-          ...userData,
+          ...normalizedData,
           updatedAt: new Date(),
         },
       })
@@ -188,16 +192,19 @@ export class MemStorage implements IStorage {
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
+    const lowerEmail = email.toLowerCase();
     return Array.from(this.users.values()).find(
-      (user) => user.email === email
+      (user) => user.email.toLowerCase() === lowerEmail
     );
   }
 
   async upsertUser(user: UpsertUser): Promise<User> {
     const id = user.id || String(this.currentId++);
+    const normalizedEmail = user.email.toLowerCase();
     const newUser: User = {
       ...user,
       id,
+      email: normalizedEmail,
       createdAt: new Date(),
       updatedAt: new Date(),
       firstName: user.firstName || null,
