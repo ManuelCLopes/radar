@@ -92,35 +92,56 @@ export const emailService = (process.env.EMAIL_SERVICE || process.env.EMAIL_HOST
 
 export function generatePasswordResetEmail(resetLink: string, email: string) {
   const html = `
-    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2>Reset Your Password</h2>
-      <p>Hello,</p>
-      <p>We received a request to reset the password for your Competitor Watcher account associated with ${email}.</p>
-      <p>Click the button below to reset your password:</p>
-      <div style="margin: 20px 0;">
-        <a href="${resetLink}" style="background-color: #7c3aed; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset Password</a>
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f9fafb; padding: 40px 20px;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+        <div style="background-color: #7c3aed; padding: 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">Competitive Watcher</h1>
+        </div>
+        <div style="padding: 40px 30px;">
+          <h2 style="color: #111827; margin-top: 0; font-size: 20px;">Recuperar Palavra-passe</h2>
+          <p style="color: #4b5563; line-height: 1.6;">Olá,</p>
+          <p style="color: #4b5563; line-height: 1.6;">Recebemos um pedido para repor a palavra-passe da sua conta <strong>${email}</strong> no Competitive Watcher.</p>
+          <p style="color: #4b5563; line-height: 1.6;">Clique no botão abaixo para escolher uma nova palavra-passe:</p>
+          <div style="margin: 35px 0; text-align: center;">
+            <a href="${resetLink}" style="background-color: #7c3aed; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">Repor Palavra-passe</a>
+          </div>
+          <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-top: 30px; border-top: 1px solid #f3f4f6; pt-20px;">
+            Este link irá expirar em 15 minutos. Se não solicitou esta alteração, pode ignorar este email com segurança.
+          </p>
+        </div>
+        <div style="background-color: #f9fafb; padding: 20px 30px; text-align: center;">
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Competitive Watcher. Todos os direitos reservados.</p>
+        </div>
       </div>
-      <p>If you didn't request this, you can safely ignore this email.</p>
-      <p>Link expires in 15 minutes.</p>
     </div>
   `;
-  const text = `Reset your password: ${resetLink}`;
+  const text = `Recupere a sua palavra-passe aqui: ${resetLink}. O link expira em 15 minutos.`;
   return { html, text };
 }
 
 export function generateWelcomeEmail(name: string) {
   const html = `
-    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2>Welcome to Competitor Watcher!</h2>
-      <p>Hello ${name || "there"},</p>
-      <p>Thank you for signing up for Competitor Watcher. We're excited to help you track your competitors and grow your business.</p>
-      <p>Get started by adding your first business to your dashboard.</p>
-      <div style="margin: 20px 0;">
-        <a href="https://competitorwatcher.pt/dashboard" style="background-color: #7c3aed; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Go to Dashboard</a>
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f9fafb; padding: 40px 20px;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+        <div style="background-color: #7c3aed; padding: 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">Competitive Watcher</h1>
+        </div>
+        <div style="padding: 40px 30px;">
+          <h2 style="color: #111827; margin-top: 0; font-size: 20px;">Bem-vindo ao Competitive Watcher! 🎉</h2>
+          <p style="color: #4b5563; line-height: 1.6;">Olá ${name || "lá"},</p>
+          <p style="color: #4b5563; line-height: 1.6;">Obrigado por se registar no Competitive Watcher. Estamos entusiasmados por o ajudar a acompanhar os seus concorrentes e a fazer crescer o seu negócio.</p>
+          <p style="color: #4b5563; line-height: 1.6;">Comece por adicionar o seu primeiro negócio ao painel de controlo.</p>
+          <div style="margin: 35px 0; text-align: center;">
+            <a href="https://competitivewatcher.pt/dashboard" style="background-color: #7c3aed; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">Ir para o Painel</a>
+          </div>
+        </div>
+        <div style="background-color: #f9fafb; padding: 20px 30px; text-align: center;">
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Competitive Watcher. Todos os direitos reservados.</p>
+        </div>
       </div>
     </div>
   `;
-  const text = `Welcome to Competitor Watcher, ${name || "there"}! We're excited to have you.`;
+  const text = `Bem-vindo ao Competitive Watcher, ${name || "lá"}! Estamos entusiasmados por tê-lo connosco.`;
   return { html, text };
 }
 
@@ -129,7 +150,7 @@ export async function sendEmail({ to, subject, html, text }: { to: string; subje
   const host = process.env.EMAIL_HOST || process.env.SMTP_HOST;
   const user = process.env.EMAIL_USER || process.env.SMTP_USER;
   const pass = process.env.EMAIL_PASS || process.env.SMTP_PASS;
-  const from = process.env.EMAIL_FROM || process.env.SMTP_FROM || (user ? `Radar <${user}>` : '"Competitor Watcher" <noreply@competitorwatcher.pt>');
+  const from = process.env.EMAIL_FROM || process.env.SMTP_FROM || (user ? `Competitive Watcher <${user}>` : '"Competitive Watcher" <noreply@competitivewatcher.pt>');
 
   if (service || host) {
     log(`Attempting to send email via ${service ? `service: ${service}` : `host: ${host}`} to ${to}...`, "email");
