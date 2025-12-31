@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "wouter";
+import { Link, useRoute } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,8 +13,8 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 
 export default function ResetPasswordPage() {
     const { t } = useTranslation();
-    const [, params] = useLocation() as any;
-    const token = params?.split('/')[2];
+    const [, routeParams] = useRoute("/reset-password/:token");
+    const token = routeParams?.token;
 
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");

@@ -12,10 +12,10 @@ vi.mock('react-i18next', () => ({
 }));
 
 vi.mock('wouter', async () => {
-    const actual = await vi.importActual('wouter');
+    const actual = await vi.importActual('wouter' as any);
     return {
         ...actual,
-        useLocation: vi.fn().mockReturnValue(['/reset-password/valid-token', { split: () => ['', 'reset-password', 'valid-token'] }]),
+        useRoute: vi.fn().mockReturnValue([true, { token: 'valid-token' }]),
         Link: ({ children, href }: any) => <a href={href}>{children}</a>
     };
 });
