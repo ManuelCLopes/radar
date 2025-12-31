@@ -61,9 +61,9 @@ export class NodemailerEmailService implements EmailService {
   async sendWeeklyReport(user: User, report: Report): Promise<boolean> {
     try {
       await this.transporter.sendMail({
-        from: process.env.SMTP_FROM || '"Competitor Watcher" <noreply@competitorwatcher.pt>',
+        from: process.env.EMAIL_FROM || process.env.SMTP_FROM || '"Competitive Watcher" <noreply@competitivewatcher.pt>',
         to: user.email,
-        subject: `Your Weekly Competitor Watcher Report: ${report.businessName}`,
+        subject: `Relatório Semanal - Competitive Watcher: ${report.businessName}`,
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
             <h2>Weekly Competitor Analysis</h2>
@@ -71,7 +71,7 @@ export class NodemailerEmailService implements EmailService {
             <p>Here is your weekly competitor analysis report for <strong>${report.businessName}</strong>.</p>
             <p>We've analyzed the latest reviews and trends in your area.</p>
             <div style="margin: 20px 0;">
-              <a href="https://competitorwatcher.pt/dashboard" style="background-color: #7c3aed; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">View Full Report</a>
+              <a href="https://competitivewatcher.pt/dashboard" style="background-color: #0a58ca; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Ver Relatório Completo</a>
             </div>
             <p style="color: #666; font-size: 12px;">Generated at ${new Date(report.generatedAt).toLocaleString()}</p>
           </div>
@@ -94,7 +94,7 @@ export function generatePasswordResetEmail(resetLink: string, email: string) {
   const html = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f9fafb; padding: 40px 20px;">
       <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-        <div style="background-color: #7c3aed; padding: 30px; text-align: center;">
+        <div style="background-color: #0a58ca; padding: 30px; text-align: center;">
           <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">Competitive Watcher</h1>
         </div>
         <div style="padding: 40px 30px;">
@@ -103,7 +103,7 @@ export function generatePasswordResetEmail(resetLink: string, email: string) {
           <p style="color: #4b5563; line-height: 1.6;">Recebemos um pedido para repor a palavra-passe da sua conta <strong>${email}</strong> no Competitive Watcher.</p>
           <p style="color: #4b5563; line-height: 1.6;">Clique no botão abaixo para escolher uma nova palavra-passe:</p>
           <div style="margin: 35px 0; text-align: center;">
-            <a href="${resetLink}" style="background-color: #7c3aed; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">Repor Palavra-passe</a>
+            <a href="${resetLink}" style="background-color: #0a58ca; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">Repor Palavra-passe</a>
           </div>
           <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-top: 30px; border-top: 1px solid #f3f4f6; pt-20px;">
             Este link irá expirar em 15 minutos. Se não solicitou esta alteração, pode ignorar este email com segurança.
@@ -123,7 +123,7 @@ export function generateWelcomeEmail(name: string) {
   const html = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f9fafb; padding: 40px 20px;">
       <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-        <div style="background-color: #7c3aed; padding: 30px; text-align: center;">
+        <div style="background-color: #0a58ca; padding: 30px; text-align: center;">
           <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">Competitive Watcher</h1>
         </div>
         <div style="padding: 40px 30px;">
@@ -132,7 +132,7 @@ export function generateWelcomeEmail(name: string) {
           <p style="color: #4b5563; line-height: 1.6;">Obrigado por se registar no Competitive Watcher. Estamos entusiasmados por o ajudar a acompanhar os seus concorrentes e a fazer crescer o seu negócio.</p>
           <p style="color: #4b5563; line-height: 1.6;">Comece por adicionar o seu primeiro negócio ao painel de controlo.</p>
           <div style="margin: 35px 0; text-align: center;">
-            <a href="https://competitivewatcher.pt/dashboard" style="background-color: #7c3aed; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">Ir para o Painel</a>
+            <a href="https://competitivewatcher.pt/dashboard" style="background-color: #0a58ca; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">Ir para o Painel</a>
           </div>
         </div>
         <div style="background-color: #f9fafb; padding: 20px 30px; text-align: center;">
