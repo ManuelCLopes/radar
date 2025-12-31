@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/hooks/useAuth';
 import { Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,10 +19,24 @@ const languages = [
 
 export function LanguageSelector() {
   const { i18n, t } = useTranslation();
+  const { user } = useAuth();
   const currentLang = languages.find((l) => i18n.language?.startsWith(l.code)) || languages[0];
 
-  const handleLanguageChange = (langCode: string) => {
+  const handleLanguageChange = async (langCode: string) => {
     i18n.changeLanguage(langCode);
+
+    // Persist to backend if user is logged in
+    if (user) {
+      try {
+        await fetch('/api/user/language', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ language: langCode }),
+        });
+      } catch (error) {
+        console.error('Failed to sync language with backend:', error);
+      }
+    }
   };
 
   return (

@@ -13,6 +13,16 @@ vi.mock('wouter', () => ({
     useLocation: () => ['/settings', vi.fn()],
 }));
 
+// Mock LanguageSelector
+vi.mock("@/components/LanguageSelector", () => ({
+    LanguageSelector: () => <div data-testid="language-selector" />,
+}));
+
+// Mock ThemeToggle
+vi.mock("@/components/ThemeToggle", () => ({
+    ThemeToggle: () => <div data-testid="theme-toggle" />,
+}));
+
 // Mock useUser hook
 vi.mock('@/hooks/use-user', () => ({
     useUser: () => ({

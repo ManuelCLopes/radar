@@ -169,7 +169,7 @@ export async function setupAuth(app: Express) {
     // Local registration
     app.post("/api/register", async (req, res) => {
         try {
-            const { password, firstName, lastName, plan } = req.body;
+            const { password, firstName, lastName, plan, language } = req.body;
             const email = req.body.email?.toLowerCase();
 
             if (!email || !password) {
@@ -192,17 +192,28 @@ export async function setupAuth(app: Express) {
                 provider: "local",
                 firstName: firstName || null,
                 lastName: lastName || null,
-                plan: plan || "essential",
+                plan: plan || "free",
+                language: language || "pt",
             });
 
             // Send welcome email (async, don't block registration)
             (async () => {
                 try {
                     const { sendEmail, generateWelcomeEmail } = await import("./email");
-                    const { html, text } = generateWelcomeEmail(firstName || email);
+                    const userLang = user.language || "pt";
+                    const { html, text } = generateWelcomeEmail(firstName || email, userLang);
+
+                    const subjects: Record<string, string> = {
+                        pt: "Bem-vindo ao Competitive Watcher! 🎉",
+                        en: "Welcome to Competitive Watcher! 🎉",
+                        es: "¡Bienvenido a Competitive Watcher! 🎉",
+                        fr: "Bienvenue sur Competitive Watcher ! 🎉",
+                        de: "Willkommen bei Competitive Watcher! 🎉"
+                    };
+
                     await sendEmail({
                         to: email,
-                        subject: "Bem-vindo ao Competitor Watcher! 🎉",
+                        subject: subjects[userLang] || subjects.en,
                         html,
                         text,
                     });

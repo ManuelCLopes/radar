@@ -98,6 +98,7 @@ describe("RegisterPage", () => {
                 firstName: "Test",
                 lastName: "User",
                 plan: "free", // All users are free now!
+                language: "en",
             });
         });
     });

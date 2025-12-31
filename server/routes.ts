@@ -4,6 +4,9 @@ import { storage } from "./storage";
 import { runReportForBusiness } from "./reports";
 import { startScheduler, getSchedulerStatus, runScheduledReports } from "./scheduler";
 import { searchPlacesByAddress, hasGoogleApiKey } from "./googlePlaces";
+import { eq, desc } from "drizzle-orm";
+import { businesses, reports, users, searches, passwordResetTokens } from "@shared/schema";
+import { db } from "./db";
 import { type InsertBusiness, insertBusinessSchema, type User as AppUser } from "@shared/schema";
 
 
@@ -307,7 +310,8 @@ export async function registerRoutes(
   app.post("/api/run-report/:id", isAuthenticated, async (req, res) => {
     try {
       const businessId = req.params.id;
-      const language = req.body?.language || "en";
+      const { email, language } = req.body;
+      const reportLanguage = language || "en";
 
       const business = await storage.getBusiness(businessId);
       if (!business) {
@@ -396,9 +400,10 @@ export async function registerRoutes(
   // Password reset routes
   app.post("/api/auth/forgot-password", async (req, res) => {
     try {
-      const email = req.body.email?.toLowerCase();
+      const { email, language } = req.body;
+      const normalizedEmail = email?.toLowerCase();
 
-      if (!email) {
+      if (!normalizedEmail) {
         return res.status(400).json({ error: "Email is required" });
       }
 
@@ -418,6 +423,8 @@ export async function registerRoutes(
 
       log(`Password Reset: User ${user.id} found. Attempting email...`, "auth");
 
+      const userLang = language || user.language || "pt";
+
       // Generate secure token
       const token = crypto.randomBytes(32).toString("hex");
       const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
@@ -433,10 +440,19 @@ export async function registerRoutes(
       const resetLink = `${req.protocol}://${req.get("host")}/reset-password/${token}`;
 
       // Send email
-      const { html, text } = generatePasswordResetEmail(resetLink, email);
+      const { html, text } = generatePasswordResetEmail(resetLink, email, userLang);
+
+      const subjects: Record<string, string> = {
+        pt: "Recuperação de Password - Competitive Watcher",
+        en: "Password Recovery - Competitive Watcher",
+        es: "Recuperación de contraseña - Competitive Watcher",
+        fr: "Récupération de mot de passe - Competitive Watcher",
+        de: "Passwort-Wiederherstellung - Competitive Watcher"
+      };
+
       await sendEmail({
         to: email,
-        subject: "Recuperação de Password - Competitive Watcher",
+        subject: subjects[userLang] || subjects.en,
         html,
         text,
       });
@@ -663,6 +679,26 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Analysis error details:", error);
       res.status(500).json({ error: "Failed to run analysis" });
+    }
+  });
+
+  // Update user language preference
+  app.post("/api/user/language", isAuthenticated, async (req, res) => {
+    try {
+      const { language } = req.body;
+      if (!language) {
+        return res.status(400).json({ error: "Language is required" });
+      }
+
+      await db!
+        .update(users)
+        .set({ language, updatedAt: new Date() })
+        .where(eq(users.id, (req.user as any).id));
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Failed to update language:", error);
+      res.status(500).json({ error: "Failed to update language" });
     }
   });
 

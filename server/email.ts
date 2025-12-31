@@ -60,20 +60,72 @@ export class NodemailerEmailService implements EmailService {
 
   async sendWeeklyReport(user: User, report: Report): Promise<boolean> {
     try {
+      const lang = user.language || "pt";
+      const translations: Record<string, any> = {
+        pt: {
+          subject: `Relatório Semanal - Competitive Watcher: ${report.businessName}`,
+          title: "Análise Semanal de Concorrência",
+          message: `Aqui está o seu relatório semanal de análise de concorrência para <strong>${report.businessName}</strong>.`,
+          detail: "Analisámos as críticas e tendências mais recentes na sua área.",
+          button: "Ver Relatório Completo",
+          footer: `Gerado em ${new Date(report.generatedAt).toLocaleString('pt-PT')}`
+        },
+        en: {
+          subject: `Weekly Report - Competitive Watcher: ${report.businessName}`,
+          title: "Weekly Competitor Analysis",
+          message: `Here is your weekly competitor analysis report for <strong>${report.businessName}</strong>.`,
+          detail: "We've analyzed the latest reviews and trends in your area.",
+          button: "View Full Report",
+          footer: `Generated at ${new Date(report.generatedAt).toLocaleString('en-US')}`
+        },
+        es: {
+          subject: `Informe Semanal - Competitive Watcher: ${report.businessName}`,
+          title: "Análisis Semanal de Competencia",
+          message: `Aquí está su informe semanal de análisis de competencia para <strong>${report.businessName}</strong>.`,
+          detail: "Hemos analizado las críticas y tendencias más recientes en su área.",
+          button: "Ver Informe Completo",
+          footer: `Generado el ${new Date(report.generatedAt).toLocaleString('es-ES')}`
+        },
+        fr: {
+          subject: `Rapport Hebdomadaire - Competitive Watcher : ${report.businessName}`,
+          title: "Analyse Hebdomadaire de la Concurrence",
+          message: `Voici votre rapport hebdomadaire d'analyse de la concurrence pour <strong>${report.businessName}</strong>.`,
+          detail: "Nous avons analysé les derniers avis et tendances dans votre région.",
+          button: "Voir le Rapport Complet",
+          footer: `Généré le ${new Date(report.generatedAt).toLocaleString('fr-FR')}`
+        },
+        de: {
+          subject: `Wöchentlicher Bericht - Competitive Watcher: ${report.businessName}`,
+          title: "Wöchentliche Wettbewerbsanalyse",
+          message: `Hier ist Ihr wöchentlicher Wettbewerbsanalysebericht für <strong>${report.businessName}</strong>.`,
+          detail: "Wir haben die neuesten Bewertungen und Trends in Ihrer Region analysiert.",
+          button: "Vollständigen Bericht anzeigen",
+          footer: `Generiert am ${new Date(report.generatedAt).toLocaleString('de-DE')}`
+        }
+      };
+
+      const t = translations[lang] || translations.en;
+
       await this.transporter.sendMail({
         from: process.env.EMAIL_FROM || process.env.SMTP_FROM || '"Competitive Watcher" <noreply@competitivewatcher.pt>',
         to: user.email,
-        subject: `Relatório Semanal - Competitive Watcher: ${report.businessName}`,
+        subject: t.subject,
         html: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2>Weekly Competitor Analysis</h2>
-            <p>Hello ${user.firstName || "there"},</p>
-            <p>Here is your weekly competitor analysis report for <strong>${report.businessName}</strong>.</p>
-            <p>We've analyzed the latest reviews and trends in your area.</p>
-            <div style="margin: 20px 0;">
-              <a href="https://competitivewatcher.pt/dashboard" style="background-color: #0a58ca; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Ver Relatório Completo</a>
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+            <div style="background-color: #0a58ca; padding: 30px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">Competitive Watcher</h1>
             </div>
-            <p style="color: #666; font-size: 12px;">Generated at ${new Date(report.generatedAt).toLocaleString()}</p>
+            <div style="padding: 40px 30px;">
+              <h2 style="color: #111827; margin-top: 0; font-size: 20px;">${t.title}</h2>
+              <p style="color: #4b5563; line-height: 1.6;">${t.message}</p>
+              <p style="color: #4b5563; line-height: 1.6;">${t.detail}</p>
+              <div style="margin: 35px 0; text-align: center;">
+                <a href="https://competitivewatcher.pt/dashboard" style="background-color: #0a58ca; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">${t.button}</a>
+              </div>
+              <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-top: 30px; border-top: 1px solid #f3f4f6; padding-top: 20px;">
+                ${t.footer}
+              </p>
+            </div>
           </div>
         `,
       });
@@ -90,7 +142,62 @@ export const emailService = (process.env.EMAIL_SERVICE || process.env.EMAIL_HOST
   ? new NodemailerEmailService()
   : new ConsoleEmailService();
 
-export function generatePasswordResetEmail(resetLink: string, email: string) {
+export function generatePasswordResetEmail(resetLink: string, email: string, lang: string = "pt") {
+  const translations: Record<string, any> = {
+    pt: {
+      title: "Recuperar Palavra-passe",
+      greeting: "Olá,",
+      message: `Recebemos um pedido para repor a palavra-passe da sua conta <strong>${email}</strong> no Competitive Watcher.`,
+      instruction: "Clique no botão abaixo para escolher uma nova palavra-passe:",
+      button: "Repor Palavra-passe",
+      disclaimer: "Este link irá expirar em 15 minutos. Se não solicitou esta alteração, pode ignorar este email com segurança.",
+      footer: "Todos os direitos reservados.",
+      text: `Olá, recupere a sua palavra-passe aqui: ${resetLink}. O link expira em 15 minutos.`
+    },
+    en: {
+      title: "Reset Your Password",
+      greeting: "Hello,",
+      message: `We received a request to reset the password for your Competitive Watcher account associated with <strong>${email}</strong>.`,
+      instruction: "Click the button below to choose a new password:",
+      button: "Reset Password",
+      disclaimer: "This link will expire in 15 minutes. If you didn't request this change, you can safely ignore this email.",
+      footer: "All rights reserved.",
+      text: `Hello, reset your password here: ${resetLink}. Link expires in 15 minutes.`
+    },
+    es: {
+      title: "Restablecer contraseña",
+      greeting: "Hola,",
+      message: `Hemos recibido uma solicitud para restablecer la contraseña de su cuenta de Competitive Watcher asociada con <strong>${email}</strong>.`,
+      instruction: "Haga clic en el botón de abajo para elegir una nueva contraseña:",
+      button: "Restablecer contraseña",
+      disclaimer: "Este enlace caducará en 15 minutos. Si no solicitó este cambio, pode ignorar este correo electrónico de forma segura.",
+      footer: "Todos los derechos reservados.",
+      text: `Hola, restablezca su contraseña aquí: ${resetLink}. El enlace caduca en 15 minutos.`
+    },
+    fr: {
+      title: "Réinitialiser votre mot de passe",
+      greeting: "Bonjour,",
+      message: `Nous avons reçu une demande de réinitialisation du mot de passe de votre compte Competitive Watcher associé à <strong>${email}</strong>.`,
+      instruction: "Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe :",
+      button: "Réinitialiser le mot de passe",
+      disclaimer: "Ce lien expirera dans 15 minutes. Si vous n'avez pas demandé ce changement, vous pouvez ignorer cet e-mail en toute sécurité.",
+      footer: "Tous droits réservés.",
+      text: `Bonjour, réinitialisez votre mot de passe ici : ${resetLink}. Le lien expire en 15 minutes.`
+    },
+    de: {
+      title: "Passwort zurücksetzen",
+      greeting: "Hallo,",
+      message: `Wir haben eine Anfrage zum Zurücksetzen des Passworts für Ihr Competitive Watcher-Konto erhalten, das mit <strong>${email}</strong> verknüpft ist.`,
+      instruction: "Klicken Sie auf die Schaltfläche unten, um ein neues Passwort zu wählen:",
+      button: "Passwort zurücksetzen",
+      disclaimer: "Dieser Link läuft in 15 Minuten ab. Wenn Sie diese Änderung nicht angefordert haben, können Sie diese E-Mail sicher ignorieren.",
+      footer: "Alle Rechte vorbehalten.",
+      text: `Hallo, setzen Sie Ihr Passwort hier zurück: ${resetLink}. Der Link läuft in 15 Minuten ab.`
+    }
+  };
+
+  const t = translations[lang] || translations.en;
+
   const html = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f9fafb; padding: 40px 20px;">
       <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
@@ -98,28 +205,77 @@ export function generatePasswordResetEmail(resetLink: string, email: string) {
           <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">Competitive Watcher</h1>
         </div>
         <div style="padding: 40px 30px;">
-          <h2 style="color: #111827; margin-top: 0; font-size: 20px;">Recuperar Palavra-passe</h2>
-          <p style="color: #4b5563; line-height: 1.6;">Olá,</p>
-          <p style="color: #4b5563; line-height: 1.6;">Recebemos um pedido para repor a palavra-passe da sua conta <strong>${email}</strong> no Competitive Watcher.</p>
-          <p style="color: #4b5563; line-height: 1.6;">Clique no botão abaixo para escolher uma nova palavra-passe:</p>
+          <h2 style="color: #111827; margin-top: 0; font-size: 20px;">${t.title}</h2>
+          <p style="color: #4b5563; line-height: 1.6;">${t.greeting}</p>
+          <p style="color: #4b5563; line-height: 1.6;">${t.message}</p>
+          <p style="color: #4b5563; line-height: 1.6;">${t.instruction}</p>
           <div style="margin: 35px 0; text-align: center;">
-            <a href="${resetLink}" style="background-color: #0a58ca; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">Repor Palavra-passe</a>
+            <a href="${resetLink}" style="background-color: #0a58ca; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">${t.button}</a>
           </div>
-          <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-top: 30px; border-top: 1px solid #f3f4f6; pt-20px;">
-            Este link irá expirar em 15 minutos. Se não solicitou esta alteração, pode ignorar este email com segurança.
+          <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-top: 30px; border-top: 1px solid #f3f4f6; padding-top: 20px;">
+            ${t.disclaimer}
           </p>
         </div>
         <div style="background-color: #f9fafb; padding: 20px 30px; text-align: center;">
-          <p style="color: #9ca3af; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Competitive Watcher. Todos os direitos reservados.</p>
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Competitive Watcher. ${t.footer}</p>
         </div>
       </div>
     </div>
   `;
-  const text = `Recupere a sua palavra-passe aqui: ${resetLink}. O link expira em 15 minutos.`;
-  return { html, text };
+  return { html, text: t.text };
 }
 
-export function generateWelcomeEmail(name: string) {
+export function generateWelcomeEmail(name: string, lang: string = "pt") {
+  const translations: Record<string, any> = {
+    pt: {
+      title: "Bem-vindo ao Competitive Watcher! 🎉",
+      greeting: name ? `Olá ${name},` : "Olá,",
+      message: "Obrigado por se registar no Competitive Watcher. Estamos entusiasmados por o ajudar a acompanhar os seus concorrentes e a fazer crescer o seu negócio.",
+      action: "Comece por adicionar o seu primeiro negócio ao painel de controlo.",
+      button: "Ir para o Painel",
+      footer: "Todos os direitos reservados.",
+      text: `Bem-vindo ao Competitive Watcher, ${name || "lá"}! Estamos entusiasmados por tê-lo connosco.`
+    },
+    en: {
+      title: "Welcome to Competitive Watcher! 🎉",
+      greeting: name ? `Hello ${name},` : "Hello,",
+      message: "Thank you for signing up for Competitive Watcher. We're excited to help you track your competitors and grow your business.",
+      action: "Get started by adding your first business to your dashboard.",
+      button: "Go to Dashboard",
+      footer: "All rights reserved.",
+      text: `Welcome to Competitive Watcher, ${name || "there"}! We're excited to have you with us.`
+    },
+    es: {
+      title: "¡Bienvenido a Competitive Watcher! 🎉",
+      greeting: name ? `Hola ${name},` : "Hola,",
+      message: "Gracias por registrarte en Competitive Watcher. Estamos emocionados de ayudarte a rastrear a tus competidores y hacer crecer tu negocio.",
+      action: "Comience agregando su primer negocio a su panel de control.",
+      button: "Ir al Panel",
+      footer: "Todos los derechos reservados.",
+      text: `¡Bienvenido a Competitive Watcher! Estamos emocionados de tenerte con nosotros.`
+    },
+    fr: {
+      title: "Bienvenue sur Competitive Watcher ! 🎉",
+      greeting: name ? `Bonjour ${name},` : "Bonjour,",
+      message: "Merci de vous être inscrit sur Competitive Watcher. Nous sommes ravis de vous aider à suivre vos concurrents et à développer votre entreprise.",
+      action: "Commencez par ajouter votre première entreprise à votre tableau de bord.",
+      button: "Accéder au tableau de bord",
+      footer: "Tous droits réservés.",
+      text: `Bienvenue sur Competitive Watcher ! Nous sommes ravis de vous avoir parmi nous.`
+    },
+    de: {
+      title: "Willkommen bei Competitive Watcher! 🎉",
+      greeting: name ? `Hallo ${name},` : "Hallo,",
+      message: "Vielen Dank für Ihre Anmeldung bei Competitive Watcher. Wir freuen uns, Ihnen dabei zu helfen, Ihre Wettbewerber zu verfolgen und Ihr Geschäft auszubauen.",
+      action: "Beginnen Sie, indem Sie Ihr erstes Unternehmen zu Ihrem Dashboard hinzufügen.",
+      button: "Zum Dashboard gehen",
+      footer: "Alle Rechte vorbehalten.",
+      text: `Willkommen bei Competitive Watcher, ${name || "dort"}! Wir freuen uns, Sie dabei zu haben.`
+    }
+  };
+
+  const t = translations[lang] || translations.en;
+
   const html = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f9fafb; padding: 40px 20px;">
       <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
@@ -127,22 +283,21 @@ export function generateWelcomeEmail(name: string) {
           <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">Competitive Watcher</h1>
         </div>
         <div style="padding: 40px 30px;">
-          <h2 style="color: #111827; margin-top: 0; font-size: 20px;">Bem-vindo ao Competitive Watcher! 🎉</h2>
-          <p style="color: #4b5563; line-height: 1.6;">Olá ${name || "lá"},</p>
-          <p style="color: #4b5563; line-height: 1.6;">Obrigado por se registar no Competitive Watcher. Estamos entusiasmados por o ajudar a acompanhar os seus concorrentes e a fazer crescer o seu negócio.</p>
-          <p style="color: #4b5563; line-height: 1.6;">Comece por adicionar o seu primeiro negócio ao painel de controlo.</p>
+          <h2 style="color: #111827; margin-top: 0; font-size: 20px;">${t.title}</h2>
+          <p style="color: #4b5563; line-height: 1.6;">${t.greeting},</p>
+          <p style="color: #4b5563; line-height: 1.6;">${t.message}</p>
+          <p style="color: #4b5563; line-height: 1.6;">${t.action}</p>
           <div style="margin: 35px 0; text-align: center;">
-            <a href="https://competitivewatcher.pt/dashboard" style="background-color: #0a58ca; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">Ir para o Painel</a>
+            <a href="https://competitivewatcher.pt/dashboard" style="background-color: #0a58ca; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">${t.button}</a>
           </div>
         </div>
         <div style="background-color: #f9fafb; padding: 20px 30px; text-align: center;">
-          <p style="color: #9ca3af; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Competitive Watcher. Todos os direitos reservados.</p>
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Competitive Watcher. ${t.footer}</p>
         </div>
       </div>
     </div>
   `;
-  const text = `Bem-vindo ao Competitive Watcher, ${name || "lá"}! Estamos entusiasmados por tê-lo connosco.`;
-  return { html, text };
+  return { html, text: t.text };
 }
 
 export async function sendEmail({ to, subject, html, text }: { to: string; subject: string; html: string; text: string }) {

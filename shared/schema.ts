@@ -168,6 +168,7 @@ export const users = pgTable("users", {
   lastName: text("last_name"),
   profileImageUrl: text("profile_image_url"),
   plan: text("plan").notNull().default("free"), // All users are free now - donations only!
+  language: text("language").notNull().default("pt"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

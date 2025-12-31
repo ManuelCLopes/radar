@@ -23,6 +23,14 @@ vi.mock('@/lib/queryClient', () => ({
     }
 }));
 
+// Mock ThemeToggle and LanguageSelector
+vi.mock("@/components/ThemeToggle", () => ({
+    ThemeToggle: () => <div data-testid="theme-toggle" />,
+}));
+vi.mock("@/components/LanguageSelector", () => ({
+    LanguageSelector: () => <div data-testid="language-selector" />,
+}));
+
 describe('ForgotPasswordPage', () => {
     beforeEach(() => {
         vi.clearAllMocks();
@@ -51,6 +59,10 @@ describe('ForgotPasswordPage', () => {
         fireEvent.click(submitButton);
 
         await waitFor(() => {
+            expect(queryClient.apiRequest).toHaveBeenCalledWith("POST", "/api/auth/forgot-password", {
+                email: "test@example.com",
+                language: "en"
+            });
             expect(screen.getByText(/auth.resetSuccess/i)).toBeInTheDocument();
         });
     });

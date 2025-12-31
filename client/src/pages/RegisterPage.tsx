@@ -14,7 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 
 export default function RegisterPage() {
     const [, setLocation] = useLocation();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -50,6 +50,7 @@ export default function RegisterPage() {
                 firstName: data.firstName,
                 lastName: data.lastName,
                 plan: "free", // Everyone is free!
+                language: i18n.language || "pt",
             });
 
             // Check for pending report from landing page

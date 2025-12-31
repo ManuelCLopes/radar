@@ -211,7 +211,8 @@ export class MemStorage implements IStorage {
       lastName: user.lastName || null,
       profileImageUrl: user.profileImageUrl || null,
       passwordHash: user.passwordHash || null,
-      plan: user.plan || "essential",
+      plan: user.plan || "free",
+      language: user.language || "pt",
       provider: user.provider || "local"
     };
     this.users.set(id, newUser);

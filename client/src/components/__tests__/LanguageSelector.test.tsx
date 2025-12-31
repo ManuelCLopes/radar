@@ -17,6 +17,14 @@ vi.mock("react-i18next", () => ({
     }),
 }));
 
+// Mock useAuth
+vi.mock("@/hooks/useAuth", () => ({
+    useAuth: () => ({
+        user: null,
+        isLoading: false,
+    }),
+}));
+
 describe("LanguageSelector", () => {
     beforeEach(() => {
         vi.clearAllMocks();

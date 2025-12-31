@@ -12,7 +12,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 
 export default function ForgotPasswordPage() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [email, setEmail] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -24,7 +24,10 @@ export default function ForgotPasswordPage() {
         setIsLoading(true);
 
         try {
-            const response = await apiRequest("POST", "/api/auth/forgot-password", { email });
+            const response = await apiRequest("POST", "/api/auth/forgot-password", {
+                email,
+                language: i18n.language || "pt"
+            });
 
             if (!response.ok) {
                 const data = await response.json();

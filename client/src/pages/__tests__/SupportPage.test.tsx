@@ -19,6 +19,16 @@ vi.mock('wouter', () => ({
     ),
 }));
 
+// Mock LanguageSelector
+vi.mock("@/components/LanguageSelector", () => ({
+    LanguageSelector: () => <div data-testid="language-selector" />,
+}));
+
+// Mock ThemeToggle
+vi.mock("@/components/ThemeToggle", () => ({
+    ThemeToggle: () => <div data-testid="theme-toggle" />,
+}));
+
 describe('SupportPage', () => {
     const renderSupportPage = () => {
         return render(

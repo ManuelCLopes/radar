@@ -20,6 +20,16 @@ vi.mock('wouter', async () => {
     };
 });
 
+// Mock LanguageSelector
+vi.mock("@/components/LanguageSelector", () => ({
+    LanguageSelector: () => <div data-testid="language-selector" />,
+}));
+
+// Mock ThemeToggle
+vi.mock("@/components/ThemeToggle", () => ({
+    ThemeToggle: () => <div data-testid="theme-toggle" />,
+}));
+
 // Mock apiRequest
 vi.mock('@/lib/queryClient', () => ({
     apiRequest: vi.fn(),
