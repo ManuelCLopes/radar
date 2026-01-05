@@ -12,6 +12,7 @@ export default defineConfig({
         globals: true,
         setupFiles: "./client/src/test/setup.ts",
         include: ["**/*.{test,spec}.{ts,tsx}"],
+        exclude: ["node_modules/**", "dist/**", "e2e/**"],
         alias: {
             "@": path.resolve(__dirname, "client", "src"),
             "@shared": path.resolve(__dirname, "shared"),

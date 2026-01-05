@@ -4,6 +4,10 @@ import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 import { log } from "./log";
+import { initSentry } from "./sentry";
+
+initSentry();
+
 
 const app = express();
 const httpServer = createServer(app);

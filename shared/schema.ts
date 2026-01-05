@@ -204,3 +204,10 @@ export const searches = pgTable("searches", {
 export type InsertSearch = typeof searches.$inferInsert;
 export type Search = typeof searches.$inferSelect;
 
+export const rateLimits = pgTable("rate_limits", {
+  ip: varchar("ip").primaryKey(),
+  hits: integer("hits").notNull().default(0),
+  resetAt: timestamp("reset_at").notNull(),
+});
+
+

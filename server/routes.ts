@@ -5,7 +5,7 @@ import { runReportForBusiness } from "./reports";
 import { startScheduler, getSchedulerStatus, runScheduledReports } from "./scheduler";
 import { searchPlacesByAddress, hasGoogleApiKey } from "./googlePlaces";
 import { eq, desc } from "drizzle-orm";
-import { businesses, reports, users, searches, passwordResetTokens } from "@shared/schema";
+import { businesses, reports, users, searches, passwordResetTokens, rateLimits } from "@shared/schema";
 import { db } from "./db";
 import { type InsertBusiness, insertBusinessSchema, type User as AppUser } from "@shared/schema";
 
@@ -22,34 +22,53 @@ export async function registerRoutes(
   // Setup authentication (Google OAuth + Email/Password)
   await setupAuth(app);
 
-  // Quick Search endpoint (no authentication required, rate limited)
-  // Simple in-memory rate limiting (5 searches per IP per hour)
-  const searchCounts = new Map<string, { count: number; resetTime: number }>();
 
   app.post("/api/quick-search", async (req, res) => {
     try {
-      const clientIp = req.ip || req.socket.remoteAddress || 'unknown';
-      const now = Date.now();
+      const clientIp = typeof req.ip === 'string' ? req.ip : (req.socket.remoteAddress || 'unknown');
+      const now = new Date();
 
-      // Rate limiting check
-      const rateLimit = searchCounts.get(clientIp);
-      if (rateLimit) {
-        if (now < rateLimit.resetTime) {
-          if (rateLimit.count >= 5) {
-            return res.status(429).json({
-              error: "Rate limit exceeded",
-              message: "Too many searches. Create a free account for unlimited searches.",
-              resetTime: rateLimit.resetTime
-            });
-          }
-          rateLimit.count++;
-        } else {
-          // Reset after 1 hour
-          searchCounts.set(clientIp, { count: 1, resetTime: now + 60 * 60 * 1000 });
-        }
+      if (!db) {
+        // Fallback or skip rate limiting if DB is not connected (e.g. dev mode without DB)
+        // For now, we'll log warning and proceed without rate limiting to avoid blocking users
+        console.warn("Database connection missing - skipping rate limiting");
       } else {
-        searchCounts.set(clientIp, { count: 1, resetTime: now + 60 * 60 * 1000 });
+        // Database Rate Limiting
+        let rateLimit = await db.query.rateLimits.findFirst({
+          where: eq(rateLimits.ip, clientIp)
+        });
+
+        if (rateLimit) {
+          if (now > rateLimit.resetAt) {
+            // Reset window
+            await db.update(rateLimits)
+              .set({ hits: 1, resetAt: new Date(now.getTime() + 60 * 60 * 1000) })
+              .where(eq(rateLimits.ip, clientIp));
+          } else {
+            // Within window
+            if (rateLimit.hits >= 5) {
+              return res.status(429).json({
+                error: "Rate limit exceeded",
+                message: "Too many searches. Create a free account for unlimited searches.",
+                resetTime: rateLimit.resetAt.getTime()
+              });
+            }
+            await db.update(rateLimits)
+              .set({ hits: rateLimit.hits + 1 })
+              .where(eq(rateLimits.ip, clientIp));
+          }
+        } else {
+          // New record
+          await db.insert(rateLimits).values({
+            ip: clientIp,
+            hits: 1,
+            resetAt: new Date(now.getTime() + 60 * 60 * 1000)
+          });
+        }
       }
+
+
+
 
       const { address, type, radius, language = 'en' } = req.body;
 

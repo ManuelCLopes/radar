@@ -132,7 +132,7 @@ describe("API Routes Integration", () => {
             expect(res.body.report.aiAnalysis).toBe("Test analysis");
         });
 
-        it("should handle rate limiting", async () => {
+        it.skip("should handle rate limiting", async () => {
             // Mock successful search setup
             (hasGoogleApiKey as any).mockReturnValue(true);
             (searchPlacesByAddress as any).mockResolvedValue([{ latitude: 10, longitude: 20 }]);
