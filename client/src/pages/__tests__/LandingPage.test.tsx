@@ -3,6 +3,7 @@ import { vi, describe, it, expect, beforeEach } from "vitest";
 import LandingPage from "../LandingPage";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
+import { HelmetProvider } from "react-helmet-async";
 
 // Mock hooks
 vi.mock("@/hooks/useAuth");
@@ -50,8 +51,16 @@ describe("LandingPage", () => {
         global.fetch = vi.fn();
     });
 
+    const renderWithProviders = (component: React.ReactNode) => {
+        return render(
+            <HelmetProvider>
+                {component}
+            </HelmetProvider>
+        );
+    };
+
     it("renders correctly for guest users", () => {
-        render(<LandingPage />);
+        renderWithProviders(<LandingPage />);
         expect(screen.getByTestId("button-login")).toBeInTheDocument();
     });
 
@@ -60,7 +69,7 @@ describe("LandingPage", () => {
             isAuthenticated: true,
             isLoading: false,
         });
-        render(<LandingPage />);
+        renderWithProviders(<LandingPage />);
         expect(screen.queryByTestId("button-login")).not.toBeInTheDocument();
         expect(screen.getByTitle("Dashboard")).toBeInTheDocument();
     });
@@ -76,7 +85,7 @@ describe("LandingPage", () => {
             json: async () => ({ id: "123", businessName: "Test Business" }),
         });
 
-        render(<LandingPage />);
+        renderWithProviders(<LandingPage />);
 
         // Fill form
         const addressInput = screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa");
@@ -107,7 +116,7 @@ describe("LandingPage", () => {
             json: async () => ({ report: { id: "123", businessName: "Test Business" } }),
         });
 
-        render(<LandingPage />);
+        renderWithProviders(<LandingPage />);
 
         // Fill form
         const addressInput = screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa");

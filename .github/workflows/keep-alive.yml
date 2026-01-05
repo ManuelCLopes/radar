@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping Application
+        env:
+          URL: ${{ secrets.APP_URL || 'https://competitorwatcher.pt' }}
         run: |
-          echo "Pinging server to keep it alive..."
-          curl -I ${{ secrets.APP_URL }}
+          echo "Pinging $URL..."
+          curl -I $URL

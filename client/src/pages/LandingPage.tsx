@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { Button } from "@/components/ui/button";
+import { Helmet } from "react-helmet-async";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadiusSelector } from "@/components/RadiusSelector";
@@ -135,6 +136,42 @@ export default function LandingPage() {
 
   return (
     <div className="landing-page">
+      <Helmet>
+        <title>Competitive Watcher - Análise de Concorrência Local com IA</title>
+        <meta name="description" content="Analise a concorrência do seu negócio local com inteligência artificial. Descubra concorrentes, obtenha insights estratégicos e tome decisões baseadas em dados." />
+        <meta name="keywords" content="análise de concorrência, inteligência artificial, negócios locais, estratégia de mercado, competidores" />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://competitorwatcher.pt/" />
+        <meta property="og:title" content="Competitive Watcher - Análise de Concorrência Local" />
+        <meta property="og:description" content="Descubra e analise os seus concorrentes locais com o poder da IA." />
+        <meta property="og:image" content="https://competitorwatcher.pt/og-image.png" />
+
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://competitorwatcher.pt/" />
+        <meta property="twitter:title" content="Competitive Watcher - Análise de Concorrência Local" />
+        <meta property="twitter:description" content="Descubra e analise os seus concorrentes locais com o poder da IA." />
+        <meta property="twitter:image" content="https://competitorwatcher.pt/og-image.png" />
+
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "Competitive Watcher",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Web",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "EUR"
+            },
+            "description": "AI-powered local business competition analysis tool."
+          })}
+        </script>
+      </Helmet>
       {/* HEADER */}
       <header className={`landing-header ${isScrolled ? 'scrolled' : ''}`}>
         <div className="landing-container">

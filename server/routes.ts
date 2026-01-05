@@ -768,5 +768,43 @@ export async function registerRoutes(
     }
   });
 
+  // SEO Endpoints
+  app.get("/robots.txt", (req, res) => {
+    res.type("text/plain");
+    res.send(`User-agent: *
+Allow: /
+Allow: /auth
+Allow: /login
+Allow: /register
+Disallow: /dashboard
+Disallow: /api/
+
+Sitemap: https://competitorwatcher.pt/sitemap.xml
+`);
+  });
+
+  app.get("/sitemap.xml", (req, res) => {
+    res.type("application/xml");
+    res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://competitorwatcher.pt/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://competitorwatcher.pt/login</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://competitorwatcher.pt/register</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>
+`);
+  });
+
   return httpServer;
 }
