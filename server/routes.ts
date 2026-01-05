@@ -702,5 +702,30 @@ export async function registerRoutes(
     }
   });
 
+  // External Cron Trigger Endpoint
+  app.post("/api/cron/trigger-reports", async (req, res) => {
+    try {
+      const authHeader = req.headers["x-cron-secret"];
+      const cronSecret = process.env.CRON_SECRET;
+
+      if (!cronSecret || authHeader !== cronSecret) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      console.log("[Cron] Triggered report generation via API");
+
+      // Run in background but wait for result to return status
+      const results = await runScheduledReports();
+
+      res.json({
+        message: "Scheduled reports triggered successfully",
+        results
+      });
+    } catch (error) {
+      console.error("[Cron] Error triggering reports:", error);
+      res.status(500).json({ error: "Failed to trigger reports" });
+    }
+  });
+
   return httpServer;
 }
