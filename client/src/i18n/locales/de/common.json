@@ -113,8 +113,10 @@
       "title": "Wettbewerbsanalyse-Bericht",
       "export": "Exportieren",
       "downloadHtml": "HTML herunterladen",
-      "printPdf": "Als PDF speichern",
-      "emailReport": "Bericht per E-Mail senden"
+      "printPdf": "PDF drucken",
+      "emailReport": "Bericht senden",
+      "businessLabel": "Unternehmen:",
+      "dateLabel": "Datum:"
     },
     "stats": {
       "competitorsFound": "Gefundene Wettbewerber",
@@ -163,6 +165,10 @@
       "competitorsAnalyzed": "{{count}} Wettbewerber analysiert",
       "view": "Anzeigen",
       "download": "Herunterladen"
+    },
+    "email": {
+      "enterAddress": "Geben Sie unten die E-Mail-Adresse des Empfängers ein.",
+      "send": "E-Mail senden"
     }
   },
   "toast": {
@@ -190,13 +196,20 @@
       "title": "E-Mail-Programm geöffnet",
       "description": "Ihr Standard-E-Mail-Programm wurde mit der Berichtsübersicht geöffnet."
     },
+    "emailSent": {
+      "title": "E-Mail gesendet",
+      "description": "Der Bericht wurde erfolgreich gesendet."
+    },
     "error": {
       "title": "Fehler",
       "fetchBusinesses": "Unternehmen konnten nicht geladen werden",
       "registerBusiness": "Unternehmen konnte nicht registriert werden",
       "deleteBusiness": "Unternehmen konnte nicht gelöscht werden",
       "generateReport": "Bericht konnte nicht erstellt werden",
-      "fetchReports": "Berichte konnten nicht geladen werden"
+      "fetchReports": "Berichte konnten nicht geladen werden",
+      "login": "Anmeldung fehlgeschlagen",
+      "logout": "Abmeldung fehlgeschlagen",
+      "register": "Registrierung fehlgeschlagen"
     },
     "linkCopied": {
       "title": "Link kopiert!",
@@ -217,6 +230,7 @@
     "system": "System"
   },
   "common": {
+    "sending": "Senden...",
     "language": "de",
     "cancel": "Abbrechen",
     "refresh": "Aktualisieren",
@@ -262,6 +276,7 @@
   },
   "validation": {
     "required": "Dieses Feld ist erforderlich",
+    "emailRequired": "E-Mail ist erforderlich",
     "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
     "passwordMin": "Das Passwort muss mindestens {{min}} Zeichen lang sein",
     "passwordMismatch": "Passwörter stimmen nicht überein",

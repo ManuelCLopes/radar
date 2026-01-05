@@ -2,8 +2,10 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import type { User } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 export function useAuth() {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { data: user, isLoading } = useQuery<User>({
     queryKey: ["/api/auth/user"],
@@ -30,7 +32,7 @@ export function useAuth() {
     },
     onError: (error: Error) => {
       toast({
-        title: "Logout failed",
+        title: t("toast.error.logout"),
         description: error.message,
         variant: "destructive",
       });
@@ -47,7 +49,7 @@ export function useAuth() {
     },
     onError: (error: Error) => {
       toast({
-        title: "Login failed",
+        title: t("toast.error.login"),
         description: error.message,
         variant: "destructive",
       });
@@ -64,7 +66,7 @@ export function useAuth() {
     },
     onError: (error: Error) => {
       toast({
-        title: "Registration failed",
+        title: t("toast.error.register"),
         description: error.message,
         variant: "destructive",
       });

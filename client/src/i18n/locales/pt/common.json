@@ -114,8 +114,10 @@
       "title": "Relatório de Análise de Concorrência",
       "export": "Exportar",
       "downloadHtml": "Transferir HTML",
-      "printPdf": "Guardar como PDF",
-      "emailReport": "Enviar por Email"
+      "printPdf": "Imprimir PDF",
+      "emailReport": "Enviar Email",
+      "businessLabel": "Negócio:",
+      "dateLabel": "Data:"
     },
     "stats": {
       "competitorsFound": "Concorrentes Encontrados",
@@ -164,6 +166,10 @@
       "competitorsAnalyzed": "{{count}} concorrentes analisados",
       "view": "Ver",
       "download": "Transferir"
+    },
+    "email": {
+      "enterAddress": "Insira o endereço de email do destinatário abaixo.",
+      "send": "Enviar Email"
     }
   },
   "toast": {
@@ -191,13 +197,20 @@
       "title": "Cliente de email aberto",
       "description": "A sua aplicação de email foi aberta com o resumo do relatório."
     },
+    "emailSent": {
+      "title": "Email enviado",
+      "description": "O relatório foi enviado com sucesso."
+    },
     "error": {
       "title": "Erro",
       "fetchBusinesses": "Falha ao carregar negócios",
       "registerBusiness": "Falha ao registar negócio",
       "deleteBusiness": "Falha ao eliminar negócio",
-      "generateReport": "Falha ao gerar relatório",
-      "fetchReports": "Falha ao carregar relatórios"
+      "generateReport": "Falha ao gerar o relatório",
+      "fetchReports": "Falha ao carregar relatórios",
+      "login": "Falha ao iniciar sessão",
+      "logout": "Falha ao terminar sessão",
+      "register": "Falha ao registar"
     },
     "linkCopied": {
       "title": "Link copiado!",
@@ -218,6 +231,7 @@
     "system": "Sistema"
   },
   "common": {
+    "sending": "A enviar...",
     "language": "pt",
     "cancel": "Cancelar",
     "refresh": "Atualizar",
@@ -263,6 +277,7 @@
   },
   "validation": {
     "required": "Este campo é obrigatório",
+    "emailRequired": "O email é obrigatório",
     "emailInvalid": "Por favor, insira um endereço de email válido",
     "passwordMin": "A palavra-passe deve ter pelo menos {{min}} caracteres",
     "passwordMismatch": "As palavras-passe não coincidem",

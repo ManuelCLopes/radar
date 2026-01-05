@@ -17,13 +17,26 @@ vi.mock("../reports", () => ({
     runReportForBusiness: vi.fn(),
 }));
 
+vi.mock("../email", () => ({
+    emailService: {
+        sendAdHocReport: vi.fn(),
+    },
+    // We might need these if they are imported elsewhere or used
+    generateReportEmail: vi.fn(),
+    generatePasswordResetEmail: vi.fn(),
+    generateWelcomeEmail: vi.fn(),
+    sendEmail: vi.fn(),
+}));
+
 // Mock auth state
 const authMocks = vi.hoisted(() => ({
     user: null as any
 }));
 
 import { searchPlacesByAddress, hasGoogleApiKey } from "../googlePlaces";
+
 import { runReportForBusiness } from "../reports";
+import { emailService } from "../email";
 
 describe("API Routes Integration", () => {
     let app: express.Express;
@@ -363,5 +376,89 @@ describe("Routes Coverage (Edge Cases)", () => {
             expect(res.status).toBe(400);
             expect(res.body.error).toBe("Address not found");
         });
+    });
+});
+
+describe("Report Email Export", () => {
+    let app: express.Express;
+    let server: any;
+
+    beforeEach(async () => {
+        vi.restoreAllMocks();
+        app = express();
+        app.use(express.json());
+        // Mock isAuthenticated for all requests
+        app.use((req: any, res, next) => {
+            req.isAuthenticated = () => true;
+            // Default user
+            req.user = { id: "user-1" };
+            // Override if authMocks is set
+            if (authMocks.user) {
+                req.user = authMocks.user;
+            }
+            next();
+        });
+        server = createServer(app);
+        await registerRoutes(server, app);
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    it("should send email successfully", async () => {
+        // Mock report finding
+        vi.spyOn(storage, "getReport").mockResolvedValue({
+            id: "rep-1",
+            userId: "test-user-id",
+            businessName: "Test Bus"
+        } as any);
+
+        // Set authenticated user via authMocks which our middleware above uses
+        authMocks.user = { id: "test-user-id", email: "user@example.com" };
+
+        (emailService.sendAdHocReport as any).mockResolvedValue(true);
+
+        const res = await request(app)
+            .post("/api/reports/rep-1/email")
+            .send({
+                email: "test@example.com",
+                language: "en"
+            });
+
+        expect(res.status).toBe(200);
+        expect(res.body.message).toBe("Email sent successfully");
+        expect(emailService.sendAdHocReport).toHaveBeenCalledWith(
+            "test@example.com",
+            expect.objectContaining({ id: "rep-1" }),
+            "en"
+        );
+    });
+
+    it("should return 403 if user does not own report", async () => {
+        // Mock report belonging to someone else
+        vi.spyOn(storage, "getReport").mockResolvedValue({
+            id: "rep-2",
+            userId: "other-user-id",
+        } as any);
+
+        authMocks.user = { id: "test-user-id" };
+
+        const res = await request(app)
+            .post("/api/reports/rep-2/email")
+            .send({ email: "test@example.com" });
+
+        expect(res.status).toBe(403);
+        expect(res.body.error).toBe("Unauthorized access to this report");
+    });
+
+    it("should return 400 if email is missing", async () => {
+        authMocks.user = { id: "test-user-id" };
+        const res = await request(app)
+            .post("/api/reports/rep-1/email")
+            .send({ language: "en" });
+
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe("Email is required");
     });
 });

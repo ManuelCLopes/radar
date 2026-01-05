@@ -113,8 +113,10 @@
       "title": "Informe de Análisis de Competencia",
       "export": "Exportar",
       "downloadHtml": "Descargar HTML",
-      "printPdf": "Guardar como PDF",
-      "emailReport": "Enviar Informe por Email"
+      "printPdf": "Imprimir PDF",
+      "emailReport": "Enviar Informe",
+      "businessLabel": "Negocio:",
+      "dateLabel": "Fecha:"
     },
     "stats": {
       "competitorsFound": "Competidores Encontrados",
@@ -163,6 +165,10 @@
       "competitorsAnalyzed": "{{count}} competidores analizados",
       "view": "Ver",
       "download": "Descargar"
+    },
+    "email": {
+      "enterAddress": "Introduzca la dirección de correo electrónico del destinatario a continuación.",
+      "send": "Enviar Email"
     }
   },
   "toast": {
@@ -190,13 +196,20 @@
       "title": "Cliente de email abierto",
       "description": "Tu aplicación de email predeterminada se ha abierto con el resumen del informe."
     },
+    "emailSent": {
+      "title": "Correo electrónico enviado",
+      "description": "El informe se ha enviado correctamente."
+    },
     "error": {
       "title": "Error",
       "fetchBusinesses": "Error al cargar los negocios",
       "registerBusiness": "Error al registrar el negocio",
       "deleteBusiness": "Error al eliminar el negocio",
       "generateReport": "Error al generar el informe",
-      "fetchReports": "Error al cargar los informes"
+      "fetchReports": "Error al cargar los informes",
+      "login": "Error al iniciar sesión",
+      "logout": "Error al cerrar sesión",
+      "register": "Error al registrarse"
     },
     "linkCopied": {
       "title": "¡Enlace copiado!",
@@ -217,6 +230,7 @@
     "system": "Sistema"
   },
   "common": {
+    "sending": "Enviando...",
     "language": "es",
     "cancel": "Cancelar",
     "refresh": "Actualizar",
@@ -262,6 +276,7 @@
   },
   "validation": {
     "required": "Este campo es obligatorio",
+    "emailRequired": "El correo electrónico es obligatorio",
     "emailInvalid": "Por favor, introduce una dirección de correo electrónico válida",
     "passwordMin": "La contraseña debe tener al menos {{min}} caracteres",
     "passwordMismatch": "Las contraseñas no coinciden",

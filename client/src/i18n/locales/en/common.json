@@ -113,8 +113,10 @@
       "title": "Competitor Analysis Report",
       "export": "Export",
       "downloadHtml": "Download HTML",
-      "printPdf": "Save as PDF",
-      "emailReport": "Email Report"
+      "printPdf": "Print PDF",
+      "emailReport": "Email Report",
+      "businessLabel": "Business:",
+      "dateLabel": "Date:"
     },
     "stats": {
       "competitorsFound": "Competitors Found",
@@ -163,6 +165,10 @@
       "competitorsAnalyzed": "{{count}} competitors analyzed",
       "view": "View",
       "download": "Download"
+    },
+    "email": {
+      "enterAddress": "Enter the recipient's email address below.",
+      "send": "Send Email"
     }
   },
   "toast": {
@@ -190,13 +196,20 @@
       "title": "Email client opened",
       "description": "Your default email app has been opened with the report summary."
     },
+    "emailSent": {
+      "title": "Email sent",
+      "description": "The report has been sent successfully."
+    },
     "error": {
       "title": "Error",
       "fetchBusinesses": "Failed to load businesses",
       "registerBusiness": "Failed to register business",
       "deleteBusiness": "Failed to delete business",
       "generateReport": "Failed to generate report",
-      "fetchReports": "Failed to load reports"
+      "fetchReports": "Failed to load reports",
+      "login": "Login failed",
+      "logout": "Logout failed",
+      "register": "Registration failed"
     },
     "linkCopied": {
       "title": "Link copied!",
@@ -217,6 +230,7 @@
     "system": "System"
   },
   "common": {
+    "sending": "Sending...",
     "language": "en",
     "cancel": "Cancel",
     "refresh": "Refresh",
@@ -262,6 +276,7 @@
   },
   "validation": {
     "required": "This field is required",
+    "emailRequired": "Email is required",
     "emailInvalid": "Please enter a valid email address",
     "passwordMin": "Password must be at least {{min}} characters",
     "passwordMismatch": "Passwords do not match",

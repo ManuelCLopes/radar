@@ -326,6 +326,47 @@ export async function registerRoutes(
     }
   });
 
+  app.post("/api/reports/:id/email", isAuthenticated, async (req, res) => {
+    try {
+      const { email, language } = req.body;
+      const reportId = req.params.id;
+
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+
+      const report = await storage.getReport(reportId);
+      if (!report) {
+        return res.status(404).json({ error: "Report not found" });
+      }
+
+      // Verify ownership (or allow admin override if implemented later)
+      // Check if the report belongs to a user's business
+      // This is slightly complex as reports are linked to businesses OR just user created
+      // For now, if the user can see the report (which is handled by getReport usually needing auth, but getReport here is internal storage method)
+      // The storage.getReport doesn't check permissions, so we should check:
+      if (report.userId && report.userId !== (req.user as AppUser).id) {
+        return res.status(403).json({ error: "Unauthorized access to this report" });
+      }
+
+      const { emailService } = await import("./email");
+      // Use the provided language or user preference, normalized to 2 characters
+      const requestedLang = language || (req.user as AppUser).language || "en";
+      const normalizedLang = requestedLang.substring(0, 2).toLowerCase();
+
+      const success = await emailService.sendAdHocReport(email, report, normalizedLang);
+
+      if (success) {
+        res.json({ message: "Email sent successfully" });
+      } else {
+        res.status(500).json({ error: "Failed to send email" });
+      }
+    } catch (error) {
+      console.error("Error sending report email:", error);
+      res.status(500).json({ error: "Failed to send email" });
+    }
+  });
+
   app.get("/api/reports/business/:businessId", isAuthenticated, async (req, res) => {
     try {
       const reports = await storage.getReportsByBusinessId(req.params.businessId);

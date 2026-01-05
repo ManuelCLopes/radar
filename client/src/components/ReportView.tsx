@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { z } from "zod";
 import { useTranslation } from "react-i18next";
 import { Download, Building2, Star, MapPin, Brain, Users, FileText, Printer, Mail, DollarSign, TrendingUp, ShieldAlert, CheckCircle2, XCircle, AlertTriangle, ArrowUpRight, Megaphone, MessageSquare, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -12,7 +15,8 @@ import { AIAnalysisContent } from "@/components/AIAnalysisContent";
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { PDFReport } from "./PDFReport";
 import { CompetitorMap } from "./CompetitorMap";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import type { Report, Competitor, Business } from "@shared/schema";
 
 interface ReportViewProps {
@@ -22,6 +26,10 @@ interface ReportViewProps {
   onPrint?: () => void;
   isGuest?: boolean;
 }
+
+const emailSchema = z.string().email();
+
+// ... existing code ...
 
 function CompetitorCard({ competitor, index, t }: { competitor: Competitor; index: number; t: (key: string, options?: Record<string, unknown>) => string }) {
   return (
@@ -186,8 +194,35 @@ function MarketTrends({ trends }: { trends: string[] }) {
 }
 
 export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: ReportViewProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [emailTo, setEmailTo] = useState("");
+  const [emailError, setEmailError] = useState("");
+
+  const sendEmailMutation = useMutation({
+    mutationFn: async (email: string) => {
+      await apiRequest("POST", `/api/reports/${report?.id}/email`, {
+        email,
+        language: i18n.language
+      });
+    },
+    onSuccess: () => {
+      setEmailOpen(false);
+      setEmailTo("");
+      toast({
+        title: t("toast.emailSent.title"),
+        description: t("toast.emailSent.description"),
+      });
+    },
+    onError: () => {
+      toast({
+        title: t("toast.error.title"),
+        description: t("toast.error.sendEmail"),
+        variant: "destructive",
+      });
+    },
+  });
 
   const { data: business } = useQuery<Business>({
     queryKey: [`/api/businesses/${report?.businessId}`],
@@ -620,11 +655,11 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
             </style>
           </head>
           <body>
-            <div class="header">
+              <div class="header">
               <h1>${t("report.view.title")}</h1>
               <div class="meta">
-                <p><strong>Business:</strong> ${report.businessName}</p>
-                <p><strong>Date:</strong> ${new Date(report.generatedAt).toLocaleString()}</p>
+                <p><strong>${t("report.view.businessLabel")}</strong> ${report.businessName}</p>
+                <p><strong>${t("report.view.dateLabel")}</strong> ${new Date(report.generatedAt).toLocaleString()}</p>
               </div>
             </div>
             ${report.html}
@@ -670,30 +705,24 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
   };
 
   const handleEmail = () => {
-    const subject = encodeURIComponent(`${t("report.view.title")} - ${report.businessName}`);
+    setEmailOpen(true);
+  };
 
-    const plainTextAnalysis = convertHtmlToPlainText(report.aiAnalysis);
+  const submitEmail = () => {
+    if (!emailTo) {
+      setEmailError(t("validation.emailRequired"));
+      return;
+    }
 
-    const body = encodeURIComponent(`
-${t("report.view.title")} - ${report.businessName}
+    // Simple regex for email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailTo)) {
+      setEmailError(t("validation.emailInvalid"));
+      return;
+    }
 
-${t("report.stats.competitorsFound")}: ${report.competitors.length}
-${t("report.stats.avgRating")}: ${report.competitors.length > 0
-        ? (report.competitors.filter(c => c.rating).reduce((sum, c) => sum + (c.rating || 0), 0) / report.competitors.filter(c => c.rating).length).toFixed(1)
-        : 'N/A'}
-
-${t("report.sections.aiAnalysis")}:
-${plainTextAnalysis}
-
----
-Local Competitor Analyzer
-    `.trim());
-
-    window.open(`mailto:?subject=${subject}&body=${body}`, "_blank");
-    toast({
-      title: t("toast.emailClientOpened.title"),
-      description: t("toast.emailClientOpened.description"),
-    });
+    setEmailError("");
+    sendEmailMutation.mutate(emailTo);
   };
 
 
@@ -802,6 +831,42 @@ Local Competitor Analyzer
                 value={report.competitors.reduce((sum, c) => sum + (c.userRatingsTotal || 0), 0).toLocaleString()}
               />
             </div>
+
+            {/* Email Dialog */}
+            <Dialog open={emailOpen} onOpenChange={setEmailOpen}>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>{t("report.view.emailReport")}</DialogTitle>
+                  <DialogDescription>
+                    {t("report.email.enterAddress")}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">{t("auth.email")}</Label>
+                    <Input
+                      id="email"
+                      placeholder="name@example.com"
+                      value={emailTo}
+                      onChange={(e) => {
+                        setEmailTo(e.target.value);
+                        if (emailError) setEmailError("");
+                      }}
+                      className={emailError ? "border-red-500" : ""}
+                    />
+                    {emailError && <p className="text-sm text-red-500">{emailError}</p>}
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setEmailOpen(false)}>
+                    {t("common.cancel")}
+                  </Button>
+                  <Button onClick={submitEmail} disabled={sendEmailMutation.isPending}>
+                    {sendEmailMutation.isPending ? t("common.sending") : t("report.email.send")}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
             <section>
               <div className="flex items-center justify-between mb-6">
@@ -1025,7 +1090,7 @@ Local Competitor Analyzer
             </section>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </DialogContent >
+    </Dialog >
   );
 }

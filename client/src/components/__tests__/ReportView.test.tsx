@@ -27,6 +27,7 @@ vi.mock("@/components/ui/dialog", () => ({
     DialogHeader: ({ children }: any) => <div>{children}</div>,
     DialogTitle: ({ children }: any) => <div>{children}</div>,
     DialogDescription: ({ children }: any) => <div>{children}</div>,
+    DialogFooter: ({ children }: any) => <div>{children}</div>,
 }));
 
 vi.mock("@/components/ui/button", () => ({
@@ -190,21 +191,14 @@ describe("ReportView", () => {
         expect(screen.getByText("report.view.printPdf")).toBeInTheDocument();
     });
 
-    it("should handle email report", () => {
-        const windowOpenMock = vi.fn();
-        window.open = windowOpenMock;
-
+    it("should handle email report", async () => {
         renderWithClient(<ReportView report={mockReport} open={true} onOpenChange={vi.fn()} />);
 
         const emailBtn = screen.getByText("report.view.emailReport");
         fireEvent.click(emailBtn);
 
-        expect(windowOpenMock).toHaveBeenCalledWith(expect.stringContaining("mailto:"), "_blank");
-
-        // Verify body contains plain text converted from HTML
-        const openCall = windowOpenMock.mock.calls[0][0];
-        expect(openCall).toContain("Main%20analysis%20content%20here"); // Plain text
-        expect(openCall).not.toContain("%3Cp%3E"); // No <p> tags
+        expect(await screen.findByText("report.email.enterAddress")).toBeInTheDocument();
+        expect(await screen.findByText("report.email.send")).toBeInTheDocument();
     });
 
     it("should toggle review translation", () => {

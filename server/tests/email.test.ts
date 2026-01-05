@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { generateWelcomeEmail, generatePasswordResetEmail } from "../email";
+import { generateWelcomeEmail, generatePasswordResetEmail, generateReportEmail } from "../email";
 
 describe("Email Templates Localization", () => {
     const testEmail = "test@example.com";
@@ -91,5 +91,74 @@ describe("Email Templates Localization", () => {
             const { html } = generatePasswordResetEmail(testLink, testEmail, "it");
             expect(html).toContain("Reset Your Password");
         });
+    });
+});
+
+describe("generateReportEmail", () => {
+    const mockReport = {
+        id: "1",
+        businessName: "Test Business",
+        generatedAt: new Date(),
+        competitors: [{ name: "Comp 1", rating: 4.5 }],
+        aiAnalysis: "<h2>Analysis</h2><p>Good job.</p>",
+    } as any;
+
+    it("should generate Portuguese report email by default", () => {
+        const { html, subject } = generateReportEmail(mockReport, "pt");
+        expect(subject).toContain("Relatório de Análise: Test Business");
+        expect(html).toContain("O Seu Relatório de Análise");
+        expect(html).toContain("Test Business");
+        expect(html).toContain("Concorrentes Encontrados");
+    });
+
+    it("should generate English report email", () => {
+        const { html, subject } = generateReportEmail(mockReport, "en");
+        expect(subject).toContain("Analysis Report: Test Business");
+        expect(html).toContain("Your Analysis Report");
+        expect(html).toContain("Test Business");
+        expect(html).toContain("Competitors Found");
+        expect(html).toContain("Top Competitors");
+    });
+
+    it("should generate Spanish report email", () => {
+        const { html, subject } = generateReportEmail(mockReport, "es");
+        expect(subject).toContain("Test Business");
+        expect(html).toContain("Principales Competidores");
+    });
+
+    it("should generate French report email", () => {
+        const { html, subject } = generateReportEmail(mockReport, "fr");
+        expect(subject).toContain("Test Business");
+        expect(html).toContain("Principaux Concurrents");
+    });
+
+    it("should generate German report email", () => {
+        const { html, subject } = generateReportEmail(mockReport, "de");
+        expect(subject).toContain("Analysebericht: Test Business");
+        expect(html).toContain("Top Wettbewerber");
+    });
+
+    it("should normalize language code (e.g. pt-PT -> pt)", () => {
+        const { html, subject } = generateReportEmail(mockReport, "pt-PT");
+        expect(subject).toContain("Relatório de Análise: Test Business");
+        expect(html).toContain("O Seu Relatório de Análise");
+    });
+
+    it("should fallback to English for unknown language", () => {
+        const { html, subject } = generateReportEmail(mockReport, "it");
+        expect(subject).toContain("Analysis Report: Test Business");
+        expect(html).toContain("Your Analysis Report");
+    });
+
+    it("should include AI analysis content in the email", () => {
+        const { html } = generateReportEmail(mockReport, "en");
+        expect(html).toContain("Analysis</h2>");
+        expect(html).toContain("Good job.");
+    });
+
+    it("should include competitors table", () => {
+        const { html } = generateReportEmail(mockReport, "en");
+        expect(html).toContain("Comp 1");
+        expect(html).toContain("4.5");
     });
 });

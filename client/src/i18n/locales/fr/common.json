@@ -113,8 +113,10 @@
       "title": "Rapport d'analyse de la concurrence",
       "export": "Exporter",
       "downloadHtml": "Télécharger l'HTML",
-      "printPdf": "Enregistrer en PDF",
-      "emailReport": "Envoyer le rapport par e-mail"
+      "printPdf": "Imprimer PDF",
+      "emailReport": "Envoyer le Rapport",
+      "businessLabel": "Entreprise :",
+      "dateLabel": "Date :"
     },
     "stats": {
       "competitorsFound": "Concurrents trouvés",
@@ -163,6 +165,10 @@
       "competitorsAnalyzed": "{{count}} concurrents analysés",
       "view": "Consulter",
       "download": "Télécharger"
+    },
+    "email": {
+      "enterAddress": "Entrez l'adresse e-mail du destinataire ci-dessous.",
+      "send": "Envoyer l'e-mail"
     }
   },
   "toast": {
@@ -190,13 +196,20 @@
       "title": "Client de messagerie ouvert",
       "description": "Votre application de messagerie par défaut a été ouverte avec le résumé du rapport."
     },
+    "emailSent": {
+      "title": "E-mail envoyé",
+      "description": "Le rapport a été envoyé avec succès."
+    },
     "error": {
       "title": "Erreur",
       "fetchBusinesses": "Échec du chargement des entreprises",
       "registerBusiness": "Échec de l'enregistrement de l'entreprise",
       "deleteBusiness": "Échec de la suppression de l'entreprise",
       "generateReport": "Échec de la génération du rapport",
-      "fetchReports": "Échec du chargement des rapports"
+      "fetchReports": "Échec du chargement des rapports",
+      "login": "Échec de la connexion",
+      "logout": "Échec de la déconnexion",
+      "register": "Échec de l'inscription"
     },
     "linkCopied": {
       "title": "Lien copié !",
@@ -217,6 +230,7 @@
     "system": "Système"
   },
   "common": {
+    "sending": "Envoi en cours...",
     "language": "fr",
     "cancel": "Annuler",
     "refresh": "Actualiser",
@@ -262,6 +276,7 @@
   },
   "validation": {
     "required": "Ce champ est obligatoire",
+    "emailRequired": "L'e-mail est obligatoire",
     "emailInvalid": "Veuillez saisir une adresse e-mail valide",
     "passwordMin": "Le mot de passe doit comporter au moins {{min}} caractères",
     "passwordMismatch": "Les mots de passe ne correspondent pas",

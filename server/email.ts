@@ -4,6 +4,7 @@ import { log } from "./log";
 
 export interface EmailService {
   sendWeeklyReport(user: User, report: Report): Promise<boolean>;
+  sendAdHocReport(to: string, report: Report, lang: string): Promise<boolean>;
 }
 
 export class ConsoleEmailService implements EmailService {
@@ -26,6 +27,19 @@ View your full report here: https://competitorwatcher.pt/dashboard
 
 Best,
 The Competitor Watcher Team
+----------------------------------------------------------------
+`);
+    return true;
+  }
+
+  async sendAdHocReport(to: string, report: Report, lang: string): Promise<boolean> {
+    console.log(`
+\x1b[33m[EMAIL MOCK] ---------------------------------------------------\x1b[0m
+\x1b[33mIMPORTANT: Real email sending is NOT configured. \x1b[0m
+\x1b[33mTo: ${to}\x1b[0m
+\x1b[33mSubject: Ad-hoc Report: ${report.businessName}\x1b[0m
+----------------------------------------------------------------
+(Rich HTML Report Content would be here)
 ----------------------------------------------------------------
 `);
     return true;
@@ -104,7 +118,9 @@ export class NodemailerEmailService implements EmailService {
         }
       };
 
-      const t = translations[lang] || translations.en;
+      // Normalize language code to 2 characters (e.g. "pt-PT" -> "pt")
+      const normalizedLang = lang.substring(0, 2).toLowerCase();
+      const t = translations[normalizedLang] || translations.en;
 
       await this.transporter.sendMail({
         from: process.env.EMAIL_FROM || process.env.SMTP_FROM || '"Competitive Watcher" <noreply@competitivewatcher.pt>',
@@ -132,6 +148,24 @@ export class NodemailerEmailService implements EmailService {
       return true;
     } catch (error) {
       console.error("[EmailService] Failed to send email:", error);
+      return false;
+    }
+  }
+
+  async sendAdHocReport(to: string, report: Report, lang: string): Promise<boolean> {
+    try {
+      const { html, text, subject } = generateReportEmail(report, lang);
+
+      await this.transporter.sendMail({
+        from: process.env.EMAIL_FROM || process.env.SMTP_FROM || '"Competitive Watcher" <noreply@competitivewatcher.pt>',
+        to: to,
+        subject: subject,
+        html: html,
+        text: text,
+      });
+      return true;
+    } catch (error) {
+      console.error("[EmailService] Failed to send ad-hoc email:", error);
       return false;
     }
   }
@@ -196,7 +230,9 @@ export function generatePasswordResetEmail(resetLink: string, email: string, lan
     }
   };
 
-  const t = translations[lang] || translations.en;
+  // Normalize language code to 2 characters
+  const normalizedLang = lang.substring(0, 2).toLowerCase();
+  const t = translations[normalizedLang] || translations.en;
 
   const html = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f9fafb; padding: 40px 20px;">
@@ -274,7 +310,9 @@ export function generateWelcomeEmail(name: string, lang: string = "pt") {
     }
   };
 
-  const t = translations[lang] || translations.en;
+  // Normalize language code to 2 characters
+  const normalizedLang = lang.substring(0, 2).toLowerCase();
+  const t = translations[normalizedLang] || translations.en;
 
   const html = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f9fafb; padding: 40px 20px;">
@@ -298,6 +336,160 @@ export function generateWelcomeEmail(name: string, lang: string = "pt") {
     </div>
   `;
   return { html, text: t.text };
+}
+
+// ... existing exports ...
+
+export function generateReportEmail(report: Report, lang: string = "pt") {
+  const translations: Record<string, any> = {
+    pt: {
+      subject: `Relatório de Análise: ${report.businessName}`,
+      title: "O Seu Relatório de Análise",
+      greeting: "Aqui está o relatório que solicitou.",
+      generatedAt: "Gerado em",
+      competitors: "Concorrentes Encontrados",
+      rating: "Avaliação Média",
+      viewOnline: "Ver no Dashboard",
+      footer: "Todos os direitos reservados.",
+      topCompetitors: "Principais Concorrentes",
+      na: "S/D",
+      text: `O seu relatório para ${report.businessName} está pronto. Veja-o online em https://competitorwatcher.pt/dashboard`
+    },
+    en: {
+      subject: `Analysis Report: ${report.businessName}`,
+      title: "Your Analysis Report",
+      greeting: "Here is the report you requested.",
+      generatedAt: "Generated at",
+      competitors: "Competitors Found",
+      rating: "Average Rating",
+      viewOnline: "View in Dashboard",
+      footer: "All rights reserved.",
+      topCompetitors: "Top Competitors",
+      na: "N/A",
+      text: `Your report for ${report.businessName} is ready. View it online at https://competitorwatcher.pt/dashboard`
+    },
+    es: {
+      subject: `Informe de Análisis: ${report.businessName}`,
+      title: "Su Informe de Análisis",
+      greeting: "Aquí tiene el informe que solicitó.",
+      generatedAt: "Generado el",
+      competitors: "Competidores Encontrados",
+      rating: "Calificación Promedio",
+      viewOnline: "Ver en el Panel",
+      footer: "Todos los derechos reservados.",
+      topCompetitors: "Principales Competidores",
+      na: "N/D",
+      text: `Su informe para ${report.businessName} está listo. Véalo en línea en https://competitorwatcher.pt/dashboard`
+    },
+    fr: {
+      subject: `Rapport d'Analyse : ${report.businessName}`,
+      title: "Votre Rapport d'Analyse",
+      greeting: "Voici le rapport que vous avez demandé.",
+      generatedAt: "Généré le",
+      competitors: "Concurrents Trouvés",
+      rating: "Note Moyenne",
+      viewOnline: "Voir le Tableau de Bord",
+      footer: "Tous droits réservés.",
+      topCompetitors: "Principaux Concurrents",
+      na: "N/D",
+      text: `Votre rapport pour ${report.businessName} est prêt. Consultez-le en ligne sur https://competitorwatcher.pt/dashboard`
+    },
+    de: {
+      subject: `Analysebericht: ${report.businessName}`,
+      title: "Ihr Analysebericht",
+      greeting: "Hier ist der von Ihnen angeforderte Bericht.",
+      generatedAt: "Generiert am",
+      competitors: "Gefundene Wettbewerber",
+      rating: "Durchschnittliche Bewertung",
+      viewOnline: "Im Dashboard anzeigen",
+      footer: "Alle Rechte vorbehalten.",
+      topCompetitors: "Top Wettbewerber",
+      na: "N/V"
+    }
+  };
+
+  // Normalize language code to 2 characters
+  const normalizedLang = lang.substring(0, 2).toLowerCase();
+  const t = translations[normalizedLang] || translations.en;
+
+  const avgRating = report.competitors && report.competitors.length > 0
+    ? (report.competitors.reduce((sum, c) => sum + (c.rating || 0), 0) / report.competitors.length).toFixed(1)
+    : t.na;
+
+  // Convert analysis formatting (simple conversion)
+  const formattedAnalysis = report.aiAnalysis
+    .replace(/<h2/g, '<h2 style="color: #1e3a8a; font-size: 18px; margin-top: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;"')
+    .replace(/<h3/g, '<h3 style="color: #1e40af; font-size: 16px; margin-top: 16px;"')
+    .replace(/<ul/g, '<ul style="padding-left: 20px; margin-bottom: 16px;"')
+    .replace(/<li/g, '<li style="margin-bottom: 8px;"')
+    .replace(/<p/g, '<p style="margin-bottom: 12px; line-height: 1.6;"');
+
+  const html = `
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8fafc; color: #334155;">
+      <div style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); margin: 20px;">
+        
+        <!-- Header -->
+        <div style="background-color: #2563eb; padding: 24px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Competitive Watcher</h1>
+        </div>
+
+        <!-- Body -->
+        <div style="padding: 32px 24px;">
+          <h2 style="color: #0f172a; margin-top: 0;">${t.title}</h2>
+          <p style="font-size: 16px;">${t.greeting}</p>
+          
+          <div style="background-color: #eff6ff; border-radius: 8px; padding: 16px; margin: 24px 0;">
+            <p style="margin: 0; font-weight: bold; color: #1e40af;">${report.businessName}</p>
+            <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">${t.generatedAt}: ${new Date(report.generatedAt).toLocaleDateString()}</p>
+            
+            <div style="display: flex; gap: 24px; margin-top: 16px;">
+              <div>
+                <span style="font-size: 20px; font-weight: bold; color: #2563eb;">${report.competitors.length}</span>
+                <span style="font-size: 13px; display: block; color: #64748b;">${t.competitors}</span>
+              </div>
+              <div>
+                <span style="font-size: 20px; font-weight: bold; color: #ca8a04;">${avgRating}</span>
+                <span style="font-size: 13px; display: block; color: #64748b;">${t.rating}</span>
+              </div>
+            </div>
+          </div>
+
+          ${report.competitors && report.competitors.length > 0 ? `
+            <div style="margin: 24px 0;">
+              <h3 style="color: #1e40af; font-size: 16px; margin: 0 0 12px 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">${t.topCompetitors}</h3>
+              <ul style="padding: 0; margin: 0; list-style: none;">
+                ${report.competitors.slice(0, 5).map(c => `
+                  <li style="padding: 8px 0; border-bottom: 1px dashed #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #475569; font-size: 14px;">${c.name}</span>
+                    <span style="font-weight: 600; color: #ca8a04; font-size: 14px;">★ ${c.rating || '-'}</span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+          <div style="font-size: 14px; color: #334155;">
+            ${formattedAnalysis}
+          </div>
+
+          <div style="text-align: center; margin-top: 32px;">
+            <a href="https://competitorwatcher.pt/dashboard" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">${t.viewOnline}</a>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background-color: #f1f5f9; padding: 16px; text-align: center; font-size: 12px; color: #94a3b8;">
+          <p style="margin: 0;">&copy; ${new Date().getFullYear()} Competitive Watcher. ${t.footer}</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  return {
+    html,
+    text: t.text,
+    subject: t.subject
+  };
 }
 
 export async function sendEmail({ to, subject, html, text }: { to: string; subject: string; html: string; text: string }) {
