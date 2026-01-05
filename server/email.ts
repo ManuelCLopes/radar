@@ -404,7 +404,8 @@ export function generateReportEmail(report: Report, lang: string = "pt") {
       viewOnline: "Im Dashboard anzeigen",
       footer: "Alle Rechte vorbehalten.",
       topCompetitors: "Top Wettbewerber",
-      na: "N/V"
+      na: "N/V",
+      text: `Ihr Bericht für ${report.businessName} ist bereit. Sehen Sie ihn online unter https://competitorwatcher.pt/dashboard an`
     }
   };
 
