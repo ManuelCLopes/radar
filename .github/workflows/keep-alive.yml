@@ -1,0 +1,16 @@
+name: Keep Alive
+
+on:
+  schedule:
+    # Run every 14 minutes to avoid Render's 15-minute inactivity timeout
+    - cron: '*/14 * * * *'
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  ping-server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Application
+        run: |
+          echo "Pinging server to keep it alive..."
+          curl -I ${{ secrets.APP_URL }}
