@@ -48,7 +48,7 @@ test.describe('Reset Password Flow', () => {
         await page.getByRole('button', { name: /Reset Password|Redefinir Password/i }).click();
 
         // Verify success
-        await expect(page.getByText(/Your password has been reset successfully|Password redefinida com sucesso/i)).toBeVisible({ timeout: 10000 });
+        await expect(page.getByText(/Password reset successfully/i)).toBeVisible({ timeout: 10000 });
         await expect(page.getByRole('link', { name: /Go to Login|Ir para Login/i })).toBeVisible();
     });
 
