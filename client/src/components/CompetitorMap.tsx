@@ -63,7 +63,7 @@ function MapUpdater({ center }: { center: { lat: number; lng: number } }) {
     const map = useMap();
     useEffect(() => {
         map.setView(center, 14);
-    }, [center, map]);
+    }, [center.lat, center.lng, map]);
     return null;
 }
 

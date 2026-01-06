@@ -739,7 +739,7 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
             <div className="space-y-1 pr-8 sm:pr-0">
               <DialogTitle className="text-xl font-semibold flex flex-wrap items-center gap-2">
                 <Building2 className="h-5 w-5 text-primary shrink-0" />
-                <span className="break-words">{t("report.view.title")}</span>
+                <span className="break-words" data-testid="report-title">{t("report.view.title")}</span>
               </DialogTitle>
               <DialogDescription>
                 {report.businessName} - {new Date(report.generatedAt).toLocaleString()}

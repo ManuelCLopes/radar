@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useLocation, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -223,6 +223,23 @@ export default function Dashboard() {
   const handleLogout = () => {
     logoutMutation.mutate();
   };
+
+  const handleGenerateReport = useCallback((id: string) => {
+    generateReportMutation.mutate(id);
+  }, [generateReportMutation]);
+
+  const handleDeleteBusiness = useCallback((id: string) => {
+    deleteBusinessMutation.mutate(id);
+  }, [deleteBusinessMutation]);
+
+  const handleViewHistory = useCallback((business: Business) => {
+    setHistoryBusiness(business);
+    setHistoryDialogOpen(true);
+  }, []);
+
+  const handleEdit = useCallback((business: Business) => {
+    setEditingBusiness(business);
+  }, []);
 
 
 
@@ -452,15 +469,12 @@ export default function Dashboard() {
                 <BusinessList
                   businesses={businesses}
                   isLoading={isLoading}
-                  onDelete={(id) => deleteBusinessMutation.mutate(id)}
-                  onGenerateReport={(id) => generateReportMutation.mutate(id)}
+                  onDelete={handleDeleteBusiness}
+                  onGenerateReport={handleGenerateReport}
                   generatingReportId={generatingReportId}
                   deletingId={deletingId}
-                  onViewHistory={(business) => {
-                    setHistoryBusiness(business);
-                    setHistoryDialogOpen(true);
-                  }}
-                  onEdit={(business) => setEditingBusiness(business)}
+                  onViewHistory={handleViewHistory}
+                  onEdit={handleEdit}
                 />
 
                 {/* Map Section */}

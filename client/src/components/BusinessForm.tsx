@@ -533,7 +533,7 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
           <Button
             type="submit"
             className="w-full"
-            disabled={isPending || searchMutation.isPending || (!selectedPlace && !manualCoordinates && !pendingLocationAddress)}
+            disabled={isPending || searchMutation.isPending || (!selectedPlace && !manualCoordinates && !pendingLocationAddress && !(initialValues?.address && form.watch("address") === initialValues.address))}
             data-testid="button-submit-business"
           >
             {isPending ? (

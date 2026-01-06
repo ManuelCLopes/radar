@@ -27,10 +27,8 @@ vi.mock("@/components/ui/alert-dialog", () => ({
     AlertDialogAction: ({ children, onClick }: any) => <button onClick={onClick} data-testid="confirm-delete">{children}</button>,
 }));
 
-vi.mock("@/components/ui/popover", () => ({
-    Popover: ({ children }: any) => <div>{children}</div>,
-    PopoverTrigger: ({ children }: any) => <div>{children}</div>,
-    PopoverContent: ({ children }: any) => <div>{children}</div>,
+vi.mock("@/components/ui/skeleton", () => ({
+    Skeleton: () => <div data-testid="skeleton" />,
 }));
 
 describe("BusinessList", () => {
@@ -71,7 +69,7 @@ describe("BusinessList", () => {
 
     it("renders loading state", () => {
         render(<BusinessList {...defaultProps} isLoading={true} />);
-        expect(screen.getByText("business.list.loading")).toBeInTheDocument();
+        expect(screen.getAllByTestId("skeleton").length).toBeGreaterThan(0);
     });
 
     it("renders empty state", () => {

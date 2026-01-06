@@ -90,46 +90,32 @@ export function BusinessList({
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-xl font-semibold flex items-center gap-2">
-            <Building2 className="h-5 w-5 text-primary" />
-            {t("business.list.title")}
-          </CardTitle>
-          <CardDescription>{t("business.list.loading", "Loading...")}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <BusinessCardSkeleton key={i} />
-          ))}
-        </CardContent>
-      </Card>
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <BusinessCardSkeleton key={i} />
+        ))}
+      </div>
     );
   }
 
   if (businesses.length === 0) {
     return (
       <Card>
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-xl font-semibold flex items-center gap-2">
-            <Building2 className="h-5 w-5 text-primary" />
-            {t("business.list.title")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <EmptyState t={t} />
+        <CardContent className="flex flex-col items-center justify-center p-8 text-center text-muted-foreground">
+          <Building2 className="h-12 w-12 mb-4 opacity-20" />
+          <p className="text-lg font-medium" data-testid="empty-state-message">{t("business.list.empty")}</p>
+          <p className="text-sm">{t("business.list.emptyDesc")}</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="min-w-0 overflow-hidden">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-xl font-semibold flex items-center gap-2 flex-wrap">
-          <Building2 className="h-5 w-5 text-primary" />
+    <Card className="h-full border-none shadow-none">
+      <CardHeader className="px-0 pt-0">
+        <CardTitle className="text-xl font-semibold flex items-center gap-2">
+          <Building2 className="h-5 w-5" />
           {t("business.list.title")}
-          <Badge variant="secondary">{businesses.length}</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3 min-w-0">
