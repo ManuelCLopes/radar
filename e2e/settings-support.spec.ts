@@ -55,5 +55,55 @@ test.describe('Support & Settings Flows', () => {
         await page.getByTestId('button-lang-pt').click();
     });
 
+    test('authenticated user can update profile', async ({ page }) => {
+        // 1. Mock Auth
+        await page.route('/api/auth/user*', async route => {
+            await route.fulfill({
+                status: 200,
+                json: {
+                    user: {
+                        id: 'user-1',
+                        email: 'test@example.com',
+                        firstName: 'Test User'
+                    }
+                }
+            });
+        });
+
+        // 2. Mock Update Endpoint
+        await page.route('/api/user/profile', async route => {
+            if (route.request().method() === 'PUT') {
+                const data = route.request().postDataJSON();
+                await route.fulfill({
+                    status: 200,
+                    json: {
+                        user: {
+                            id: 'user-1',
+                            email: 'test@example.com',
+                            ...data
+                        },
+                        message: "Profile updated successfully"
+                    }
+                });
+            } else {
+                await route.continue();
+            }
+        });
+
+        await page.goto('/settings');
+
+        // Click Edit
+        await page.getByRole('button', { name: /Edit|Editar/i }).click({ force: true });
+
+        // Edit Name
+        await page.getByLabel(/Name|Nome/i).fill('Updated Name');
+
+        // Click Save
+        await page.getByRole('button', { name: /Save|Guardar/i }).click({ force: true });
+
+        // Verify Success Message
+        await expect(page.getByText(/Profile updated|Perfil atualizado/i)).toBeVisible();
+    });
+
 });
 

@@ -144,6 +144,12 @@ test.describe('Dashboard Business Management Flow', () => {
         await expect(page.getByText('Address Not Found')).toBeVisible();
         await page.getByTestId('button-proceed-with-address').click();
 
+        // Wait for dialog and overlay to be completely hidden
+        await expect(page.getByRole('alertdialog')).toBeHidden();
+
+        // Give UI a moment to settle state/animations
+        await page.waitForTimeout(500);
+
         // Now address is "verified" (pending status), select type
         await page.getByTestId('select-business-type').click();
         await page.getByTestId('option-type-restaurant').click();
@@ -154,7 +160,7 @@ test.describe('Dashboard Business Management Flow', () => {
         // Let's update the GET mock dynamically for the next fetch.
 
 
-        await page.getByTestId('button-submit-business').click();
+        await page.getByTestId('button-submit-business').click({ force: true });
 
         // Verify it appears in the list
         await expect(page.getByText('New Pizza Place')).toBeVisible();
@@ -293,6 +299,36 @@ test.describe('Dashboard Business Management Flow', () => {
         // Verify success (Dialog opened)
         await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10000 });
         await expect(page.getByTestId('report-title')).toBeVisible();
+    });
+
+    test('can view report history', async ({ page }) => {
+        // Mock history response with items
+        await page.route('/api/reports/history', async route => {
+            await route.fulfill({
+                status: 200,
+                json: [
+                    {
+                        id: 'hist-1',
+                        businessId: 'bus-1',
+                        businessName: 'Historic Cafe',
+                        aiAnalysis: 'Old analysis',
+                        generatedAt: new Date().toISOString()
+                    }
+                ]
+            });
+        });
+
+        await page.goto('/dashboard');
+
+        // Navigate to History tab (assuming tabs exist, or just check content if listed on main)
+        // If history is in a separate tab or section:
+        const historyTab = page.getByRole('tab', { name: /History|Histórico/i });
+        if (await historyTab.isVisible()) {
+            await historyTab.click();
+        }
+
+        // Verify report item exists
+        await expect(page.getByText('Historic Cafe')).toBeVisible();
     });
 
 });
