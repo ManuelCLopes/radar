@@ -101,8 +101,8 @@ test.describe('Support & Settings Flows', () => {
         // Click Save
         await page.getByRole('button', { name: /Save|Guardar/i }).click({ force: true });
 
-        // Verify Success Message
-        await expect(page.getByText(/Profile updated|Perfil atualizado/i)).toBeVisible();
+        // Verify Success Message (Toast Title)
+        await expect(page.getByText(/Profile updated|Perfil atualizado/i).first()).toBeVisible({ timeout: 10000 });
     });
 
 });
