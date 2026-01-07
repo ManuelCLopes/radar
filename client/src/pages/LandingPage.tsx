@@ -124,7 +124,7 @@ export default function LandingPage() {
 
       // Mark as generated only for guests
       if (!isAuthenticated) {
-        localStorage.setItem('competitive_watcher_free_report_generated', 'true');
+        localStorage.setItem('competitor_watcher_free_report_generated', 'true');
       }
     } catch (error) {
       console.error('Search error:', error);
