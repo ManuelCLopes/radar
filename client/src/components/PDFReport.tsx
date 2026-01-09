@@ -218,17 +218,13 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
     const marketingRegex = /<h2[^>]*>(?:MARKETING STRATEGY|ESTRATÉGIA DE MARKETING|ESTRATEGIA DE MARKETING|STRATÉGIE MARKETING|MARKETINGSTRATEGIE)<\/h2>([\s\S]*?)(?=<h2|$)/i;
     const customerSentimentRegex = /<h2[^>]*>(?:CUSTOMER SENTIMENT & REVIEW INSIGHTS|SENTIMENTO DO CLIENTE & INSIGHTS DE AVALIAÇÕES|SENTIMIENTO DEL CLIENTE E INSIGHTS DE RESEÑAS|ANALYSE DES THÈMES DES AVIS|KUNDENSTIMMUNG & BEWERTUNGSEINBLICKE)<\/h2>([\s\S]*?)(?=<h2|$)/i;
 
-    const swotMatch = report.aiAnalysis.match(swotRegex);
-    const trendsMatch = report.aiAnalysis.match(trendsRegex);
-    const targetAudienceMatch = report.aiAnalysis.match(targetAudienceRegex);
-    const marketingMatch = report.aiAnalysis.match(marketingRegex);
-    const customerSentimentMatch = report.aiAnalysis.match(customerSentimentRegex);
+    const isLegacy = !report.swotAnalysis && !report.marketTrends;
 
-    let swotData = { strengths: [], weaknesses: [], opportunities: [], threats: [] } as any;
-    let trendsData: string[] = [];
-    let targetAudienceData = { demographics: [], psychographics: [], painPoints: [] } as any;
-    let marketingData = { primaryChannels: [], contentIdeas: [], promotionalTactics: [] } as any;
-    let customerSentimentData = { commonPraises: [], recurringComplaints: [], unmetNeeds: [] } as any;
+    let swotData = (report.swotAnalysis as any) || { strengths: [], weaknesses: [], opportunities: [], threats: [] };
+    let trendsData: string[] = (report.marketTrends as string[]) || [];
+    let targetAudienceData = (report.targetAudience as any) || { demographics: "", psychographics: "", painPoints: "" };
+    let marketingData = (report.marketingStrategy as any) || { primaryChannels: "", contentIdeas: "", promotionalTactics: "" };
+    let customerSentimentData = (report.customerSentiment as any) || { commonPraises: [], recurringComplaints: [], unmetNeeds: [] };
 
     // Helper to render HTML text with basic styling (bold, italic)
     const RenderHtmlText = ({ text, style }: { text: string, style?: any }) => {
@@ -290,8 +286,6 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
         const cleanHtml = html.replace(/<([a-z][a-z0-9]*)[^>]*>/gi, '<$1>');
 
         // 2. Split into blocks based on top-level tags we care about
-        // We'll use a simple regex to find content between tags
-        // This is not a full HTML parser but works for the expected structure
         const blocks: { type: string, content: string }[] = [];
 
         const regex = /<(h[23]|p|ul)>([\s\S]*?)<\/\1>/gi;
@@ -299,7 +293,6 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
         let lastIndex = 0;
 
         while ((match = regex.exec(cleanHtml)) !== null) {
-            // Add any text before this block as a paragraph (if not empty)
             const preText = cleanHtml.substring(lastIndex, match.index).trim();
             if (preText) {
                 blocks.push({ type: 'p', content: preText });
@@ -309,7 +302,6 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
             lastIndex = regex.lastIndex;
         }
 
-        // Add remaining text
         const remaining = cleanHtml.substring(lastIndex).trim();
         if (remaining) {
             blocks.push({ type: 'p', content: remaining });
@@ -357,7 +349,6 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                             </View>
                         );
                     }
-                    // Default to paragraph
                     return (
                         <View key={i} style={{ marginBottom: 8 }}>
                             <RenderHtmlText text={block.content} style={style} />
@@ -381,97 +372,104 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
         return [];
     };
 
-    if (swotMatch) {
-        const swotContent = swotMatch[1];
-        const sections = {
-            strengths: /<h3[^>]*>(?:Strengths|Pontos Fortes|Fortalezas|Forces|Stärken)<\/h3>([\s\S]*?)(?=<h3|$)/i,
-            weaknesses: /<h3[^>]*>(?:Weaknesses|Pontos Fracos|Debilidades|Faiblesses|Schwächen)<\/h3>([\s\S]*?)(?=<h3|$)/i,
-            opportunities: /<h3[^>]*>(?:Opportunities|Oportunidades|Opportunités|Chancen)<\/h3>([\s\S]*?)(?=<h3|$)/i,
-            threats: /<h3[^>]*>(?:Threats|Ameaças|Amenazas|Menaces|Bedrohungen)<\/h3>([\s\S]*?)(?=<h3|$)/i
-        };
+    if (isLegacy) {
+        const swotMatch = report.aiAnalysis.match(swotRegex);
+        if (swotMatch) {
+            const swotContent = swotMatch[1];
+            const sections = {
+                strengths: /<h3[^>]*>(?:Strengths|Pontos Fortes|Fortalezas|Forces|Stärken)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+                weaknesses: /<h3[^>]*>(?:Weaknesses|Pontos Fracos|Debilidades|Faiblesses|Schwächen)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+                opportunities: /<h3[^>]*>(?:Opportunities|Oportunidades|Opportunités|Chancen)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+                threats: /<h3[^>]*>(?:Threats|Ameaças|Amenazas|Menaces|Bedrohungen)<\/h3>([\s\S]*?)(?=<h3|$)/i
+            };
 
-        Object.entries(sections).forEach(([key, regex]) => {
-            const match = swotContent.match(regex);
-            if (match) {
-                swotData[key] = extractListItems(match[1]);
-            }
-        });
-    }
-
-    if (trendsMatch) {
-        trendsData = extractListItems(trendsMatch[1]);
-    }
-
-    if (targetAudienceMatch) {
-        const content = targetAudienceMatch[1];
-        const sections = {
-            demographics: /<h3[^>]*>(?:Demographics|Demografia|Demografía|Démographie|Demografie)<\/h3>([\s\S]*?)(?=<h3|$)/i,
-            psychographics: /<h3[^>]*>(?:Psychographics|Psicografia|Psicografía|Psychographie|Psychografie)<\/h3>([\s\S]*?)(?=<h3|$)/i,
-            painPoints: /<h3[^>]*>(?:Pain Points|Dores|Puntos de Dolor|Points de Douleur|Schmerzpunkte)<\/h3>([\s\S]*?)(?=<h3|$)/i
-        };
-
-        Object.entries(sections).forEach(([key, regex]) => {
-            const match = content.match(regex);
-            if (match) {
-                const text = cleanHtml(match[1]);
-                if (text.startsWith('[')) {
-                    targetAudienceData[key] = text.replace(/^\[|\]$/g, '').split(',').map(s => s.trim());
-                } else {
-                    targetAudienceData[key] = [text];
+            Object.entries(sections).forEach(([key, regex]) => {
+                const match = swotContent.match(regex);
+                if (match) {
+                    swotData[key] = extractListItems(match[1]);
                 }
-            }
-        });
-    }
+            });
+        }
 
-    if (marketingMatch) {
-        const content = marketingMatch[1];
-        const sections = {
-            primaryChannels: /<h3[^>]*>(?:Primary Channels|Canais Principais|Canales Principales|Canaux Principaux|Hauptkanäle)<\/h3>([\s\S]*?)(?=<h3|$)/i,
-            contentIdeas: /<h3[^>]*>(?:Content Ideas|Ideias de Conteúdo|Ideas de Contenido|Idées de Contenu|Inhaltsideen)<\/h3>([\s\S]*?)(?=<h3|$)/i,
-            promotionalTactics: /<h3[^>]*>(?:Promotional Tactics|Táticas Promocionais|Tácticas Promocionales|Tactiques Promotionnelles|Werbetaktiken)<\/h3>([\s\S]*?)(?=<h3|$)/i
-        };
+        const trendsMatch = report.aiAnalysis.match(trendsRegex);
+        if (trendsMatch) {
+            trendsData = extractListItems(trendsMatch[1]);
+        }
 
-        Object.entries(sections).forEach(([key, regex]) => {
-            const match = content.match(regex);
-            if (match) {
-                const text = cleanHtml(match[1]);
-                if (text.startsWith('[')) {
-                    marketingData[key] = text.replace(/^\[|\]$/g, '').split(',').map(s => s.trim());
-                } else {
-                    marketingData[key] = [text];
+        const targetAudienceMatch = report.aiAnalysis.match(targetAudienceRegex);
+        if (targetAudienceMatch) {
+            const content = targetAudienceMatch[1];
+            const sections = {
+                demographics: /<h3[^>]*>(?:Demographics|Demografia|Demografía|Démographie|Demografie)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+                psychographics: /<h3[^>]*>(?:Psychographics|Psicografia|Psicografía|Psychographie|Psychografie)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+                painPoints: /<h3[^>]*>(?:Pain Points|Dores|Puntos de Dolor|Points de Douleur|Schmerzpunkte)<\/h3>([\s\S]*?)(?=<h3|$)/i
+            };
+
+            Object.entries(sections).forEach(([key, regex]) => {
+                const match = content.match(regex);
+                if (match) {
+                    const text = cleanHtml(match[1]);
+                    if (text.startsWith('[')) {
+                        targetAudienceData[key] = text.replace(/^\[|\]$/g, '').split(',').map(s => s.trim());
+                    } else {
+                        targetAudienceData[key] = [text];
+                    }
                 }
-            }
-        });
-    }
+            });
+        }
 
-    if (customerSentimentMatch) {
-        const content = customerSentimentMatch[1];
-        const sections = {
-            commonPraises: /<h3[^>]*>(?:Common Praises|Elogios Comuns|Elogios Comunes|Éloges Courants|Häufiges Lob)<\/h3>([\s\S]*?)(?=<h3|$)/i,
-            recurringComplaints: /<h3[^>]*>(?:Recurring Complaints|Reclamações Recorrentes|Quejas Recurrentes|Plaintes Récurrentes|Wiederkehrende Beschwerden)<\/h3>([\s\S]*?)(?=<h3|$)/i,
-            unmetNeeds: /<h3[^>]*>(?:Unmet Needs|Necessidades Não Atendidas|Necesidades Insatisfechas|Besoins Non Satisfaits|Unerfüllte Bedürfnisse)<\/h3>([\s\S]*?)(?=<h3|$)/i
-        };
+        const marketingMatch = report.aiAnalysis.match(marketingRegex);
+        if (marketingMatch) {
+            const content = marketingMatch[1];
+            const sections = {
+                primaryChannels: /<h3[^>]*>(?:Primary Channels|Canais Principais|Canales Principales|Canaux Principaux|Hauptkanäle)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+                contentIdeas: /<h3[^>]*>(?:Content Ideas|Ideias de Conteúdo|Ideas de Contenido|Idées de Contenu|Inhaltsideen)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+                promotionalTactics: /<h3[^>]*>(?:Promotional Tactics|Táticas Promocionais|Tácticas Promocionales|Tactiques Promotionnelles|Werbetaktiken)<\/h3>([\s\S]*?)(?=<h3|$)/i
+            };
 
-        Object.entries(sections).forEach(([key, regex]) => {
-            const match = content.match(regex);
-            if (match) {
-                if (match[1].includes('<ul')) {
-                    customerSentimentData[key] = extractListItems(match[1]);
-                } else {
-                    customerSentimentData[key] = [cleanHtml(match[1])];
+            Object.entries(sections).forEach(([key, regex]) => {
+                const match = content.match(regex);
+                if (match) {
+                    const text = cleanHtml(match[1]);
+                    if (text.startsWith('[')) {
+                        marketingData[key] = text.replace(/^\[|\]$/g, '').split(',').map(s => s.trim());
+                    } else {
+                        marketingData[key] = [text];
+                    }
                 }
-            }
-        });
+            });
+        }
+
+        const customerSentimentMatch = report.aiAnalysis.match(customerSentimentRegex);
+        if (customerSentimentMatch) {
+            const content = customerSentimentMatch[1];
+            const sections = {
+                commonPraises: /<h3[^>]*>(?:Common Praises|Elogios Comuns|Elogios Comunes|Éloges Courants|Häufiges Lob)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+                recurringComplaints: /<h3[^>]*>(?:Recurring Complaints|Reclamações Recorrentes|Quejas Recurrentes|Plaintes Récurrentes|Wiederkehrende Beschwerden)<\/h3>([\s\S]*?)(?=<h3|$)/i,
+                unmetNeeds: /<h3[^>]*>(?:Unmet Needs|Necessidades Não Atendidas|Necesidades Insatisfechas|Besoins Non Satisfaits|Unerfüllte Bedürfnisse)<\/h3>([\s\S]*?)(?=<h3|$)/i
+            };
+
+            Object.entries(sections).forEach(([key, regex]) => {
+                const match = content.match(regex);
+                if (match) {
+                    if (match[1].includes('<ul')) {
+                        customerSentimentData[key] = extractListItems(match[1]);
+                    } else {
+                        customerSentimentData[key] = [cleanHtml(match[1])];
+                    }
+                }
+            });
+        }
     }
 
-    // Remove parsed sections from main content display
-    const mainContent = report.aiAnalysis
+    // Remove parsed sections from main content display (only for legacy)
+    const mainContent = isLegacy ? report.aiAnalysis
         .replace(swotRegex, '')
         .replace(trendsRegex, '')
         .replace(targetAudienceRegex, '')
         .replace(marketingRegex, '')
         .replace(customerSentimentRegex, '')
-        .trim(); // Removed .replace(/<[^>]*>/g, '') to keep HTML tags
+        .trim() : (report.aiAnalysis === "Structured Analysis" ? "" : report.aiAnalysis); // Removed .replace(/<[^>]*>/g, '') to keep HTML tags
 
     // Helper to map keys to translations
     const getTranslatedKey = (key: string) => {
@@ -533,14 +531,23 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                 </View>
 
                 {/* AI Analysis (Intro) */}
-                {mainContent && (
-                    <View style={styles.section}>
-                        <View style={styles.aiAnalysisCard}>
-                            <Text style={styles.aiAnalysisTitle}>{t("report.sections.aiAnalysis")}</Text>
+                <View style={styles.section}>
+                    <View style={styles.aiAnalysisCard}>
+                        <Text style={styles.aiAnalysisTitle}>{t("report.sections.aiAnalysis")}</Text>
+
+                        {/* Executive Summary */}
+                        {report.executiveSummary && (
+                            <View style={{ marginBottom: 15 }}>
+                                <Text style={[styles.aiAnalysisTitle, { fontSize: 12 }]}>{t("report.sections.marketOverview", "Market Overview")}</Text>
+                                <Text style={styles.aiAnalysisText}>{report.executiveSummary}</Text>
+                            </View>
+                        )}
+
+                        {mainContent && (
                             <MainContentRenderer html={mainContent} style={styles.aiAnalysisText} />
-                        </View>
+                        )}
                     </View>
-                )}
+                </View>
 
                 {/* SWOT Analysis */}
                 {(swotData.strengths.length > 0 || swotData.weaknesses.length > 0) && (
@@ -605,7 +612,17 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                                     <View style={styles.cardContent}>
                                         <View style={styles.bulletPoint}>
                                             <View style={[styles.bullet, { backgroundColor: '#4B5563' }]} />
-                                            <RenderHtmlText text={item} style={styles.text} />
+                                            {(() => {
+                                                const parts = item.split(':');
+                                                const title = parts[0];
+                                                const desc = parts.slice(1).join(':').trim();
+                                                return (
+                                                    <Text style={styles.text}>
+                                                        <Text style={{ fontWeight: 700 }}>{title}{desc ? ': ' : ''}</Text>
+                                                        {desc}
+                                                    </Text>
+                                                );
+                                            })()}
                                         </View>
                                     </View>
                                 </View>
@@ -615,7 +632,7 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                 )}
 
                 {/* Target Audience */}
-                {targetAudienceMatch && (
+                {Object.values(targetAudienceData).some((items: any) => (Array.isArray(items) && items.length > 0) || (typeof items === 'string' && items.trim() !== '')) && (
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>{t("report.sections.targetAudience")}</Text>
                         <View style={styles.gridContainer}>
@@ -625,12 +642,16 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                                         <Text style={styles.cardTitle}>{getTranslatedKey(key)}</Text>
                                     </View>
                                     <View style={styles.cardContent}>
-                                        {items.map((item: string, i: number) => (
-                                            <View key={i} style={{ flexDirection: 'row', marginBottom: 2 }}>
-                                                <Text style={styles.text}>• </Text>
-                                                <RenderHtmlText text={item} style={styles.text} />
-                                            </View>
-                                        ))}
+                                        {Array.isArray(items) ? (
+                                            items.map((item: string, i: number) => (
+                                                <View key={i} style={{ flexDirection: 'row', marginBottom: 2 }}>
+                                                    <Text style={styles.text}>• </Text>
+                                                    <RenderHtmlText text={item} style={styles.text} />
+                                                </View>
+                                            ))
+                                        ) : (
+                                            <Text style={styles.text}>{items}</Text>
+                                        )}
                                     </View>
                                 </View>
                             ))}
@@ -639,7 +660,7 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                 )}
 
                 {/* Marketing Strategy */}
-                {marketingMatch && (
+                {Object.values(marketingData).some((items: any) => (Array.isArray(items) && items.length > 0) || (typeof items === 'string' && items.trim() !== '')) && (
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>{t("report.sections.marketingStrategy")}</Text>
                         <View style={styles.gridContainer}>
@@ -649,12 +670,16 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                                         <Text style={styles.cardTitle}>{getTranslatedKey(key)}</Text>
                                     </View>
                                     <View style={styles.cardContent}>
-                                        {items.map((item: string, i: number) => (
-                                            <View key={i} style={{ flexDirection: 'row', marginBottom: 2 }}>
-                                                <Text style={styles.text}>• </Text>
-                                                <RenderHtmlText text={item} style={styles.text} />
-                                            </View>
-                                        ))}
+                                        {Array.isArray(items) ? (
+                                            items.map((item: string, i: number) => (
+                                                <View key={i} style={{ flexDirection: 'row', marginBottom: 2 }}>
+                                                    <Text style={styles.text}>• </Text>
+                                                    <RenderHtmlText text={item} style={styles.text} />
+                                                </View>
+                                            ))
+                                        ) : (
+                                            <Text style={styles.text}>{items}</Text>
+                                        )}
                                     </View>
                                 </View>
                             ))}
@@ -663,7 +688,7 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
                 )}
 
                 {/* Customer Sentiment */}
-                {customerSentimentMatch && (
+                {Object.values(customerSentimentData).some((items: any) => items.length > 0) && (
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>{t("report.sections.customerSentiment")}</Text>
                         <View style={styles.gridContainer}>

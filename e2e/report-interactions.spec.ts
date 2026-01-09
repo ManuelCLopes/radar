@@ -27,7 +27,18 @@ test.describe('Report Interactions', () => {
                     aiAnalysis: '## Analysis\n\n- Good\n- Bad',
                     generatedAt: new Date().toISOString(),
                     competitors: [],
-                    html: '<div>Analysis</div>'
+                    html: null,
+                    executiveSummary: "E2E Executive Summary",
+                    swotAnalysis: {
+                        strengths: ['E2E Strength'],
+                        weaknesses: [],
+                        opportunities: [],
+                        threats: []
+                    },
+                    marketTrends: ['E2E Trend'],
+                    targetAudience: { demographics: "E2E Demographics", psychographics: "", painPoints: "" },
+                    marketingStrategy: { primaryChannels: "E2E Channels", contentIdeas: "", promotionalTactics: "" },
+                    customerSentiment: { commonPraises: [], recurringComplaints: [], unmetNeeds: [] }
                 }]
             });
         });
@@ -49,6 +60,12 @@ test.describe('Report Interactions', () => {
 
         // Check report title
         await expect(page.getByTestId('report-title')).toBeVisible();
+
+        // Check structured data visibility
+        await expect(page.getByText('E2E Executive Summary')).toBeVisible();
+        await expect(page.getByText('E2E Strength')).toBeVisible();
+        await expect(page.getByText('E2E Trend')).toBeVisible();
+        await expect(page.getByText('E2E Demographics')).toBeVisible();
 
         // Open export dropdown
         await page.getByTestId('button-export-report').click();

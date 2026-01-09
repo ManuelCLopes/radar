@@ -60,7 +60,16 @@ describe("Reports Logic", () => {
         const mockCompetitors = [{ name: "Comp 1", address: "Addr 1" }];
         (searchNearby as any).mockResolvedValue(mockCompetitors);
 
-        (analyzeCompetitors as any).mockResolvedValue("AI Analysis Result");
+        const mockAnalysis = {
+            executiveSummary: "Mock Overview",
+            swot: { strengths: [], weaknesses: [], opportunities: [], threats: [] },
+            marketTrends: [],
+            targetAudience: { demographics: "", psychographics: "", painPoints: "" },
+            marketingStrategy: { primaryChannels: "", contentIdeas: "", promotionalTactics: "" },
+            customerSentiment: { commonPraises: [], recurringComplaints: [], unmetNeeds: [] }
+        };
+
+        (analyzeCompetitors as any).mockResolvedValue(mockAnalysis);
 
         (storage.saveReport as any).mockImplementation((report) => Promise.resolve({ ...report, id: "report-1" }));
 
@@ -72,7 +81,7 @@ describe("Reports Logic", () => {
         expect(storage.saveReport).toHaveBeenCalledWith(expect.objectContaining({
             businessId: "1",
             userId: "user-1",
-            aiAnalysis: "AI Analysis Result",
+            executiveSummary: "Mock Overview",
         }));
         expect(result.id).toBe("report-1");
     });
@@ -87,15 +96,24 @@ describe("Reports Logic", () => {
             locationStatus: "validated",
         } as any;
 
+        const mockAnalysis = {
+            executiveSummary: "Temp Overview",
+            swot: { strengths: [], weaknesses: [], opportunities: [], threats: [] },
+            marketTrends: [],
+            targetAudience: { demographics: "", psychographics: "", painPoints: "" },
+            marketingStrategy: { primaryChannels: "", contentIdeas: "", promotionalTactics: "" },
+            customerSentiment: { commonPraises: [], recurringComplaints: [], unmetNeeds: [] }
+        };
+
         (searchNearby as any).mockResolvedValue([]);
-        (analyzeCompetitors as any).mockResolvedValue("Temp Analysis");
+        (analyzeCompetitors as any).mockResolvedValue(mockAnalysis);
 
         const result = await runReportForBusiness("temp-1", "en", tempBusiness);
 
         expect(storage.getBusiness).not.toHaveBeenCalled();
         expect(storage.saveReport).not.toHaveBeenCalled();
         expect(result.id).toContain("temp-");
-        expect(result.aiAnalysis).toBe("Temp Analysis");
+        expect(result.executiveSummary).toBe("Temp Overview");
     });
 
     it("should generate report in requested language", async () => {
@@ -107,14 +125,23 @@ describe("Reports Logic", () => {
             longitude: 20,
             locationStatus: "validated",
         };
+        const mockAnalysis = {
+            executiveSummary: "Resumo em PT",
+            swot: { strengths: ["Força"], weaknesses: [], opportunities: [], threats: [] },
+            marketTrends: [],
+            targetAudience: { demographics: "", psychographics: "", painPoints: "" },
+            marketingStrategy: { primaryChannels: "", contentIdeas: "", promotionalTactics: "" },
+            customerSentiment: { commonPraises: [], recurringComplaints: [], unmetNeeds: [] }
+        };
+
         (storage.getBusiness as any).mockResolvedValue(mockBusiness);
         (searchNearby as any).mockResolvedValue([]);
-        (analyzeCompetitors as any).mockResolvedValue("Analise PT");
+        (analyzeCompetitors as any).mockResolvedValue(mockAnalysis);
         (storage.saveReport as any).mockImplementation((r) => Promise.resolve(r));
 
         const result = await runReportForBusiness("1", "pt");
 
         expect(analyzeCompetitors).toHaveBeenCalledWith(mockBusiness, [], "pt", "essential");
-        expect(result.html).toContain("Relatório de Análise de Concorrência"); // Check for PT translation in HTML
+        expect(result.executiveSummary).toBe("Resumo em PT");
     });
 });

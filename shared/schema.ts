@@ -118,8 +118,14 @@ export const reports = pgTable("reports", {
   businessName: text("business_name").notNull(),
   competitors: jsonb("competitors").notNull().$type<Competitor[]>(),
   aiAnalysis: text("ai_analysis").notNull(),
+  executiveSummary: text("executive_summary"), // Key summary like "Market Overview"
   generatedAt: timestamp("generated_at").defaultNow().notNull(),
-  html: text("html").notNull(),
+  html: text("html"), // Made nullable for structured reports
+  swotAnalysis: jsonb("swot_analysis"),
+  marketTrends: jsonb("market_trends"),
+  targetAudience: jsonb("target_audience"),
+  marketingStrategy: jsonb("marketing_strategy"),
+  customerSentiment: jsonb("customer_sentiment"),
   radius: integer("radius"), // Added radius field
 });
 
@@ -150,7 +156,13 @@ export const insertReportSchema = z.object({
   businessName: z.string(),
   competitors: z.array(competitorSchema),
   aiAnalysis: z.string(),
-  html: z.string(),
+  executiveSummary: z.string().optional(),
+  html: z.string().optional(),
+  swotAnalysis: z.record(z.any()).optional(),
+  marketTrends: z.array(z.string()).optional(),
+  targetAudience: z.record(z.any()).optional(),
+  marketingStrategy: z.record(z.any()).optional(),
+  customerSentiment: z.record(z.any()).optional(),
   radius: z.number().optional(),
 });
 

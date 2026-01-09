@@ -8,7 +8,13 @@ import { storage } from "../storage";
 
 // Mock OpenAI
 vi.mock("../ai", () => ({
-    analyzeCompetitors: vi.fn().mockResolvedValue("Mocked AI Analysis Report"),
+    analyzeCompetitors: vi.fn().mockResolvedValue({
+        swot: { strengths: ["Strong brand"], weaknesses: ["High price"], opportunities: ["Expansion"], threats: ["Competition"] },
+        marketTrends: ["Digital transformation", "Remote work"],
+        targetAudience: { demographics: ["Age 25-34"], psychographics: ["Tech-savvy"], painPoints: ["Lack of time"] },
+        marketingStrategy: { primaryChannels: ["Social Media"], contentIdeas: ["Video tutorials"], promotionalTactics: ["Discounts"] },
+        customerSentiment: { commonPraises: ["Great UI"], recurringComplaints: ["Slow support"], unmetNeeds: ["Mobile app"] }
+    }),
 }));
 
 // Mock Google Places
@@ -85,6 +91,8 @@ describe("Reports API", () => {
             expect(res.status).toBe(200);
             expect(res.body.report).toBeDefined();
             expect(res.body.report.competitors).toBeDefined();
+            expect(res.body.report.swotAnalysis).toBeDefined();
+            expect(res.body.report.marketTrends).toBeDefined();
         });
 
         it("should validate required fields", async () => {
@@ -113,6 +121,8 @@ describe("Reports API", () => {
             expect(res.status).toBe(200);
             expect(res.body.businessName).toContain("Test Address");
             expect(res.body.aiAnalysis).toBeDefined();
+            expect(res.body.swotAnalysis).toBeDefined();
+            expect(res.body.marketTrends).toBeDefined();
         });
     });
 

@@ -11,20 +11,14 @@ const { createMock } = vi.hoisted(() => {
             choices: [
                 {
                     message: {
-                        content: `### SWOT Analysis
-#### Strengths
-- Strength 1
-#### Weaknesses
-- Weakness 1
-#### Opportunities
-- Opportunity 1
-#### Threats
-- Threat 1
-
-### Market Trends
-- Trend 1
-- Trend 2
-- Trend 3`,
+                        content: JSON.stringify({
+                            executiveSummary: "Mock Overview",
+                            swot: { strengths: ["S1"], weaknesses: ["W1"], opportunities: [], threats: [] },
+                            marketTrends: ["T1"],
+                            targetAudience: { demographics: "", psychographics: "", painPoints: "" },
+                            marketingStrategy: { primaryChannels: "", contentIdeas: "", promotionalTactics: "" },
+                            customerSentiment: { commonPraises: [], recurringComplaints: [], unmetNeeds: [] }
+                        }),
                     },
                 },
             ],
@@ -99,22 +93,14 @@ describe("Advanced Reports", () => {
         const callArgs = createMock.mock.calls[0][0] as any;
         const prompt = callArgs.messages[1].content;
 
-        expect(prompt).toContain("SWOT ANALYSIS");
-        expect(prompt).toContain("MARKET TRENDS");
-        expect(prompt).toContain("CUSTOMER SENTIMENT & REVIEW INSIGHTS");
-        expect(prompt).toContain("TARGET AUDIENCE PERSONA");
-        expect(prompt).toContain("MARKETING STRATEGY");
-        expect(prompt).toContain("<h2");
-        expect(prompt).toContain("<h3");
-        expect(prompt).toContain("HTML");
-        expect(prompt).toContain("Synthesize");
-
-        // Check for new formatting and review analysis instructions
-        expect(prompt).toContain("FORMATTING");
-        expect(prompt).toContain("REVIEW ANALYSIS");
-        // Check if reviews are included (mocked in test setup)
-        // Note: We need to ensure the mock competitors have reviews for this to pass
-        // For now, we just check the structure if reviews were present
+        expect(prompt).toContain("swot");
+        expect(prompt).toContain("marketTrends");
+        expect(prompt).toContain("customerSentiment");
+        expect(prompt).toContain("targetAudience");
+        expect(prompt).toContain("marketingStrategy");
+        expect(prompt).toContain("Title: Description"); // Formatting instruction
+        expect(prompt).toContain("JSON");
+        expect(prompt).not.toContain("HTML");
     });
 
     it("should include all advanced features in prompt for essential plan (upgraded)", async () => {
@@ -141,12 +127,10 @@ describe("Advanced Reports", () => {
         const callArgs = createMock.mock.calls[0][0] as any;
         const prompt = callArgs.messages[1].content;
 
-        expect(prompt).toContain("SWOT ANALYSIS");
-        expect(prompt).toContain("MARKET TRENDS");
-        expect(prompt).toContain("TARGET AUDIENCE PERSONA");
-        expect(prompt).toContain("MARKETING STRATEGY");
-
-        // Check that review analysis is included even for essential plan
-        expect(prompt).toContain("CUSTOMER SENTIMENT & REVIEW INSIGHTS");
+        expect(prompt).toContain("swot");
+        expect(prompt).toContain("marketTrends");
+        expect(prompt).toContain("targetAudience");
+        expect(prompt).toContain("marketingStrategy");
+        expect(prompt).toContain("customerSentiment");
     });
 });
