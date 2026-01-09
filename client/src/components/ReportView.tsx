@@ -774,11 +774,6 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
   };
 
 
-
-
-
-
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[95vw] max-w-4xl h-[90vh] p-0 flex flex-col rounded-lg overflow-hidden">

@@ -1,8 +1,8 @@
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import type { Report } from "@shared/schema";
 
-// Register fonts - Disabled due to 404 errors on Google Fonts URLs
-// Using standard Helvetica instead
+// Register fonts - using standard Helvetica
+
 
 const styles = StyleSheet.create({
     page: {
@@ -210,7 +210,7 @@ export const PDFReport = ({ report, t }: PDFReportProps) => {
 
     const totalReviews = competitors.reduce((sum, c) => sum + (c.userRatingsTotal || 0), 0);
 
-    // --- PARSING LOGIC COPIED FROM ReportView.tsx ---
+
 
     const swotRegex = /<h2[^>]*>(?:SWOT ANALYSIS|ANÁLISE SWOT|ANÁLISIS DAFO|ANALYSE SWOT|SWOT-ANALYSE)<\/h2>([\s\S]*?)(?=<h2|$)/i;
     const trendsRegex = /<h2[^>]*>(?:MARKET TRENDS|TENDÊNCIAS DE MERCADO|TENDENCIAS DEL MERCADO|TENDANCES DU MARCHÉ|MARKTRENDS)<\/h2>([\s\S]*?)(?=<h2|$)/i;

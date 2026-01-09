@@ -60,7 +60,7 @@ export async function runReportForBusiness(
       targetAudience: aiAnalysis.targetAudience,
       marketingStrategy: aiAnalysis.marketingStrategy,
       customerSentiment: aiAnalysis.customerSentiment,
-      // Leave HTML empty as requested ("instead saving the html code")
+      // HTML field is not used for new reports as we use structured data
       html: undefined,
       userId: userId || null,
       radius: radius || undefined,
@@ -90,16 +90,5 @@ export async function runReportForBusiness(
   } as Report;
 }
 
-function generateReportHTML(
-  business: Business,
-  competitors: { name: string; address: string; rating?: number; userRatingsTotal?: number; priceLevel?: string }[],
-  aiAnalysis: any, // Changed to any to accept structured data
-  language: string = "en",
-  radius: number
-): string {
-  // This function is kept for reference or legacy reasons if we ever need to re-generate HTML on the server.
-  // But strictly speaking, we are moving to client-side rendering of structured data.
-  // If we really need HTML returned for some API (e.g. non-DB based), we would need to rewrite this to render the structured data.
-  return "";
-}
+
 
