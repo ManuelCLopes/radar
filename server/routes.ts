@@ -726,6 +726,13 @@ export async function registerRoutes(
 
       const savedReport = await storage.createReport({
         ...reportData,
+        executiveSummary: reportData.executiveSummary || undefined,
+        swotAnalysis: reportData.swotAnalysis as any || undefined,
+        marketTrends: reportData.marketTrends as any || undefined,
+        targetAudience: reportData.targetAudience as any || undefined,
+        marketingStrategy: reportData.marketingStrategy as any || undefined,
+        customerSentiment: reportData.customerSentiment as any || undefined,
+        html: reportData.html || undefined,
         userId: (req.user as AppUser).id,
         businessId: null, // Explicitly set to null for ad-hoc analysis
         radius: reportData.radius || undefined

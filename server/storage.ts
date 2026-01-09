@@ -280,7 +280,14 @@ export class MemStorage implements IStorage {
       generatedAt: new Date(),
       userId: insertReport.userId || null,
       businessId: insertReport.businessId || null,
-      radius: insertReport.radius ?? null
+      html: insertReport.html || null,
+      radius: insertReport.radius ?? null,
+      executiveSummary: insertReport.executiveSummary || null,
+      swotAnalysis: insertReport.swotAnalysis || null,
+      marketTrends: insertReport.marketTrends || null,
+      targetAudience: insertReport.targetAudience || null,
+      marketingStrategy: insertReport.marketingStrategy || null,
+      customerSentiment: insertReport.customerSentiment || null,
     };
     this.reports.set(id, report);
     return report;

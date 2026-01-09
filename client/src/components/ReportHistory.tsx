@@ -58,7 +58,7 @@ export function ReportHistory({ business, open, onOpenChange, onViewReport }: Re
   if (!business) return null;
 
   const handleDownload = (report: Report) => {
-    const blob = new Blob([report.html], { type: "text/html" });
+    const blob = new Blob([report.html || ""], { type: "text/html" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;

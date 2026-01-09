@@ -55,7 +55,13 @@ This is the market overview.
         generatedAt: new Date(),
         html: '',
         userId: 'user1',
-        radius: null
+        radius: null,
+        executiveSummary: "Summary",
+        swotAnalysis: { strengths: [], weaknesses: [], opportunities: [], threats: [] },
+        marketTrends: [],
+        targetAudience: {},
+        marketingStrategy: {},
+        customerSentiment: {}
     };
 
     const mockT = (key: string) => key;
