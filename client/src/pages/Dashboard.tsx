@@ -68,6 +68,11 @@ export default function Dashboard() {
   const [selectedMapBusinessId, setSelectedMapBusinessId] = useState<string>("all");
 
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    return tab === "history" || tab === "businesses" ? tab : "businesses";
+  });
 
   // Analysis Form
   const analysisForm = useForm<AnalysisFormValues>({
@@ -284,16 +289,25 @@ export default function Dashboard() {
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col space-y-6">
           <div className="flex items-center justify-between">
-            <Tabs defaultValue="businesses" className="w-full">
+            <Tabs
+              value={activeTab}
+              onValueChange={(val) => {
+                setActiveTab(val);
+                const url = new URL(window.location.href);
+                url.searchParams.set("tab", val);
+                window.history.replaceState({}, "", url.toString());
+              }}
+              className="w-full"
+            >
               <div className="flex items-center justify-between mb-6">
                 <TabsList className="flex w-auto">
-                  <TabsTrigger value="businesses" className="group flex items-center">
+                  <TabsTrigger value="businesses" className="group flex items-center" data-testid="tab-businesses">
                     <Building2 className="h-4 w-4" />
                     <span className="max-w-0 overflow-hidden opacity-0 whitespace-nowrap transition-all duration-300 ease-in-out group-data-[state=active]:max-w-[150px] group-data-[state=active]:opacity-100 group-data-[state=active]:ml-2 sm:max-w-none sm:opacity-100 sm:ml-2 sm:inline">
                       {t("dashboard.tabs.businesses")}
                     </span>
                   </TabsTrigger>
-                  <TabsTrigger value="history" className="group flex items-center">
+                  <TabsTrigger value="history" className="group flex items-center" data-testid="tab-history">
                     <History className="h-4 w-4" />
                     <span className="max-w-0 overflow-hidden opacity-0 whitespace-nowrap transition-all duration-300 ease-in-out group-data-[state=active]:max-w-[150px] group-data-[state=active]:opacity-100 group-data-[state=active]:ml-2 sm:max-w-none sm:opacity-100 sm:ml-2 sm:inline">
                       {t("dashboard.tabs.history")}
