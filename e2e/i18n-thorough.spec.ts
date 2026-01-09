@@ -99,6 +99,17 @@ test.describe('Internationalization Thoroughness', () => {
         await expect(enBtn).toBeVisible();
         await enBtn.click({ force: true });
         await expect(page.getByText('Registered Businesses')).toBeVisible();
+
+        // Switch to German (verify layout stability)
+        await expect(page.getByTestId('button-lang-de')).not.toBeVisible();
+        await langSelector.click({ force: true });
+
+        const deBtn = page.getByTestId('button-lang-de');
+        await expect(deBtn).toBeVisible();
+        await deBtn.click({ force: true });
+
+        await expect(page.getByText('Registrierte Unternehmen')).toBeVisible();
+        await expect(page.getByTestId('badge-type-bus-1')).toContainText(/Restaurant/i); // Assuming translation is similar or English fallback
     });
 
     test('Landing page localized content consistency', async ({ page }) => {
