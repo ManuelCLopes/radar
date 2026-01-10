@@ -52,10 +52,10 @@ export class NodemailerEmailService implements EmailService {
   constructor() {
     const service = process.env.EMAIL_SERVICE;
     const host = process.env.EMAIL_HOST || process.env.SMTP_HOST;
-    const port = parseInt(process.env.EMAIL_PORT || process.env.SMTP_PORT || "587");
+    const portEnv = process.env.EMAIL_PORT || process.env.SMTP_PORT;
     const user = process.env.EMAIL_USER || process.env.SMTP_USER;
     const pass = process.env.EMAIL_PASS || process.env.SMTP_PASS;
-    const secure = (process.env.EMAIL_SECURE || process.env.SMTP_SECURE) === "true";
+    const secureEnv = process.env.EMAIL_SECURE || process.env.SMTP_SECURE;
 
     const config: any = {
       auth: { user, pass }
@@ -63,10 +63,18 @@ export class NodemailerEmailService implements EmailService {
 
     if (service) {
       config.service = service;
+      log(`[EmailService] Configured using service: ${service}`, "email");
     } else {
+      // Auto-configure for Gmail if detected
+      const isGmail = host === "smtp.gmail.com";
+      const defaultPort = isGmail ? 465 : 587;
+      const defaultSecure = isGmail ? true : false;
+
       config.host = host;
-      config.port = port;
-      config.secure = secure;
+      config.port = portEnv ? parseInt(portEnv) : defaultPort;
+      config.secure = secureEnv ? secureEnv === "true" : defaultSecure;
+
+      log(`[EmailService] Configured using host: ${config.host}:${config.port} (secure: ${config.secure})`, "email");
     }
 
     this.transporter = nodemailer.createTransport(config);
