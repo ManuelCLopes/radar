@@ -9,39 +9,12 @@ export interface EmailService {
 
 export class ConsoleEmailService implements EmailService {
   async sendWeeklyReport(user: User, report: Report): Promise<boolean> {
-    console.log(`
-\x1b[33m[EMAIL MOCK] ---------------------------------------------------\x1b[0m
-\x1b[33mIMPORTANT: Real email sending is NOT configured. \x1b[0m
-\x1b[33mSee SETUP_GUIDE.md to enable SMTP.\x1b[0m
-To: ${user.email}
-Subject: Your Weekly Competitor Watcher Report: ${report.businessName}
-----------------------------------------------------------------
-Hello ${user.firstName || "there"},
-
-Here is your weekly competitor analysis report for ${report.businessName}.
-
-Report ID: ${report.id}
-Generated At: ${report.generatedAt}
-
-View your full report here: https://competitorwatcher.pt/dashboard
-
-Best,
-The Competitor Watcher Team
-----------------------------------------------------------------
-`);
+    console.log(`[EMAIL MOCK] Sending email to ${user.email} (Content suppressed)`);
     return true;
   }
 
   async sendAdHocReport(to: string, report: Report, lang: string): Promise<boolean> {
-    console.log(`
-\x1b[33m[EMAIL MOCK] ---------------------------------------------------\x1b[0m
-\x1b[33mIMPORTANT: Real email sending is NOT configured. \x1b[0m
-\x1b[33mTo: ${to}\x1b[0m
-\x1b[33mSubject: Ad-hoc Report: ${report.businessName}\x1b[0m
-----------------------------------------------------------------
-(Rich HTML Report Content would be here)
-----------------------------------------------------------------
-`);
+    console.log(`[EMAIL MOCK] Sending ad-hoc email to ${to} (Content suppressed)`);
     return true;
   }
 }
@@ -453,7 +426,7 @@ export function generateReportEmail(report: Report, lang: string = "pt") {
             
             <div style="display: flex; gap: 24px; margin-top: 16px;">
               <div>
-                <span style="font-size: 20px; font-weight: bold; color: #2563eb;">${report.competitors.length}</span>
+                <span style="font-size: 20px; font-weight: bold; color: #2563eb;">${report.competitors?.length || 0}</span>
                 <span style="font-size: 13px; display: block; color: #64748b;">${t.competitors}</span>
               </div>
               <div>
@@ -543,16 +516,7 @@ export async function sendEmail({ to, subject, html, text }: { to: string; subje
       throw error; // Re-throw to be caught by route handler
     }
   } else {
-    console.log(`
-\x1b[33m[EMAIL MOCK] ---------------------------------------------------\x1b[0m
-\x1b[33mIMPORTANT: Real email sending is NOT configured. \x1b[0m
-\x1b[33mSee SETUP_GUIDE.md to enable SMTP.\x1b[0m
-To: ${to}
-Subject: ${subject}
-----------------------------------------------------------------
-${text}
-----------------------------------------------------------------
-    `);
+    console.log(`[EMAIL MOCK] Sending email to ${to} (Content suppressed)`);
   }
   return true;
 }
