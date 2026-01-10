@@ -204,11 +204,11 @@ export async function setupAuth(app: Express) {
                     const { html, text } = generateWelcomeEmail(firstName || email, userLang);
 
                     const subjects: Record<string, string> = {
-                        pt: "Bem-vindo ao Competitive Watcher! 🎉",
-                        en: "Welcome to Competitive Watcher! 🎉",
-                        es: "¡Bienvenido a Competitive Watcher! 🎉",
-                        fr: "Bienvenue sur Competitive Watcher ! 🎉",
-                        de: "Willkommen bei Competitive Watcher! 🎉"
+                        pt: "Bem-vindo ao Competitor Watcher! 🎉",
+                        en: "Welcome to Competitor Watcher! 🎉",
+                        es: "¡Bienvenido a Competitor Watcher! 🎉",
+                        fr: "Bienvenue sur Competitor Watcher ! 🎉",
+                        de: "Willkommen bei Competitor Watcher! 🎉"
                     };
 
                     await sendEmail({

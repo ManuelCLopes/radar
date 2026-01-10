@@ -6,7 +6,7 @@ test.describe('SEO & Accessibility', () => {
         await page.goto('/');
 
         // Title check (Helmet might delay this slightly)
-        await expect(page).toHaveTitle(/Competitive Watcher|Competitor Watcher/i);
+        await expect(page).toHaveTitle(/Competitor Watcher/i);
 
         // Meta description
         const description = page.locator('meta[name="description"]').first();

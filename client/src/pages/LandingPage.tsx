@@ -137,21 +137,21 @@ export default function LandingPage() {
   return (
     <div className="landing-page">
       <Helmet>
-        <title>Competitive Watcher - Análise de Concorrência Local com IA</title>
+        <title>Competitor Watcher - Análise de Concorrência Local com IA</title>
         <meta name="description" content="Analise a concorrência do seu negócio local com inteligência artificial. Descubra concorrentes, obtenha insights estratégicos e tome decisões baseadas em dados." />
         <meta name="keywords" content="análise de concorrência, inteligência artificial, negócios locais, estratégia de mercado, competidores" />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://competitorwatcher.pt/" />
-        <meta property="og:title" content="Competitive Watcher - Análise de Concorrência Local" />
+        <meta property="og:title" content="Competitor Watcher - Análise de Concorrência Local" />
         <meta property="og:description" content="Descubra e analise os seus concorrentes locais com o poder da IA." />
         <meta property="og:image" content="https://competitorwatcher.pt/og-image.png" />
 
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://competitorwatcher.pt/" />
-        <meta property="twitter:title" content="Competitive Watcher - Análise de Concorrência Local" />
+        <meta property="twitter:title" content="Competitor Watcher - Análise de Concorrência Local" />
         <meta property="twitter:description" content="Descubra e analise os seus concorrentes locais com o poder da IA." />
         <meta property="twitter:image" content="https://competitorwatcher.pt/og-image.png" />
 
@@ -160,7 +160,7 @@ export default function LandingPage() {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            "name": "Competitive Watcher",
+            "name": "Competitor Watcher",
             "applicationCategory": "BusinessApplication",
             "operatingSystem": "Web",
             "offers": {

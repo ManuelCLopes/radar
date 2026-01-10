@@ -503,11 +503,11 @@ export async function registerRoutes(
       const { html, text } = generatePasswordResetEmail(resetLink, email, userLang);
 
       const subjects: Record<string, string> = {
-        pt: "Recuperação de Password - Competitive Watcher",
-        en: "Password Recovery - Competitive Watcher",
-        es: "Recuperación de contraseña - Competitive Watcher",
-        fr: "Récupération de mot de passe - Competitive Watcher",
-        de: "Passwort-Wiederherstellung - Competitive Watcher"
+        pt: "Recuperação de Password - Competitor Watcher",
+        en: "Password Recovery - Competitor Watcher",
+        es: "Recuperación de contraseña - Competitor Watcher",
+        fr: "Récupération de mot de passe - Competitor Watcher",
+        de: "Passwort-Wiederherstellung - Competitor Watcher"
       };
 
       await sendEmail({

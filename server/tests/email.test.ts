@@ -9,37 +9,37 @@ describe("Email Templates Localization", () => {
     describe("generateWelcomeEmail", () => {
         it("should generate Portuguese welcome email by default", () => {
             const { html, text } = generateWelcomeEmail(testName);
-            expect(html).toContain("Bem-vindo ao Competitive Watcher!");
+            expect(html).toContain("Bem-vindo ao Competitor Watcher!");
             expect(html).toContain("Olá Test User,");
-            expect(text).toContain("Bem-vindo ao Competitive Watcher");
+            expect(text).toContain("Bem-vindo ao Competitor Watcher");
         });
 
         it("should generate English welcome email", () => {
             const { html, text } = generateWelcomeEmail(testName, "en");
-            expect(html).toContain("Welcome to Competitive Watcher!");
+            expect(html).toContain("Welcome to Competitor Watcher!");
             expect(html).toContain("Hello Test User,");
-            expect(text).toContain("Welcome to Competitive Watcher");
+            expect(text).toContain("Welcome to Competitor Watcher");
         });
 
         it("should generate Spanish welcome email", () => {
             const { html } = generateWelcomeEmail(testName, "es");
-            expect(html).toContain("¡Bienvenido a Competitive Watcher!");
+            expect(html).toContain("¡Bienvenido a Competitor Watcher!");
             expect(html).toContain("Hola Test User,");
         });
 
         it("should generate French welcome email", () => {
             const { html } = generateWelcomeEmail(testName, "fr");
-            expect(html).toContain("Bienvenue sur Competitive Watcher !");
+            expect(html).toContain("Bienvenue sur Competitor Watcher !");
         });
 
         it("should generate German welcome email", () => {
             const { html } = generateWelcomeEmail(testName, "de");
-            expect(html).toContain("Willkommen bei Competitive Watcher!");
+            expect(html).toContain("Willkommen bei Competitor Watcher!");
         });
 
         it("should fallback to English for unknown language", () => {
             const { html } = generateWelcomeEmail(testName, "it");
-            expect(html).toContain("Welcome to Competitive Watcher!");
+            expect(html).toContain("Welcome to Competitor Watcher!");
         });
     });
 
@@ -84,7 +84,7 @@ describe("Email Templates Localization", () => {
     describe("Localization Fallbacks", () => {
         it("should fallback to English for unknown language in welcome email", () => {
             const { html } = generateWelcomeEmail(testName, "it");
-            expect(html).toContain("Welcome to Competitive Watcher!");
+            expect(html).toContain("Welcome to Competitor Watcher!");
         });
 
         it("should fallback to English for unknown language in password reset email", () => {
