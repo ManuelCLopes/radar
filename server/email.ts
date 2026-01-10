@@ -50,6 +50,11 @@ export class NodemailerEmailService implements EmailService {
       log(`[EmailService] Configured using host: ${config.host}:${config.port} (secure: ${config.secure})`, "email");
     }
 
+    // Force IPv4 and set timeouts to avoid long hangs on server
+    config.family = 4;
+    config.connectionTimeout = 10000; // 10 seconds
+    config.greetingTimeout = 10000; // 10 seconds
+
     this.transporter = nodemailer.createTransport(config);
   }
 
@@ -498,6 +503,11 @@ export async function sendEmail({ to, subject, html, text }: { to: string; subje
       config.port = port;
       config.secure = secure;
     }
+
+    // Force IPv4 and timeouts
+    config.family = 4;
+    config.connectionTimeout = 10000;
+    config.greetingTimeout = 10000;
 
     try {
       const transporter = nodemailer.createTransport(config);
