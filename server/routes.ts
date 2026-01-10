@@ -794,6 +794,59 @@ export async function registerRoutes(
     }
   });
 
+  // Debug Endpoint for Connectivity with strict timeout
+  app.get("/api/debug-connectivity", async (req, res) => {
+    const net = await import("net");
+    const results: any[] = [];
+    const targets = [
+      { host: "smtp.gmail.com", port: 587 },
+      { host: "smtp.gmail.com", port: 465 },
+      { host: "google.com", port: 443 }
+    ];
+
+    for (const target of targets) {
+      const start = Date.now();
+      try {
+        await new Promise<void>((resolve, reject) => {
+          const socket = new net.Socket();
+          socket.setTimeout(3000); // 3s timeout
+
+          socket.on("connect", () => {
+            const time = Date.now() - start;
+            results.push({ ...target, status: "success", time: `${time}ms` });
+            socket.destroy();
+            resolve();
+          });
+
+          socket.on("timeout", () => {
+            results.push({ ...target, status: "timeout", time: ">3000ms" });
+            socket.destroy();
+            resolve(); // Don't fail the whole request
+          });
+
+          socket.on("error", (err) => {
+            results.push({ ...target, status: "error", error: err.message });
+            socket.destroy();
+            resolve();
+          });
+
+          socket.connect(target.port, target.host);
+        });
+      } catch (err) {
+        results.push({ ...target, status: "failed", error: String(err) });
+      }
+    }
+
+    res.json({
+      timestamp: new Date(),
+      results,
+      env: {
+        NODE_ENV: process.env.NODE_ENV,
+        EMAIL_HOST: process.env.EMAIL_HOST || process.env.SMTP_HOST || "not set"
+      }
+    });
+  });
+
   // SEO Endpoints
   app.get("/robots.txt", (req, res) => {
     res.type("text/plain");
@@ -806,30 +859,30 @@ Disallow: /dashboard
 Disallow: /api/
 
 Sitemap: https://competitorwatcher.pt/sitemap.xml
-`);
+    `);
   });
 
   app.get("/sitemap.xml", (req, res) => {
     res.type("application/xml");
-    res.send(`<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://competitorwatcher.pt/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
+    res.send(`<? xml version = "1.0" encoding = "UTF-8" ?>
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" >
+      <url>
+      <loc>https://competitorwatcher.pt/</loc>
+  <changefreq>weekly </changefreq>
+    < priority > 1.0 </priority>
+    </url>
+    < url >
     <loc>https://competitorwatcher.pt/login</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
+  <changefreq>monthly </changefreq>
+    < priority > 0.8 </priority>
+    </url>
+    < url >
     <loc>https://competitorwatcher.pt/register</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-</urlset>
-`);
+  <changefreq>monthly </changefreq>
+    < priority > 0.8 </priority>
+    </url>
+    </urlset>
+      `);
   });
 
   return httpServer;
