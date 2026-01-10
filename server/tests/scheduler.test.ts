@@ -94,7 +94,7 @@ describe("Scheduler", () => {
 
             expect(storage.listBusinesses).toHaveBeenCalled();
             expect(reports.runReportForBusiness).toHaveBeenCalledTimes(1); // Only for business "1"
-            expect(reports.runReportForBusiness).toHaveBeenCalledWith("1");
+            expect(reports.runReportForBusiness).toHaveBeenCalledWith("1", "pt");
 
             expect(result.success).toBe(1);
             expect(result.failed).toBe(2);

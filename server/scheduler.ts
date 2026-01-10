@@ -52,21 +52,31 @@ export async function runScheduledReports(): Promise<{
     }
 
     try {
-      const report = await runReportForBusiness(business.id);
+      let lang = "pt"; // Default to Portuguese if no user found
+      let user = null;
 
-      // Attempt to find the user associated with this business
-      // Since we don't have a direct link in the businesses table, we look for previous reports
-      // or searches that might link them.
-      // Ideally, we should add userId to businesses table, but for now let's try to find a user
-      // who has generated a report for this business before.
-      const previousReports = await storage.getReportsByBusinessId(business.id);
-      const userId = previousReports.find(r => r.userId)?.userId;
-
-      if (userId) {
-        const user = await storage.getUser(userId);
-        if (user) {
-          await emailService.sendWeeklyReport(user, report);
+      if (business.userId) {
+        user = await storage.getUser(business.userId);
+        if (user && user.language) {
+          lang = user.language;
         }
+      } else {
+        // Fallback for legacy data: try to find user from previous reports
+        const previousReports = await storage.getReportsByBusinessId(business.id);
+        const userId = previousReports.find(r => r.userId)?.userId;
+        if (userId) {
+          user = await storage.getUser(userId);
+          if (user && user.language) {
+            lang = user.language;
+          }
+        }
+      }
+
+      // Pass the determined language to the report generator so AI analysis is localized
+      const report = await runReportForBusiness(business.id, lang);
+
+      if (user) {
+        await emailService.sendWeeklyReport(user, report);
       }
 
       results.push({

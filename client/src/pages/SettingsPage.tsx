@@ -149,6 +149,18 @@ export default function SettingsPage() {
                             />
                         </div>
 
+                        <div className="space-y-2">
+                            <Label>{t('language.select')}</Label>
+                            <div className="flex items-center gap-4">
+                                <div className="border rounded-md px-3 py-2 flex-1 bg-background">
+                                    <LanguageSelector />
+                                </div>
+                                <span className="text-sm text-muted-foreground hidden sm:inline-block">
+                                    {t('settings.account.languageHint') || "This language will be used for your emails."}
+                                </span>
+                            </div>
+                        </div>
+
                         {isEditing && (
                             <>
                                 <Separator />
@@ -300,6 +312,6 @@ export default function SettingsPage() {
                     </AlertDialogContent>
                 </AlertDialog>
             </main>
-        </div>
+        </div >
     );
 }

@@ -623,6 +623,7 @@
       "description": "Update your personal details and credentials",
       "name": "Name",
       "email": "Email",
+      "languageHint": "This language will be used for your emails.",
       "currentPassword": "Current Password",
       "newPassword": "New Password",
       "confirmPassword": "Confirm New Password",

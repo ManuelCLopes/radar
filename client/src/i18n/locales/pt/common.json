@@ -624,6 +624,7 @@
       "description": "Atualize os seus dados pessoais e credenciais",
       "name": "Nome",
       "email": "Email",
+      "languageHint": "Este idioma será utilizado para o envio dos seus emails.",
       "currentPassword": "Password Atual",
       "newPassword": "Nova Password",
       "confirmPassword": "Confirmar Nova Password",
