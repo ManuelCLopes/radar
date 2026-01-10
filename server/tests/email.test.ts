@@ -150,10 +150,28 @@ describe("generateReportEmail", () => {
         expect(html).toContain("Your Analysis Report");
     });
 
-    it("should include AI analysis content in the email", () => {
-        const { html } = generateReportEmail(mockReport, "en");
+    it("should include AI analysis content in the email (Legacy)", () => {
+        // Ensure analysis is long enough to bypass structured fallback check (>50 chars)
+        const longAnalysis = "<h2>Analysis</h2><p>Good job. This is a very long analysis that should be rendered directly as legacy HTML content without falling back to structured data.</p>";
+        const legacyReport = { ...mockReport, aiAnalysis: longAnalysis };
+        const { html } = generateReportEmail(legacyReport, "en");
         expect(html).toContain("Analysis</h2>");
-        expect(html).toContain("Good job.");
+        expect(html).toContain("Good job");
+    });
+
+    it("should render Structured Analysis when aiAnalysis is placeholder", () => {
+        const structuredReport = {
+            ...mockReport,
+            aiAnalysis: "Structured Analysis",
+            executiveSummary: "This is the executive summary.",
+            swotAnalysis: { strengths: ["Strength 1"] },
+            marketingStrategy: { primaryChannels: "Social Media" }
+        };
+        const { html } = generateReportEmail(structuredReport, "en");
+        expect(html).toContain("Executive Summary");
+        expect(html).toContain("This is the executive summary");
+        expect(html).toContain("SWOT Analysis");
+        expect(html).toContain("Strength 1");
     });
 
     it("should include competitors table", () => {

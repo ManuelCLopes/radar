@@ -318,9 +318,81 @@ export function generateWelcomeEmail(name: string, lang: string = "pt") {
           <p style="color: #9ca3af; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Competitive Watcher. ${t.footer}</p>
         </div>
       </div>
+      </div>
     </div>
   `;
   return { html, text: t.text };
+}
+
+// Helper to format structured analysis into HTML
+function formatStructuredAnalysis(report: Report, lang: string): string {
+  // Safe accessors for JSONB fields
+  const getField = (field: any) => field || {};
+
+  const swot = getField(report.swotAnalysis);
+  const marketing = getField(report.marketingStrategy);
+  const audience = getField(report.targetAudience);
+  const trends = report.marketTrends as string[] || [];
+  const summary = report.executiveSummary || "";
+
+  // Note: Localized headers could be expanded, defaulting to English/Portuguese mix for now or reusing existing lang
+  // For simplicity complying with strict length, we'll use simple headers. 
+  // Ideally this should use the 'lang' param for headers.
+
+  const headers = {
+    pt: { summary: "Resumo Executivo", swot: "Análise SWOT", strategy: "Estratégia de Marketing", audience: "Público-Alvo", trends: "Tendências de Mercado" },
+    en: { summary: "Executive Summary", swot: "SWOT Analysis", strategy: "Marketing Strategy", audience: "Target Audience", trends: "Market Trends" }
+  };
+  const t = headers[lang === 'pt' ? 'pt' : 'en'] || headers.en;
+
+  let html = "";
+
+  if (summary) {
+    html += `<div style="margin-bottom: 24px;">
+      <h3 style="color: #1e40af; font-size: 18px; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">${t.summary}</h3>
+      <p style="color: #334155; line-height: 1.6;">${summary}</p>
+    </div>`;
+  }
+
+  if (swot.strengths || swot.weaknesses) {
+    html += `<div style="margin-bottom: 24px;">
+      <h3 style="color: #1e40af; font-size: 18px; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">${t.swot}</h3>
+      <div style="display: grid; grid-template-columns: 1fr; gap: 16px;">
+        ${['Strengths', 'Weaknesses', 'Opportunities', 'Threats'].map(key => {
+      const items = swot[key.toLowerCase()] as string[];
+      if (!items?.length) return '';
+      const color = key === 'Strengths' ? '#166534' : key === 'Weaknesses' ? '#991b1b' : key === 'Opportunities' ? '#1e40af' : '#ea580c';
+      return `
+            <div style="background-color: #f8fafc; padding: 12px; border-radius: 6px; border-left: 4px solid ${color};">
+              <strong style="color: ${color}; display: block; margin-bottom: 8px;">${key}</strong>
+              <ul style="margin: 0; padding-left: 20px; color: #334155;">
+                ${items.map(item => `<li style="margin-bottom: 4px;">${item}</li>`).join('')}
+              </ul>
+            </div>`;
+    }).join('')}
+      </div>
+    </div>`;
+  }
+
+  if (marketing.primaryChannels) {
+    html += `<div style="margin-bottom: 24px;">
+       <h3 style="color: #1e40af; font-size: 18px; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">${t.strategy}</h3>
+       <p><strong>Primary Channels:</strong> ${marketing.primaryChannels}</p>
+       <p><strong>Content Ideas:</strong> ${marketing.contentIdeas}</p>
+       <p><strong>Promotional Tactics:</strong> ${marketing.promotionalTactics}</p>
+    </div>`;
+  }
+
+  if (trends.length > 0) {
+    html += `<div style="margin-bottom: 24px;">
+      <h3 style="color: #1e40af; font-size: 18px; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">${t.trends}</h3>
+      <ul style="color: #334155; line-height: 1.6; padding-left: 20px; margin: 0;">
+        ${trends.map(item => `<li style="margin-bottom: 8px;">${item}</li>`).join('')}
+      </ul>
+    </div>`;
+  }
+
+  return html || "<p>Analysis data not available in structured format.</p>";
 }
 
 export function generateReportEmail(report: Report, lang: string = "pt") {
@@ -399,12 +471,20 @@ export function generateReportEmail(report: Report, lang: string = "pt") {
     ? (report.competitors.reduce((sum, c) => sum + (c.rating || 0), 0) / report.competitors.length).toFixed(1)
     : t.na;
 
-  const formattedAnalysis = report.aiAnalysis
-    .replace(/<h2/g, '<h2 style="color: #1e3a8a; font-size: 18px; margin-top: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;"')
-    .replace(/<h3/g, '<h3 style="color: #1e40af; font-size: 16px; margin-top: 16px;"')
-    .replace(/<ul/g, '<ul style="padding-left: 20px; margin-bottom: 16px;"')
-    .replace(/<li/g, '<li style="margin-bottom: 8px;"')
-    .replace(/<p/g, '<p style="margin-bottom: 12px; line-height: 1.6;"');
+  let formattedAnalysis = "";
+
+  // Check if we need to use structured analysis (if legacy text is just the placeholder)
+  if (!report.aiAnalysis || report.aiAnalysis === "Structured Analysis" || report.aiAnalysis.length < 50) {
+    formattedAnalysis = formatStructuredAnalysis(report, normalizedLang);
+  } else {
+    // Legacy mapping for old string reports
+    formattedAnalysis = report.aiAnalysis
+      .replace(/<h2/g, '<h2 style="color: #1e3a8a; font-size: 18px; margin-top: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;"')
+      .replace(/<h3/g, '<h3 style="color: #1e40af; font-size: 16px; margin-top: 16px;"')
+      .replace(/<ul/g, '<ul style="padding-left: 20px; margin-bottom: 16px;"')
+      .replace(/<li/g, '<li style="margin-bottom: 8px;"')
+      .replace(/<p/g, '<p style="margin-bottom: 12px; line-height: 1.6;"');
+  }
 
   const html = `
     <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8fafc; color: #334155;">
