@@ -31,8 +31,7 @@ export class ResendEmailService implements EmailService {
   async sendWeeklyReport(user: User, report: Report): Promise<boolean> {
     try {
       const { html, text, subject } = generateWeeklyReportContent(user, report);
-      // Use specific Resend sender or default to testing address. Ignore EMAIL_FROM (likely SMTP) to avoid "domain not verified" errors.
-      const from = process.env.RESEND_FROM || "Competitive Watcher <onboarding@resend.dev>";
+      const from = process.env.EMAIL_FROM || "Competitive Watcher <noreply@competitorwatcher.pt>";
 
       const data = await this.resend.emails.send({
         from,
@@ -58,7 +57,7 @@ export class ResendEmailService implements EmailService {
   async sendAdHocReport(to: string, report: Report, lang: string): Promise<boolean> {
     try {
       const { html, text, subject } = generateReportEmail(report, lang);
-      const from = process.env.RESEND_FROM || "Competitive Watcher <onboarding@resend.dev>";
+      const from = process.env.EMAIL_FROM || "Competitive Watcher <noreply@competitorwatcher.pt>";
 
       const data = await this.resend.emails.send({
         from,
@@ -553,7 +552,7 @@ export async function sendEmail({ to, subject, html, text }: { to: string; subje
   if (process.env.RESEND_API_KEY) {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
-      const from = process.env.RESEND_FROM || "Competitive Watcher <onboarding@resend.dev>";
+      const from = process.env.EMAIL_FROM || "Competitive Watcher <noreply@competitorwatcher.pt>";
 
       const data = await resend.emails.send({
         from,
