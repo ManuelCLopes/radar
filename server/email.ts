@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { Report, User } from "@shared/schema";
 import { log } from "./log";
 
@@ -16,6 +17,67 @@ export class ConsoleEmailService implements EmailService {
   async sendAdHocReport(to: string, report: Report, lang: string): Promise<boolean> {
     console.log(`[EMAIL MOCK] Sending ad-hoc email to ${to} (Content suppressed)`);
     return true;
+  }
+}
+
+export class ResendEmailService implements EmailService {
+  private resend: Resend;
+
+  constructor(apiKey: string) {
+    this.resend = new Resend(apiKey);
+    log("[EmailService] Initialized with Resend API", "email");
+  }
+
+  async sendWeeklyReport(user: User, report: Report): Promise<boolean> {
+    try {
+      const { html, text, subject } = generateWeeklyReportContent(user, report);
+      const from = process.env.EMAIL_FROM || "Competitive Watcher <onboarding@resend.dev>";
+
+      const data = await this.resend.emails.send({
+        from,
+        to: user.email,
+        subject,
+        html,
+        text
+      });
+
+      if (data.error) {
+        console.error("[Resend] Error sending weekly report:", data.error);
+        return false;
+      }
+
+      log(`[Resend] Weekly report sent to ${user.email}: ${data.data?.id}`, "email");
+      return true;
+    } catch (error) {
+      console.error("[Resend] Failed to send weekly report:", error);
+      return false;
+    }
+  }
+
+  async sendAdHocReport(to: string, report: Report, lang: string): Promise<boolean> {
+    try {
+      const { html, text, subject } = generateReportEmail(report, lang);
+      const from = process.env.EMAIL_FROM || "Competitive Watcher <onboarding@resend.dev>";
+
+      const data = await this.resend.emails.send({
+        from,
+        to,
+        subject,
+        html,
+        text
+      });
+
+      if (data.error) {
+        console.error("[Resend] Error sending ad-hoc report:", data.error);
+        return false;
+      }
+
+      log(`[Resend] Ad-hoc report sent to ${to}: ${data.data?.id}`, "email");
+      return true;
+    } catch (error) {
+      console.error("[Resend] Failed to send ad-hoc report:", error);
+      return false;
+    }
   }
 }
 
@@ -38,6 +100,7 @@ export class NodemailerEmailService implements EmailService {
       config.service = service;
       log(`[EmailService] Configured using service: ${service}`, "email");
     } else {
+      // Default to port 587 (STARTTLS)
       const defaultPort = 587;
       const defaultSecure = false;
 
@@ -48,86 +111,24 @@ export class NodemailerEmailService implements EmailService {
       log(`[EmailService] Configured using host: ${config.host}:${config.port} (secure: ${config.secure})`, "email");
     }
 
-    // Force IPv4 and set timeouts to avoid long hangs on server
+    // Force IPv4 and set timeouts
     config.family = 4;
-    config.connectionTimeout = 10000; // 10 seconds
-    config.greetingTimeout = 10000; // 10 seconds
+    config.connectionTimeout = 10000;
+    config.greetingTimeout = 10000;
 
     this.transporter = nodemailer.createTransport(config);
   }
 
   async sendWeeklyReport(user: User, report: Report): Promise<boolean> {
     try {
-      const lang = user.language || "pt";
-      const translations: Record<string, any> = {
-        pt: {
-          subject: `Relatório Semanal - Competitive Watcher: ${report.businessName}`,
-          title: "Análise Semanal de Concorrência",
-          message: `Aqui está o seu relatório semanal de análise de concorrência para <strong>${report.businessName}</strong>.`,
-          detail: "Analisámos as críticas e tendências mais recentes na sua área.",
-          button: "Ver Relatório Completo",
-          footer: `Gerado em ${new Date(report.generatedAt).toLocaleString('pt-PT')}`
-        },
-        en: {
-          subject: `Weekly Report - Competitive Watcher: ${report.businessName}`,
-          title: "Weekly Competitor Analysis",
-          message: `Here is your weekly competitor analysis report for <strong>${report.businessName}</strong>.`,
-          detail: "We've analyzed the latest reviews and trends in your area.",
-          button: "View Full Report",
-          footer: `Generated at ${new Date(report.generatedAt).toLocaleString('en-US')}`
-        },
-        es: {
-          subject: `Informe Semanal - Competitive Watcher: ${report.businessName}`,
-          title: "Análisis Semanal de Competencia",
-          message: `Aquí está su informe semanal de análisis de competencia para <strong>${report.businessName}</strong>.`,
-          detail: "Hemos analizado las críticas y tendencias más recientes en su área.",
-          button: "Ver Informe Completo",
-          footer: `Generado el ${new Date(report.generatedAt).toLocaleString('es-ES')}`
-        },
-        fr: {
-          subject: `Rapport Hebdomadaire - Competitive Watcher : ${report.businessName}`,
-          title: "Analyse Hebdomadaire de la Concurrence",
-          message: `Voici votre rapport hebdomadaire d'analyse de la concurrence pour <strong>${report.businessName}</strong>.`,
-          detail: "Nous avons analysé les derniers avis et tendances dans votre région.",
-          button: "Voir le Rapport Complet",
-          footer: `Généré le ${new Date(report.generatedAt).toLocaleString('fr-FR')}`
-        },
-        de: {
-          subject: `Wöchentlicher Bericht - Competitive Watcher: ${report.businessName}`,
-          title: "Wöchentliche Wettbewerbsanalyse",
-          message: `Hier ist Ihr wöchentlicher Wettbewerbsanalysebericht für <strong>${report.businessName}</strong>.`,
-          detail: "Wir haben die neuesten Bewertungen und Trends in Ihrer Region analysiert.",
-          button: "Vollständigen Bericht anzeigen",
-          footer: `Generiert am ${new Date(report.generatedAt).toLocaleString('de-DE')}`
-        }
-      };
-
-      // Normalize language code to 2 characters (e.g. "pt-PT" -> "pt")
-      const normalizedLang = lang.substring(0, 2).toLowerCase();
-      const t = translations[normalizedLang] || translations.en;
+      const { html, text, subject } = generateWeeklyReportContent(user, report);
 
       await this.transporter.sendMail({
         from: process.env.EMAIL_FROM || process.env.SMTP_FROM || '"Competitive Watcher" <noreply@competitivewatcher.pt>',
         to: user.email,
-        subject: t.subject,
-        html: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-            <div style="background-color: #0a58ca; padding: 30px; text-align: center;">
-              <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">Competitive Watcher</h1>
-            </div>
-            <div style="padding: 40px 30px;">
-              <h2 style="color: #111827; margin-top: 0; font-size: 20px;">${t.title}</h2>
-              <p style="color: #4b5563; line-height: 1.6;">${t.message}</p>
-              <p style="color: #4b5563; line-height: 1.6;">${t.detail}</p>
-              <div style="margin: 35px 0; text-align: center;">
-                <a href="https://competitivewatcher.pt/dashboard" style="background-color: #0a58ca; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">${t.button}</a>
-              </div>
-              <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-top: 30px; border-top: 1px solid #f3f4f6; padding-top: 20px;">
-                ${t.footer}
-              </p>
-            </div>
-          </div>
-        `,
+        subject,
+        html,
+        text, // fallback
       });
       return true;
     } catch (error) {
@@ -156,9 +157,11 @@ export class NodemailerEmailService implements EmailService {
 }
 
 // Export singleton based on env
-export const emailService = (process.env.EMAIL_SERVICE || process.env.EMAIL_HOST || process.env.SMTP_HOST)
-  ? new NodemailerEmailService()
-  : new ConsoleEmailService();
+export const emailService: EmailService = (process.env.RESEND_API_KEY)
+  ? new ResendEmailService(process.env.RESEND_API_KEY)
+  : (process.env.EMAIL_SERVICE || process.env.EMAIL_HOST || process.env.SMTP_HOST)
+    ? new NodemailerEmailService()
+    : new ConsoleEmailService();
 
 export function generatePasswordResetEmail(resetLink: string, email: string, lang: string = "pt") {
   const translations: Record<string, any> = {
@@ -214,7 +217,6 @@ export function generatePasswordResetEmail(resetLink: string, email: string, lan
     }
   };
 
-  // Normalize language code to 2 characters
   const normalizedLang = lang.substring(0, 2).toLowerCase();
   const t = translations[normalizedLang] || translations.en;
 
@@ -294,7 +296,6 @@ export function generateWelcomeEmail(name: string, lang: string = "pt") {
     }
   };
 
-  // Normalize language code to 2 characters
   const normalizedLang = lang.substring(0, 2).toLowerCase();
   const t = translations[normalizedLang] || translations.en;
 
@@ -321,8 +322,6 @@ export function generateWelcomeEmail(name: string, lang: string = "pt") {
   `;
   return { html, text: t.text };
 }
-
-// ... existing exports ...
 
 export function generateReportEmail(report: Report, lang: string = "pt") {
   const translations: Record<string, any> = {
@@ -393,7 +392,6 @@ export function generateReportEmail(report: Report, lang: string = "pt") {
     }
   };
 
-  // Normalize language code to 2 characters
   const normalizedLang = lang.substring(0, 2).toLowerCase();
   const t = translations[normalizedLang] || translations.en;
 
@@ -401,7 +399,6 @@ export function generateReportEmail(report: Report, lang: string = "pt") {
     ? (report.competitors.reduce((sum, c) => sum + (c.rating || 0), 0) / report.competitors.length).toFixed(1)
     : t.na;
 
-  // Convert analysis formatting (simple conversion)
   const formattedAnalysis = report.aiAnalysis
     .replace(/<h2/g, '<h2 style="color: #1e3a8a; font-size: 18px; margin-top: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;"')
     .replace(/<h3/g, '<h3 style="color: #1e40af; font-size: 16px; margin-top: 16px;"')
@@ -458,7 +455,7 @@ export function generateReportEmail(report: Report, lang: string = "pt") {
           </div>
 
           <div style="text-align: center; margin-top: 32px;">
-            <a href="https://competitorwatcher.pt/dashboard" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">${t.viewOnline}</a>
+            <a href="https://competitivewatcher.pt/dashboard" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">${t.viewOnline}</a>
           </div>
         </div>
 
@@ -477,7 +474,111 @@ export function generateReportEmail(report: Report, lang: string = "pt") {
   };
 }
 
+
+// Helper for weekly report (kept at bottom or where preferred)
+function generateWeeklyReportContent(user: User, report: Report) {
+  const lang = user.language || "pt";
+  const translations: Record<string, any> = {
+    pt: {
+      subject: `Relatório Semanal - Competitive Watcher: ${report.businessName}`,
+      title: "Análise Semanal de Concorrência",
+      message: `Aqui está o seu relatório semanal de análise de concorrência para <strong>${report.businessName}</strong>.`,
+      detail: "Analisámos as críticas e tendências mais recentes na sua área.",
+      button: "Ver Relatório Completo",
+      footer: `Gerado em ${new Date(report.generatedAt).toLocaleString('pt-PT')}`
+    },
+    en: {
+      subject: `Weekly Report - Competitive Watcher: ${report.businessName}`,
+      title: "Weekly Competitor Analysis",
+      message: `Here is your weekly competitor analysis report for <strong>${report.businessName}</strong>.`,
+      detail: "We've analyzed the latest reviews and trends in your area.",
+      button: "View Full Report",
+      footer: `Generated at ${new Date(report.generatedAt).toLocaleString('en-US')}`
+    },
+    es: {
+      subject: `Informe Semanal - Competitive Watcher: ${report.businessName}`,
+      title: "Análisis Semanal de Competencia",
+      message: `Aquí está su informe semanal de análisis de competencia para <strong>${report.businessName}</strong>.`,
+      detail: "Hemos analizado las críticas y tendencias más recientes en su área.",
+      button: "Ver Informe Completo",
+      footer: `Generado el ${new Date(report.generatedAt).toLocaleString('es-ES')}`
+    },
+    fr: {
+      subject: `Rapport Hebdomadaire - Competitive Watcher : ${report.businessName}`,
+      title: "Analyse Hebdomadaire de la Concurrence",
+      message: `Voici votre rapport hebdomadaire d'analyse de la concurrence pour <strong>${report.businessName}</strong>.`,
+      detail: "Nous avons analysé les derniers avis et tendances dans votre région.",
+      button: "Voir le Rapport Complet",
+      footer: `Généré le ${new Date(report.generatedAt).toLocaleString('fr-FR')}`
+    },
+    de: {
+      subject: `Wöchentlicher Bericht - Competitive Watcher: ${report.businessName}`,
+      title: "Wöchentliche Wettbewerbsanalyse",
+      message: `Hier ist Ihr wöchentlicher Wettbewerbsanalysebericht für <strong>${report.businessName}</strong>.`,
+      detail: "Wir haben die neuesten Bewertungen und Trends in Ihrer Region analysiert.",
+      button: "Vollständigen Bericht anzeigen",
+      footer: `Generiert am ${new Date(report.generatedAt).toLocaleString('de-DE')}`
+    }
+  };
+
+  const normalizedLang = lang.substring(0, 2).toLowerCase();
+  const t = translations[normalizedLang] || translations.en;
+
+  const html = `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+      <div style="background-color: #0a58ca; padding: 30px; text-align: center;">
+        <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">Competitive Watcher</h1>
+      </div>
+      <div style="padding: 40px 30px;">
+        <h2 style="color: #111827; margin-top: 0; font-size: 20px;">${t.title}</h2>
+        <p style="color: #4b5563; line-height: 1.6;">${t.message}</p>
+        <p style="color: #4b5563; line-height: 1.6;">${t.detail}</p>
+        <div style="margin: 35px 0; text-align: center;">
+          <a href="https://competitivewatcher.pt/dashboard" style="background-color: #0a58ca; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">${t.button}</a>
+        </div>
+        <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-top: 30px; border-top: 1px solid #f3f4f6; padding-top: 20px;">
+          ${t.footer}
+        </p>
+      </div>
+    </div>
+  `;
+
+  return { html, text: t.message, subject: t.subject };
+}
+
+// Standalone sender for password resets etc.
 export async function sendEmail({ to, subject, html, text }: { to: string; subject: string; html: string; text: string }) {
+  // Use Resend if available
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      const from = process.env.EMAIL_FROM || "Competitive Watcher <onboarding@resend.dev>";
+
+      const data = await resend.emails.send({
+        from,
+        to,
+        subject,
+        html,
+        text
+      });
+
+      if (data.error) {
+        console.error("[Resend] Failed to send email:", data.error);
+        // Fallback to Nodemailer if needed, or throw
+        // For now, let's treat it as a hard failure unless we want dual redundancy
+        throw new Error(data.error.message);
+      }
+
+      log(`[Resend] Email sent to ${to}: ${data.data?.id}`, "email");
+      return true;
+    } catch (error) {
+      console.error("[Resend] Error:", error);
+      // Fallback could go here... but let's stick to one path for now
+      throw error;
+    }
+  }
+
+  // Fallback to Nodemailer logic
   const service = process.env.EMAIL_SERVICE;
   const host = process.env.EMAIL_HOST || process.env.SMTP_HOST;
   const user = process.env.EMAIL_USER || process.env.SMTP_USER;
@@ -487,41 +588,34 @@ export async function sendEmail({ to, subject, html, text }: { to: string; subje
   if (service || host) {
     log(`Attempting to send email via ${service ? `service: ${service}` : `host: ${host}`} to ${to}...`, "email");
 
+    // ... config same as before ...
     const port = parseInt(process.env.EMAIL_PORT || process.env.SMTP_PORT || "587");
     const secure = (process.env.EMAIL_SECURE || process.env.SMTP_SECURE) === "true";
 
     const config: any = {
-      auth: { user, pass }
+      auth: { user, pass },
+      host,
+      port,
+      secure,
+      family: 4,
+      connectionTimeout: 10000,
+      greetingTimeout: 10000
     };
 
     if (service) {
+      delete config.host;
+      delete config.port;
+      delete config.secure;
       config.service = service;
-    } else {
-      config.host = host;
-      config.port = port;
-      config.secure = secure;
     }
-
-    // Force IPv4 and timeouts
-    config.family = 4;
-    config.connectionTimeout = 10000;
-    config.greetingTimeout = 10000;
 
     try {
       const transporter = nodemailer.createTransport(config);
-
-      const info = await transporter.sendMail({
-        from,
-        to,
-        subject,
-        html,
-        text,
-      });
-
+      const info = await transporter.sendMail({ from, to, subject, html, text });
       log(`✅ Success! Message sent: ${info.messageId}`, "email");
     } catch (error) {
       log(`❌ Failed to send email to ${to}: ${error}`, "email");
-      throw error; // Re-throw to be caught by route handler
+      throw error;
     }
   } else {
     console.log(`[EMAIL MOCK] Sending email to ${to} (Content suppressed)`);
