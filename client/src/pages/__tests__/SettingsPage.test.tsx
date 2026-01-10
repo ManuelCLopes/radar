@@ -16,6 +16,10 @@ vi.mock('wouter', () => ({
 // Mock LanguageSelector
 vi.mock("@/components/LanguageSelector", () => ({
     LanguageSelector: () => <div data-testid="language-selector" />,
+    languages: [
+        { code: 'en', name: 'English', abbr: 'EN' },
+        { code: 'pt', name: 'Português', abbr: 'PT' }
+    ]
 }));
 
 // Mock ThemeToggle

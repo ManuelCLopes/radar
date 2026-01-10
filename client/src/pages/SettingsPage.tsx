@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { LanguageSelector } from "@/components/LanguageSelector";
+import { LanguageSelector, languages } from "@/components/LanguageSelector";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
     AlertDialog,
@@ -22,13 +22,20 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { apiRequest, queryClient } from "@/lib/queryClient";
 
 // Plans removed - app is now 100% free with donations
 
 export default function SettingsPage() {
     const { user, logoutMutation } = useAuth();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { toast } = useToast();
     const [, setLocation] = useLocation();
 
@@ -54,6 +61,33 @@ export default function SettingsPage() {
             description: t('settings.toast.profileUpdated.description'),
         });
         setIsEditing(false);
+    };
+
+    const handleLanguageChange = async (langCode: string) => {
+        i18n.changeLanguage(langCode);
+
+        // Persist to backend if user is logged in
+        if (user) {
+            try {
+                await fetch('/api/user/language', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ language: langCode }),
+                });
+
+                toast({
+                    title: "Language updated",
+                    description: "Your language preference has been saved.",
+                });
+            } catch (error) {
+                console.error('Failed to sync language with backend:', error);
+                toast({
+                    title: "Error",
+                    description: "Failed to save language preference.",
+                    variant: "destructive"
+                });
+            }
+        }
     };
 
     const handleDeleteAccount = async () => {
@@ -151,11 +185,23 @@ export default function SettingsPage() {
 
                         <div className="space-y-2">
                             <Label>{t('language.select')}</Label>
-                            <div className="flex items-center gap-4">
-                                <div className="border rounded-md px-3 py-2 flex-1 bg-background">
-                                    <LanguageSelector />
-                                </div>
-                                <span className="text-sm text-muted-foreground hidden sm:inline-block">
+                            <div className="flex flex-col gap-2">
+                                <Select
+                                    value={languages.find(l => i18n.language.startsWith(l.code))?.code || 'en'}
+                                    onValueChange={handleLanguageChange}
+                                >
+                                    <SelectTrigger className="w-full sm:w-[280px]" data-testid="settings-language-select">
+                                        <SelectValue placeholder="Select a language" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {languages.map((lang) => (
+                                            <SelectItem key={lang.code} value={lang.code} data-testid={`settings-lang-${lang.code}`}>
+                                                {lang.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <span className="text-sm text-muted-foreground">
                                     {t('settings.account.languageHint') || "This language will be used for your emails."}
                                 </span>
                             </div>
@@ -312,6 +358,6 @@ export default function SettingsPage() {
                     </AlertDialogContent>
                 </AlertDialog>
             </main>
-        </div >
+        </div>
     );
 }

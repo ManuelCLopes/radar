@@ -47,12 +47,17 @@ test.describe('Support & Settings Flows', () => {
         await themeBtn.click();
 
         // 4. Test Language Switcher
-        // Depending on implementation, checking for a text change is best
-        const langTrigger = page.getByTestId('button-language-selector');
-        await expect(langTrigger).toBeVisible();
-        await langTrigger.click();
-        await expect(page.getByTestId('button-lang-pt')).toBeVisible();
-        await page.getByTestId('button-lang-pt').click();
+        // Change language using the new Select component
+        const langSelect = page.getByTestId('settings-language-select');
+        await expect(langSelect).toBeVisible();
+        await langSelect.click();
+
+        const ptOption = page.getByTestId('settings-lang-pt');
+        await expect(ptOption).toBeVisible();
+        await ptOption.click();
+
+        // Verify toast or updated state
+        await expect(page.getByText('Language updated')).toBeVisible({ timeout: 5000 });
     });
 
     test('authenticated user can update profile', async ({ page }) => {

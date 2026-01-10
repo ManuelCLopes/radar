@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-const languages = [
+export const languages = [
   { code: 'en', name: 'English', abbr: 'EN' },
   { code: 'pt', name: 'Português', abbr: 'PT' },
   { code: 'es', name: 'Español', abbr: 'ES' },
