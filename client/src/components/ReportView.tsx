@@ -145,12 +145,34 @@ function StatCard({ icon: Icon, label, value }: { icon: typeof Building2; label:
   );
 }
 
-function SwotSection({ title, items, icon: Icon, colorClass }: { title: string, items: string[], icon: any, colorClass: string }) {
+function SwotSection({ title, items, icon: Icon, color }: { title: string, items: string[], icon: any, color: 'green' | 'red' | 'blue' | 'orange' }) {
   if (!items.length) return null;
+
+  const colorStyles = {
+    green: {
+      text: "text-green-600 dark:text-green-400",
+      bg: "bg-green-600 dark:bg-green-400"
+    },
+    red: {
+      text: "text-red-600 dark:text-red-400",
+      bg: "bg-red-600 dark:bg-red-400"
+    },
+    blue: {
+      text: "text-blue-600 dark:text-blue-400",
+      bg: "bg-blue-600 dark:bg-blue-400"
+    },
+    orange: {
+      text: "text-orange-600 dark:text-orange-400",
+      bg: "bg-orange-600 dark:bg-orange-400"
+    }
+  };
+
+  const styles = colorStyles[color];
+
   return (
     <Card className="h-full">
       <CardHeader className="pb-2">
-        <CardTitle className={`text-sm font-medium flex items-center gap-2 ${colorClass}`}>
+        <CardTitle className={`text-sm font-medium flex items-center gap-2 ${styles.text}`}>
           <Icon className="h-4 w-4" />
           {title}
         </CardTitle>
@@ -159,7 +181,7 @@ function SwotSection({ title, items, icon: Icon, colorClass }: { title: string, 
         <ul className="space-y-2">
           {items.map((item, i) => (
             <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
-              <span className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 ${colorClass.replace('text-', 'bg-')}`} />
+              <span className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 ${styles.bg}`} />
               {item}
             </li>
           ))}
@@ -928,11 +950,11 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
                 <CardContent className="p-6" data-testid="text-ai-analysis">
                   {report.executiveSummary && (
                     <div className="mb-6">
-                      <h3 className="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+                      <h3 className="text-lg font-bold text-foreground mb-2 flex items-center gap-2">
                         <Brain className="h-5 w-5 text-primary" />
                         {t("report.sections.marketOverview", "Market Overview")}
                       </h3>
-                      <p className="whitespace-pre-wrap text-gray-700 leading-relaxed text-sm lg:text-base">{report.executiveSummary}</p>
+                      <p className="whitespace-pre-wrap text-muted-foreground leading-relaxed text-sm lg:text-base">{report.executiveSummary}</p>
                     </div>
                   )}
                   <AIAnalysisContent html={mainContent} />
@@ -954,25 +976,25 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
                     title={t("report.sections.strengths")}
                     items={Array.isArray(swotData.strengths) ? swotData.strengths : [swotData.strengths]}
                     icon={CheckCircle2}
-                    colorClass="text-green-600"
+                    color="green"
                   />
                   <SwotSection
                     title={t("report.sections.weaknesses")}
                     items={Array.isArray(swotData.weaknesses) ? swotData.weaknesses : [swotData.weaknesses]}
                     icon={XCircle}
-                    colorClass="text-red-600"
+                    color="red"
                   />
                   <SwotSection
                     title={t("report.sections.opportunities")}
                     items={Array.isArray(swotData.opportunities) ? swotData.opportunities : [swotData.opportunities]}
                     icon={TrendingUp}
-                    colorClass="text-blue-600"
+                    color="blue"
                   />
                   <SwotSection
                     title={t("report.sections.threats")}
                     items={Array.isArray(swotData.threats) ? swotData.threats : [swotData.threats]}
                     icon={AlertTriangle}
-                    colorClass="text-orange-600"
+                    color="orange"
                   />
                 </div>
                 <Separator className="mt-6" />
@@ -1017,7 +1039,7 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
                               ))}
                             </ul>
                           ) : (
-                            <p className="text-gray-700 whitespace-pre-wrap">
+                            <p className="text-muted-foreground whitespace-pre-wrap">
                               {Array.isArray(targetAudienceData[item.key])
                                 ? targetAudienceData[item.key].join(', ')
                                 : targetAudienceData[item.key]}
@@ -1063,7 +1085,7 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
                             ))}
                           </ul>
                         ) : (
-                          <p className="text-gray-700 whitespace-pre-wrap">
+                          <p className="text-muted-foreground whitespace-pre-wrap">
                             {Array.isArray(marketingData[item.key])
                               ? marketingData[item.key].join(', ')
                               : marketingData[item.key]}
