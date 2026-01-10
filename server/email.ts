@@ -38,10 +38,8 @@ export class NodemailerEmailService implements EmailService {
       config.service = service;
       log(`[EmailService] Configured using service: ${service}`, "email");
     } else {
-      // Auto-configure for Gmail if detected
-      const isGmail = host === "smtp.gmail.com";
-      const defaultPort = isGmail ? 465 : 587;
-      const defaultSecure = isGmail ? true : false;
+      const defaultPort = 587;
+      const defaultSecure = false;
 
       config.host = host;
       config.port = portEnv ? parseInt(portEnv) : defaultPort;
