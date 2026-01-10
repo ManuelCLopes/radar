@@ -657,13 +657,18 @@
         "title": "Perfil atualizado",
         "description": "As suas informações foram guardadas com sucesso."
       },
+      "languageUpdated": {
+        "title": "Idioma atualizado",
+        "description": "A sua preferência de idioma foi guardada."
+      },
       "accountDeleted": {
         "title": "Conta removida",
         "description": "A sua conta foi permanentemente removida."
       },
       "error": {
         "title": "Erro",
-        "delete": "Não foi possível remover a conta. Tente novamente."
+        "delete": "Não foi possível remover a conta. Tente novamente.",
+        "language": "Falha ao guardar a preferência de idioma."
       }
     }
   },

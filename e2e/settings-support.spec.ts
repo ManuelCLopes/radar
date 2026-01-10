@@ -57,7 +57,8 @@ test.describe('Support & Settings Flows', () => {
         await ptOption.click();
 
         // Verify toast or updated state
-        await expect(page.getByText('Language updated')).toBeVisible({ timeout: 5000 });
+        // When switching to PT, the toast should be in PT
+        await expect(page.getByText('Idioma atualizado')).toBeVisible({ timeout: 5000 });
     });
 
     test('authenticated user can update profile', async ({ page }) => {

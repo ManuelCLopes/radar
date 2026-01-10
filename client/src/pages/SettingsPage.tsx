@@ -76,14 +76,14 @@ export default function SettingsPage() {
                 });
 
                 toast({
-                    title: "Language updated",
-                    description: "Your language preference has been saved.",
+                    title: t('settings.toast.languageUpdated.title'),
+                    description: t('settings.toast.languageUpdated.description'),
                 });
             } catch (error) {
                 console.error('Failed to sync language with backend:', error);
                 toast({
-                    title: "Error",
-                    description: "Failed to save language preference.",
+                    title: t('settings.toast.error.title'),
+                    description: t('settings.toast.error.language'),
                     variant: "destructive"
                 });
             }

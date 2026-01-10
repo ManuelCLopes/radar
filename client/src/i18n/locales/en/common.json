@@ -656,13 +656,18 @@
         "title": "Profile updated",
         "description": "Your information has been saved successfully."
       },
+      "languageUpdated": {
+        "title": "Language updated",
+        "description": "Your language preference has been saved."
+      },
       "accountDeleted": {
         "title": "Account deleted",
         "description": "Your account has been permanently removed."
       },
       "error": {
         "title": "Error",
-        "delete": "Could not remove account. Please try again."
+        "delete": "Could not remove account. Please try again.",
+        "language": "Failed to save language preference."
       }
     }
   },
