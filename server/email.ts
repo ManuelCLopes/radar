@@ -556,74 +556,76 @@ export function generateReportEmail(report: Report, lang: string = "pt") {
 
 
 // Helper for weekly report (kept at bottom or where preferred)
-function generateWeeklyReportContent(user: User, report: Report) {
+// Helper for weekly report (kept at bottom or where preferred)
+export function generateWeeklyReportContent(user: User, report: Report) {
+  // Reuse the logic from the standard report email for consistency
   const lang = user.language || "pt";
+  const normalizedLang = lang.substring(0, 2).toLowerCase();
+
+  // Get base content from the standard generator
+  const baseContent = generateReportEmail(report, lang);
+
+  // Custom Translations for Weekly Context
   const translations: Record<string, any> = {
     pt: {
       subject: `Relatório Semanal - Competitor Watcher: ${report.businessName}`,
       title: "Análise Semanal de Concorrência",
-      message: `Aqui está o seu relatório semanal de análise de concorrência para <strong>${report.businessName}</strong>.`,
-      detail: "Analisámos as críticas e tendências mais recentes na sua área.",
-      button: "Ver Relatório Completo",
-      footer: `Gerado em ${new Date(report.generatedAt).toLocaleString('pt-PT')}`
+      intro: `Aqui está o seu relatório semanal de análise de concorrência para <strong>${report.businessName}</strong>.`,
     },
     en: {
       subject: `Weekly Report - Competitor Watcher: ${report.businessName}`,
       title: "Weekly Competitor Analysis",
-      message: `Here is your weekly competitor analysis report for <strong>${report.businessName}</strong>.`,
-      detail: "We've analyzed the latest reviews and trends in your area.",
-      button: "View Full Report",
-      footer: `Generated at ${new Date(report.generatedAt).toLocaleString('en-US')}`
+      intro: `Here is your weekly competitor analysis report for <strong>${report.businessName}</strong>.`,
     },
     es: {
       subject: `Informe Semanal - Competitor Watcher: ${report.businessName}`,
       title: "Análisis Semanal de Competencia",
-      message: `Aquí está su informe semanal de análisis de competencia para <strong>${report.businessName}</strong>.`,
-      detail: "Hemos analizado las críticas y tendencias más recientes en su área.",
-      button: "Ver Informe Completo",
-      footer: `Generado el ${new Date(report.generatedAt).toLocaleString('es-ES')}`
+      intro: `Aquí está su informe semanal de análisis de competencia para <strong>${report.businessName}</strong>.`,
     },
     fr: {
       subject: `Rapport Hebdomadaire - Competitor Watcher : ${report.businessName}`,
       title: "Analyse Hebdomadaire de la Concurrence",
-      message: `Voici votre rapport hebdomadaire d'analyse de la concurrence pour <strong>${report.businessName}</strong>.`,
-      detail: "Nous avons analysé les derniers avis et tendances dans votre région.",
-      button: "Voir le Rapport Complet",
-      footer: `Généré le ${new Date(report.generatedAt).toLocaleString('fr-FR')}`
+      intro: `Voici votre rapport hebdomadaire d'analyse de la concurrence pour <strong>${report.businessName}</strong>.`,
     },
     de: {
       subject: `Wöchentlicher Bericht - Competitor Watcher: ${report.businessName}`,
       title: "Wöchentliche Wettbewerbsanalyse",
-      message: `Hier ist Ihr wöchentlicher Wettbewerbsanalysebericht für <strong>${report.businessName}</strong>.`,
-      detail: "Wir haben die neuesten Bewertungen und Trends in Ihrer Region analysiert.",
-      button: "Vollständigen Bericht anzeigen",
-      footer: `Generiert am ${new Date(report.generatedAt).toLocaleString('de-DE')}`
+      intro: `Hier ist Ihr wöchentlicher Wettbewerbsanalysebericht für <strong>${report.businessName}</strong>.`,
     }
   };
 
-  const normalizedLang = lang.substring(0, 2).toLowerCase();
   const t = translations[normalizedLang] || translations.en;
 
-  const html = `
-    <div style="font-family: sans-serif; max-width: 800px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-      <div style="background-color: #0a58ca; padding: 30px; text-align: center;">
-        <img src="https://competitorwatcher.pt/logo.png" alt="Competitor Watcher" style="height: 40px; width: auto;" />
-      </div>
-      <div style="padding: 40px 30px;">
-        <h2 style="color: #111827; margin-top: 0; font-size: 20px;">${t.title}</h2>
-        <p style="color: #4b5563; line-height: 1.6;">${t.message}</p>
-        <p style="color: #4b5563; line-height: 1.6;">${t.detail}</p>
-        <div style="margin: 35px 0; text-align: center;">
-          <a href="https://competitorwatcher.pt/dashboard" style="background-color: #0a58ca; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">${t.button}</a>
-        </div>
-        <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-top: 30px; border-top: 1px solid #f3f4f6; padding-top: 20px;">
-          ${t.footer}
-        </p>
-      </div>
-    </div>
-  `;
+  // Replace default title and greeting with weekly specific ones
+  // We do a string replacement on the generated HTML to avoid code duplication
+  // The structure of generateReportEmail puts the title in an h2 and greeting in a p
+  let html = baseContent.html;
 
-  return { html, text: t.message, subject: t.subject };
+  // Replace Title
+  // The original regex might be fragile if attributes change, but for now it targets the specific style and tag
+  // A robust way would be to just call the generator with custom "t" passed in, but generateReportEmail manages its own translations.
+  // So we will stick to replacing the known output strings or just return the base content with a modified subject.
+
+  // Actually, to make it cleaner, let's just REPLACE the header section text if possible, 
+  // or accept that the weekly report content is identical to standard report but with a different subject.
+  // The user asked for "same info", so identical body is acceptable, maybe just update the subject.
+
+  // However, to keep the "Weekly" context in the title, let's try to swap the Title text.
+  // Warning: This relies on the specific layout of generateReportEmail.
+  // Another options is: modify generateReportEmail to accept an optional 'titleOverride' and 'subjectOverride'.
+
+  // Let's modify generateReportEmail to be more flexible, but for now I will just use the content directly 
+  // and inject a message saying "Weekly Report" at the top if needed.
+
+  // But wait, the user showed the CURRENT failing output which was just text.
+  // The user wants the FULL info. 
+  // The simplest path: Use the exact same body as the ad-hoc report, just change the subject.
+
+  return {
+    html: baseContent.html,
+    text: baseContent.text,
+    subject: t.subject
+  };
 }
 
 // Standalone sender for password resets etc.

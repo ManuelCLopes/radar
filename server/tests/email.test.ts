@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { generateWelcomeEmail, generatePasswordResetEmail, generateReportEmail } from "../email";
+import { generateWelcomeEmail, generatePasswordResetEmail, generateReportEmail, generateWeeklyReportContent } from "../email";
 
 describe("Email Templates Localization", () => {
     const testEmail = "test@example.com";
@@ -178,5 +178,43 @@ describe("generateReportEmail", () => {
         const { html } = generateReportEmail(mockReport, "en");
         expect(html).toContain("Comp 1");
         expect(html).toContain("4.5");
+    });
+});
+
+describe("generateWeeklyReportContent", () => {
+    const mockUser = {
+        id: "1",
+        email: "test@example.com",
+        language: "en"
+    } as any;
+
+    const mockReport = {
+        id: "1",
+        businessName: "Test Business",
+        generatedAt: new Date(),
+        competitors: [{ name: "Comp 1", rating: 4.5 }],
+        aiAnalysis: "Structured Analysis",
+        executiveSummary: "Weekly summary content.",
+        swotAnalysis: { strengths: ["Strength 1"] }
+    } as any;
+
+    it("should generate proper subject for weekly report", () => {
+        const { subject } = generateWeeklyReportContent(mockUser, mockReport);
+        expect(subject).toContain("Weekly Report - Competitor Watcher: Test Business");
+    });
+
+    it("should include the full analysis content in weekly report", () => {
+        const { html } = generateWeeklyReportContent(mockUser, mockReport);
+        expect(html).toContain("Weekly summary content");
+        expect(html).toContain("Strength 1");
+        expect(html).toContain("Comp 1"); // Competitors table
+    });
+
+    it("should use the correct language for weekly report", () => {
+        const ptUser = { ...mockUser, language: "pt" };
+        const { subject, html } = generateWeeklyReportContent(ptUser, mockReport);
+        expect(subject).toContain("Relatório Semanal - Competitor Watcher");
+        // Check for portuguese headers from standard report
+        expect(html).toContain("Resumo Executivo");
     });
 });
