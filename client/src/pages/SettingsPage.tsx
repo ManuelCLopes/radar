@@ -64,7 +64,7 @@ export default function SettingsPage() {
     };
 
     const handleLanguageChange = async (langCode: string) => {
-        i18n.changeLanguage(langCode);
+        await i18n.changeLanguage(langCode);
 
         // Persist to backend if user is logged in
         if (user) {
@@ -76,14 +76,14 @@ export default function SettingsPage() {
                 });
 
                 toast({
-                    title: t('settings.toast.languageUpdated.title'),
-                    description: t('settings.toast.languageUpdated.description'),
+                    title: i18n.t('settings.toast.languageUpdated.title'),
+                    description: i18n.t('settings.toast.languageUpdated.description'),
                 });
             } catch (error) {
                 console.error('Failed to sync language with backend:', error);
                 toast({
-                    title: t('settings.toast.error.title'),
-                    description: t('settings.toast.error.language'),
+                    title: i18n.t('settings.toast.error.title'),
+                    description: i18n.t('settings.toast.error.language'),
                     variant: "destructive"
                 });
             }
