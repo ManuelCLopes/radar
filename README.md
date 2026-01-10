@@ -209,8 +209,26 @@ npm run check
 # Run all tests
 npm test
 
-# Run specific test file
+# Run speicific test file
 npm test client/src/components/__tests__/ReportView.test.tsx
+
+### End-to-End (E2E) Tests
+
+We use **Playwright** for E2E testing.
+
+```bash
+# Install Playwright browsers (first run only)
+npx playwright install
+
+# Run all E2E tests non-interactively
+npx playwright test
+
+# Run E2E tests with UI mode (great for debugging)
+npx playwright test --ui
+
+# Run specific E2E test file
+npx playwright test e2e/seo-accessibility.spec.ts
+```
 ```
 
 ### Database Setup
