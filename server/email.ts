@@ -492,7 +492,7 @@ export function generateReportEmail(report: Report, lang: string = "pt") {
         
         <!-- Header -->
         <div style="background-color: #2563eb; padding: 24px; text-align: center;">
-          <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Competitive Watcher</h1>
+          <img src="https://competitorwatcher.pt/logo.png" alt="Competitive Watcher" style="height: 40px; width: auto;" />
         </div>
 
         <!-- Body -->
@@ -607,7 +607,7 @@ function generateWeeklyReportContent(user: User, report: Report) {
   const html = `
     <div style="font-family: sans-serif; max-width: 800px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
       <div style="background-color: #0a58ca; padding: 30px; text-align: center;">
-        <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">Competitive Watcher</h1>
+        <img src="https://competitorwatcher.pt/logo.png" alt="Competitive Watcher" style="height: 40px; width: auto;" />
       </div>
       <div style="padding: 40px 30px;">
         <h2 style="color: #111827; margin-top: 0; font-size: 20px;">${t.title}</h2>
