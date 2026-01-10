@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Trigger Report Generation
         run: |
-          curl -X POST ${{ secrets.APP_URL }}/api/cron/trigger-reports \
+          curl -X POST https://competitorwatcher.pt/api/cron/trigger-reports \
           -H "Content-Type: application/json" \
           -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
           --fail
