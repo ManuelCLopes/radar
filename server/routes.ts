@@ -781,12 +781,13 @@ export async function registerRoutes(
 
       console.log("[Cron] Triggered report generation via API");
 
-      // Run in background but wait for result to return status
-      const results = await runScheduledReports();
+      // Run in background without awaiting to prevent timeout
+      runScheduledReports().catch(err => {
+        console.error("[Cron] Background report generation failed:", err);
+      });
 
-      res.json({
-        message: "Scheduled reports triggered successfully",
-        results
+      res.status(202).json({
+        message: "Scheduled reports triggered successfully (processing in background)"
       });
     } catch (error) {
       console.error("[Cron] Error triggering reports:", error);

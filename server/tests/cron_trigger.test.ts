@@ -105,9 +105,9 @@ describe("Cron Trigger Endpoint", () => {
             .post("/api/cron/trigger-reports")
             .set("x-cron-secret", "test-secret");
 
-        expect(res.status).toBe(200);
+        expect(res.status).toBe(202);
         expect(runScheduledReports).toHaveBeenCalled();
-        expect(res.body.message).toBe("Scheduled reports triggered successfully");
-        expect(res.body.results).toBeDefined();
+        expect(res.body.message).toContain("processing in background");
+        expect(res.body.results).toBeUndefined();
     });
 });
