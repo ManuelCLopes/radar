@@ -31,7 +31,7 @@ export async function registerRoutes(
       if (!db) {
         // Fallback or skip rate limiting if DB is not connected (e.g. dev mode without DB)
         // For now, we'll log warning and proceed without rate limiting to avoid blocking users
-        console.warn("Database connection missing - skipping rate limiting");
+        // console.warn("Database connection missing - skipping rate limiting");
       } else {
         // Database Rate Limiting
         let rateLimit = await db.query.rateLimits.findFirst({

@@ -556,7 +556,6 @@ export function generateReportEmail(report: Report, lang: string = "pt") {
 
 
 // Helper for weekly report (kept at bottom or where preferred)
-// Helper for weekly report (kept at bottom or where preferred)
 export function generateWeeklyReportContent(user: User, report: Report) {
   // Reuse the logic from the standard report email for consistency
   const lang = user.language || "pt";
@@ -655,7 +654,6 @@ export async function sendEmail({ to, subject, html, text }: { to: string; subje
       return true;
     } catch (error) {
       console.error("[Resend] Error:", error);
-      // Fallback could go here... but let's stick to one path for now
       throw error;
     }
   }

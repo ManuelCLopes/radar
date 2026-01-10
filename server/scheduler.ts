@@ -33,7 +33,7 @@ export async function runScheduledReports(): Promise<{
   results: { businessId: string; businessName: string; success: boolean; error?: string }[]
 }> {
   const businesses = await storage.listBusinesses();
-  console.log(`[Scheduler] Found ${businesses.length} businesses to analyze`);
+  // console.log(`[Scheduler] Found ${businesses.length} businesses to analyze`);
 
   const results: { businessId: string; businessName: string; success: boolean; error?: string }[] = [];
   let success = 0;
@@ -41,7 +41,6 @@ export async function runScheduledReports(): Promise<{
 
   for (const business of businesses) {
     if (business.locationStatus === "pending" || business.latitude === null || business.longitude === null) {
-      console.log(`[Scheduler] Skipping ${business.name} - pending location verification`);
       results.push({
         businessId: business.id,
         businessName: business.name,
@@ -53,9 +52,7 @@ export async function runScheduledReports(): Promise<{
     }
 
     try {
-      console.log(`[Scheduler] Generating report for: ${business.name}`);
       const report = await runReportForBusiness(business.id);
-      console.log("[Scheduler] Generated report:", report);
 
       // Attempt to find the user associated with this business
       // Since we don't have a direct link in the businesses table, we look for previous reports
@@ -69,10 +66,7 @@ export async function runScheduledReports(): Promise<{
         const user = await storage.getUser(userId);
         if (user) {
           await emailService.sendWeeklyReport(user, report);
-          console.log(`[Scheduler] Sent email to ${user.email} for business ${business.name}`);
         }
-      } else {
-        console.log(`[Scheduler] No user found for business ${business.name}, skipping email.`);
       }
 
       results.push({
@@ -94,7 +88,6 @@ export async function runScheduledReports(): Promise<{
     }
   }
 
-  console.log(`[Scheduler] Completed: ${success} successful, ${failed} failed`);
   return { success, failed, results };
 }
 
