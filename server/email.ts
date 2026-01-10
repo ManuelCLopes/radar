@@ -600,25 +600,7 @@ export function generateWeeklyReportContent(user: User, report: Report) {
   // The structure of generateReportEmail puts the title in an h2 and greeting in a p
   let html = baseContent.html;
 
-  // Replace Title
-  // The original regex might be fragile if attributes change, but for now it targets the specific style and tag
-  // A robust way would be to just call the generator with custom "t" passed in, but generateReportEmail manages its own translations.
-  // So we will stick to replacing the known output strings or just return the base content with a modified subject.
 
-  // Actually, to make it cleaner, let's just REPLACE the header section text if possible, 
-  // or accept that the weekly report content is identical to standard report but with a different subject.
-  // The user asked for "same info", so identical body is acceptable, maybe just update the subject.
-
-  // However, to keep the "Weekly" context in the title, let's try to swap the Title text.
-  // Warning: This relies on the specific layout of generateReportEmail.
-  // Another options is: modify generateReportEmail to accept an optional 'titleOverride' and 'subjectOverride'.
-
-  // Let's modify generateReportEmail to be more flexible, but for now I will just use the content directly 
-  // and inject a message saying "Weekly Report" at the top if needed.
-
-  // But wait, the user showed the CURRENT failing output which was just text.
-  // The user wants the FULL info. 
-  // The simplest path: Use the exact same body as the ad-hoc report, just change the subject.
 
   return {
     html: baseContent.html,
