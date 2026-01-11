@@ -30,7 +30,6 @@ export interface IStorage {
 
   // Search tracking
   trackSearch?(search: InsertSearch): Promise<void>;
-  trackSearch?(search: InsertSearch): Promise<void>;
   deleteUser(id: string): Promise<void>;
   updateUserLanguage(userId: string, language: string): Promise<void>;
   checkRateLimit(ip: string): Promise<{ allowed: boolean, resetTime?: Date }>;
@@ -221,7 +220,6 @@ export class MemStorage implements IStorage {
   private users = new Map<string, User>();
   private businesses = new Map<string, Business>();
   private reports = new Map<string, Report>();
-  private searches = new Map<string, any>();
   private searches = new Map<string, any>();
   private resetTokens = new Map<string, any>();
   private rateLimits = new Map<string, { hits: number, resetAt: Date }>();
@@ -414,7 +412,6 @@ export class MemStorage implements IStorage {
       }
     });
     // Delete user
-    this.users.delete(id);
     this.users.delete(id);
   }
 
