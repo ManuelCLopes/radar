@@ -1,4 +1,4 @@
-import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type PasswordResetToken, businesses, reports, users, searches, passwordResetTokens } from "@shared/schema";
+import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type PasswordResetToken, businesses, reports, users, searches, passwordResetTokens, rateLimits } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
@@ -30,7 +30,10 @@ export interface IStorage {
 
   // Search tracking
   trackSearch?(search: InsertSearch): Promise<void>;
+  trackSearch?(search: InsertSearch): Promise<void>;
   deleteUser(id: string): Promise<void>;
+  updateUserLanguage(userId: string, language: string): Promise<void>;
+  checkRateLimit(ip: string): Promise<{ allowed: boolean, resetTime?: Date }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -172,6 +175,45 @@ export class DatabaseStorage implements IStorage {
     await db!.delete(searches).where(eq(searches.userId, id));
     await db!.delete(users).where(eq(users.id, id));
   }
+
+  async updateUserLanguage(userId: string, language: string): Promise<void> {
+    await db!
+      .update(users)
+      .set({ language, updatedAt: new Date() })
+      .where(eq(users.id, userId));
+  }
+
+  async checkRateLimit(ip: string): Promise<{ allowed: boolean, resetTime?: Date }> {
+    const now = new Date();
+    const [rateLimit] = await db!.select().from(rateLimits).where(eq(rateLimits.ip, ip));
+
+    if (rateLimit) {
+      if (now > rateLimit.resetAt) {
+        // Reset window
+        await db!.update(rateLimits)
+          .set({ hits: 1, resetAt: new Date(now.getTime() + 60 * 60 * 1000) })
+          .where(eq(rateLimits.ip, ip));
+        return { allowed: true };
+      } else {
+        // Within window
+        if (rateLimit.hits >= 5) {
+          return { allowed: false, resetTime: rateLimit.resetAt };
+        }
+        await db!.update(rateLimits)
+          .set({ hits: rateLimit.hits + 1 })
+          .where(eq(rateLimits.ip, ip));
+        return { allowed: true };
+      }
+    } else {
+      // New record
+      await db!.insert(rateLimits).values({
+        ip,
+        hits: 1,
+        resetAt: new Date(now.getTime() + 60 * 60 * 1000)
+      });
+      return { allowed: true };
+    }
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -180,7 +222,9 @@ export class MemStorage implements IStorage {
   private businesses = new Map<string, Business>();
   private reports = new Map<string, Report>();
   private searches = new Map<string, any>();
+  private searches = new Map<string, any>();
   private resetTokens = new Map<string, any>();
+  private rateLimits = new Map<string, { hits: number, resetAt: Date }>();
 
   constructor() {
     this.searches = new Map();
@@ -371,6 +415,40 @@ export class MemStorage implements IStorage {
     });
     // Delete user
     this.users.delete(id);
+    this.users.delete(id);
+  }
+
+  async updateUserLanguage(userId: string, language: string): Promise<void> {
+    const user = this.users.get(userId);
+    if (user) {
+      user.language = language;
+      user.updatedAt = new Date();
+      this.users.set(userId, user);
+    }
+  }
+
+  async checkRateLimit(ip: string): Promise<{ allowed: boolean, resetTime?: Date }> {
+    const now = new Date();
+    const rateLimit = this.rateLimits.get(ip);
+
+    if (rateLimit) {
+      if (now > rateLimit.resetAt) {
+        // Reset window
+        this.rateLimits.set(ip, { hits: 1, resetAt: new Date(now.getTime() + 60 * 60 * 1000) });
+        return { allowed: true };
+      } else {
+        // Within window
+        if (rateLimit.hits >= 5) {
+          return { allowed: false, resetTime: rateLimit.resetAt };
+        }
+        this.rateLimits.set(ip, { ...rateLimit, hits: rateLimit.hits + 1 });
+        return { allowed: true };
+      }
+    } else {
+      // New record
+      this.rateLimits.set(ip, { hits: 1, resetAt: new Date(now.getTime() + 60 * 60 * 1000) });
+      return { allowed: true };
+    }
   }
 }
 

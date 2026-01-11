@@ -81,6 +81,7 @@ describe("API Routes Integration", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         authMocks.user = null;
+        vi.spyOn(storage, "checkRateLimit").mockResolvedValue({ allowed: true });
     });
 
     describe("POST /api/quick-search", () => {
@@ -210,6 +211,7 @@ describe("Routes Coverage (Edge Cases)", () => {
 
     beforeEach(async () => {
         vi.restoreAllMocks();
+        vi.spyOn(storage, "checkRateLimit").mockResolvedValue({ allowed: true });
         app = express();
         app.use(express.json());
         // Mock isAuthenticated for all requests
@@ -385,6 +387,7 @@ describe("Report Email Export", () => {
 
     beforeEach(async () => {
         vi.restoreAllMocks();
+        vi.spyOn(storage, "checkRateLimit").mockResolvedValue({ allowed: true });
         app = express();
         app.use(express.json());
         // Mock isAuthenticated for all requests
