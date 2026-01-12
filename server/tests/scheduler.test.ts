@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { startScheduler, stopScheduler, runScheduledReports, getSchedulerStatus } from "../scheduler";
 import { storage } from "../storage";
 import * as reports from "../reports";
+import { emailService } from "../email";
 import * as cron from "node-cron";
 
 // Mock dependencies
@@ -88,25 +89,45 @@ describe("Scheduler", () => {
 
             (storage.listBusinesses as any).mockResolvedValue(mockBusinesses);
             (storage.getReportsByBusinessId as any).mockResolvedValue([]); // No previous reports
-            (reports.runReportForBusiness as any).mockResolvedValue({});
+
+            // Mock user retrieval for business 1
+            (storage.getUser as any).mockResolvedValue({ id: "user1", email: "test@example.com", language: "pt" });
+
+            // Create a fake business object property that mockResolvedValue accesses if needed
+            // But here we need to make sure the loop finds the user.
+            // By default storage.getUser is called with userId.
+
+            // We need to inject userId into mockBusinesses matching the logic
+            mockBusinesses[0] = { ...mockBusinesses[0], userId: "user1" } as any;
+
+            (reports.runReportForBusiness as any).mockResolvedValue({ businessName: "Valid Business" });
 
             const result = await runScheduledReports();
 
             expect(storage.listBusinesses).toHaveBeenCalled();
-            expect(reports.runReportForBusiness).toHaveBeenCalledTimes(1); // Only for business "1"
-            expect(reports.runReportForBusiness).toHaveBeenCalledWith("1", "pt");
+            expect(reports.runReportForBusiness).toHaveBeenCalledTimes(1);
+
+            // Verify sendWeeklyReport is called with an array
+            expect(emailService.sendWeeklyReport).toHaveBeenCalledTimes(1);
+            const callArgs = (emailService.sendWeeklyReport as any).mock.calls[0];
+            expect(callArgs[0]).toMatchObject({ id: "user1" }); // user
+            expect(Array.isArray(callArgs[1])).toBe(true); // reports array
+            expect(callArgs[1]).toHaveLength(1);
+            expect(callArgs[1][0].businessName).toBe("Valid Business");
 
             expect(result.success).toBe(1);
+            // Failed count includes pending (1) and orphan (1) = 2
             expect(result.failed).toBe(2);
             expect(result.results).toHaveLength(3);
         });
 
         it("should handle report generation errors", async () => {
             const mockBusinesses = [
-                { id: "1", name: "Error Business", locationStatus: "validated", latitude: 10, longitude: 10 },
+                { id: "1", name: "Error Business", locationStatus: "validated", latitude: 10, longitude: 10, userId: "user1" },
             ];
 
             (storage.listBusinesses as any).mockResolvedValue(mockBusinesses);
+            (storage.getUser as any).mockResolvedValue({ id: "user1", email: "test@example.com" });
             (reports.runReportForBusiness as any).mockRejectedValue(new Error("Analysis failed"));
 
             const result = await runScheduledReports();

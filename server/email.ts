@@ -4,13 +4,13 @@ import { Report, User } from "@shared/schema";
 import { log } from "./log";
 
 export interface EmailService {
-  sendWeeklyReport(user: User, report: Report): Promise<boolean>;
+  sendWeeklyReport(user: User, reports: Report[]): Promise<boolean>;
   sendAdHocReport(to: string, report: Report, lang: string): Promise<boolean>;
 }
 
 export class ConsoleEmailService implements EmailService {
-  async sendWeeklyReport(user: User, report: Report): Promise<boolean> {
-    console.log(`[EMAIL MOCK] Sending email to ${user.email} (Content suppressed)`);
+  async sendWeeklyReport(user: User, reports: Report[]): Promise<boolean> {
+    console.log(`[EMAIL MOCK] Sending weekly report email to ${user.email} with ${reports.length} reports`);
     return true;
   }
 
@@ -28,9 +28,9 @@ export class ResendEmailService implements EmailService {
     log("[EmailService] Initialized with Resend API", "email");
   }
 
-  async sendWeeklyReport(user: User, report: Report): Promise<boolean> {
+  async sendWeeklyReport(user: User, reports: Report[]): Promise<boolean> {
     try {
-      const { html, text, subject } = generateWeeklyReportContent(user, report);
+      const { html, text, subject } = generateWeeklyReportContent(user, reports);
       const from = process.env.EMAIL_FROM || "Competitor Watcher <noreply@competitorwatcher.pt>";
 
       const data = await this.resend.emails.send({
@@ -119,9 +119,9 @@ export class NodemailerEmailService implements EmailService {
     this.transporter = nodemailer.createTransport(config);
   }
 
-  async sendWeeklyReport(user: User, report: Report): Promise<boolean> {
+  async sendWeeklyReport(user: User, reports: Report[]): Promise<boolean> {
     try {
-      const { html, text, subject } = generateWeeklyReportContent(user, report);
+      const { html, text, subject } = generateWeeklyReportContent(user, reports);
 
       await this.transporter.sendMail({
         from: process.env.EMAIL_FROM || process.env.SMTP_FROM || '"Competitor Watcher" <noreply@competitorwatcher.pt>',
@@ -556,55 +556,110 @@ export function generateReportEmail(report: Report, lang: string = "pt") {
 
 
 // Helper for weekly report (kept at bottom or where preferred)
-export function generateWeeklyReportContent(user: User, report: Report) {
-  // Reuse the logic from the standard report email for consistency
+export function generateWeeklyReportContent(user: User, reports: Report[]) {
   const lang = user.language || "pt";
   const normalizedLang = lang.substring(0, 2).toLowerCase();
 
-  // Get base content from the standard generator
-  const baseContent = generateReportEmail(report, lang);
-
-  // Custom Translations for Weekly Context
   const translations: Record<string, any> = {
     pt: {
-      subject: `Relatório Semanal - Competitor Watcher: ${report.businessName}`,
-      title: "Análise Semanal de Concorrência",
-      intro: `Aqui está o seu relatório semanal de análise de concorrência para <strong>${report.businessName}</strong>.`,
+      subject: "Relatório Semanal de Concorrência",
+      title: "Resumo Semanal",
+      intro: "Aqui estão os seus relatórios semanais de análise de concorrência.",
+      perBusiness: "Relatório para",
+      viewOnline: "Ver Detalhes Online",
+      footer: "Todos os direitos reservados."
     },
     en: {
-      subject: `Weekly Report - Competitor Watcher: ${report.businessName}`,
-      title: "Weekly Competitor Analysis",
-      intro: `Here is your weekly competitor analysis report for <strong>${report.businessName}</strong>.`,
+      subject: "Weekly Competitor Analysis Report",
+      title: "Weekly Summary",
+      intro: "Here are your weekly competitor analysis reports.",
+      perBusiness: "Report for",
+      viewOnline: "View Details Online",
+      footer: "All rights reserved."
     },
     es: {
-      subject: `Informe Semanal - Competitor Watcher: ${report.businessName}`,
-      title: "Análisis Semanal de Competencia",
-      intro: `Aquí está su informe semanal de análisis de competencia para <strong>${report.businessName}</strong>.`,
+      subject: "Informe Semanal de Competencia",
+      title: "Resumen Semanal",
+      intro: "Aquí están sus informes semanales de análisis de competencia.",
+      perBusiness: "Informe para",
+      viewOnline: "Ver Detalles en Línea",
+      footer: "Todos los derechos reservados."
     },
     fr: {
-      subject: `Rapport Hebdomadaire - Competitor Watcher : ${report.businessName}`,
-      title: "Analyse Hebdomadaire de la Concurrence",
-      intro: `Voici votre rapport hebdomadaire d'analyse de la concurrence pour <strong>${report.businessName}</strong>.`,
+      subject: "Rapport Hebdomadaire de Concurrence",
+      title: "Résumé Hebdomadaire",
+      intro: "Voici vos rapports hebdomadaires d'analyse de la concurrence.",
+      perBusiness: "Rapport pour",
+      viewOnline: "Voir les Détails en Ligne",
+      footer: "Tous droits réservés."
     },
     de: {
-      subject: `Wöchentlicher Bericht - Competitor Watcher: ${report.businessName}`,
-      title: "Wöchentliche Wettbewerbsanalyse",
-      intro: `Hier ist Ihr wöchentlicher Wettbewerbsanalysebericht für <strong>${report.businessName}</strong>.`,
+      subject: "Wöchentlicher Wettbewerbsbericht",
+      title: "Wöchentliche Zusammenfassung",
+      intro: "Hier sind Ihre wöchentlichen Wettbewerbsanalyseberichte.",
+      perBusiness: "Bericht für",
+      viewOnline: "Details Online Ansehen",
+      footer: "Alle Rechte vorbehalten."
     }
   };
 
   const t = translations[normalizedLang] || translations.en;
 
-  // Replace default title and greeting with weekly specific ones
-  // We do a string replacement on the generated HTML to avoid code duplication
-  // The structure of generateReportEmail puts the title in an h2 and greeting in a p
-  let html = baseContent.html;
+  let reportsHtml = "";
 
+  for (const report of reports) {
+    // Reuse generateReportEmail to get the inner content for each report
+    // But we need to strip the outer layout if we want to stack them, 
+    // or we can create a simpler summary for the weekly email.
+    // Let's create a simplified summary block for each business.
 
+    const avgRating = report.competitors && report.competitors.length > 0
+      ? (report.competitors.reduce((sum, c) => sum + (c.rating || 0), 0) / report.competitors.length).toFixed(1)
+      : "N/A";
+
+    reportsHtml += `
+        <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+            <h3 style="color: #1e40af; margin-top: 0; margin-bottom: 8px; font-size: 18px;">${report.businessName}</h3>
+            <div style="display: flex; gap: 16px; margin-bottom: 16px; color: #64748b; font-size: 14px;">
+                <span>🎯 ${report.competitors?.length || 0} competitors</span>
+                <span>⭐ ${avgRating} avg rating</span>
+            </div>
+            
+            <div style="font-size: 14px; color: #334155; margin-bottom: 16px; line-height: 1.5;">
+                ${report.executiveSummary || "Analysis complete. View full report on dashboard."}
+            </div>
+
+            <div>
+                <a href="https://competitorwatcher.pt/dashboard" style="color: #2563eb; text-decoration: none; font-weight: 600; font-size: 14px;">${t.viewOnline} →</a>
+            </div>
+        </div>
+      `;
+  }
+
+  const html = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f9fafb; padding: 40px 20px;">
+      <div style="max-width: 600px; margin: 0 auto;">
+        <div style="background-color: #0a58ca; padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
+          <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">Competitor Watcher</h1>
+        </div>
+        
+        <div style="background-color: #ffffff; padding: 32px 24px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+          <h2 style="color: #111827; margin-top: 0; font-size: 20px;">${t.title}</h2>
+          <p style="color: #4b5563; line-height: 1.6; margin-bottom: 32px;">${t.intro}</p>
+          
+          ${reportsHtml}
+          
+          <div style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid #f1f5f9;">
+             <p style="color: #94a3b8; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Competitor Watcher. ${t.footer}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 
   return {
-    html: baseContent.html,
-    text: baseContent.text,
+    html: html,
+    text: `${t.intro}\n\n${reports.map(r => `${r.businessName}: ${r.executiveSummary}`).join('\n\n')}`,
     subject: t.subject
   };
 }

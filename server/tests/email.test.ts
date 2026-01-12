@@ -199,22 +199,21 @@ describe("generateWeeklyReportContent", () => {
     } as any;
 
     it("should generate proper subject for weekly report", () => {
-        const { subject } = generateWeeklyReportContent(mockUser, mockReport);
-        expect(subject).toContain("Weekly Report - Competitor Watcher: Test Business");
+        const { subject } = generateWeeklyReportContent(mockUser, [mockReport]);
+        expect(subject).toContain("Weekly Competitor Analysis Report");
     });
 
     it("should include the full analysis content in weekly report", () => {
-        const { html } = generateWeeklyReportContent(mockUser, mockReport);
+        const { html } = generateWeeklyReportContent(mockUser, [mockReport]);
         expect(html).toContain("Weekly summary content");
-        expect(html).toContain("Strength 1");
-        expect(html).toContain("Comp 1"); // Competitors table
+        // Competitors count and avg rating are in the summary card now
+        expect(html).toContain("Test Business");
     });
 
     it("should use the correct language for weekly report", () => {
         const ptUser = { ...mockUser, language: "pt" };
-        const { subject, html } = generateWeeklyReportContent(ptUser, mockReport);
-        expect(subject).toContain("Relatório Semanal - Competitor Watcher");
-        // Check for portuguese headers from standard report
-        expect(html).toContain("Resumo Executivo");
+        const { subject, html } = generateWeeklyReportContent(ptUser, [mockReport]);
+        expect(subject).toContain("Relatório Semanal de Concorrência");
+        expect(html).toContain("Resumo Semanal");
     });
 });
