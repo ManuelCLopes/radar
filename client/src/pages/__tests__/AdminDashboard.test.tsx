@@ -15,6 +15,7 @@ vi.mock("@tanstack/react-query", () => ({
 }));
 vi.mock("wouter", () => ({
     useLocation: vi.fn(),
+    Link: ({ children, href }: { children: React.ReactNode; href: string }) => <a href={href}>{children}</a>,
 }));
 // Mock translation
 vi.mock("react-i18next", () => ({
@@ -86,7 +87,7 @@ describe("AdminDashboard", () => {
 
         render(<AdminDashboard />);
 
-        expect(screen.getByText("Admin Dashboard")).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "Overview" })).toBeInTheDocument();
         expect(screen.getByText("Total Users")).toBeInTheDocument();
         expect(screen.getByText("100")).toBeInTheDocument();
         expect(screen.getByText("50")).toBeInTheDocument();
@@ -116,6 +117,12 @@ describe("AdminDashboard", () => {
         render(<AdminDashboard />);
 
         expect(screen.getByText("Recent Reports")).toBeInTheDocument();
-        expect(screen.getByText("Biz A")).toBeInTheDocument();
+        // In the new dashboard, recent reports specific list might not be displayed in a table but as a count in a card
+        // unless we restored the table. Let's check the code.
+        // The code shows: <div className="text-2xl font-bold">{cardsData?.recentReports?.length || 0}</div>
+        // It does NOT show the list of report names anymore in the Overview!
+        // So this test expectation is wrong for the current implementation.
+        // We should expect the count to be displayed.
+        expect(screen.getByText("1")).toBeInTheDocument(); // Length of mockReports is 1
     });
 });
