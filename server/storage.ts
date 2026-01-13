@@ -1,6 +1,6 @@
 import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type Search, type PasswordResetToken, businesses, reports, users, searches, passwordResetTokens, rateLimits } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User operations (IMPORTANT: mandatory for Replit Auth)
@@ -32,7 +32,13 @@ export interface IStorage {
 
   // Search tracking
   trackSearch?(search: InsertSearch): Promise<void>;
-  listRecentSearches?(): Promise<Search[]>; // Added for admin dashboard
+  listRecentSearches?(): Promise<Search[]>;
+  getSearchStats?(): Promise<{
+    typeDistribution: { type: string; count: number }[];
+    topLocations: { address: string; count: number }[];
+    avgCompetitors: number;
+    conversionRate: number;
+  }>;
   deleteUser(id: string): Promise<void>;
   updateUserLanguage(userId: string, language: string): Promise<void>;
   checkRateLimit(ip: string): Promise<{ allowed: boolean, resetTime?: Date }>;
@@ -97,6 +103,45 @@ export class DatabaseStorage implements IStorage {
       return await db!.select().from(businesses).where(eq(businesses.userId, userId)).orderBy(desc(businesses.createdAt));
     }
     return await db!.select().from(businesses).orderBy(desc(businesses.createdAt));
+  }
+
+  async getSearchStats() {
+    // Type Distribution
+    const typedist = await db!.select({
+      type: searches.type,
+      count: sql<number>`count(*)`
+    })
+      .from(searches)
+      .groupBy(searches.type);
+
+    // Top Locations (simplified by address string for now)
+    const toplocs = await db!.select({
+      address: searches.address,
+      count: sql<number>`count(*)`
+    })
+      .from(searches)
+      .groupBy(searches.address)
+      .orderBy(desc(sql`count(*)`))
+      .limit(5);
+
+    // Avg Competitors
+    const [avgComp] = await db!.select({
+      avg: sql<number>`avg(${searches.competitorsFound})`
+    }).from(searches);
+
+    // Conversion Rate
+    const [totalSearches] = await db!.select({ count: sql<number>`count(*)` }).from(searches);
+    const [totalReports] = await db!.select({ count: sql<number>`count(*)` }).from(reports);
+
+    const searchCount = Number(totalSearches?.count || 0);
+    const reportCount = Number(totalReports?.count || 0);
+
+    return {
+      typeDistribution: typedist.map(t => ({ type: t.type, count: Number(t.count) })),
+      topLocations: toplocs.map(l => ({ address: l.address, count: Number(l.count) })),
+      avgCompetitors: Math.round(Number(avgComp?.avg || 0)),
+      conversionRate: searchCount > 0 ? (reportCount / searchCount) * 100 : 0
+    };
   }
 
   async addBusiness(insertBusiness: InsertBusiness): Promise<Business> {
@@ -421,6 +466,42 @@ export class MemStorage implements IStorage {
     return Array.from(this.searches.values())
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice(0, 50);
+  }
+
+  async getSearchStats() {
+    const searchList = Array.from(this.searches.values());
+    const reportCount = this.reports.size;
+
+    // Type Distribution
+    const typeMap = new Map<string, number>();
+    searchList.forEach(s => {
+      typeMap.set(s.type, (typeMap.get(s.type) || 0) + 1);
+    });
+    const typeDistribution = Array.from(typeMap.entries()).map(([type, count]) => ({ type, count }));
+
+    // Top Locations
+    const locMap = new Map<string, number>();
+    searchList.forEach(s => {
+      locMap.set(s.address, (locMap.get(s.address) || 0) + 1);
+    });
+    const topLocations = Array.from(locMap.entries())
+      .map(([address, count]) => ({ address, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
+    // Avg Competitors
+    const totalCompetitors = searchList.reduce((acc, s) => acc + (s.competitorsFound || 0), 0);
+    const avgCompetitors = searchList.length > 0 ? Math.round(totalCompetitors / searchList.length) : 0;
+
+    // Conversion Rate
+    const conversionRate = searchList.length > 0 ? (reportCount / searchList.length) * 100 : 0;
+
+    return {
+      typeDistribution,
+      topLocations,
+      avgCompetitors,
+      conversionRate
+    };
   }
 
   // Password reset methods (in-memory)

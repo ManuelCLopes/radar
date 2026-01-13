@@ -89,7 +89,13 @@ export function registerAdminRoutes(app: Express) {
                 count: reports.filter(r => r.generatedAt.toISOString().startsWith(date)).length
             }));
 
-            res.json({ userGrowth, reportStats });
+            // Get extended insights
+            let searchStats = {};
+            if (storage.getSearchStats) {
+                searchStats = await storage.getSearchStats();
+            }
+
+            res.json({ userGrowth, reportStats, ...searchStats });
         } catch (err) {
             res.status(500).json({ message: "Internal Server Error" });
         }

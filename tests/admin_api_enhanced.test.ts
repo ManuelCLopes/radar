@@ -61,6 +61,18 @@ describe("Enhanced Admin API", () => {
         expect(res.body).toHaveProperty("userGrowth");
         expect(res.body).toHaveProperty("reportStats");
         expect(Array.isArray(res.body.userGrowth)).toBe(true);
+
+        // Extended Stats verification
+        expect(res.body).toHaveProperty("typeDistribution");
+        expect(res.body).toHaveProperty("topLocations");
+        expect(res.body).toHaveProperty("avgCompetitors");
+        expect(res.body).toHaveProperty("conversionRate");
+
+        // Since we seeded one restaurant search with 5 competitors
+        const types = res.body.typeDistribution;
+        expect(types).toEqual(expect.arrayContaining([expect.objectContaining({ type: "restaurant" })]));
+
+        expect(typeof res.body.avgCompetitors).toBe('number');
     });
 
     it("GET /api/admin/searches returns recent searches", async () => {

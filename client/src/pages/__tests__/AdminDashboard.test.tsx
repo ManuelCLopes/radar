@@ -116,13 +116,12 @@ describe("AdminDashboard", () => {
 
         render(<AdminDashboard />);
 
-        expect(screen.getByText("Recent Reports")).toBeInTheDocument();
-        // In the new dashboard, recent reports specific list might not be displayed in a table but as a count in a card
-        // unless we restored the table. Let's check the code.
-        // The code shows: <div className="text-2xl font-bold">{cardsData?.recentReports?.length || 0}</div>
-        // It does NOT show the list of report names anymore in the Overview!
-        // So this test expectation is wrong for the current implementation.
-        // We should expect the count to be displayed.
-        expect(screen.getByText("1")).toBeInTheDocument(); // Length of mockReports is 1
+        expect(screen.getByText("Top Activity")).toBeInTheDocument();
+        // Check for count in Top Activity card
+        expect(screen.getByText("1")).toBeInTheDocument();
+
+        // Check for new metric cards
+        expect(screen.getByText("Conversion Rate")).toBeInTheDocument();
+        expect(screen.getByText("Market Density")).toBeInTheDocument();
     });
 });
