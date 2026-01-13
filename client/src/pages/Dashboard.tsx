@@ -596,8 +596,8 @@ export default function Dashboard() {
                       <div className="space-y-4">
                         {reportHistory.map((report) => (
                           <Card key={report.id}>
-                            <CardContent className="flex items-center justify-between p-4">
-                              <div className="flex items-center gap-3">
+                            <CardContent className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 gap-4 sm:gap-0">
+                              <div className="flex items-center gap-3 w-full sm:w-auto">
                                 <div className={`p-2 rounded-full ${report.businessId ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400' : 'bg-orange-100 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400'}`}>
                                   {report.businessId ? <Building2 className="h-4 w-4" /> : <MapPin className="h-4 w-4" />}
                                 </div>
@@ -610,18 +610,18 @@ export default function Dashboard() {
                                       })
                                     }
                                   </p>
-                                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap mt-1">
                                     <span>{new Date(report.generatedAt).toLocaleDateString()}</span>
-                                    <span className="mx-1">•</span>
+                                    <span className="hidden sm:inline">•</span>
                                     <span>{new Date(report.generatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                     {report.radius && (
                                       <>
-                                        <span className="mx-1">•</span>
+                                        <span className="hidden sm:inline">•</span>
                                         <span>{report.radius >= 1000 ? `${report.radius / 1000}km` : `${report.radius}m`}</span>
                                       </>
                                     )}
                                     {report.businessId && (
-                                      <span className="ml-2 text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full border border-blue-100 dark:bg-blue-900/10 dark:text-blue-400 dark:border-blue-900/20">
+                                      <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full border border-blue-100 dark:bg-blue-900/10 dark:text-blue-400 dark:border-blue-900/20 whitespace-nowrap">
                                         {t("dashboard.analysis.businessReport")}
                                       </span>
                                     )}

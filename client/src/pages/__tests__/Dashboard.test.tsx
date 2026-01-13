@@ -113,4 +113,30 @@ describe("Dashboard", () => {
         expect(screen.getByText("1km")).toBeInTheDocument();
         expect(screen.getByText("500m")).toBeInTheDocument();
     });
+
+    it("renders history items with responsive grid layout", async () => {
+        const mockReports = [{
+            id: "1",
+            businessName: "Mobile Test Business",
+            generatedAt: new Date().toISOString(),
+            radius: 1000,
+            businessId: null,
+        }];
+
+        (useQuery as any).mockImplementation(({ queryKey }: any) => {
+            if (queryKey[0] === "/api/reports/history") {
+                return { data: mockReports, isLoading: false };
+            }
+            return { data: [], isLoading: false };
+        });
+
+        render(<Dashboard />);
+        const historyTab = screen.getByRole("tab", { name: /history/i });
+        fireEvent.click(historyTab);
+
+        await waitFor(() => {
+            const historyItem = screen.getByText("Mobile Test Business").closest(".flex-col");
+            expect(historyItem).toHaveClass("flex-col", "sm:flex-row");
+        });
+    });
 });
