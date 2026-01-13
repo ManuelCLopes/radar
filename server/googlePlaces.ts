@@ -65,8 +65,8 @@ export async function searchNearby(
   language: string = "en"
 ): Promise<Competitor[]> {
   if (!API_KEY) {
-    console.log("Google API Key not configured, returning mock data");
-    return generateMockCompetitors(type, lat, lng, includeReviews);
+    console.log("Google API Key not configured");
+    throw new Error("Google Places API Key not configured. Please contact administrator.");
   }
 
   try {
@@ -112,12 +112,13 @@ export async function searchNearby(
 
     if (!response.ok) {
       console.error("Google Places API error:", response.statusText);
-      return generateMockCompetitors(type, lat, lng, includeReviews);
+      throw new Error(`Google Places API Error: ${response.statusText}`);
     }
 
     const data = await response.json();
 
     if (!data.places || data.places.length === 0) {
+      console.log("No places found nearby");
       return [];
     }
 
@@ -146,7 +147,8 @@ export async function searchNearby(
     }));
   } catch (error) {
     console.error("Error fetching from Google Places:", error);
-    return generateMockCompetitors(type, lat, lng, includeReviews);
+    // Re-throw to be handled by reports.ts
+    throw error;
   }
 }
 

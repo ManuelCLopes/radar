@@ -123,13 +123,11 @@ describe("Google Places API (Dynamic)", () => {
         expect(result[0].latitude).toBe(10);
     });
 
-    it("should return mock competitors if API key is missing for searchNearby", async () => {
+    it("should throw error if API key is missing for searchNearby", async () => {
         delete process.env.GOOGLE_API_KEY;
         const { searchNearby } = await import("../googlePlaces");
 
-        const result = await searchNearby(10, 20, "restaurant");
-        expect(result.length).toBeGreaterThan(0);
-        expect(result[0].name).toBeDefined(); // Should be from mock data
+        await expect(searchNearby(10, 20, "restaurant")).rejects.toThrow("Google Places API Key not configured");
     });
 
     it("should return mapped competitors if API key is present for searchNearby", async () => {

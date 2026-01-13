@@ -29,22 +29,41 @@ export async function runReportForBusiness(
     }
   }
 
-  const competitors = await searchNearby(
-    business.latitude,
-    business.longitude,
-    business.type,
-    radius,
-    true, // Always include reviews
-    language
-  );
+  let competitors: import("@shared/schema").Competitor[] = [];
+  let aiAnalysis: import("./ai").StructuredAnalysis;
 
-  /*
-   * For new reports, we get a structured object.
-   * We no longer generate a monolithic HTML string for storage.
-   * However, for temporary display or legacy compatibility in other parts of the system,
-   * we might need to handle it.
-   */
-  const aiAnalysis = await analyzeCompetitors(business, competitors, language, userPlan);
+  try {
+    competitors = await searchNearby(
+      business.latitude,
+      business.longitude,
+      business.type,
+      radius,
+      true, // Always include reviews
+      language
+    );
+
+    /*
+     * For new reports, we get a structured object.
+     * We no longer generate a monolithic HTML string for storage.
+     * However, for temporary display or legacy compatibility in other parts of the system,
+     * we might need to handle it.
+     */
+    aiAnalysis = await analyzeCompetitors(business, competitors, language, userPlan);
+
+  } catch (error: any) {
+    console.error(`Error generating report for business ${business.name}:`, error);
+
+    // Create an error state analysis
+    competitors = [];
+    aiAnalysis = {
+      executiveSummary: `Error: Unable to fetch competitor data. ${error.message || "Unknown error"}. Please try again later or contact administrator.`,
+      swot: { strengths: [], weaknesses: [], opportunities: [], threats: [] },
+      marketTrends: [],
+      targetAudience: { demographics: "N/A", psychographics: "N/A", painPoints: "N/A" },
+      marketingStrategy: { primaryChannels: "N/A", contentIdeas: "N/A", promotionalTactics: "N/A" },
+      customerSentiment: { commonPraises: [], recurringComplaints: [], unmetNeeds: [] }
+    };
+  }
 
   // Only save report if not a temporary business
   if (!providedBusiness) {

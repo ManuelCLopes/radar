@@ -144,4 +144,30 @@ describe("Reports Logic", () => {
         expect(analyzeCompetitors).toHaveBeenCalledWith(mockBusiness, [], "pt", "essential");
         expect(result.executiveSummary).toBe("Resumo em PT");
     });
+    it("should handle error during data fetching gracefully", async () => {
+        const mockBusiness = {
+            id: "1",
+            name: "Test Business",
+            type: "restaurant",
+            latitude: 10,
+            longitude: 20,
+            locationStatus: "validated",
+        };
+        (storage.getBusiness as any).mockResolvedValue(mockBusiness);
+
+        // Mock searchNearby to throw error
+        (searchNearby as any).mockRejectedValue(new Error("API Error"));
+
+        (storage.saveReport as any).mockImplementation((r) => Promise.resolve({ ...r, id: "report-error" }));
+
+        const result = await runReportForBusiness("1", "en");
+
+        // Should NOT crash, but return a report with error message
+        expect(result.executiveSummary).toContain("Error: Unable to fetch competitor data");
+        expect(result.executiveSummary).toContain("API Error");
+        expect(result.competitors).toEqual([]);
+
+        // Should still be saved
+        expect(storage.saveReport).toHaveBeenCalled();
+    });
 });
