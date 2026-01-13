@@ -11,7 +11,8 @@ export async function seed() {
             { email: "teste@teste.pt", plan: "free", firstName: "Teste", lastName: "User" },
             { email: "professional@teste.pt", plan: "free", firstName: "Pro", lastName: "User" },
             { email: "agency@teste.pt", plan: "free", firstName: "Agency", lastName: "User" },
-            { email: "essential@teste.pt", plan: "free", firstName: "Essential", lastName: "User" }
+            { email: "essential@teste.pt", plan: "free", firstName: "Essential", lastName: "User" },
+            { email: "admin@example.com", plan: "free", role: "admin", firstName: "Admin", lastName: "User" }
         ];
 
         let mainUser;
