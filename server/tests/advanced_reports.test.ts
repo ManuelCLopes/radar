@@ -49,11 +49,11 @@ vi.mock("../googlePlaces", () => ({
             priceLevel: "$$",
             distance: "0.5 km",
             reviews: [
-                { text: "Review 1: Great place!", author: "User 1", rating: 5, date: "2023-01-01" },
-                { text: "Review 2: Good service", author: "User 2", rating: 4, date: "2023-01-02" },
-                { text: "Review 3: Nice atmosphere", author: "User 3", rating: 5, date: "2023-01-03" },
-                { text: "Review 4: Tasty food", author: "User 4", rating: 4, date: "2023-01-04" },
-                { text: "Review 5: Will come back", author: "User 5", rating: 5, date: "2023-01-05" }
+                { text: "Review 1: Great place!", author: "User 1", rating: 5, date: "2025-01-01" },
+                { text: "Review 2: Good service", author: "User 2", rating: 4, date: "2025-01-02" },
+                { text: "Review 3: Nice atmosphere", author: "User 3", rating: 5, date: "2025-01-03" },
+                { text: "Review 4: Tasty food", author: "User 4", rating: 4, date: "2025-01-04" },
+                { text: "Review 5: Will come back", author: "User 5", rating: 5, date: "2025-01-05" }
             ],
         },
     ]),

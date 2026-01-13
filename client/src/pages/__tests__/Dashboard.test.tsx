@@ -71,14 +71,14 @@ describe("Dashboard", () => {
             {
                 id: "1",
                 businessName: "Test Business",
-                generatedAt: new Date("2023-01-01T12:00:00Z").toISOString(),
+                generatedAt: new Date("2025-01-01T12:00:00Z").toISOString(),
                 radius: 1000,
                 businessId: null,
             },
             {
                 id: "2",
                 businessName: "Another Business",
-                generatedAt: new Date("2023-01-02T14:30:00Z").toISOString(),
+                generatedAt: new Date("2025-01-02T14:30:00Z").toISOString(),
                 radius: 500,
                 businessId: "biz-1",
             },
