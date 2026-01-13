@@ -10,6 +10,7 @@ import { registerReportRoutes } from "./reports";
 import { registerSearchRoutes } from "./search";
 import { registerSchedulerRoutes } from "./scheduler";
 import { registerUserRoutes } from "./users";
+import { registerAdminRoutes } from "./admin";
 import { registerStaticRoutes } from "./static";
 
 export async function registerRoutes(
@@ -28,6 +29,7 @@ export async function registerRoutes(
     registerSearchRoutes(app);
     registerSchedulerRoutes(app);
     registerUserRoutes(app);
+    registerAdminRoutes(app);
     registerStaticRoutes(app);
 
     // Start background scheduler

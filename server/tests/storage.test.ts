@@ -44,6 +44,43 @@ describe("Storage", () => {
                 const retrievedByEmail = await storage.getUserByEmail(newUser.email);
                 expect(retrievedByEmail).toEqual(createdUser);
             });
+
+            it("should support roles and list users", async () => {
+                const adminUser: UpsertUser = {
+                    email: "admin@example.com",
+                    role: "admin",
+                    firstName: "Admin",
+                    createdAt: new Date("2024-01-02")
+                };
+
+                const regularUser: UpsertUser = {
+                    email: "user@example.com",
+                    role: "user",
+                    firstName: "User",
+                    createdAt: new Date("2024-01-01")
+                };
+
+                const savedAdmin = await storage.upsertUser(adminUser);
+                const savedUser = await storage.upsertUser(regularUser);
+
+                expect(savedAdmin.role).toBe("admin");
+                expect(savedUser.role).toBe("user"); // Default check or explicit
+
+                const users = await storage.listUsers();
+                expect(users).toHaveLength(2);
+
+                // Check sorting (descending by createdAt)
+                expect(users[0].email).toBe("admin@example.com");
+                expect(users[1].email).toBe("user@example.com");
+            });
+
+            it("should default role to 'user' if not specified", async () => {
+                const newUser: UpsertUser = {
+                    email: "default@example.com"
+                };
+                const created = await storage.upsertUser(newUser);
+                expect(created.role).toBe("user");
+            });
         });
 
         describe("Business Operations", () => {
@@ -196,6 +233,19 @@ describe("Storage", () => {
             (db.select as any).mockImplementation(mockSelect);
 
             await storage.listAllReports();
+
+            expect(db.select).toHaveBeenCalled();
+            expect(mockFrom).toHaveBeenCalled();
+            expect(mockOrderBy).toHaveBeenCalled();
+        });
+
+        it("should list users with sorting", async () => {
+            const mockOrderBy = vi.fn().mockResolvedValue([]);
+            const mockFrom = vi.fn().mockReturnValue({ orderBy: mockOrderBy });
+            const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
+            (db.select as any).mockImplementation(mockSelect);
+
+            await storage.listUsers();
 
             expect(db.select).toHaveBeenCalled();
             expect(mockFrom).toHaveBeenCalled();

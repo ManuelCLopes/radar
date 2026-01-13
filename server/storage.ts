@@ -9,6 +9,8 @@ export interface IStorage {
   upsertUser(user: UpsertUser): Promise<User>;
   findUserByEmail(email: string): Promise<User | undefined>;
   updateUserPassword(userId: string, passwordHash: string): Promise<void>;
+  updateUser(id: string, user: Partial<UpsertUser>): Promise<User>;
+  listUsers(): Promise<User[]>; // Added for admin dashboard
 
   getBusiness(id: string): Promise<Business | undefined>;
   listBusinesses(userId?: string): Promise<Business[]>;
@@ -64,6 +66,24 @@ export class DatabaseStorage implements IStorage {
       })
       .returning();
     return user;
+  }
+
+  async updateUser(id: string, user: Partial<UpsertUser>): Promise<User> {
+    const [updatedUser] = await db!
+      .update(users)
+      .set({ ...user, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+
+    if (!updatedUser) {
+      throw new Error("User not found");
+    }
+
+    return updatedUser;
+  }
+
+  async listUsers(): Promise<User[]> {
+    return await db!.select().from(users).orderBy(desc(users.createdAt));
   }
 
   async getBusiness(id: string): Promise<Business | undefined> {
@@ -254,11 +274,38 @@ export class MemStorage implements IStorage {
       profileImageUrl: user.profileImageUrl || null,
       passwordHash: user.passwordHash || null,
       plan: user.plan || "free",
+      role: user.role || "user",
       language: user.language || "pt",
       provider: user.provider || "local"
     };
     this.users.set(id, newUser);
     return newUser;
+  }
+
+  async updateUser(id: string, user: Partial<UpsertUser>): Promise<User> {
+    const existingUser = this.users.get(id);
+    if (!existingUser) {
+      throw new Error("User not found");
+    }
+
+    const updatedUser: User = {
+      ...existingUser,
+      ...user,
+      updatedAt: new Date()
+    };
+
+    if (user.email) {
+      updatedUser.email = user.email.toLowerCase();
+    }
+
+    this.users.set(id, updatedUser);
+    return updatedUser;
+  }
+
+  async listUsers(): Promise<User[]> {
+    return Array.from(this.users.values()).sort((a, b) =>
+      (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0)
+    );
   }
 
   async getBusiness(id: string): Promise<Business | undefined> {

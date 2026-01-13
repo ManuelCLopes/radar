@@ -11,6 +11,7 @@ import Dashboard from "@/pages/Dashboard";
 import SettingsPage from "@/pages/SettingsPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
+import AdminDashboard from "@/pages/AdminDashboard";
 import SupportPage from "@/pages/SupportPage";
 import PrivacyPolicy from "@/pages/legal/PrivacyPolicy";
 import CookiePolicy from "@/pages/legal/CookiePolicy";
@@ -70,6 +71,7 @@ function Router() {
       <Route path="/cookie-policy" component={CookiePolicy} />
       <Route path="/dashboard" component={ProtectedDashboard} />
       <Route path="/settings" component={ProtectedSettings} />
+      <Route path="/admin" component={AdminDashboard} />
       <Route component={NotFound} />
     </Switch>
   );

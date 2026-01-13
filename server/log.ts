@@ -1,10 +1,27 @@
-export function log(message: string, source = "express") {
-    const formattedTime = new Date().toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true,
-    });
+import winston from 'winston';
 
-    console.log(`${formattedTime} [${source}] ${message}`);
+const { combine, timestamp, printf, colorize, json } = winston.format;
+
+const logFormat = printf(({ level, message, timestamp }) => {
+    return `${timestamp} [${level}]: ${message}`;
+});
+
+export const logger = winston.createLogger({
+    level: 'info',
+    format: json(),
+    transports: [
+        new winston.transports.Console({
+            format: process.env.NODE_ENV === 'production'
+                ? json()
+                : combine(
+                    colorize(),
+                    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+                    logFormat
+                ),
+        }),
+    ],
+});
+
+export function log(message: string, source = "express") {
+    logger.info(`[${source}] ${message}`);
 }
