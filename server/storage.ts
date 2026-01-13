@@ -1,4 +1,4 @@
-import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type PasswordResetToken, businesses, reports, users, searches, passwordResetTokens, rateLimits } from "@shared/schema";
+import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type Search, type PasswordResetToken, businesses, reports, users, searches, passwordResetTokens, rateLimits } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
@@ -32,6 +32,7 @@ export interface IStorage {
 
   // Search tracking
   trackSearch?(search: InsertSearch): Promise<void>;
+  listRecentSearches?(): Promise<Search[]>; // Added for admin dashboard
   deleteUser(id: string): Promise<void>;
   updateUserLanguage(userId: string, language: string): Promise<void>;
   checkRateLimit(ip: string): Promise<{ allowed: boolean, resetTime?: Date }>;
@@ -164,6 +165,10 @@ export class DatabaseStorage implements IStorage {
 
   async trackSearch(search: InsertSearch): Promise<void> {
     await db!.insert(searches).values(search);
+  }
+
+  async listRecentSearches(): Promise<Search[]> {
+    return await db!.select().from(searches).orderBy(desc(searches.createdAt)).limit(50);
   }
 
   // Password reset methods
@@ -412,16 +417,22 @@ export class MemStorage implements IStorage {
     });
   }
 
+  async listRecentSearches(): Promise<Search[]> {
+    return Array.from(this.searches.values())
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, 50);
+  }
+
   // Password reset methods (in-memory)
   async findUserByEmail(email: string): Promise<User | undefined> {
     return this.getUserByEmail(email);
   }
 
   async updateUserPassword(userId: string, passwordHash: string): Promise<void> {
-    const user = this.users.get(userId); // Changed from find to get
+    const user = this.users.get(userId);
     if (user) {
       user.passwordHash = passwordHash;
-      this.users.set(userId, user); // Ensure map is updated
+      this.users.set(userId, user);
     }
   }
 
@@ -441,7 +452,7 @@ export class MemStorage implements IStorage {
     const tokenData = this.resetTokens.get(token);
     if (tokenData) {
       tokenData.used = true;
-      this.resetTokens.set(token, tokenData); // Ensure map is updated
+      this.resetTokens.set(token, tokenData);
     }
   }
 
