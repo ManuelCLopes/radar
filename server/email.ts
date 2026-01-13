@@ -555,7 +555,7 @@ export function generateReportEmail(report: Report, lang: string = "pt") {
 }
 
 
-// Helper for weekly report (kept at bottom or where preferred)
+// Helper for weekly report
 export function generateWeeklyReportContent(user: User, reports: Report[]) {
   const lang = user.language || "pt";
   const normalizedLang = lang.substring(0, 2).toLowerCase();
@@ -563,43 +563,58 @@ export function generateWeeklyReportContent(user: User, reports: Report[]) {
   const translations: Record<string, any> = {
     pt: {
       subject: "Relatório Semanal de Concorrência",
-      title: "Resumo Semanal",
-      intro: "Aqui estão os seus relatórios semanais de análise de concorrência.",
-      perBusiness: "Relatório para",
-      viewOnline: "Ver Detalhes Online",
-      footer: "Todos os direitos reservados."
+      title: "O Seu Resumo Semanal",
+      intro: `Aqui está a análise semanal para os seus <strong>${reports.length} negócios</strong>.`,
+      viewFullReport: "Ver Relatório Completo",
+      competitors: "concorrentes",
+      rating: "avaliação média",
+      dashboardButton: "Ir para o Dashboard",
+      footer: "Todos os direitos reservados.",
+      noChanges: "Sem alterações significativas esta semana."
     },
     en: {
       subject: "Weekly Competitor Analysis Report",
-      title: "Weekly Summary",
-      intro: "Here are your weekly competitor analysis reports.",
-      perBusiness: "Report for",
-      viewOnline: "View Details Online",
-      footer: "All rights reserved."
+      title: "Your Weekly Summary",
+      intro: `Here is the weekly analysis for your <strong>${reports.length} businesses</strong>.`,
+      viewFullReport: "View Full Report",
+      competitors: "competitors",
+      rating: "avg rating",
+      dashboardButton: "Go to Dashboard",
+      footer: "All rights reserved.",
+      noChanges: "No significant changes this week."
     },
     es: {
       subject: "Informe Semanal de Competencia",
-      title: "Resumen Semanal",
-      intro: "Aquí están sus informes semanales de análisis de competencia.",
-      perBusiness: "Informe para",
-      viewOnline: "Ver Detalles en Línea",
-      footer: "Todos los derechos reservados."
+      title: "Su Resumen Semanal",
+      intro: `Aquí tiene el análisis semanal para sus <strong>${reports.length} negocios</strong>.`,
+      viewFullReport: "Ver Informe Completo",
+      competitors: "competidores",
+      rating: "calificación media",
+      dashboardButton: "Ir al Panel",
+      footer: "Todos los derechos reservados.",
+      noChanges: "Sin cambios significativos esta semana."
     },
     fr: {
       subject: "Rapport Hebdomadaire de Concurrence",
-      title: "Résumé Hebdomadaire",
-      intro: "Voici vos rapports hebdomadaires d'analyse de la concurrence.",
-      perBusiness: "Rapport pour",
-      viewOnline: "Voir les Détails en Ligne",
-      footer: "Tous droits réservés."
+      title: "Votre Résumé Hebdomadaire",
+      intro: `Voici l'analyse hebdomadaire pour vos <strong>${reports.length} entreprises</strong>.`,
+      viewFullReport: "Voir le Rapport Complet",
+      competitors: "concurrents",
+      rating: "note moyenne",
+      dashboardButton: "Accéder au Tableau de Bord",
+      footer: "Tous droits réservés.",
+      noChanges: "Aucun changement significatif cette semaine."
     },
     de: {
       subject: "Wöchentlicher Wettbewerbsbericht",
-      title: "Wöchentliche Zusammenfassung",
-      intro: "Hier sind Ihre wöchentlichen Wettbewerbsanalyseberichte.",
-      perBusiness: "Bericht für",
-      viewOnline: "Details Online Ansehen",
-      footer: "Alle Rechte vorbehalten."
+      title: "Ihre Wöchentliche Zusammenfassung",
+      intro: `Hier ist die wöchentliche Analyse für Ihre <strong>${reports.length} Unternehmen</strong>.`,
+      viewFullReport: "Vollständigen Bericht ansehen",
+      competitors: "Wettbewerber",
+      rating: "Durchschnittsbewertung",
+      dashboardButton: "Zum Dashboard gehen",
+      footer: "Alle Rechte vorbehalten.",
+      noChanges: "Keine wesentlichen Änderungen diese Woche."
     }
   };
 
@@ -608,49 +623,70 @@ export function generateWeeklyReportContent(user: User, reports: Report[]) {
   let reportsHtml = "";
 
   for (const report of reports) {
-    // Reuse generateReportEmail to get the inner content for each report
-    // But we need to strip the outer layout if we want to stack them, 
-    // or we can create a simpler summary for the weekly email.
-    // Let's create a simplified summary block for each business.
-
     const avgRating = report.competitors && report.competitors.length > 0
       ? (report.competitors.reduce((sum, c) => sum + (c.rating || 0), 0) / report.competitors.length).toFixed(1)
-      : "N/A";
+      : "-";
+
+    const ratingColor = avgRating !== "-" && parseFloat(avgRating) >= 4.0 ? "#16a34a" : "#ca8a04";
 
     reportsHtml += `
-        <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
-            <h3 style="color: #1e40af; margin-top: 0; margin-bottom: 8px; font-size: 18px;">${report.businessName}</h3>
-            <div style="display: flex; gap: 16px; margin-bottom: 16px; color: #64748b; font-size: 14px;">
-                <span>🎯 ${report.competitors?.length || 0} competitors</span>
-                <span>⭐ ${avgRating} avg rating</span>
-            </div>
-            
-            <div style="font-size: 14px; color: #334155; margin-bottom: 16px; line-height: 1.5;">
-                ${report.executiveSummary || "Analysis complete. View full report on dashboard."}
-            </div>
+      <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+             <h3 style="color: #1e293b; margin: 0; font-size: 18px; font-weight: 700;">${report.businessName}</h3>
+             <span style="background-color: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                ${new Date(report.generatedAt).toLocaleDateString()}
+             </span>
+          </div>
+          
+          <div style="display: flex; gap: 24px; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 16px;">
+              <div style="display: flex; flex-direction: column;">
+                  <span style="font-size: 24px; font-weight: 800; color: #0f172a;">${report.competitors?.length || 0}</span>
+                  <span style="font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">${t.competitors}</span>
+              </div>
+              <div style="display: flex; flex-direction: column;">
+                  <span style="font-size: 24px; font-weight: 800; color: ${ratingColor};">${avgRating}</span>
+                  <span style="font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">${t.rating}</span>
+              </div>
+          </div>
+          
+          <div style="font-size: 15px; color: #475569; margin-bottom: 20px; line-height: 1.6;">
+              ${report.executiveSummary || t.noChanges}
+          </div>
 
-            <div>
-                <a href="https://competitorwatcher.pt/dashboard" style="color: #2563eb; text-decoration: none; font-weight: 600; font-size: 14px;">${t.viewOnline} →</a>
-            </div>
-        </div>
-      `;
+          <div style="text-align: right;">
+              <a href="https://competitorwatcher.pt/dashboard" style="color: #2563eb; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center;">
+                 ${t.viewFullReport} <span style="margin-left: 4px;">&rarr;</span>
+              </a>
+          </div>
+      </div>
+    `;
   }
 
   const html = `
-    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f9fafb; padding: 40px 20px;">
-      <div style="max-width: 600px; margin: 0 auto;">
-        <div style="background-color: #0a58ca; padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
-          <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">Competitor Watcher</h1>
+    <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f8fafc; padding: 40px 20px; color: #334155;">
+      <div style="max-width: 680px; margin: 0 auto;">
+        
+        <!-- Brand Header -->
+        <div style="text-align: center; margin-bottom: 32px;">
+           <h1 style="color: #0f172a; margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">Competitor Watcher</h1>
         </div>
         
-        <div style="background-color: #ffffff; padding: 32px 24px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-          <h2 style="color: #111827; margin-top: 0; font-size: 20px;">${t.title}</h2>
-          <p style="color: #4b5563; line-height: 1.6; margin-bottom: 32px;">${t.intro}</p>
+        <!-- Main Card -->
+        <div style="background-color: transparent;">
+          <h2 style="color: #334155; margin-top: 0; font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 8px;">${t.title}</h2>
+          <p style="color: #64748b; line-height: 1.6; margin-bottom: 32px; text-align: center; font-size: 16px;">${t.intro}</p>
           
           ${reportsHtml}
           
-          <div style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid #f1f5f9;">
-             <p style="color: #94a3b8; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Competitor Watcher. ${t.footer}</p>
+          <!-- Primary Action -->
+          <div style="text-align: center; margin-top: 40px; margin-bottom: 20px;">
+             <a href="https://competitorwatcher.pt/dashboard" style="background-color: #2563eb; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); transition: background-color 0.2s;">
+                ${t.dashboardButton}
+             </a>
+          </div>
+
+          <div style="text-align: center; margin-top: 40px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
+             <p style="color: #94a3b8; font-size: 13px; margin: 0;">&copy; ${new Date().getFullYear()} Competitor Watcher. ${t.footer}</p>
           </div>
         </div>
       </div>
@@ -659,7 +695,7 @@ export function generateWeeklyReportContent(user: User, reports: Report[]) {
 
   return {
     html: html,
-    text: `${t.intro}\n\n${reports.map(r => `${r.businessName}: ${r.executiveSummary}`).join('\n\n')}`,
+    text: `${t.title}\n${t.intro}\n\n${reports.map(r => `${r.businessName} (${r.competitors?.length || 0} competitors, ${r.executiveSummary})`).join('\n\n')}`,
     subject: t.subject
   };
 }

@@ -71,6 +71,12 @@ export async function runScheduledReports(): Promise<{
     }
 
     if (user) {
+      // Strict ownership check
+      if (business.userId && business.userId !== user.id) {
+        console.warn(`[Scheduler] Security: Skiping business ${business.id} - mismatch owner ${business.userId} vs infereed/found ${user.id}`);
+        continue;
+      }
+
       if (!userBusinessMap.has(user.id)) {
         userBusinessMap.set(user.id, { user, businesses: [] });
       }

@@ -214,6 +214,6 @@ describe("generateWeeklyReportContent", () => {
         const ptUser = { ...mockUser, language: "pt" };
         const { subject, html } = generateWeeklyReportContent(ptUser, [mockReport]);
         expect(subject).toContain("Relatório Semanal de Concorrência");
-        expect(html).toContain("Resumo Semanal");
+        expect(html).toContain("O Seu Resumo Semanal");
     });
 });
