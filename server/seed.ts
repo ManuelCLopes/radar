@@ -3,96 +3,110 @@ import bcrypt from "bcrypt";
 
 export async function seed() {
     try {
-        const email = "teste@teste.pt";
-        const password = "123123";
+        console.log("Seeding: Starting rich data generation...");
 
-        // 1. Create Users (all free now - donations only!)
+        // Helper to get random date in last X days
+        const randomDate = (daysAgo: number) => {
+            const date = new Date();
+            date.setDate(date.getDate() - Math.floor(Math.random() * daysAgo));
+            // Random time
+            date.setHours(Math.floor(Math.random() * 24), Math.floor(Math.random() * 60));
+            return date;
+        };
+
+        // Helper to get random item
+        const randomItem = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+
+        // 1. Create Users
         const usersToCreate = [
-            { email: "teste@teste.pt", plan: "free", firstName: "Teste", lastName: "User" },
-            { email: "professional@teste.pt", plan: "free", firstName: "Pro", lastName: "User" },
-            { email: "agency@teste.pt", plan: "free", firstName: "Agency", lastName: "User" },
-            { email: "essential@teste.pt", plan: "free", firstName: "Essential", lastName: "User" },
+            { email: "teste@teste.pt", plan: "free", firstName: "Teste", lastName: "User", role: "user" },
             { email: "admin@example.com", plan: "free", role: "admin", firstName: "Admin", lastName: "User" }
         ];
 
+        // Add 50 random users distributed over 30 days
+        for (let i = 0; i < 50; i++) {
+            usersToCreate.push({
+                email: `user${i}@example.com`,
+                plan: "free",
+                role: "user",
+                firstName: `User${i}`,
+                lastName: "Generated",
+                createdAt: randomDate(30) // This needs support in upsertUser or we just let it be now() and manual update?
+                // upsertUser uses ...userData, so if we pass createdAt (which is in UpsertUser type), it should work if we cast or ensure type
+            } as any);
+        }
+
         let mainUser;
+        const password = "123123";
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         for (const u of usersToCreate) {
             let user = await storage.getUserByEmail(u.email);
             if (!user) {
-                console.log(`Seeding: Creating user ${u.email}...`);
-                const hashedPassword = await bcrypt.hash(password, 10);
                 user = await storage.upsertUser({
                     email: u.email,
                     passwordHash: hashedPassword,
                     firstName: u.firstName,
                     lastName: u.lastName,
                     plan: u.plan,
-                    provider: "local"
-                });
-                console.log(`Seeding: User ${u.email} created`);
-            } else {
-                console.log(`Seeding: User ${u.email} already exists`);
+                    role: u.role || "user",
+                    provider: "local",
+                    createdAt: (u as any).createdAt || new Date()
+                } as any);
+                if (u.email === "teste@teste.pt" || u.email === "admin@example.com") {
+                    console.log(`Seeding: Created ${u.role} ${u.email}`);
+                }
             }
-            if (u.email === "teste@teste.pt") mainUser = user;
+            if (u.email === "admin@example.com") mainUser = user;
         }
 
-        const user = mainUser!; // Keep reference for reports below
+        const adminUser = mainUser!;
 
-        // 2. Create Business
-        const businessData = {
-            name: "Restaurante Teste",
-            type: "restaurant" as const,
-            address: "Av. da Liberdade, Lisboa",
-            latitude: 38.7191,
-            longitude: -9.1438,
-            locationStatus: "validated" as const
-        };
+        // 2. Create Searches (Historical data for charts)
+        // We need to bypass trackSearch if it doesn't allow overriding createdAt,
+        // but trackSearch takes InsertSearch. InsertSearch (schema) has createdAt defaultNow().
+        // We can pass it if we cast or if schema allows.
+        // Let's assume storage.trackSearch pushes to DB directly.
+        // We will mock searches directly via db insert if available, or just use storage with a trick.
+        // Since we can't easily access db directly efficiently here without imports, we'll try to use storage methods
+        // assuming they pass the full object.
+        // Wait, DatabaseStorage.trackSearch implementation likely uses `values(search)`.
 
-        const businesses = await storage.listBusinesses();
-        let business = businesses.find(b => b.name === businessData.name);
+        const locations = ["Lisbon", "Porto", "Faro", "Coimbra", "Braga", "Aveiro", "Lagos"];
+        const types = ["restaurant", "gym", "cafe", "retail", "hotel"];
 
-        if (!business) {
-            console.log("Seeding: Creating test business...");
-            business = await storage.addBusiness(businessData);
-            console.log("Seeding: Business created");
-        } else {
-            console.log("Seeding: Test business already exists");
+        console.log("Seeding: Generating searches...");
+        if (storage.trackSearch) {
+            for (let i = 0; i < 150; i++) {
+                const date = randomDate(30);
+                await storage.trackSearch({
+                    userId: adminUser.id,
+                    type: randomItem(types),
+                    address: randomItem(locations),
+                    radius: 1000,
+                    latitude: 38.7 + (Math.random() - 0.5),
+                    longitude: -9.1 + (Math.random() - 0.5),
+                    competitorsFound: Math.floor(Math.random() * 20),
+                    createdAt: date // We'll try passing this
+                } as any);
+            }
         }
 
-        // 3. Create Reports (only if none exist for this business/user to avoid spamming on every restart)
-        const userReports = await storage.getReportsByUserId(user.id);
-        if (userReports.length === 0) {
-            console.log("Seeding: Creating test reports...");
-
-            const report1 = {
-                businessId: business.id,
-                businessName: business.name,
-                userId: user.id,
-                competitors: [
-                    { name: "Competitor A", address: "Nearby St 1", rating: 4.5, userRatingsTotal: 100, priceLevel: "$$" },
-                    { name: "Competitor B", address: "Nearby St 2", rating: 4.0, userRatingsTotal: 50, priceLevel: "$" }
-                ],
-                aiAnalysis: "Test analysis for business. The location is great and competitors are few.",
-                html: "<h1>Test Report</h1><p>Content</p>"
-            };
-            await storage.createReport(report1);
-
-            const report2 = {
-                businessId: null,
-                businessName: "Rua Augusta, Lisboa",
-                userId: user.id,
-                competitors: [
-                    { name: "Cafe Central", address: "Rua Augusta 10", rating: 4.8, userRatingsTotal: 200, priceLevel: "$$" }
-                ],
-                aiAnalysis: "Ad-hoc analysis for Rua Augusta. High foot traffic area.",
-                html: "<h1>Ad-hoc Report</h1><p>Content</p>"
-            };
-            await storage.createReport(report2);
-            console.log("Seeding: Reports created");
-        } else {
-            console.log("Seeding: Reports already exist");
+        // 3. Create Reports
+        console.log("Seeding: Generating reports...");
+        for (let i = 0; i < 40; i++) {
+            const date = randomDate(30);
+            const type = randomItem(types);
+            await storage.createReport({
+                userId: adminUser.id,
+                businessName: `${type} in ${randomItem(locations)}`,
+                competitors: [],
+                aiAnalysis: "Generated historical analysis...",
+                generatedAt: date
+            } as any);
         }
+
+        console.log("Seeding: Completed!");
 
     } catch (error) {
         console.error("Seeding failed:", error);

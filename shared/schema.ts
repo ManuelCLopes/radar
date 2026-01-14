@@ -164,6 +164,7 @@ export const insertReportSchema = z.object({
   marketingStrategy: z.record(z.any()).optional(),
   customerSentiment: z.record(z.any()).optional(),
   radius: z.number().optional(),
+  generatedAt: z.union([z.string(), z.date()]).optional(), // Allow backdating for seed
 });
 
 export type InsertReport = z.infer<typeof insertReportSchema>;
