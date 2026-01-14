@@ -176,9 +176,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async saveReport(insertReport: InsertReport): Promise<Report> {
+    const reportToSave = {
+      ...insertReport,
+      generatedAt: insertReport.generatedAt ? new Date(insertReport.generatedAt) : new Date()
+    };
     const [report] = await db!
       .insert(reports)
-      .values(insertReport)
+      .values(reportToSave)
       .returning();
     return report;
   }

@@ -70,7 +70,8 @@ export function registerAdminRoutes(app: Express) {
     // Temporary seed endpoint for demo
     app.post("/api/admin/seed", async (req, res) => {
         // Protection: Admin or secret query param for curl
-        if ((!req.isAuthenticated() || req.user.role !== "admin") && req.query.secret !== "dev_seed_secret") {
+        const user = req.user as any;
+        if ((!req.isAuthenticated() || user?.role !== "admin") && req.query.secret !== "dev_seed_secret") {
             return res.sendStatus(403);
         }
         try {
