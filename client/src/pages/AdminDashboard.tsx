@@ -8,6 +8,7 @@ import { useLocation } from "wouter";
 import { useEffect } from "react";
 import AdminLayout from "@/components/layouts/AdminLayout";
 import { OverviewCharts } from "@/components/admin/OverviewCharts";
+import { ApiUsageChart } from "@/components/admin/ApiUsageChart";
 
 interface AdminStats {
     totalUsers: number;
@@ -42,7 +43,12 @@ export default function AdminDashboard() {
         enabled: !!user && user.role === "admin",
     });
 
-    if (isAuthLoading || isStatsLoading || isCardsLoading) {
+    const { data: usageData, isLoading: isUsageLoading } = useQuery({
+        queryKey: ["/api/admin/usage"],
+        enabled: !!user && user.role === "admin",
+    });
+
+    if (isAuthLoading || isStatsLoading || isCardsLoading || isUsageLoading) {
         return (
             <div className="flex justify-center items-center h-screen">
                 <Loader2 className="h-8 w-8 animate-spin" />
@@ -136,8 +142,12 @@ export default function AdminDashboard() {
                     </Card>
                 </div>
 
+
+
+                <ApiUsageChart data={usageData as any} />
+
                 <OverviewCharts data={stats as any} />
             </div>
-        </AdminLayout>
+        </AdminLayout >
     );
 }

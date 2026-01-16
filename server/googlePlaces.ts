@@ -1,4 +1,5 @@
 import type { Competitor, PlaceResult } from "@shared/schema";
+import { storage } from "./storage";
 
 const API_KEY = process.env.GOOGLE_API_KEY;
 
@@ -13,6 +14,13 @@ export async function searchPlacesByAddress(query: string): Promise<PlaceResult[
   }
 
   try {
+    // Log API usage (Text Search)
+    await storage.trackApiUsage({
+      service: 'google_places',
+      endpoint: 'textSearch',
+      costUnits: 1 // Text Search (Basic) is relatively cheap
+    });
+
     const response = await fetch(
       "https://places.googleapis.com/v1/places:searchText",
       {
@@ -70,6 +78,13 @@ export async function searchNearby(
   }
 
   try {
+    // Log API usage (Nearby Search)
+    await storage.trackApiUsage({
+      service: 'google_places',
+      endpoint: 'nearbySearch',
+      costUnits: 3 // Nearby Search + Fields is more expensive
+    });
+
     const fieldMask = [
       "places.displayName",
       "places.formattedAddress",

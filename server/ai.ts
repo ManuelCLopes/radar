@@ -1,5 +1,6 @@
 import type { Business, Competitor } from "@shared/schema";
 import OpenAI from "openai";
+import { storage } from "./storage";
 
 const apiKey = process.env.OPENAI_API_KEY || process.env.AI_INTEGRATIONS_OPENAI_API_KEY || "dummy-key-for-local-dev";
 
@@ -143,6 +144,16 @@ export async function analyzeCompetitors(
       max_tokens: 4000,
       temperature: 0.7,
     });
+
+    // Log API usage
+    if (response.usage) {
+      await storage.trackApiUsage({
+        service: 'openai',
+        endpoint: 'chatCompletions',
+        tokens: response.usage.total_tokens,
+        costUnits: Math.ceil((response.usage.total_tokens || 0) / 1000) // Rough cost approximation
+      });
+    }
 
     const content = response.choices[0]?.message?.content;
     if (!content) {

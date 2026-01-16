@@ -218,10 +218,25 @@ export const searches = pgTable("searches", {
 export type InsertSearch = typeof searches.$inferInsert;
 export type Search = typeof searches.$inferSelect;
 
+
 export const rateLimits = pgTable("rate_limits", {
   ip: varchar("ip").primaryKey(),
   hits: integer("hits").notNull().default(0),
   resetAt: timestamp("reset_at").notNull(),
 });
+
+export const apiUsage = pgTable("api_usage", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  service: varchar("service").notNull(), // 'google_places', 'openai'
+  endpoint: varchar("endpoint").notNull(), // 'textSearch', 'nearbySearch', 'analyze'
+  tokens: integer("tokens"), // For AI
+  costUnits: integer("cost_units").default(1), // Normalized cost metric
+  userId: varchar("user_id").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type InsertApiUsage = typeof apiUsage.$inferInsert;
+export type ApiUsage = typeof apiUsage.$inferSelect;
+
 
 

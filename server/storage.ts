@@ -1,4 +1,4 @@
-import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type Search, type PasswordResetToken, businesses, reports, users, searches, passwordResetTokens, rateLimits } from "@shared/schema";
+import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type Search, type PasswordResetToken, type InsertApiUsage, type ApiUsage, businesses, reports, users, searches, passwordResetTokens, rateLimits, apiUsage } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, sql } from "drizzle-orm";
 
@@ -42,6 +42,10 @@ export interface IStorage {
   deleteUser(id: string): Promise<void>;
   updateUserLanguage(userId: string, language: string): Promise<void>;
   checkRateLimit(ip: string): Promise<{ allowed: boolean, resetTime?: Date }>;
+
+  // API Usage
+  trackApiUsage(usage: InsertApiUsage): Promise<void>;
+  getApiUsageStats(days?: number): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -287,6 +291,50 @@ export class DatabaseStorage implements IStorage {
       return { allowed: true };
     }
   }
+
+  async trackApiUsage(usage: InsertApiUsage): Promise<void> {
+    const usageToSave = {
+      ...usage,
+      createdAt: new Date()
+    };
+    await db!.insert(apiUsage).values(usageToSave);
+  }
+
+  async getApiUsageStats(days: number = 30): Promise<any> {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    const usage = await db!.select()
+      .from(apiUsage)
+      .where(sql`${apiUsage.createdAt} >= ${startDate}`)
+      .orderBy(desc(apiUsage.createdAt));
+
+    // Group by date and service
+    const stats = new Map<string, { date: string, google: number, openAi: number }>();
+
+    // Initialize last 30 days
+    for (let i = 0; i < days; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      stats.set(dateStr, { date: dateStr, google: 0, openAi: 0 });
+    }
+
+    usage.forEach(record => {
+      const dateStr = record.createdAt.toISOString().split('T')[0];
+      const entry = stats.get(dateStr) || { date: dateStr, google: 0, openAi: 0 };
+
+      if (record.service === 'google_places') {
+        entry.google += (record.costUnits || 1);
+      } else if (record.service === 'openai') {
+        entry.openAi += (record.tokens || 0); // Or cost units
+      }
+
+      stats.set(dateStr, entry);
+    });
+
+    return Array.from(stats.values()).reverse();
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -297,6 +345,7 @@ export class MemStorage implements IStorage {
   private searches = new Map<string, any>();
   private resetTokens = new Map<string, any>();
   private rateLimits = new Map<string, { hits: number, resetAt: Date }>();
+  private apiUsage = new Map<string, ApiUsage>();
 
   constructor() {
     this.searches = new Map();
@@ -589,6 +638,50 @@ export class MemStorage implements IStorage {
       this.rateLimits.set(ip, { hits: 1, resetAt: new Date(now.getTime() + 60 * 60 * 1000) });
       return { allowed: true };
     }
+  }
+
+  async trackApiUsage(usage: InsertApiUsage): Promise<void> {
+    const id = String(this.currentId++);
+    this.apiUsage.set(id, {
+      id,
+      service: usage.service,
+      endpoint: usage.endpoint,
+      tokens: usage.tokens || null,
+      costUnits: usage.costUnits || 1,
+      userId: usage.userId || null,
+      createdAt: new Date()
+    });
+  }
+
+  async getApiUsageStats(days: number = 30): Promise<any> {
+    const stats = new Map<string, { date: string, google: number, openAi: number }>();
+
+    // Initialize last 30 days
+    for (let i = 0; i < days; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      stats.set(dateStr, { date: dateStr, google: 0, openAi: 0 });
+    }
+
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    this.apiUsage.forEach(usage => {
+      if (usage.createdAt >= startDate) {
+        const dateStr = usage.createdAt.toISOString().split('T')[0];
+        const entry = stats.get(dateStr);
+        if (entry) {
+          if (usage.service === 'google_places') {
+            entry.google += (usage.costUnits || 1);
+          } else if (usage.service === 'openai') {
+            entry.openAi += (usage.tokens || 0);
+          }
+        }
+      }
+    });
+
+    return Array.from(stats.values()).reverse();
   }
 }
 
