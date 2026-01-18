@@ -5,12 +5,16 @@ import userEvent from "@testing-library/user-event";
 
 // Mock hooks
 const mockMutateAsync = vi.fn();
-vi.mock("@tanstack/react-query", () => ({
-    useMutation: () => ({
-        mutateAsync: mockMutateAsync,
-        isPending: false,
-    }),
-}));
+vi.mock("@tanstack/react-query", async () => {
+    const actual = await vi.importActual("@tanstack/react-query");
+    return {
+        ...actual as any,
+        useMutation: () => ({
+            mutateAsync: mockMutateAsync,
+            isPending: false,
+        }),
+    };
+});
 
 vi.mock("react-i18next", () => ({
     useTranslation: () => ({
@@ -22,6 +26,13 @@ const mockToast = vi.fn();
 vi.mock("@/hooks/use-toast", () => ({
     useToast: () => ({
         toast: mockToast,
+    }),
+}));
+
+vi.mock("@/hooks/useAuth", () => ({
+    useAuth: () => ({
+        user: { id: "1", email: "test@example.com", isVerified: true },
+        isLoading: false,
     }),
 }));
 

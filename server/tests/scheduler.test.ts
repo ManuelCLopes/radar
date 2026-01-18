@@ -50,7 +50,11 @@ describe("Scheduler", () => {
         it("should not schedule duplicate tasks", () => {
             startScheduler();
             startScheduler();
-            expect(cron.schedule).toHaveBeenCalledTimes(1);
+            startScheduler();
+            startScheduler();
+            // Should be 2 tasks (weekly report + daily cleanup), called once per startScheduler = 2 calls total if it wasn't safeguarded
+            // blocked by check, so still 2 calls from the first startScheduler
+            expect(cron.schedule).toHaveBeenCalledTimes(2);
         });
     });
 

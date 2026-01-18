@@ -1,6 +1,6 @@
 import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type Search, type PasswordResetToken, type InsertApiUsage, type ApiUsage, businesses, reports, users, searches, passwordResetTokens, rateLimits, apiUsage } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, sql, isNotNull } from "drizzle-orm";
+import { eq, desc, sql, isNotNull, lt, and } from "drizzle-orm";
 
 export interface IStorage {
   // User operations (IMPORTANT: mandatory for Replit Auth)
@@ -47,6 +47,11 @@ export interface IStorage {
   trackApiUsage(usage: InsertApiUsage): Promise<void>;
   getApiUsageStats(days?: number): Promise<any>;
   getApiUsageByUser(limit?: number): Promise<any>;
+
+  // Email Verification
+  verifyUser(userId: string): Promise<void>;
+  findUserByVerificationToken(token: string): Promise<User | undefined>;
+  deleteExpiredUnverifiedUsers(): Promise<number>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -247,6 +252,8 @@ export class DatabaseStorage implements IStorage {
     await db!.update(passwordResetTokens).set({ used: true }).where(eq(passwordResetTokens.token, token));
   }
 
+
+
   async deleteUser(id: string): Promise<void> {
     // Reports and Searches should ideally have ON DELETE CASCADE, but let's be safe
     await db!.delete(reports).where(eq(reports.userId, id));
@@ -355,6 +362,34 @@ export class DatabaseStorage implements IStorage {
 
     return userUsage;
   }
+
+  async verifyUser(userId: string): Promise<void> {
+    await db!.update(users)
+      .set({
+        isVerified: true,
+        verificationToken: null,
+        verificationTokenExpiresAt: null
+      })
+      .where(eq(users.id, userId));
+  }
+
+  async findUserByVerificationToken(token: string): Promise<User | undefined> {
+    const [user] = await db!.select().from(users).where(eq(users.verificationToken, token));
+    return user || undefined;
+  }
+
+  async deleteExpiredUnverifiedUsers(): Promise<number> {
+    const result = await db!
+      .delete(users)
+      .where(
+        and(
+          eq(users.isVerified, false),
+          lt(users.verificationTokenExpiresAt, new Date())
+        )
+      )
+      .returning();
+    return result.length;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -399,7 +434,10 @@ export class MemStorage implements IStorage {
       plan: user.plan || "free",
       role: user.role || "user",
       language: user.language || "pt",
-      provider: user.provider || "local"
+      provider: user.provider || "local",
+      isVerified: user.isVerified ?? false,
+      verificationToken: user.verificationToken || null,
+      verificationTokenExpiresAt: user.verificationTokenExpiresAt || null
     };
     this.users.set(id, newUser);
     return newUser;
@@ -726,15 +764,46 @@ export class MemStorage implements IStorage {
       .slice(0, limit);
 
     // Hydrate with user details
-    return Promise.all(sorted.map(async (item) => {
-      const user = await this.getUser(item.userId);
+    const results = await Promise.all(sorted.map(async (entry) => {
+      const user = await this.getUser(entry.userId);
       return {
-        ...item,
-        firstName: user?.firstName || 'Unknown',
-        lastName: user?.lastName || '',
-        email: user?.email || 'unknown'
+        ...entry,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        email: user?.email
       };
     }));
+
+    return results;
+  }
+
+  async verifyUser(userId: string): Promise<void> {
+    const user = this.users.get(userId);
+    if (user) {
+      const updatedUser = {
+        ...user,
+        isVerified: true,
+        verificationToken: null,
+        verificationTokenExpiresAt: null
+      };
+      this.users.set(userId, updatedUser);
+    }
+  }
+
+  async findUserByVerificationToken(token: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(u => u.verificationToken === token);
+  }
+
+  async deleteExpiredUnverifiedUsers(): Promise<number> {
+    let count = 0;
+    const now = new Date();
+    for (const [id, user] of Array.from(this.users.entries())) {
+      if (!user.isVerified && user.verificationTokenExpiresAt && user.verificationTokenExpiresAt < now) {
+        this.users.delete(id);
+        count++;
+      }
+    }
+    return count;
   }
 }
 

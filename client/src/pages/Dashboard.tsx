@@ -222,6 +222,14 @@ export default function Dashboard() {
   });
 
   const handleAnalysisSubmit = (data: AnalysisFormValues) => {
+    if (user && !user.isVerified) {
+      toast({
+        title: t("common.verificationRequired"),
+        description: t("common.pleaseVerifyEmail"),
+        variant: "destructive",
+      });
+      return;
+    }
     runAnalysisMutation.mutate(data);
   };
 
@@ -230,8 +238,16 @@ export default function Dashboard() {
   };
 
   const handleGenerateReport = useCallback((id: string) => {
+    if (user && !user.isVerified) {
+      toast({
+        title: t("common.verificationRequired"),
+        description: t("common.pleaseVerifyEmail"),
+        variant: "destructive",
+      });
+      return;
+    }
     generateReportMutation.mutate(id);
-  }, [generateReportMutation]);
+  }, [generateReportMutation, user, toast, t]);
 
   const handleDeleteBusiness = useCallback((id: string) => {
     deleteBusinessMutation.mutate(id);

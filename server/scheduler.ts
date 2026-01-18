@@ -4,6 +4,7 @@ import { runReportForBusiness } from "./reports";
 import { emailService } from "./email";
 
 let scheduledTask: ReturnType<typeof cron.schedule> | null = null;
+let cleanupTask: ReturnType<typeof cron.schedule> | null = null;
 
 export function startScheduler() {
   if (scheduledTask) {
@@ -16,6 +17,20 @@ export function startScheduler() {
     await runScheduledReports();
   });
 
+  // Daily cleanup of unverified users at 4 AM
+  // Daily cleanup of unverified users at 4 AM
+  cleanupTask = cron.schedule("0 4 * * *", async () => {
+    try {
+      console.log("[Scheduler] Cleaning up expired unverified users...");
+      const count = await storage.deleteExpiredUnverifiedUsers();
+      if (count > 0) {
+        console.log(`[Scheduler] Deleted ${count} expired unverified users`);
+      }
+    } catch (error) {
+      console.error("[Scheduler] Error deleting unverified users:", error);
+    }
+  });
+
   console.log("[Scheduler] Weekly report scheduler started (runs every Monday at 6 AM)");
 }
 
@@ -23,9 +38,14 @@ export function stopScheduler() {
   if (scheduledTask) {
     scheduledTask.stop();
     scheduledTask = null;
-    console.log("[Scheduler] Scheduler stopped");
   }
+  if (cleanupTask) {
+    cleanupTask.stop();
+    cleanupTask = null;
+  }
+  console.log("[Scheduler] Scheduler stopped");
 }
+
 
 import type { Business, User } from "@shared/schema";
 import type { Report } from "@shared/schema";

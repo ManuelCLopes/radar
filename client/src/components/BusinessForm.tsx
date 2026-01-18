@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
 import { insertBusinessSchema, businessTypes, type InsertBusiness, type BusinessType, type PlaceResult } from "@shared/schema";
 import { z } from "zod";
@@ -62,6 +63,7 @@ interface SearchResponse {
 export function BusinessForm({ onSubmit, isPending = false, initialValues }: BusinessFormProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const [selectedPlace, setSelectedPlace] = useState<PlaceResult | null>(null);
   const [manualCoordinates, setManualCoordinates] = useState<{ lat: number; lng: number } | null>(null);
@@ -130,6 +132,15 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
   };
 
   const handleSearchAddress = async (isAutoSubmit = false) => {
+    if (user && !user.isVerified) {
+      toast({
+        title: t("common.verificationRequired"),
+        description: t("common.pleaseVerifyEmail"),
+        variant: "destructive",
+      });
+      return null;
+    }
+
     const address = form.getValues("address");
     const name = form.getValues("name");
 
@@ -533,7 +544,7 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
           <Button
             type="submit"
             className="w-full"
-            disabled={isPending || searchMutation.isPending || (!selectedPlace && !manualCoordinates && !pendingLocationAddress && !(initialValues?.address && form.watch("address") === initialValues.address))}
+            disabled={isPending || searchMutation.isPending || (!selectedPlace && !manualCoordinates && !pendingLocationAddress && !(initialValues?.address && form.watch("address") === initialValues.address)) || !user?.isVerified}
             data-testid="button-submit-business"
           >
             {isPending ? (
@@ -545,6 +556,11 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
               t("business.form.submit")
             )}
           </Button>
+          {!user?.isVerified && (
+            <p className="text-sm text-center text-muted-foreground mt-2">
+              {t("common.verificationRequiredForBusiness")}
+            </p>
+          )}
         </form>
       </Form>
 

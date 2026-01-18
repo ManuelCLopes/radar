@@ -183,6 +183,9 @@ export const users = pgTable("users", {
   plan: text("plan").notNull().default("free"), // All users are free now - donations only!
   role: text("role").notNull().default("user"), // 'admin' or 'user'
   language: text("language").notNull().default("pt"),
+  isVerified: boolean("is_verified").default(false).notNull(),
+  verificationToken: text("verification_token"),
+  verificationTokenExpiresAt: timestamp("verification_token_expires_at"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

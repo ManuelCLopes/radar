@@ -23,6 +23,8 @@ import './i18n';
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
+import VerifyEmail from "@/pages/VerifyEmail";
+import { VerificationBanner } from "@/components/VerificationBanner";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -49,7 +51,12 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
     return null;
   }
 
-  return <Component />;
+  return (
+    <>
+      <VerificationBanner />
+      <Component />
+    </>
+  );
 }
 
 function ProtectedDashboard() {
@@ -66,6 +73,7 @@ function Router() {
       <Route path="/" component={LandingPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />
+      <Route path="/verify-email" component={VerifyEmail} />
       <Route path="/forgot-password" component={ForgotPasswordPage} />
       <Route path="/reset-password/:token" component={ResetPasswordPage} />
       <Route path="/support" component={SupportPage} />

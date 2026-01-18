@@ -6,6 +6,7 @@ import { log } from "./log";
 export interface EmailService {
   sendWeeklyReport(user: User, reports: Report[]): Promise<boolean>;
   sendAdHocReport(to: string, report: Report, lang: string): Promise<boolean>;
+  sendVerificationEmail(to: string, verificationLink: string, lang: string): Promise<boolean>;
 }
 
 export class ConsoleEmailService implements EmailService {
@@ -16,6 +17,14 @@ export class ConsoleEmailService implements EmailService {
 
   async sendAdHocReport(to: string, report: Report, lang: string): Promise<boolean> {
     console.log(`[EMAIL MOCK] Sending ad-hoc email to ${to} (Content suppressed)`);
+    return true;
+  }
+
+  async sendVerificationEmail(to: string, verificationLink: string, lang: string): Promise<boolean> {
+    const { subject, text } = generateVerificationEmail(verificationLink, lang);
+    console.log(`[EMAIL MOCK] Sending verification email to ${to}`);
+    console.log(`[EMAIL MOCK] Subject: ${subject}`);
+    console.log(`[EMAIL MOCK] Link: ${verificationLink}`);
     return true;
   }
 }
@@ -55,6 +64,7 @@ export class ResendEmailService implements EmailService {
   }
 
   async sendAdHocReport(to: string, report: Report, lang: string): Promise<boolean> {
+    // ... (existing implementation)
     try {
       const { html, text, subject } = generateReportEmail(report, lang);
       const from = process.env.EMAIL_FROM || "Competitor Watcher <noreply@competitorwatcher.pt>";
@@ -76,6 +86,32 @@ export class ResendEmailService implements EmailService {
       return true;
     } catch (error) {
       console.error("[Resend] Failed to send ad-hoc report:", error);
+      return false;
+    }
+  }
+
+  async sendVerificationEmail(to: string, verificationLink: string, lang: string): Promise<boolean> {
+    try {
+      const { html, text, subject } = generateVerificationEmail(verificationLink, lang);
+      const from = process.env.EMAIL_FROM || "Competitor Watcher <noreply@competitorwatcher.pt>";
+
+      const data = await this.resend.emails.send({
+        from,
+        to,
+        subject,
+        html,
+        text
+      });
+
+      if (data.error) {
+        console.error("[Resend] Error sending verification email:", data.error);
+        return false;
+      }
+
+      log(`[Resend] Verification email sent to ${to}: ${data.data?.id}`, "email");
+      return true;
+    } catch (error) {
+      console.error("[Resend] Failed to send verification email:", error);
       return false;
     }
   }
@@ -151,6 +187,24 @@ export class NodemailerEmailService implements EmailService {
       return true;
     } catch (error) {
       console.error("[EmailService] Failed to send ad-hoc email:", error);
+      return false;
+    }
+  }
+
+  async sendVerificationEmail(to: string, verificationLink: string, lang: string): Promise<boolean> {
+    try {
+      const { html, text, subject } = generateVerificationEmail(verificationLink, lang);
+
+      await this.transporter.sendMail({
+        from: process.env.EMAIL_FROM || process.env.SMTP_FROM || '"Competitor Watcher" <noreply@competitorwatcher.pt>',
+        to: to,
+        subject: subject,
+        html: html,
+        text: text,
+      });
+      return true;
+    } catch (error) {
+      console.error("[EmailService] Failed to send verification email:", error);
       return false;
     }
   }
@@ -245,6 +299,95 @@ export function generatePasswordResetEmail(resetLink: string, email: string, lan
     </div>
   `;
   return { html, text: t.text };
+}
+
+export function generateVerificationEmail(link: string, lang: string = "pt") {
+  const translations: Record<string, any> = {
+    pt: {
+      subject: "Verifique o seu email - Competitor Watcher",
+      title: "Verifique o seu email",
+      greeting: "Olá,",
+      message: "Obrigado por se registar no Competitor Watcher. Por favor, confirme o seu endereço de email para ativar a sua conta e começar a gerar relatórios.",
+      instruction: "Clique no botão abaixo para verificar o seu email:",
+      button: "Verificar Email",
+      warning: "Contas não verificadas serão eliminadas automaticamente após 7 dias.",
+      footer: "Todos os direitos reservados.",
+      text: `Olá, verifique o seu email clicando no link: ${link}`
+    },
+    en: {
+      subject: "Verify your email - Competitor Watcher",
+      title: "Verify your email",
+      greeting: "Hello,",
+      message: "Thanks for signing up for Competitor Watcher. Please confirm your email address to activate your account and start generating reports.",
+      instruction: "Click the button below to verify your email:",
+      button: "Verify Email",
+      warning: "Unverified accounts will be automatically deleted after 7 days.",
+      footer: "All rights reserved.",
+      text: `Hello, verify your email by clicking the link: ${link}`
+    },
+    es: {
+      subject: "Verifique su correo electrónico - Competitor Watcher",
+      title: "Verifique su correo electrónico",
+      greeting: "Hola,",
+      message: "Gracias por registrarse en Competitor Watcher. Confirme su dirección de correo electrónico para activar su cuenta y comenzar a generar informes.",
+      instruction: "Haga clic en el botón de abajo para verificar su correo electrónico:",
+      button: "Verificar Correo Electrónico",
+      warning: "Las cuentas no verificadas se eliminarán automáticamente después de 7 días.",
+      footer: "Todos los derechos reservados.",
+      text: `Hola, verifique su correo electrónico haciendo clic en el enlace: ${link}`
+    },
+    fr: {
+      subject: "Vérifiez votre e-mail - Competitor Watcher",
+      title: "Vérifiez votre e-mail",
+      greeting: "Bonjour,",
+      message: "Merci de vous être inscrit sur Competitor Watcher. Veuillez confirmer votre adresse e-mail pour activer votre compte et commencer à générer des rapports.",
+      instruction: "Cliquez sur le bouton ci-dessous pour vérifier votre e-mail :",
+      button: "Vérifier l'E-mail",
+      warning: "Les comptes non vérifiés seront automatiquement supprimés après 7 jours.",
+      footer: "Tous droits réservés.",
+      text: `Bonjour, vérifiez votre e-mail en cliquant sur le lien : ${link}`
+    },
+    de: {
+      subject: "Bestätigen Sie Ihre E-Mail - Competitor Watcher",
+      title: "Bestätigen Sie Ihre E-Mail",
+      greeting: "Hallo,",
+      message: "Vielen Dank für Ihre Anmeldung bei Competitor Watcher. Bitte bestätigen Sie Ihre E-Mail-Adresse, um Ihr Konto zu aktivieren und Berichte zu erstellen.",
+      instruction: "Klicken Sie auf die Schaltfläche unten, um Ihre E-Mail zu bestätigen:",
+      button: "E-Mail Bestätigen",
+      warning: "Nicht verifizierte Konten werden nach 7 Tagen automatisch gelöscht.",
+      footer: "Alle Rechte vorbehalten.",
+      text: `Hallo, bestätigen Sie Ihre E-Mail, indem Sie auf den Link klicken: ${link}`
+    }
+  };
+
+  const normalizedLang = lang.substring(0, 2).toLowerCase();
+  const t = translations[normalizedLang] || translations.en;
+
+  const html = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f9fafb; padding: 40px 20px;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+        <div style="background-color: #0a58ca; padding: 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">Competitor Watcher</h1>
+        </div>
+        <div style="padding: 40px 30px;">
+          <h2 style="color: #111827; margin-top: 0; font-size: 20px;">${t.title}</h2>
+          <p style="color: #4b5563; line-height: 1.6;">${t.greeting}</p>
+          <p style="color: #4b5563; line-height: 1.6;">${t.message}</p>
+          <p style="color: #4b5563; line-height: 1.6;">${t.instruction}</p>
+          <div style="margin: 35px 0; text-align: center;">
+            <a href="${link}" style="background-color: #0a58ca; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">${t.button}</a>
+          </div>
+           <p style="color: #ef4444; font-size: 14px; line-height: 1.6; margin-top: 20px; font-weight: 500;">
+            ⚠️ ${t.warning}
+          </p>
+        </div>
+        <div style="background-color: #f9fafb; padding: 20px 30px; text-align: center;">
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Competitor Watcher. ${t.footer}</p>
+        </div>
+      </div>
+    </div>
+  `;
+  return { html, text: t.text, subject: t.subject };
 }
 
 export function generateWelcomeEmail(name: string, lang: string = "pt") {

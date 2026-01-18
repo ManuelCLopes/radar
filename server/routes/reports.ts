@@ -47,6 +47,11 @@ export function registerReportRoutes(app: Express) {
                 return res.status(403).json({ error: "Unauthorized access to this business" });
             }
 
+            // Verify account status
+            if ((req.user as AppUser).verificationToken && !(req.user as AppUser).isVerified) {
+                return res.status(403).json({ error: "Please verify your email address to generate reports" });
+            }
+
             const report = await runReportForBusiness(businessId, language, undefined, (req.user as AppUser).id);
             res.json(report);
         } catch (error) {
@@ -151,6 +156,12 @@ export function registerReportRoutes(app: Express) {
     // Authenticated Address Analysis
     app.post("/api/analyze-address", async (req, res) => {
         if (!req.isAuthenticated()) return res.sendStatus(401);
+
+        // Verify account status
+        if ((req.user as AppUser).verificationToken && !(req.user as AppUser).isVerified) {
+            return res.status(403).json({ error: "Please verify your email address to generate reports" });
+        }
+
         try {
             const { address, type, radius, language = 'en' } = req.body;
 

@@ -120,6 +120,7 @@ export default function AdminUsers() {
                                     <TableHead>User</TableHead>
                                     <TableHead>Email</TableHead>
                                     <TableHead>Role</TableHead>
+                                    <TableHead>Status</TableHead>
                                     <TableHead>Joined</TableHead>
                                     <TableHead className="text-right">Actions</TableHead>
                                 </TableRow>
@@ -134,6 +135,11 @@ export default function AdminUsers() {
                                         <TableCell>
                                             <Badge variant={user.role === "admin" ? "default" : "secondary"}>
                                                 {user.role}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Badge variant={user.isVerified ? "outline" : "destructive"} className={user.isVerified ? "border-green-500 text-green-700 bg-green-50" : ""}>
+                                                {user.isVerified ? "Verified" : "Pending"}
                                             </Badge>
                                         </TableCell>
                                         <TableCell>

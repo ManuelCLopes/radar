@@ -18,6 +18,7 @@ import { CompetitorMap } from "./CompetitorMap";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import type { Report, Competitor, Business } from "@shared/schema";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ReportViewProps {
   report: Report | null;
@@ -218,6 +219,7 @@ function MarketTrends({ trends }: { trends: string[] }) {
 export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: ReportViewProps) {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [emailOpen, setEmailOpen] = useState(false);
   const [emailTo, setEmailTo] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -237,10 +239,20 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
         description: t("toast.emailSent.description"),
       });
     },
-    onError: () => {
+    onError: (error: Error) => {
+      // Parse error message if it's a JSON string
+      let message = error.message;
+      try {
+        const parsed = JSON.parse(error.message);
+        if (parsed.message) message = parsed.message;
+        if (parsed.error) message = parsed.error;
+      } catch (e) {
+        // Not a JSON string, use original
+      }
+
       toast({
         title: t("toast.error.title"),
-        description: t("toast.error.sendEmail"),
+        description: message || t("toast.error.sendEmail"),
         variant: "destructive",
       });
     },
@@ -775,6 +787,14 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
   };
 
   const handleEmail = () => {
+    if (user && !user.isVerified) {
+      toast({
+        title: t("common.verificationRequired"),
+        description: t("common.pleaseVerifyEmail"),
+        variant: "destructive",
+      });
+      return;
+    }
     setEmailOpen(true);
   };
 
