@@ -44,15 +44,20 @@ export default function AdminDashboard() {
         enabled: !!user && user.role === "admin",
     });
 
-    const { data: usageData, isLoading: isUsageLoading } = useQuery({
+    const { data: usageData, isLoading: isUsageLoading, error: usageError } = useQuery({
         queryKey: ["/api/admin/usage"],
         enabled: !!user && user.role === "admin",
     });
 
-    const { data: topConsumers, isLoading: isConsumersLoading } = useQuery({
+    const { data: topConsumers, isLoading: isConsumersLoading, error: consumersError } = useQuery({
         queryKey: ["/api/admin/usage/users"],
         enabled: !!user && user.role === "admin",
     });
+
+    useEffect(() => {
+        if (usageError) console.error("Error loading usage data:", usageError);
+        if (consumersError) console.error("Error loading top consumers:", consumersError);
+    }, [usageError, consumersError]);
 
     if (isAuthLoading || isStatsLoading || isCardsLoading || isUsageLoading || isConsumersLoading) {
         return (

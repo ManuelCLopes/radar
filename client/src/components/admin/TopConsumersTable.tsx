@@ -20,7 +20,7 @@ interface ConsumerStats {
 }
 
 export function TopConsumersTable({ data }: { data: ConsumerStats[] }) {
-    if (!data || data.length === 0) return null;
+    // if (!data || data.length === 0) return null; // Don't hide completely
 
     return (
         <Card className="col-span-1 md:col-span-2 shadow-sm border-l-4 border-l-indigo-500">
@@ -38,22 +38,30 @@ export function TopConsumersTable({ data }: { data: ConsumerStats[] }) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {data.map((user) => (
-                            <TableRow key={user.userId}>
-                                <TableCell>
-                                    <div className="font-medium">
-                                        {user.firstName} {user.lastName}
-                                    </div>
-                                    <div className="text-xs text-muted-foreground">
-                                        {user.email}
-                                    </div>
-                                </TableCell>
-                                <TableCell className="text-right">{user.totalRequests}</TableCell>
-                                <TableCell className="text-right font-bold">
-                                    {user.totalCost}
+                        {(!data || data.length === 0) ? (
+                            <TableRow>
+                                <TableCell colSpan={3} className="h-24 text-center">
+                                    No consumer data available.
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        ) : (
+                            data.map((user) => (
+                                <TableRow key={user.userId}>
+                                    <TableCell>
+                                        <div className="font-medium">
+                                            {user.firstName} {user.lastName}
+                                        </div>
+                                        <div className="text-xs text-muted-foreground">
+                                            {user.email}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="text-right">{user.totalRequests}</TableCell>
+                                    <TableCell className="text-right font-bold">
+                                        {user.totalCost}
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
                     </TableBody>
                 </Table>
             </CardContent>
