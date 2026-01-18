@@ -22,7 +22,7 @@ test.describe('Responsive Design', () => {
     test('Dashboard tabs and logout are accessible on mobile', async ({ page }) => {
         // Mock auth BEFORE any navigation/mock setup
         await page.route('**/api/auth/user*', async route => {
-            await route.fulfill({ status: 200, json: { user: { id: 1, email: 'test@example.com' } } });
+            await route.fulfill({ status: 200, json: { user: { id: 1, email: 'test@example.com', isVerified: true } } });
         });
         await page.route('**/api/businesses*', async route => {
             await route.fulfill({ status: 200, json: [] });

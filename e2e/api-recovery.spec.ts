@@ -30,7 +30,7 @@ test.describe('API Error Recovery', () => {
     test('Dashboard shows error when business creation fails', async ({ page }) => {
         // Mock auth
         await page.route('**/api/auth/user*', async route => {
-            await route.fulfill({ status: 200, json: { user: { id: 1, email: 'test@example.com' } } });
+            await route.fulfill({ status: 200, json: { user: { id: 1, email: 'test@example.com', isVerified: true } } });
         });
         await page.route('/api/businesses', async route => {
             if (route.request().method() === 'POST') {

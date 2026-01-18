@@ -5,7 +5,7 @@ test.describe('Places Autocomplete', () => {
     test('Selecting autocomplete result auto-populates business form', async ({ page }) => {
         // Mock auth
         await page.route('**/api/auth/user*', async route => {
-            await route.fulfill({ status: 200, json: { user: { id: 1, email: 'test@example.com' } } });
+            await route.fulfill({ status: 200, json: { user: { id: 1, email: 'test@example.com', isVerified: true } } });
         });
         await page.route('/api/businesses', async route => {
             await route.fulfill({ status: 200, json: [] });

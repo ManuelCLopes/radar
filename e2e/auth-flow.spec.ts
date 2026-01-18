@@ -4,6 +4,7 @@ import { test, expect } from '@playwright/test';
 const mockUser = {
     id: 123,
     email: 'test@example.com',
+    isVerified: true,
     firstName: 'Test',
     lastName: 'User',
     plan: 'free',

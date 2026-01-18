@@ -5,7 +5,7 @@ test.describe('Deep Linking', () => {
     test.beforeEach(async ({ page }) => {
         // Mock auth
         await page.route('**/api/auth/user*', async route => {
-            await route.fulfill({ status: 200, json: { user: { id: 1, email: 'test@example.com' } } });
+            await route.fulfill({ status: 200, json: { user: { id: 1, email: 'test@example.com', isVerified: true } } });
         });
 
         // Mock business

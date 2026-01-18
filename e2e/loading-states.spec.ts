@@ -5,7 +5,7 @@ test.describe('Loading States', () => {
     test('Dashboard shows skeletons while loading businesses', async ({ page }) => {
         // Mock auth
         await page.route('**/api/auth/user*', async route => {
-            await route.fulfill({ status: 200, json: { user: { id: 1, email: 'test@example.com' } } });
+            await route.fulfill({ status: 200, json: { user: { id: 1, email: 'test@example.com', isVerified: true } } });
         });
 
         // Mock slow businesses response
@@ -30,7 +30,7 @@ test.describe('Loading States', () => {
     test('Report generation shows processing state', async ({ page }) => {
         // Mock auth
         await page.route('**/api/auth/user*', async route => {
-            await route.fulfill({ status: 200, json: { user: { id: 1, email: 'test@example.com' } } });
+            await route.fulfill({ status: 200, json: { user: { id: 1, email: 'test@example.com', isVerified: true } } });
         });
 
         // Mock business

@@ -15,6 +15,7 @@ test.describe('Internationalization Thoroughness', () => {
                         lastName: "User",
                         plan: "free",
                         language: "en",
+                        isVerified: true,
                         createdAt: new Date().toISOString()
                     }
                 }

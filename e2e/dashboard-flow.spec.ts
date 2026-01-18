@@ -5,6 +5,7 @@ test.describe('Dashboard Business Management Flow', () => {
     const mockUser = {
         id: 'test-user-id',
         email: 'test@example.com',
+        isVerified: true,
         firstName: 'Test',
         lastName: 'User',
         createdAt: new Date().toISOString(),

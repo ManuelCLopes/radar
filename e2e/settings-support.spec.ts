@@ -27,6 +27,7 @@ test.describe('Support & Settings Flows', () => {
                     user: {
                         id: 'user-1',
                         email: 'test@example.com',
+                        isVerified: true,
                         firstName: 'Test User'
                     }
                 })
@@ -79,6 +80,7 @@ test.describe('Support & Settings Flows', () => {
                     user: {
                         id: 'user-1',
                         email: 'test@example.com',
+                        isVerified: true,
                         firstName: 'Test User'
                     }
                 }
