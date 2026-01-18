@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import AdminLayout from "@/components/layouts/AdminLayout";
 import { OverviewCharts } from "@/components/admin/OverviewCharts";
 import { ApiUsageChart } from "@/components/admin/ApiUsageChart";
+import { TopConsumersTable } from "@/components/admin/TopConsumersTable";
 
 interface AdminStats {
     totalUsers: number;
@@ -48,7 +49,12 @@ export default function AdminDashboard() {
         enabled: !!user && user.role === "admin",
     });
 
-    if (isAuthLoading || isStatsLoading || isCardsLoading || isUsageLoading) {
+    const { data: topConsumers, isLoading: isConsumersLoading } = useQuery({
+        queryKey: ["/api/admin/usage/users"],
+        enabled: !!user && user.role === "admin",
+    });
+
+    if (isAuthLoading || isStatsLoading || isCardsLoading || isUsageLoading || isConsumersLoading) {
         return (
             <div className="flex justify-center items-center h-screen">
                 <Loader2 className="h-8 w-8 animate-spin" />
@@ -144,7 +150,10 @@ export default function AdminDashboard() {
 
 
 
-                <ApiUsageChart data={usageData as any} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <ApiUsageChart data={usageData as any} />
+                    <TopConsumersTable data={topConsumers as any} />
+                </div>
 
                 <OverviewCharts data={stats as any} />
             </div>

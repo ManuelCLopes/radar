@@ -42,6 +42,11 @@ export function registerReportRoutes(app: Express) {
                 return res.status(404).json({ error: "Business not found" });
             }
 
+            // Verify ownership
+            if (business.userId && business.userId !== (req.user as AppUser).id) {
+                return res.status(403).json({ error: "Unauthorized access to this business" });
+            }
+
             const report = await runReportForBusiness(businessId, language, undefined, (req.user as AppUser).id);
             res.json(report);
         } catch (error) {
@@ -89,6 +94,15 @@ export function registerReportRoutes(app: Express) {
 
     app.get("/api/reports/business/:businessId", isAuthenticated, async (req, res) => {
         try {
+            const business = await storage.getBusiness(req.params.businessId);
+            if (!business) {
+                return res.status(404).json({ error: "Business not found" });
+            }
+
+            if (business.userId && business.userId !== (req.user as AppUser).id) {
+                return res.status(403).json({ error: "Unauthorized access to this business" });
+            }
+
             const reports = await storage.getReportsByBusinessId(req.params.businessId);
             res.json(reports);
         } catch (error) {
@@ -120,6 +134,11 @@ export function registerReportRoutes(app: Express) {
 
             if (!report) {
                 return res.status(404).json({ error: "Report not found" });
+            }
+
+            // Verify ownership
+            if (report.userId && report.userId !== (req.user as AppUser).id) {
+                return res.status(403).json({ error: "Unauthorized access to this report" });
             }
 
             res.json(report);

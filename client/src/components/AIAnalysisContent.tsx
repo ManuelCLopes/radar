@@ -27,12 +27,18 @@ const glossaries: Record<string, typeof ptGlossary> = {
     de: deGlossary,
 };
 
+import DOMPurify from 'isomorphic-dompurify';
+
 export function AIAnalysisContent({ html }: AIAnalysisContentProps) {
     const { i18n } = useTranslation();
     const containerRef = useRef<HTMLDivElement>(null);
+    const cleanHtml = DOMPurify.sanitize(html);
 
     useEffect(() => {
         if (!containerRef.current) return;
+
+        // Use cleanHtml dependency instead of html to ensure we work with sanitized content
+        // Note: glossaries logic still needs to run on the inserted HTML
 
         // Normalize language code (pt-PT -> pt, en-US -> en, etc.)
         const rawLang = i18n?.language || 'en';
@@ -100,7 +106,7 @@ export function AIAnalysisContent({ html }: AIAnalysisContentProps) {
         processNode(container);
         container.classList.add('glossary-processed');
 
-    }, [html]); // Only depend on html, not i18n.language
+    }, [cleanHtml]); // Only depend on cleanHtml, not i18n.language
     return (
         <div
             ref={containerRef}
@@ -119,7 +125,7 @@ export function AIAnalysisContent({ html }: AIAnalysisContentProps) {
                  [&>strong]:text-primary [&>strong]:font-semibold
                  [&>em]:text-foreground/70 [&>em]:italic
                  [&>hr]:my-6 [&>hr]:border-muted"
-            dangerouslySetInnerHTML={{ __html: html }}
+            dangerouslySetInnerHTML={{ __html: cleanHtml }}
         />
     );
 }

@@ -75,4 +75,32 @@ describe("API Usage Monitor", () => {
         // OpenAI: 1500 tokens
         expect(todayEntry.openAi).toBeGreaterThanOrEqual(1500);
     });
+
+    it("GET /api/admin/usage/users returns top consumers", async () => {
+        // Create a user and track some usage
+        const user = await storage.upsertUser({
+            email: "bigspender@example.com",
+            passwordHash: "password",
+            role: "user",
+            firstName: "Big",
+            lastName: "Spender"
+        } as any);
+
+        await storage.trackApiUsage({
+            service: 'openai',
+            endpoint: 'chatCompletions',
+            tokens: 5000,
+            costUnits: 5,
+            userId: user.id
+        });
+
+        const res = await agent.get("/api/admin/usage/users");
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+
+        const spender = res.body.find((u: any) => u.userId === user.id);
+        expect(spender).toBeDefined();
+        expect(spender.totalCost).toBeGreaterThanOrEqual(5);
+        expect(spender.firstName).toBe("Big");
+    });
 });

@@ -140,4 +140,15 @@ export function registerAdminRoutes(app: Express) {
             res.status(500).json({ message: "Internal Server Error" });
         }
     });
+
+    app.get("/api/admin/usage/users", isAdmin, async (req, res) => {
+        try {
+            const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+            const stats = await storage.getApiUsageByUser(limit);
+            res.json(stats);
+        } catch (err) {
+            console.error("Error fetching usage by user:", err);
+            res.status(500).json({ message: "Internal Server Error" });
+        }
+    });
 }

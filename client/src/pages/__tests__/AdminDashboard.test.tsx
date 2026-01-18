@@ -75,14 +75,18 @@ describe("AdminDashboard", () => {
             isLoading: false,
         });
 
-        (useQuery as Mock).mockReturnValue({
-            data: {
-                totalUsers: 100,
-                totalReports: 50,
-                totalBusinesses: 20,
-                recentReports: [],
-            },
-            isLoading: false,
+        const mockStats = {
+            totalUsers: 100,
+            totalReports: 50,
+            totalBusinesses: 20,
+            recentReports: [],
+        };
+
+        (useQuery as Mock).mockImplementation(({ queryKey }) => {
+            if (queryKey[0] === "/api/admin/stats") return { data: mockStats, isLoading: false };
+            if (queryKey[0] === "/api/admin/usage") return { data: [], isLoading: false };
+            if (queryKey[0] === "/api/admin/usage/users") return { data: [], isLoading: false };
+            return { data: null, isLoading: false };
         });
 
         render(<AdminDashboard />);
@@ -104,14 +108,18 @@ describe("AdminDashboard", () => {
             { id: "1", businessName: "Biz A", generatedAt: new Date().toISOString() },
         ];
 
-        (useQuery as Mock).mockReturnValue({
-            data: {
-                totalUsers: 0,
-                totalReports: 0,
-                totalBusinesses: 0,
-                recentReports: mockReports,
-            },
-            isLoading: false,
+        const mockStats = {
+            totalUsers: 0,
+            totalReports: 0,
+            totalBusinesses: 0,
+            recentReports: mockReports,
+        };
+
+        (useQuery as Mock).mockImplementation(({ queryKey }) => {
+            if (queryKey[0] === "/api/admin/stats") return { data: mockStats, isLoading: false };
+            if (queryKey[0] === "/api/admin/usage") return { data: [], isLoading: false };
+            if (queryKey[0] === "/api/admin/usage/users") return { data: [], isLoading: false };
+            return { data: null, isLoading: false };
         });
 
         render(<AdminDashboard />);

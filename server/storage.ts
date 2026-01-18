@@ -1,6 +1,6 @@
 import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type Search, type PasswordResetToken, type InsertApiUsage, type ApiUsage, businesses, reports, users, searches, passwordResetTokens, rateLimits, apiUsage } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, sql } from "drizzle-orm";
+import { eq, desc, sql, isNotNull } from "drizzle-orm";
 
 export interface IStorage {
   // User operations (IMPORTANT: mandatory for Replit Auth)
@@ -46,6 +46,7 @@ export interface IStorage {
   // API Usage
   trackApiUsage(usage: InsertApiUsage): Promise<void>;
   getApiUsageStats(days?: number): Promise<any>;
+  getApiUsageByUser(limit?: number): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -334,6 +335,25 @@ export class DatabaseStorage implements IStorage {
     });
 
     return Array.from(stats.values()).reverse();
+  }
+
+  async getApiUsageByUser(limit: number = 10): Promise<any> {
+    const userUsage = await db!.select({
+      userId: apiUsage.userId,
+      firstName: users.firstName,
+      lastName: users.lastName,
+      email: users.email,
+      totalRequests: sql<number>`count(*)`,
+      totalCost: sql<number>`sum(${apiUsage.costUnits})`
+    })
+      .from(apiUsage)
+      .leftJoin(users, eq(apiUsage.userId, users.id))
+      .where(isNotNull(apiUsage.userId))
+      .groupBy(apiUsage.userId, users.firstName, users.lastName, users.email)
+      .orderBy(desc(sql`sum(${apiUsage.costUnits})`))
+      .limit(limit);
+
+    return userUsage;
   }
 }
 
@@ -682,6 +702,39 @@ export class MemStorage implements IStorage {
     });
 
     return Array.from(stats.values()).reverse();
+  }
+
+  async getApiUsageByUser(limit: number = 10): Promise<any> {
+    // Aggregate in memory
+    const userMap = new Map<string, { userId: string, totalRequests: number, totalCost: number }>();
+
+    this.apiUsage.forEach(usage => {
+      if (usage.userId) {
+        const entry = userMap.get(usage.userId) || { userId: usage.userId, totalRequests: 0, totalCost: 0 };
+        entry.totalRequests += 1;
+        entry.totalCost += (usage.costUnits || 0);
+        if (usage.service === 'openai') {
+          // For tokens we might want a different metric, but for now we sum 'costUnits' if set, or just use tokens/1000
+          // In our tracking logic we set costUnits for both services.
+        }
+        userMap.set(usage.userId, entry);
+      }
+    });
+
+    const sorted = Array.from(userMap.values())
+      .sort((a, b) => b.totalCost - a.totalCost)
+      .slice(0, limit);
+
+    // Hydrate with user details
+    return Promise.all(sorted.map(async (item) => {
+      const user = await this.getUser(item.userId);
+      return {
+        ...item,
+        firstName: user?.firstName || 'Unknown',
+        lastName: user?.lastName || '',
+        email: user?.email || 'unknown'
+      };
+    }));
   }
 }
 
