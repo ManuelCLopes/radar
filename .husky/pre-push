@@ -1,0 +1,8 @@
+
+branch_name=$(git symbolic-ref --short HEAD)
+
+if [ "$branch_name" = "main" ] || [ "$branch_name" = "master" ]; then
+  echo "🚫 Direct pushes to '$branch_name' are not allowed."
+  echo "👉 Please create a pull request."
+  exit 1
+fi
