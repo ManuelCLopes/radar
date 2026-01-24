@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
-import { User, LogOut, Heart, Eye, EyeOff, Trash2, Shield } from "lucide-react";
+import { User, LogOut, CreditCard, Eye, EyeOff, Trash2, Shield, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -43,7 +43,7 @@ export default function SettingsPage() {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    // Plan state removed - using donation model
+    const [isLoadingPortal, setIsLoadingPortal] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -113,6 +113,33 @@ export default function SettingsPage() {
             setIsDeleting(false);
         } finally {
             setShowDeleteConfirm(false);
+        }
+    };
+
+    const handleManageSubscription = async () => {
+        setIsLoadingPortal(true);
+        try {
+            const res = await fetch("/api/create-portal-session", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!res.ok) {
+                throw new Error("Failed to create portal session");
+            }
+
+            const { url } = await res.json();
+            window.location.href = url;
+        } catch (error) {
+            console.error(error);
+            toast({
+                title: "Error",
+                description: "Failed to open billing portal",
+                variant: "destructive"
+            });
+            setIsLoadingPortal(false);
         }
     };
 
@@ -284,30 +311,49 @@ export default function SettingsPage() {
                     </CardContent>
                 </Card>
 
-                {/* Support Competitor Watcher - Donation Card */}
-                <Card className="border-purple-200 dark:border-purple-800">
+                {/* Subscription Management */}
+                <Card className="border-blue-200 dark:border-blue-800">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <Heart className="h-5 w-5 text-red-500" />
-                            {t('settings.support.title')}
+                            <CreditCard className="h-5 w-5 text-blue-500" />
+                            {t('settings.subscription.title')}
                         </CardTitle>
                         <CardDescription>
-                            {t('settings.support.description')}
+                            {t('settings.subscription.description')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950 rounded-lg">
-                            <p className="text-sm mb-3" dangerouslySetInnerHTML={{ __html: t('settings.support.message') }} />
-                            <Link href="/support">
-                                <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                                    <Heart className="mr-2 h-4 w-4" />
-                                    {t('settings.support.button')}
+                        <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                            <div>
+                                <p className="font-medium">{t('settings.subscription.currentPlan')} <span className="capitalize">{user?.plan || 'free'}</span></p>
+                                <p className="text-sm text-muted-foreground">
+                                    {user?.plan === 'pro'
+                                        ? t('settings.subscription.accessPremium')
+                                        : t('settings.subscription.upgradeUnlock')}
+                                </p>
+                            </div>
+                            <Badge variant={user?.plan === 'pro' ? 'default' : 'secondary'}>
+                                {user?.plan === 'pro' ? t('settings.subscription.proBadge') : t('settings.subscription.freeBadge')}
+                            </Badge>
+                        </div>
+
+                        {user?.plan === 'pro' ? (
+                            <Button
+                                onClick={handleManageSubscription}
+                                disabled={isLoadingPortal}
+                                className="w-full"
+                                variant="outline"
+                            >
+                                {isLoadingPortal && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                {t('settings.subscription.manage')}
+                            </Button>
+                        ) : (
+                            <Link href="/pricing">
+                                <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white">
+                                    {t('settings.subscription.upgrade')}
                                 </Button>
                             </Link>
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                            <p>{t('settings.support.footer')}</p>
-                        </div>
+                        )}
                     </CardContent>
                 </Card>
 

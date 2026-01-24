@@ -615,9 +615,54 @@
     "thankYou": "¡Gracias!",
     "thankYouMessage": "Tu apoyo hace posible mantener Competitor Watcher gratuito para todos"
   },
+  "pricing": {
+    "title": "Precios Simples y Transparentes",
+    "subtitle": "Elige el plan adecuado para tu negocio",
+    "free": {
+      "title": "Gratis",
+      "description": "Perfecto para empezar",
+      "price": "0€"
+    },
+    "pro": {
+      "title": "Pro",
+      "description": "Para negocios en crecimiento",
+      "price": "29,99€",
+      "originalPrice": "49,99€",
+      "period": "/mes",
+      "recommended": "Recomendado"
+    },
+    "features": {
+      "basicAnalysis": "Análisis de Competencia",
+      "oneBusiness": "1 Perfil de Negocio",
+      "standardSupport": "Soporte Estándar",
+      "advancedInsights": "Reportes IA Ilimitados",
+      "unlimitedBusinesses": "Perfiles de Negocio Ilimitados",
+      "prioritySupport": "Soporte Prioritario",
+      "exportPdf": "Exportar a PDF",
+      "weeklyReport": "Reporte Semanal por Email",
+      "reportsLimit": "2 Reportes por Mes"
+    },
+    "buttons": {
+      "currentPlan": "Plan Actual",
+      "downgrade": "Downgrade",
+      "upgrade": "Actualizar a Pro",
+      "manage": "Administrar Suscripción"
+    }
+  },
   "settings": {
     "title": "Configuración",
-    "subtitle": "Gestiona tu cuenta y preferencias",
+    "subtitle": "Administra tu cuenta y preferencias",
+    "subscription": {
+      "title": "Suscripción",
+      "description": "Administra tu plan y detalles de facturación",
+      "currentPlan": "Plan Actual:",
+      "accessPremium": "Tienes acceso a todas las funciones premium.",
+      "upgradeUnlock": "Actualiza para desbloquear análisis avanzados y más.",
+      "proBadge": "PRO",
+      "freeBadge": "GRATIS",
+      "manage": "Administrar Suscripción",
+      "upgrade": "Actualizar a Pro"
+    },
     "account": {
       "title": "Información de la Cuenta",
       "description": "Actualiza tus datos personales y credenciales",
@@ -630,12 +675,11 @@
       "cancel": "Cancelar",
       "edit": "Editar Perfil"
     },
-    "support": {
-      "title": "Apoyar a Competitor Watcher",
-      "description": "Competitor Watcher es 100% gratuito y de código abierto. ¡Ayuda a mantener el proyecto!",
-      "message": "<strong>Todas las funciones</strong> están desbloqueadas para todos. Si Competitor Watcher ayuda a su negocio, considere apoyar con una donación.",
-      "button": "Ver Opciones de Apoyo",
-      "footer": "💜 GitHub Sponsors • ☕ Ko-fi • 🎁 Buy Me a Coffee"
+    "valueProp": {
+      "title": "Empieza Gratis. Crece sin Límites.",
+      "description": "Creemos que todos los negocios merecen acceso a inteligencia de mercado. Por eso, nuestro plan gratuito incluye 2 reportes detallados cada mes. ¿Necesitas más? El plan Pro elimina todos los límites.",
+      "cta": "Ver Planes",
+      "footer": "Únete a cientos de empresas inteligentes."
     },
     "danger": {
       "title": "Zona de Peligro",

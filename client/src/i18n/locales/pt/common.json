@@ -96,6 +96,7 @@
     "list": {
       "title": "Os Seus Negócios",
       "empty": "Ainda não há negócios registados. Adicione o seu primeiro negócio.",
+      "emptyDesc": "Comece por registar um negócio para analisar a concorrência.",
       "generateReport": "Gerar Relatório",
       "report": "Relatório",
       "generating": "A gerar...",
@@ -616,9 +617,54 @@
     "thankYou": "Obrigado!",
     "thankYouMessage": "O seu apoio torna possível manter o Competitor Watcher gratuito para todos"
   },
+  "pricing": {
+    "title": "Preços Simples e Transparentes",
+    "subtitle": "Escolha o plano ideal para o seu negócio",
+    "free": {
+      "title": "Gratuito",
+      "description": "Perfeito para começar",
+      "price": "0€"
+    },
+    "pro": {
+      "title": "Pro",
+      "description": "Para negócios em crescimento",
+      "price": "29,99€",
+      "originalPrice": "49,99€",
+      "period": "/mês",
+      "recommended": "Recomendado"
+    },
+    "features": {
+      "basicAnalysis": "Análise de Concorrência",
+      "oneBusiness": "1 Perfil de Negócio",
+      "standardSupport": "Suporte Padrão",
+      "advancedInsights": "Relatórios IA Ilimitados",
+      "unlimitedBusinesses": "Perfis de Negócio Ilimitados",
+      "prioritySupport": "Suporte Prioritário",
+      "exportPdf": "Exportar para PDF",
+      "weeklyReport": "Relatório Semanal por Email",
+      "reportsLimit": "2 Relatórios por Mês"
+    },
+    "buttons": {
+      "currentPlan": "Plano Atual",
+      "downgrade": "Downgrade",
+      "upgrade": "Atualizar para Pro",
+      "manage": "Gerir Subscrição"
+    }
+  },
   "settings": {
     "title": "Definições",
     "subtitle": "Gerir a sua conta e preferências",
+    "subscription": {
+      "title": "Subscrição",
+      "description": "Gerir o seu plano e detalhes de faturação",
+      "currentPlan": "Plano Atual:",
+      "accessPremium": "Tem acesso a todas as funcionalidades premium.",
+      "upgradeUnlock": "Atualize para desbloquear análises avançadas e mais.",
+      "proBadge": "PRO",
+      "freeBadge": "GRÁTIS",
+      "manage": "Gerir Subscrição",
+      "upgrade": "Atualizar para Pro"
+    },
     "account": {
       "title": "Informação da Conta",
       "description": "Atualize os seus dados pessoais e credenciais",
@@ -632,12 +678,11 @@
       "cancel": "Cancelar",
       "edit": "Editar Perfil"
     },
-    "support": {
-      "title": "Apoiar o Competitor Watcher",
-      "description": "O Competitor Watcher é 100% gratuito e open source. Ajude a manter o projeto!",
-      "message": "<strong>Todas as funcionalidades</strong> estão desbloqueadas para todos. Se o Competitor Watcher ajuda o seu negócio, considera apoiar com uma doação.",
-      "button": "Ver Opções de Apoio",
-      "footer": "💜 GitHub Sponsors • ☕ Ko-fi • 🎁 Buy Me a Coffee"
+    "valueProp": {
+      "title": "Comece Gratuitamente. Cresça sem Limites.",
+      "description": "Acreditamos que todos os negócios merecem acesso a inteligência de mercado. Por isso, o nosso plano gratuito inclui 2 relatórios detalhados todos os meses. Precisa de mais? O plano Pro remove todos os limites.",
+      "cta": "Ver Planos",
+      "footer": "Junte-se a centenas de empresas inteligentes."
     },
     "danger": {
       "title": "Zona de Perigo",

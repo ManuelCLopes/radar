@@ -277,6 +277,16 @@ export default function Dashboard() {
           <div className="flex items-center gap-2">
             <LanguageSelector />
             <ThemeToggle />
+            <Link href="/pricing">
+              <Button
+                variant="ghost"
+                size="icon"
+                title="Subscrição"
+              >
+                <Star className="h-5 w-5 text-amber-500" />
+                <span className="sr-only">Subscrição</span>
+              </Button>
+            </Link>
             <Link href="/settings">
               <Button
                 variant="ghost"

@@ -11,6 +11,7 @@ export interface IStorage {
   updateUserPassword(userId: string, passwordHash: string): Promise<void>;
   updateUser(id: string, user: Partial<UpsertUser>): Promise<User>;
   listUsers(): Promise<User[]>; // Added for admin dashboard
+  getUserByStripeCustomerId(stripeCustomerId: string): Promise<User | undefined>;
 
   getBusiness(id: string): Promise<Business | undefined>;
   listBusinesses(userId?: string): Promise<Business[]>;
@@ -101,6 +102,11 @@ export class DatabaseStorage implements IStorage {
 
   async listUsers(): Promise<User[]> {
     return await db!.select().from(users).orderBy(desc(users.createdAt));
+  }
+
+  async getUserByStripeCustomerId(stripeCustomerId: string): Promise<User | undefined> {
+    const [user] = await db!.select().from(users).where(eq(users.stripeCustomerId, stripeCustomerId));
+    return user || undefined;
   }
 
   async getBusiness(id: string): Promise<Business | undefined> {
@@ -411,6 +417,10 @@ export class MemStorage implements IStorage {
     return this.users.get(id);
   }
 
+  async getUserByStripeCustomerId(stripeCustomerId: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(u => u.stripeCustomerId === stripeCustomerId);
+  }
+
   async getUserByEmail(email: string): Promise<User | undefined> {
     const lowerEmail = email.toLowerCase();
     return Array.from(this.users.values()).find(
@@ -437,7 +447,11 @@ export class MemStorage implements IStorage {
       provider: user.provider || "local",
       isVerified: user.isVerified ?? false,
       verificationToken: user.verificationToken || null,
-      verificationTokenExpiresAt: user.verificationTokenExpiresAt || null
+      verificationTokenExpiresAt: user.verificationTokenExpiresAt || null,
+      stripeCustomerId: user.stripeCustomerId || null,
+      stripeSubscriptionId: user.stripeSubscriptionId || null,
+      subscriptionStatus: user.subscriptionStatus || null,
+      subscriptionPeriodEnd: user.subscriptionPeriodEnd || null
     };
     this.users.set(id, newUser);
     return newUser;

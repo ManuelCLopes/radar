@@ -572,8 +572,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* SUPPORT PROJECT CTA */}
-      <section className="relative py-20 overflow-hidden bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20" id="cta-final" data-testid="section-cta-final">
+      {/* PRICING VALUE PROP */}
+      <section className="relative py-20 overflow-hidden bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20" id="pricing-teaser" data-testid="section-pricing-teaser">
         {/* Subtle background decoration */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
           <div className="absolute top-20 right-20 w-64 h-64 bg-pink-300/20 dark:bg-pink-500/10 rounded-full blur-3xl"></div>
@@ -582,28 +582,28 @@ export default function LandingPage() {
 
         <div className="landing-container relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            {/* Heart icon */}
+            {/* Sparkles icon */}
             <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full shadow-lg animate-bounce">
-              <Heart className="w-8 h-8 text-white fill-current" />
+              <Sparkles className="w-8 h-8 text-white fill-current" />
             </div>
 
             <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 dark:from-pink-400 dark:via-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
-              {t('landing.support.title')}
+              {t('valueProp.title')}
             </h2>
 
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-              {t('landing.support.description')}
+              {t('valueProp.description')}
             </p>
 
-            <Link href="/support">
-              <button className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200" data-testid="link-support-project">
-                <Heart className="w-4 h-4" />
-                <span>{t('landing.support.cta')}</span>
+            <Link href="/pricing">
+              <button className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200" data-testid="link-pricing">
+                <Rocket className="w-4 h-4" />
+                <span>{t('valueProp.cta')}</span>
               </button>
             </Link>
 
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-6">
-              {t('landing.support.footer')}
+              {t('valueProp.footer')}
             </p>
           </div>
         </div>
