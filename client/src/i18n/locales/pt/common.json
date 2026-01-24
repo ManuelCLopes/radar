@@ -303,7 +303,7 @@
     "passwordMismatch": "As palavras-passe não coincidem",
     "passwordTooShort": "A palavra-passe deve ter pelo menos 6 caracteres",
     "passwordMinChars": "Mínimo de 6 caracteres",
-    "freeBadge": "✨ 100% Gratuito • Todas as funcionalidades desbloqueadas",
+    "freeBadge": "✨ Comece Gratuitamente • Sem cartão de crédito",
     "forgotPassword": "Esqueceu a password?",
     "forgotPasswordTitle": "Recuperar Password",
     "forgotPasswordDesc": "Introduza o seu email e enviaremos um link para redefinir a sua password",
@@ -548,6 +548,13 @@
     },
     "cta": {
       "existingAccount": "Já tem conta? Aceda ao seu painel aqui"
+    },
+    "valueProp": {
+      "title": "Comece Gratuitamente. Cresça sem Limites.",
+      "description": "Acreditamos que todos os negócios merecem acesso a inteligência de mercado. Por isso, o nosso plano gratuito inclui 2 relatórios detalhados todos os meses. Precisa de mais? O plano Pro remove todos os limites.",
+      "cta": "Ver Planos",
+      "supportCta": "Apoiar o Projeto",
+      "footer": "Junte-se a centenas de empresas inteligentes."
     }
   },
   "locationStatus": {
@@ -568,7 +575,7 @@
   "support": {
     "back": "Voltar",
     "title": "Apoiar o Competitor Watcher",
-    "subtitle": "Ajude a manter o Competitor Watcher 100% gratuito e open source para todos",
+    "subtitle": "Ajude a manter o Competitor Watcher open source para todos",
     "whySupport": {
       "title": "Porquê Apoiar?",
       "description": "O Competitor Watcher é um projeto de paixão construído para ajudar pequenos negócios a competir. Cada doação mantém as luzes acesas."
@@ -581,8 +588,8 @@
       "ai": "Insights AI",
       "aiDesc": "OpenAI API gera análise acionável de concorrentes"
     },
-    "mission": "Nossa Missão: Manter o Competitor Watcher 100% Gratuito",
-    "missionDesc": "Sem paywalls. Sem limites de funcionalidades. Sem anúncios. Apenas uma ferramenta para ajudar negócios locais a prosperar.",
+    "mission": "Nossa Missão: Capacitar Negócios Locais",
+    "missionDesc": "Ferramentas profissionais para todos os negócios, construídas para ajudar a prosperar.",
     "howToSupport": "Escolha Como Apoiar",
     "everyContribution": "Cada contribuição ajuda, não importa o tamanho!",
     "platforms": {
@@ -678,12 +685,6 @@
       "cancel": "Cancelar",
       "edit": "Editar Perfil"
     },
-    "valueProp": {
-      "title": "Comece Gratuitamente. Cresça sem Limites.",
-      "description": "Acreditamos que todos os negócios merecem acesso a inteligência de mercado. Por isso, o nosso plano gratuito inclui 2 relatórios detalhados todos os meses. Precisa de mais? O plano Pro remove todos os limites.",
-      "cta": "Ver Planos",
-      "footer": "Junte-se a centenas de empresas inteligentes."
-    },
     "danger": {
       "title": "Zona de Perigo",
       "description": "Ações irreversíveis relacionadas com a sua conta",
@@ -718,7 +719,7 @@
     }
   },
   "footer": {
-    "mission": "Capacitando negócios locais com análises de competidores via IA. 100% gratuito e código aberto.",
+    "mission": "Capacitando negócios locais com análises de competidores via IA. Comece grátis hoje.",
     "sections": {
       "project": "Projeto",
       "account": "Conta",

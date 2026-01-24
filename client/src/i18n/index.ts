@@ -32,4 +32,3 @@ i18n
   });
 
 export default i18n;
-// Force re-bundle of translations - pricing update v12 (exclude competitor alerts from essential)

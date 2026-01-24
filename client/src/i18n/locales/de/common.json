@@ -301,7 +301,7 @@
     "passwordMismatch": "Passwörter stimmen nicht überein",
     "passwordTooShort": "Das Passwort muss mindestens 6 Zeichen lang sein",
     "passwordMinChars": "Mindestens 6 Zeichen",
-    "freeBadge": "✨ 100 % Kostenlos • Alle Funktionen freigeschaltet",
+    "freeBadge": "✨ Kostenlos starten • Keine Kreditkarte erforderlich",
     "forgotPassword": "Passwort vergessen?",
     "forgotPasswordTitle": "Passwort wiederherstellen",
     "forgotPasswordDesc": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts",
@@ -546,6 +546,13 @@
     },
     "cta": {
       "existingAccount": "Haben Sie bereits ein Konto? Greifen Sie hier auf Ihr Dashboard zu"
+    },
+    "valueProp": {
+      "title": "Kostenlos starten. Grenzenlos wachsen.",
+      "description": "Wir glauben, dass jedes Unternehmen Zugang zu Marktintelligenz verdient. Deshalb enthält unser kostenloser Plan 2 detaillierte Berichte pro Monat. Brauchen Sie mehr? Der Pro-Plan entfernt alle Limits.",
+      "cta": "Preise ansehen",
+      "supportCta": "Projekt unterstützen",
+      "footer": "Schließen Sie sich hunderten klugen Unternehmen an."
     }
   },
   "locationStatus": {
@@ -566,7 +573,7 @@
   "support": {
     "back": "Zurück",
     "title": "Competitor Watcher unterstützen",
-    "subtitle": "Helfen Sie mit, Competitor Watcher für alle zu 100 % kostenlos und quelloffen zu halten",
+    "subtitle": "Helfen Sie mit, Competitor Watcher für alle quelloffen zu halten",
     "whySupport": {
       "title": "Warum Ihre Unterstützung wichtig ist",
       "description": "Competitor Watcher ist ein Herzensprojekt, das entwickelt wurde, um kleinen Unternehmen zu helfen, wettbewerbsfähig zu bleiben. Jede Spende trägt dazu bei, den Betrieb aufrechtzuerhalten."
@@ -579,8 +586,8 @@
       "ai": "KI-gestützte Erkenntnisse",
       "aiDesc": "Die OpenAI API generiert handlungsorientierte Wettbewerbsanalysen"
     },
-    "mission": "Unsere Mission: Competitor Watcher zu 100 % kostenlos halten",
-    "missionDesc": "Keine Bezahlschranken. Keine Funktionseinschränkungen. Keine Werbung. Nur ein Werkzeug, das entwickelt wurde, um lokalen Unternehmen zum Erfolg zu verhelfen.",
+    "mission": "Unsere Mission: Lokale Unternehmen stärken",
+    "missionDesc": "Professionelle Werkzeuge, entwickelt, um lokalen Unternehmen zum Erfolg zu verhelfen.",
     "howToSupport": "Wählen Sie, wie Sie unterstützen möchten",
     "everyContribution": "Jeder Beitrag hilft, egal wie groß oder klein!",
     "platforms": {
@@ -675,12 +682,6 @@
       "cancel": "Abbrechen",
       "edit": "Profil bearbeiten"
     },
-    "valueProp": {
-      "title": "Kostenlos starten. Grenzenlos wachsen.",
-      "description": "Wir glauben, dass jedes Unternehmen Zugang zu Marktintelligenz verdient. Deshalb enthält unser kostenloser Plan 2 detaillierte Berichte pro Monat. Brauchen Sie mehr? Der Pro-Plan entfernt alle Limits.",
-      "cta": "Preise ansehen",
-      "footer": "Schließen Sie sich hunderten klugen Unternehmen an."
-    },
     "danger": {
       "title": "Gefahrenzone",
       "description": "Unwiderrufliche Aktionen im Zusammenhang mit Ihrem Konto",
@@ -710,7 +711,7 @@
     }
   },
   "footer": {
-    "mission": "Unterstützung lokaler Unternehmen mit KI-gestützten Wettbewerbsanalysen. 100 % kostenlos und quelloffen.",
+    "mission": "Unterstützung lokaler Unternehmen mit KI-gestützten Wettbewerbsanalysen. Heute kostenlos starten.",
     "sections": {
       "project": "Projekt",
       "account": "Konto",

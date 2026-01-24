@@ -51,7 +51,7 @@ describe('SupportPage', () => {
 
         it('should render the hero section', () => {
             renderSupportPage();
-            expect(screen.getByText(/Help keep Competitor Watcher 100% free and open source/i)).toBeInTheDocument();
+            expect(screen.getByText(/Help keep Competitor Watcher open source/i)).toBeInTheDocument();
         });
     });
 
@@ -70,7 +70,7 @@ describe('SupportPage', () => {
 
         it('should display the mission statement', () => {
             renderSupportPage();
-            expect(screen.getAllByText(/Keep Competitor Watcher 100% Free/i)[0]).toBeInTheDocument();
+            expect(screen.getAllByText(/Empower Local Businesses/i)[0]).toBeInTheDocument();
         });
     });
 

@@ -302,7 +302,7 @@
     "passwordMismatch": "Passwords do not match",
     "passwordTooShort": "Password must be at least 6 characters",
     "passwordMinChars": "Minimum 6 characters",
-    "freeBadge": "✨ 100% Free • All features unlocked",
+    "freeBadge": "✨ Start for Free • No credit card required",
     "forgotPassword": "Forgot password?",
     "forgotPasswordTitle": "Recover Password",
     "forgotPasswordDesc": "Enter your email and we'll send you a link to reset your password",
@@ -547,6 +547,13 @@
     },
     "cta": {
       "existingAccount": "Already have an account? Access your dashboard here"
+    },
+    "valueProp": {
+      "title": "Start for Free. Grow without Limits.",
+      "description": "We believe every business deserves access to market intelligence. That’s why our Free plan includes 2 detailed reports every month. Need more? The Pro plan removes all limits.",
+      "cta": "View Pricing",
+      "supportCta": "Support the Project",
+      "footer": "Join hundreds of smart businesses."
     }
   },
   "locationStatus": {
@@ -567,7 +574,7 @@
   "support": {
     "back": "Back",
     "title": "Support Competitor Watcher",
-    "subtitle": "Help keep Competitor Watcher 100% free and open source for everyone",
+    "subtitle": "Help keep Competitor Watcher open source for everyone",
     "whySupport": {
       "title": "Why Your Support Matters",
       "description": "Competitor Watcher is a passion project built to help small businesses compete. Every donation keeps the lights on."
@@ -580,8 +587,8 @@
       "ai": "AI-Powered Insights",
       "aiDesc": "OpenAI API generates actionable competitor analysis"
     },
-    "mission": "Our Mission: Keep Competitor Watcher 100% Free",
-    "missionDesc": "No paywalls. No feature limits. No ads. Just a tool built to help local businesses thrive.",
+    "mission": "Our Mission: Empower Local Businesses",
+    "missionDesc": "Professional tools for every business. Just a tool built to help local businesses thrive.",
     "howToSupport": "Choose How to Support",
     "everyContribution": "Every contribution helps, no matter the size!",
     "platforms": {
@@ -677,12 +684,6 @@
       "cancel": "Cancel",
       "edit": "Edit Profile"
     },
-    "valueProp": {
-      "title": "Start for Free. Grow without Limits.",
-      "description": "We believe every business deserves access to market intelligence. That’s why our Free plan includes 2 detailed reports every month. Need more? The Pro plan removes all limits.",
-      "cta": "View Pricing",
-      "footer": "Join hundreds of smart businesses."
-    },
     "danger": {
       "title": "Danger Zone",
       "description": "Irreversible actions related to your account",
@@ -717,7 +718,7 @@
     }
   },
   "footer": {
-    "mission": "Empowering local businesses with AI-driven competitor insights. 100% free and open source.",
+    "mission": "Empowering local businesses with AI-driven competitor insights. Start for free today.",
     "sections": {
       "project": "Project",
       "account": "Account",

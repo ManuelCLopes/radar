@@ -588,22 +588,31 @@ export default function LandingPage() {
             </div>
 
             <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 dark:from-pink-400 dark:via-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
-              {t('valueProp.title')}
+              {t('landing.valueProp.title')}
             </h2>
 
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-              {t('valueProp.description')}
+              {t('landing.valueProp.description')}
             </p>
 
-            <Link href="/pricing">
-              <button className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200" data-testid="link-pricing">
-                <Rocket className="w-4 h-4" />
-                <span>{t('valueProp.cta')}</span>
-              </button>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link href="/pricing">
+                <button className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200" data-testid="link-pricing">
+                  <Rocket className="w-4 h-4" />
+                  <span>{t('landing.valueProp.cta')}</span>
+                </button>
+              </Link>
+
+              <Link href="/support">
+                <button className="group inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-semibold rounded-full shadow-md hover:shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-700" data-testid="link-support-landing">
+                  <Heart className="w-4 h-4 text-pink-500 group-hover:scale-110 transition-transform" />
+                  <span>{t('landing.valueProp.supportCta')}</span>
+                </button>
+              </Link>
+            </div>
 
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-6">
-              {t('valueProp.footer')}
+              {t('landing.valueProp.footer')}
             </p>
           </div>
         </div>

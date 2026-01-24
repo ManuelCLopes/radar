@@ -301,7 +301,7 @@
     "passwordMismatch": "Las contraseñas no coinciden",
     "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
     "passwordMinChars": "Mínimo 6 caracteres",
-    "freeBadge": "✨ 100% Gratis • Todas las funciones desbloqueadas",
+    "freeBadge": "✨ Empieza Gratis • Sin tarjeta de crédito",
     "forgotPassword": "¿Olvidaste tu contraseña?",
     "forgotPasswordTitle": "Recuperar Contraseña",
     "forgotPasswordDesc": "Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña",
@@ -546,6 +546,13 @@
     },
     "cta": {
       "existingAccount": "¿Ya tiene cuenta? Acceda a su panel aquí"
+    },
+    "valueProp": {
+      "title": "Empieza Gratis. Crece sin Límites.",
+      "description": "Creemos que todos los negocios merecen acceso a inteligencia de mercado. Por eso, nuestro plan gratuito incluye 2 reportes detallados cada mes. ¿Necesitas más? El plan Pro elimina todos los límites.",
+      "cta": "Ver Planes",
+      "supportCta": "Apoyar el Proyecto",
+      "footer": "Únete a cientos de empresas inteligentes."
     }
   },
   "locationStatus": {
@@ -566,7 +573,7 @@
   "support": {
     "back": "Volver",
     "title": "Apoyar Competitor Watcher",
-    "subtitle": "Ayuda a mantener Competitor Watcher 100% gratuito y de código abierto para todos",
+    "subtitle": "Ayuda a mantener Competitor Watcher de código abierto para todos",
     "whySupport": {
       "title": "Por Qué Tu Apoyo Importa",
       "description": "Competitor Watcher es un proyecto de pasión construido para ayudar a pequeñas empresas a competir. Cada donación mantiene las luces encendidas."
@@ -579,8 +586,8 @@
       "ai": "Insights con IA",
       "aiDesc": "OpenAI API genera análisis accionable de competidores"
     },
-    "mission": "Nuestra Misión: Mantener Competitor Watcher 100% Gratuito",
-    "missionDesc": "Sin muros de pago. Sin límites de funciones. Sin anuncios. Solo una herramienta para ayudar a los negocios locales a prosperar.",
+    "mission": "Nuestra Misión: Empoderar Negocios Locales",
+    "missionDesc": "Herramientas profesionales para ayudar a los negocios locales a prosperar.",
     "howToSupport": "Elige Cómo Apoyar",
     "everyContribution": "¡Cada contribución ayuda, sin importar el tamaño!",
     "platforms": {
@@ -675,12 +682,6 @@
       "cancel": "Cancelar",
       "edit": "Editar Perfil"
     },
-    "valueProp": {
-      "title": "Empieza Gratis. Crece sin Límites.",
-      "description": "Creemos que todos los negocios merecen acceso a inteligencia de mercado. Por eso, nuestro plan gratuito incluye 2 reportes detallados cada mes. ¿Necesitas más? El plan Pro elimina todos los límites.",
-      "cta": "Ver Planes",
-      "footer": "Únete a cientos de empresas inteligentes."
-    },
     "danger": {
       "title": "Zona de Peligro",
       "description": "Acciones irreversibles relacionadas con tu cuenta",
@@ -710,7 +711,7 @@
     }
   },
   "footer": {
-    "mission": "Empoderando a los negocios locales con análisis de competidores por IA. 100% gratuito y de código abierto.",
+    "mission": "Empoderando a los negocios locales con análisis de competidores por IA. Empieza gratis hoy.",
     "sections": {
       "project": "Proyecto",
       "account": "Cuenta",
