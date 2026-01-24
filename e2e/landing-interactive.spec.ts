@@ -50,6 +50,6 @@ test.describe('Landing Page Interactivity', () => {
         await expect(page.getByTestId('section-how-it-works')).toBeVisible();
         await expect(page.getByTestId('section-report-features')).toBeVisible();
         await expect(page.getByTestId('section-audience')).toBeVisible();
-        await expect(page.getByTestId('section-cta-final')).toBeVisible();
+        await expect(page.getByTestId('section-pricing-teaser')).toBeVisible();
     });
 });

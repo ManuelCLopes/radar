@@ -12,6 +12,7 @@ import { registerSchedulerRoutes } from "./scheduler";
 import { registerUserRoutes } from "./users";
 import { registerAdminRoutes } from "./admin";
 import { registerStaticRoutes } from "./static";
+import { registerPaymentRoutes } from "./payments";
 
 export async function registerRoutes(
     httpServer: Server,
@@ -30,6 +31,7 @@ export async function registerRoutes(
     registerSchedulerRoutes(app);
     registerUserRoutes(app);
     registerAdminRoutes(app);
+    registerPaymentRoutes(app);
     registerStaticRoutes(app);
 
     // Start background scheduler

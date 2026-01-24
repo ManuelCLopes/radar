@@ -188,6 +188,10 @@ export const users = pgTable("users", {
   verificationTokenExpiresAt: timestamp("verification_token_expires_at"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  subscriptionStatus: text("subscription_status"),
+  subscriptionPeriodEnd: timestamp("subscription_period_end"),
 });
 
 export const passwordResetTokens = pgTable("password_reset_tokens", {

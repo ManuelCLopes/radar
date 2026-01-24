@@ -301,7 +301,7 @@
     "passwordMismatch": "Les mots de passe ne correspondent pas",
     "passwordTooShort": "Le mot de passe doit comporter au moins 6 caractères",
     "passwordMinChars": "Minimum 6 caractères",
-    "freeBadge": "✨ 100% Gratuit • Toutes les fonctionnalités débloquées",
+    "freeBadge": "✨ Commencez Gratuitement • Pas de carte requise",
     "forgotPassword": "Mot de passe oublié ?",
     "forgotPasswordTitle": "Récupérer le mot de passe",
     "forgotPasswordDesc": "Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe",
@@ -546,6 +546,13 @@
     },
     "cta": {
       "existingAccount": "Vous avez déjà un compte ? Accédez à votre tableau de bord ici"
+    },
+    "valueProp": {
+      "title": "Commencez Gratuitement. Grandissez sans Limites.",
+      "description": "Nous croyons que chaque entreprise mérite d'avoir accès à l'intelligence de marché. C'est pourquoi notre plan gratuit inclut 2 rapports détaillés chaque mois. Besoin de plus ? Le plan Pro supprime toutes les limites.",
+      "cta": "Voir les Plans",
+      "supportCta": "Soutenir le Projet",
+      "footer": "Rejoignez des centaines d'entreprises intelligentes."
     }
   },
   "locationStatus": {
@@ -566,7 +573,7 @@
   "support": {
     "back": "Retour",
     "title": "Soutenir Competitor Watcher",
-    "subtitle": "Aidez à maintenir Competitor Watcher 100 % gratuit et open source pour tous",
+    "subtitle": "Aidez à maintenir Competitor Watcher open source pour tous",
     "whySupport": {
       "title": "Pourquoi votre soutien est important",
       "description": "Competitor Watcher est un projet passionné conçu pour aider les petites entreprises à être compétitives. Chaque don contribue à le maintenir en vie."
@@ -579,8 +586,8 @@
       "ai": "Informations générées par l'IA",
       "aiDesc": "L'API OpenAI génère des analyses exploitables des concurrents"
     },
-    "mission": "Notre mission : maintenir Competitor Watcher 100 % gratuit",
-    "missionDesc": "Pas d'abonnement. Pas de limites de fonctionnalités. Pas de publicité. Juste un outil conçu pour aider les entreprises locales à prospérer.",
+    "mission": "Notre mission : Autonomiser les entreprises locales",
+    "missionDesc": "Des outils professionnels conçus pour aider les entreprises locales à prospérer.",
     "howToSupport": "Choisissez comment nous soutenir",
     "everyContribution": "Chaque contribution compte, quelle que soit sa taille !",
     "platforms": {
@@ -615,9 +622,54 @@
     "thankYou": "Merci !",
     "thankYouMessage": "Votre soutien permet de maintenir Competitor Watcher gratuit pour tous"
   },
+  "pricing": {
+    "title": "Tarification Simple et Transparente",
+    "subtitle": "Choisissez le plan adapté à votre entreprise",
+    "free": {
+      "title": "Gratuit",
+      "description": "Parfait pour commencer",
+      "price": "0€"
+    },
+    "pro": {
+      "title": "Pro",
+      "description": "Pour les entreprises en croissance",
+      "price": "29,99€",
+      "originalPrice": "49,99€",
+      "period": "/mois",
+      "recommended": "Recommandé"
+    },
+    "features": {
+      "basicAnalysis": "Analyse des Concurrents",
+      "oneBusiness": "1 Profil d'Entreprise",
+      "standardSupport": "Support Standard",
+      "advancedInsights": "Rapports IA Illimités",
+      "unlimitedBusinesses": "Profils d'Entreprise Illimités",
+      "prioritySupport": "Support Prioritaire",
+      "exportPdf": "Exporter en PDF",
+      "weeklyReport": "Rapport Hebdomadaire par Email",
+      "reportsLimit": "2 Rapports par Mois"
+    },
+    "buttons": {
+      "currentPlan": "Plan Actuel",
+      "downgrade": "Downgrade",
+      "upgrade": "Passer à Pro",
+      "manage": "Gérer l'Abonnement"
+    }
+  },
   "settings": {
     "title": "Paramètres",
     "subtitle": "Gérer votre compte et vos préférences",
+    "subscription": {
+      "title": "Abonnement",
+      "description": "Gérez votre plan et vos détails de facturation",
+      "currentPlan": "Plan Actuel :",
+      "accessPremium": "Vous avez accès à toutes les fonctionnalités premium.",
+      "upgradeUnlock": "Passez à Pro pour débloquer des analyses avancées et plus.",
+      "proBadge": "PRO",
+      "freeBadge": "GRATUIT",
+      "manage": "Gérer l'Abonnement",
+      "upgrade": "Passer à Pro"
+    },
     "account": {
       "title": "Informations du compte",
       "description": "Mettez à jour vos informations personnelles et vos identifiants",
@@ -629,13 +681,6 @@
       "save": "Enregistrer les modifications",
       "cancel": "Annuler",
       "edit": "Modifier le profil"
-    },
-    "support": {
-      "title": "Soutenir Competitor Watcher",
-      "description": "Competitor Watcher est 100 % gratuit et open source. Aidez à maintenir le projet en vie !",
-      "message": "<strong>Toutes les fonctionnalités</strong> sont débloquées pour tout le monde. Si Competitor Watcher aide votre entreprise, envisagez de faire un don.",
-      "button": "Voir les options de soutien",
-      "footer": "💜 GitHub Sponsors • ☕ Ko-fi • 🎁 Buy Me a Coffee"
     },
     "danger": {
       "title": "Zone de danger",
@@ -666,7 +711,7 @@
     }
   },
   "footer": {
-    "mission": "Donner aux entreprises locales les moyens d'agir grâce à des analyses concurrentielles via l'IA. 100 % gratuit et open source.",
+    "mission": "Donner aux entreprises locales les moyens d'agir grâce à des analyses concurrentielles via l'IA. Commencez gratuitement.",
     "sections": {
       "project": "Projet",
       "account": "Compte",

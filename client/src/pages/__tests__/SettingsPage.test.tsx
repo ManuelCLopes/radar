@@ -85,32 +85,36 @@ describe('SettingsPage', () => {
         });
     });
 
-    describe('Donation Card (Replaces Plan Selection)', () => {
-        it('should display donation/support card', () => {
+    describe('Subscription Card', () => {
+        it('should display subscription section', () => {
             renderSettingsPage();
-            // Test that donation card exists (in English)
-            expect(screen.getByText(/Support Competitor Watcher/i)).toBeInTheDocument();
+            // Test that subscription card exists
+            expect(screen.getByText(/Subscription/i)).toBeInTheDocument();
+            expect(screen.getByText(/Manage your plan and billing details/i)).toBeInTheDocument();
         });
 
-        it('should have link to support page', () => {
+        it('should display current plan', () => {
             renderSettingsPage();
-            const supportLinks = screen.getAllByRole('link');
-            const supportPageLink = supportLinks.find(link =>
-                link.getAttribute('href') === '/support'
+            // Use getAllByText since "free" might appear multiple times (badge and text)
+            // or filter by specific container if needed. For now, checking if at least one exists is fine,
+            // or use specific selector.
+            const freeElements = screen.getAllByText(/free/i);
+            expect(freeElements.length).toBeGreaterThan(0);
+        });
+
+        it('should display upgrade button for free users', () => {
+            renderSettingsPage();
+            const upgradeLinks = screen.getAllByRole('link');
+            const pricingLink = upgradeLinks.find(link =>
+                link.getAttribute('href') === '/pricing'
             );
-            expect(supportPageLink).toBeInTheDocument();
-        });
-
-        it('should display heart icon in donation card', () => {
-            renderSettingsPage();
-            // Heart icon should be rendered
-            const donationSection = screen.getByText(/Support Competitor Watcher/i).closest('div');
-            expect(donationSection).toBeInTheDocument();
+            expect(pricingLink).toBeInTheDocument();
+            expect(screen.getByText(/Upgrade to Pro/i)).toBeInTheDocument();
         });
     });
 
     describe('No Plan Selection UI', () => {
-        it('should NOT display plan selection cards', () => {
+        it('should NOT display OLD plan selection cards', () => {
             renderSettingsPage();
             // These old plan names should NOT exist
             expect(screen.queryByText(/Essential Plan/i)).not.toBeInTheDocument();
@@ -118,18 +122,17 @@ describe('SettingsPage', () => {
             expect(screen.queryByText(/Agency Plan/i)).not.toBeInTheDocument();
         });
 
-        it('should NOT display upgrade buttons', () => {
+        it('should NOT display OLD upgrade buttons', () => {
             renderSettingsPage();
             expect(screen.queryByText(/Upgrade to Professional/i)).not.toBeInTheDocument();
             expect(screen.queryByText(/Upgrade to Agency/i)).not.toBeInTheDocument();
-            expect(screen.queryByText(/Current Plan/i)).not.toBeInTheDocument();
+            // "Current Plan" IS displayed in the new UI, so we remove this negative assertion
         });
 
-        it('should NOT display plan pricing', () => {
+        it('should NOT display old pricing', () => {
             renderSettingsPage();
             expect(screen.queryByText(/€29/i)).not.toBeInTheDocument();
             expect(screen.queryByText(/€79/i)).not.toBeInTheDocument();
-            expect(screen.queryByText(/month/i)).not.toBeInTheDocument();
         });
     });
 
