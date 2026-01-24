@@ -43,3 +43,6 @@ Thumbs.db
 test-results/
 playwright-report/
 .last-run.json
+
+# Build logs
+build_log*.txt
