@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { useLocation, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { MapPin, Star, Plus, Edit, Trash2, LogOut, FileText, History, AlertCircle, Settings, Building2, Search, Loader2, TrendingUp } from "lucide-react";
+import { MapPin, Star, Plus, Edit, Trash2, LogOut, FileText, History, AlertCircle, Settings, Building2, Search, Loader2, TrendingUp, Navigation } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { BusinessForm } from "@/components/BusinessForm";
 import { BusinessList } from "@/components/BusinessList";
@@ -55,6 +55,10 @@ export default function Dashboard() {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const { user, logoutMutation } = useAuth();
+
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [manualCoordinates, setManualCoordinates] = useState<{ lat: number; lng: number } | null>(null);
+
   const [currentReport, setCurrentReport] = useState<Report | null>(null);
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [generatingReportId, setGeneratingReportId] = useState<string | null>(null);
@@ -233,6 +237,76 @@ export default function Dashboard() {
     runAnalysisMutation.mutate(data);
   };
 
+  const handleUseCurrentLocation = useCallback(async () => {
+    if (!navigator.geolocation) {
+      toast({
+        title: t("toast.error.title"),
+        description: t("addressSearch.locationFailed"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGettingLocation(true);
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        setIsGettingLocation(false);
+        const { latitude, longitude } = position.coords;
+
+        setManualCoordinates({
+          lat: latitude,
+          lng: longitude
+        });
+
+        try {
+          const response = await fetch('/api/places/reverse-geocode', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ latitude, longitude })
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.address) {
+              analysisForm.setValue("address", data.address);
+              toast({
+                title: t("addressSearch.locationObtained"),
+                description: t("addressSearch.locationObtainedDesc"),
+              });
+            } else {
+              throw new Error("No address found");
+            }
+          } else {
+            throw new Error("Reverse geocoding failed");
+          }
+        } catch (e) {
+          // Error - Clear form and show toast
+          analysisForm.setValue("address", "");
+          setManualCoordinates(null);
+          toast({
+            title: t("toast.error.title"),
+            description: t("addressSearch.locationUnavailable"),
+            variant: "destructive",
+          });
+        }
+      },
+      (error) => {
+        setIsGettingLocation(false);
+        analysisForm.setValue("address", ""); // Clear loading text
+
+        let errorMessage = t("addressSearch.locationFailed");
+        if (error.code === 1) errorMessage = t("addressSearch.locationDenied");
+
+        toast({
+          title: t("toast.error.title"),
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
+    );
+  }, [analysisForm, t, toast]);
+
   const handleLogout = () => {
     logoutMutation.mutate();
   };
@@ -369,9 +443,28 @@ export default function Dashboard() {
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel>{t("business.form.address")}</FormLabel>
-                                  <FormControl>
-                                    <Input {...field} placeholder={t("dashboard.analysis.addressPlaceholder")} />
-                                  </FormControl>
+                                  <div className="relative">
+                                    <FormControl>
+                                      <Input
+                                        {...field}
+                                        placeholder={t("dashboard.analysis.addressPlaceholder")}
+                                        className="pr-10"
+                                      />
+                                    </FormControl>
+                                    <button
+                                      type="button"
+                                      onClick={handleUseCurrentLocation}
+                                      disabled={isGettingLocation}
+                                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all"
+                                      title={t("addressSearch.useCurrentLocation")}
+                                    >
+                                      {isGettingLocation ? (
+                                        <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+                                      ) : (
+                                        <Navigation className={`h-4 w-4 ${manualCoordinates ? 'text-blue-600 fill-blue-100' : ''}`} />
+                                      )}
+                                    </button>
+                                  </div>
                                   <FormMessage />
                                 </FormItem>
                               )}

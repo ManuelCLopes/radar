@@ -135,4 +135,61 @@ describe("LandingPage", () => {
 
         expect(screen.getByTestId("report-modal")).toBeInTheDocument();
     });
+
+    it("fills address when location button is clicked", async () => {
+        const mockGeolocation = {
+            getCurrentPosition: vi.fn().mockImplementation((success) => success({
+                coords: { latitude: 38.7, longitude: -9.1 }
+            }))
+        };
+        Object.defineProperty(global.navigator, 'geolocation', {
+            value: mockGeolocation,
+            writable: true
+        });
+
+        // Mock reverse geocode response
+        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+            ok: true,
+            json: async () => ({ address: "Detected Address, Lisbon" }),
+        });
+
+        renderWithProviders(<LandingPage />);
+
+        const locationButton = screen.getByTitle("addressSearch.useCurrentLocation");
+        fireEvent.click(locationButton);
+
+        await waitFor(() => {
+            expect(global.fetch).toHaveBeenCalledWith("/api/places/reverse-geocode", expect.objectContaining({
+                method: "POST",
+                body: JSON.stringify({ latitude: 38.7, longitude: -9.1 }),
+            }));
+        });
+
+        await waitFor(() => {
+            const addressInput = screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa") as HTMLInputElement;
+            expect(addressInput.value).toBe("Detected Address, Lisbon");
+        });
+    });
+
+    it("handles geolocation error", async () => {
+        const mockGeolocation = {
+            getCurrentPosition: vi.fn().mockImplementation((_, error) => error({
+                code: 1, // PERMISSION_DENIED
+                message: "User denied Geolocation"
+            }))
+        };
+        Object.defineProperty(global.navigator, 'geolocation', {
+            value: mockGeolocation,
+            writable: true
+        });
+
+        renderWithProviders(<LandingPage />);
+
+        const locationButton = screen.getByTitle("addressSearch.useCurrentLocation");
+        fireEvent.click(locationButton);
+
+        await waitFor(() => {
+            expect(screen.getByText("Location permission denied")).toBeInTheDocument();
+        });
+    });
 });
