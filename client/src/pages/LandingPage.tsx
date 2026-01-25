@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { MapPin, Star, Mail, Map, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, LogIn, Search, Check, X, User, LayoutDashboard, ChevronLeft, ChevronRight, Heart, Sparkles, Rocket, Target, TrendingUp, Navigation, Loader2 } from "lucide-react";
+import { MapPin, Star, Mail, Map, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, LogIn, Search, Check, X, User, LayoutDashboard, ChevronLeft, ChevronRight, Heart, Sparkles, Rocket, Target, TrendingUp } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -35,10 +35,6 @@ export default function LandingPage() {
   const [reportData, setReportData] = useState<any>(null);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Geolocation state
-  const [isGettingLocation, setIsGettingLocation] = useState(false);
-  const [manualCoordinates, setManualCoordinates] = useState<{ lat: number; lng: number } | null>(null);
-
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -68,56 +64,6 @@ export default function LandingPage() {
 
 
 
-  const handleUseCurrentLocation = useCallback(() => {
-    if (!navigator.geolocation) {
-      setSearchError("Geolocation is not supported by your browser");
-      return;
-    }
-
-    setIsGettingLocation(true);
-    setSearchError('');
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        setIsGettingLocation(false);
-        const { latitude, longitude } = position.coords;
-
-        setManualCoordinates({
-          lat: latitude,
-          lng: longitude
-        });
-
-        try {
-          // Attempt to reverse geocode
-          const response = await fetch('/api/places/reverse-geocode', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ latitude, longitude })
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            if (data.address) {
-              form.setValue('address', data.address);
-              return;
-            }
-          }
-          // Fallback if failed
-          form.setValue('address', "Current Location");
-        } catch (e) {
-          // Fallback
-          form.setValue('address', "Current Location");
-        }
-      },
-      (error) => {
-        setIsGettingLocation(false);
-        let errorMessage = "Could not get your location";
-        if (error.code === 1) errorMessage = "Location permission denied";
-        setSearchError(errorMessage);
-      }
-    );
-  }, [form]);
-
   const onSearchSubmit = async (data: SearchFormValues) => {
     // Check if user has already generated a free report (only for guests)
     if (!isAuthenticated) {
@@ -135,21 +81,13 @@ export default function LandingPage() {
       // Determine which endpoint to use based on auth status
       const endpoint = isAuthenticated ? '/api/analyze-address' : '/api/quick-search';
 
-      const payload: any = {
-        ...data,
-        language: t('common.language', { defaultValue: 'en' })
-      };
-
-      // If using manual coordinates (Current Location), inject them
-      if (manualCoordinates && data.address === "Current Location") {
-        payload.latitude = manualCoordinates.lat;
-        payload.longitude = manualCoordinates.lng;
-      }
-
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...data,
+          language: t('common.language', { defaultValue: 'en' })
+        }),
       });
 
       const responseData = await response.json();
@@ -293,31 +231,14 @@ export default function LandingPage() {
                           <FormLabel className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             {t('quickSearch.addressPlaceholder')}
                           </FormLabel>
-                          <div className="relative">
-                            <FormControl>
-                              <Input
-                                {...field}
-                                type="text"
-                                placeholder="Rua de Belém 84-92, 1300-085 Lisboa"
-                                className={`w-full h-12 rounded-xl border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm focus:ring-2 focus:ring-indigo-500 transition-all pl-4 text-base ${isGettingLocation ? 'pr-12' : 'pr-12'}`}
-                                data-testid="input-quick-search-address"
-                              />
-                            </FormControl>
-                            <button
-                              type="button"
-                              onClick={handleUseCurrentLocation}
-                              disabled={isGettingLocation}
-                              className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all"
-                              title={t('addressSearch.useCurrentLocation')}
-                              data-testid="button-use-location"
-                            >
-                              {isGettingLocation ? (
-                                <Loader2 className="w-5 h-5 animate-spin text-indigo-600" />
-                              ) : (
-                                <Navigation className={`w-5 h-5 ${manualCoordinates ? 'text-indigo-600 fill-indigo-100' : ''}`} />
-                              )}
-                            </button>
-                          </div>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="text"
+                              placeholder="Rua de Belém 84-92, 1300-085 Lisboa"
+                              className="h-12 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}

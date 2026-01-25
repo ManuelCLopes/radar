@@ -163,19 +163,15 @@ export function registerReportRoutes(app: Express) {
         }
 
         try {
-            const { address, type, radius, language = 'en', latitude, longitude } = req.body;
+            const { address, type, radius, language = 'en' } = req.body;
 
-            // Require either address OR coordinates
-            if ((!address && (!latitude || !longitude)) || !type || !radius) {
+            if (!address || !type || !radius) {
                 return res.status(400).json({ error: "Missing required fields" });
             }
 
-            // Search for coordinates OR use provided
+            // Search for coordinates
             let coordinates = null;
-
-            if (latitude && longitude) {
-                coordinates = { latitude, longitude };
-            } else if (hasGoogleApiKey() && address) {
+            if (hasGoogleApiKey()) {
                 const searchResults = await searchPlacesByAddress(address);
                 if (searchResults && searchResults.length > 0) {
                     coordinates = {
@@ -186,7 +182,7 @@ export function registerReportRoutes(app: Express) {
             }
 
             if (!coordinates) {
-                return res.status(400).json({ error: "Location not found" });
+                return res.status(400).json({ error: "Address not found" });
             }
 
             // Create temp business object
