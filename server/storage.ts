@@ -1,6 +1,6 @@
 import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type Search, type PasswordResetToken, type InsertApiUsage, type ApiUsage, businesses, reports, users, searches, passwordResetTokens, rateLimits, apiUsage } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, sql, isNotNull, lt, and } from "drizzle-orm";
+import { eq, desc, sql, isNotNull, lt, and, gte } from "drizzle-orm";
 
 export interface IStorage {
   // User operations (IMPORTANT: mandatory for Replit Auth)
@@ -25,6 +25,7 @@ export interface IStorage {
   getReport(id: string): Promise<Report | undefined>;
   getReportsByBusinessId(businessId: string): Promise<Report[]>;
   listAllReports(): Promise<Report[]>;
+  countReportsCurrentMonth(userId: string): Promise<number>;
 
   // Password reset
   createPasswordResetToken(data: { userId: string; token: string; expiresAt: Date }): Promise<void>;
@@ -226,6 +227,21 @@ export class DatabaseStorage implements IStorage {
 
   async listAllReports(): Promise<Report[]> {
     return await db!.select().from(reports).orderBy(desc(reports.generatedAt));
+  }
+
+  async countReportsCurrentMonth(userId: string): Promise<number> {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const [result] = await db!
+      .select({ count: sql<number>`count(*)` })
+      .from(reports)
+      .where(
+        and(
+          eq(reports.userId, userId),
+          gte(reports.generatedAt, startOfMonth)
+        )
+      );
+    return Number(result?.count || 0);
   }
 
   async trackSearch(search: InsertSearch): Promise<void> {
@@ -576,6 +592,14 @@ export class MemStorage implements IStorage {
   async listAllReports(): Promise<Report[]> {
     return Array.from(this.reports.values())
       .sort((a, b) => b.generatedAt.getTime() - a.generatedAt.getTime());
+  }
+
+  async countReportsCurrentMonth(userId: string): Promise<number> {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    return Array.from(this.reports.values()).filter(r =>
+      r.userId === userId && r.generatedAt >= startOfMonth
+    ).length;
   }
 
   async trackSearch(search: InsertSearch): Promise<void> {
