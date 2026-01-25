@@ -255,7 +255,7 @@ describe("Routes Coverage (Edge Cases)", () => {
                 radius: 1000
             });
             expect(res.status).toBe(400);
-            expect(res.body.error).toBe("Address not found");
+            expect(res.body.error).toBe("Location not found");
         });
     });
 
@@ -376,7 +376,7 @@ describe("Routes Coverage (Edge Cases)", () => {
                 radius: 1000
             });
             expect(res.status).toBe(400);
-            expect(res.body.error).toBe("Address not found");
+            expect(res.body.error).toBe("Location not found");
         });
     });
 });

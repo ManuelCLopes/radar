@@ -47,6 +47,10 @@ describe("Dashboard", () => {
 
     const mockUseTranslation = useTranslation as unknown as ReturnType<typeof vi.fn>;
 
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
     beforeEach(() => {
         vi.clearAllMocks();
 

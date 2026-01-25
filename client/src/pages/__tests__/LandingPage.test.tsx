@@ -34,6 +34,10 @@ describe("LandingPage", () => {
     const mockUseAuth = useAuth as unknown as ReturnType<typeof vi.fn>;
     const mockUseTranslation = useTranslation as unknown as ReturnType<typeof vi.fn>;
 
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
     beforeEach(() => {
         vi.clearAllMocks();
 
@@ -190,6 +194,61 @@ describe("LandingPage", () => {
 
         await waitFor(() => {
             expect(screen.getByText("Location permission denied")).toBeInTheDocument();
+        });
+    });
+
+    it("handles server error during reverse geocoding", async () => {
+        const mockGeolocation = {
+            getCurrentPosition: vi.fn().mockImplementation((success) => success({
+                coords: { latitude: 38.7, longitude: -9.1 }
+            }))
+        };
+        Object.defineProperty(global.navigator, 'geolocation', {
+            value: mockGeolocation,
+            writable: true
+        });
+
+        // Mock fetch failure
+        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+            ok: false,
+        });
+
+        renderWithProviders(<LandingPage />);
+        const locationButton = screen.getByTitle("addressSearch.useCurrentLocation");
+        fireEvent.click(locationButton);
+
+        await waitFor(() => {
+            const addressInput = screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa") as HTMLInputElement;
+            // Fallback expected
+            expect(addressInput.value).toBe("Current Location");
+        });
+    });
+
+    it("handles successful reverse geocode with no address found", async () => {
+        const mockGeolocation = {
+            getCurrentPosition: vi.fn().mockImplementation((success) => success({
+                coords: { latitude: 0, longitude: 0 } // Ocean?
+            }))
+        };
+        Object.defineProperty(global.navigator, 'geolocation', {
+            value: mockGeolocation,
+            writable: true
+        });
+
+        // Mock fetch success but empty address
+        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+            ok: true,
+            json: async () => ({ address: null }),
+        });
+
+        renderWithProviders(<LandingPage />);
+        const locationButton = screen.getByTitle("addressSearch.useCurrentLocation");
+        fireEvent.click(locationButton);
+
+        await waitFor(() => {
+            const addressInput = screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa") as HTMLInputElement;
+            // Fallback expected
+            expect(addressInput.value).toBe("Current Location");
         });
     });
 });
