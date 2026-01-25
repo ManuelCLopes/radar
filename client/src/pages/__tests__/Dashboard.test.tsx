@@ -1,5 +1,5 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
-import { vi, describe, it, expect, beforeEach } from "vitest";
+import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 import Dashboard from "../Dashboard";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
@@ -46,6 +46,10 @@ describe("Dashboard", () => {
     const mockUseAuth = useAuth as unknown as ReturnType<typeof vi.fn>;
 
     const mockUseTranslation = useTranslation as unknown as ReturnType<typeof vi.fn>;
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
 
     beforeEach(() => {
         vi.clearAllMocks();
