@@ -1,16 +1,5 @@
 {
-  "app": {
-    "title": "Analisador de Concorrência Local",
-    "description": "Analise a sua concorrência local com insights baseados em IA"
-  },
-  "nav": {
-    "dashboard": "Painel"
-  },
   "dashboard": {
-    "header": {
-      "title": "Analisador de Concorrência Local",
-      "subtitle": "Registe o seu negócio e descubra concorrentes próximos com análise baseada em IA"
-    },
     "stats": {
       "registeredBusinesses": "Negócios Registados",
       "analysisStatus": "Estado da Análise",
@@ -465,58 +454,6 @@
       "hotels": "Pequenos hotéis, alojamentos locais, guesthouses",
       "retail": "Lojas físicas que competem em zonas comerciais",
       "conclusion": "Se tem um negócio local e tem concorrência à sua volta, o Competitor Watcher foi feito para si."
-    },
-    "pricing": {
-      "title": "Planos e Preços",
-      "subtitle": "Encontra o plano ideal para o seu negócio — quer esteja a começar ou a gerir múltiplas localizações.",
-      "noContracts": "Sem contratos. Cancele quando quiser.",
-      "perMonth": "/mês",
-      "essential": {
-        "subtitle": "Perfeito para pequenos negócios que querem começar a analisar a concorrência de forma simples.",
-        "button": "Começar agora",
-        "features": [
-          "1 localização",
-          "Relatórios quinzenais (PDF)",
-          "Raio até 5 km",
-          "Alertas de novas reviews",
-          "Análise IA Básica",
-          "~ Histórico de Concorrentes",
-          "~ Alertas de Concorrentes",
-          "~ Análise de Sentimento das Reviews",
-          "Suporte incluído"
-        ]
-      },
-      "professional": {
-        "subtitle": "Para negócios em crescimento que precisam de análise profunda e alertas inteligentes.",
-        "button": "Experimentar Profissional",
-        "features": [
-          "Até 3 Localizações",
-          "10 Relatórios/mês (PDF e HTML)",
-          "Raio até 20 km",
-          "Análise IA Avançada",
-          "Histórico de Concorrentes",
-          "Alertas de Concorrentes",
-          "Comparação Mensual Automática",
-          "Análise de Sentimento das Reviews",
-          "~ Branding personalizado nos PDFs",
-          "~ Dashboard multi-negócio",
-          "Suporte incluído"
-        ]
-      },
-      "agency": {
-        "subtitle": "Para consultores, agências e redes de negócios que precisam de escala, organização e relatórios profissionais.",
-        "button": "Tornar-se Parceiro",
-        "features": [
-          "Até 10 Localizações",
-          "Relatórios ilimitados (PDF, HTML, CSV)",
-          "Raio até 50 km",
-          "Análise IA Avançada + Estratégia",
-          "Histórico e Alertas Premium",
-          "Branding personalizado nos PDFs",
-          "Dashboard multi-negócio",
-          "Suporte Prioritário"
-        ]
-      }
     },
     "faq": {
       "title": "Perguntas frequentes",

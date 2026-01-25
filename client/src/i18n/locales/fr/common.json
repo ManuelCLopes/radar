@@ -1,16 +1,5 @@
 {
-  "app": {
-    "title": "Local Competitor Analyzer",
-    "description": "Analysez votre concurrence locale grâce à des informations générées par l'IA"
-  },
-  "nav": {
-    "dashboard": "Tableau de bord"
-  },
   "dashboard": {
-    "header": {
-      "title": "Local Competitor Analyzer",
-      "subtitle": "Enregistrez votre entreprise et découvrez les concurrents à proximité grâce à une analyse par IA"
-    },
     "stats": {
       "registeredBusinesses": "Entreprises enregistrées",
       "analysisStatus": "État de l'analyse",
@@ -95,6 +84,7 @@
     "list": {
       "title": "Vos entreprises",
       "empty": "Aucune entreprise enregistrée pour le moment. Ajoutez votre première entreprise.",
+      "emptyDesc": "Commencez par suivre une entreprise pour analyser les concurrents.",
       "generateReport": "Générer le rapport",
       "report": "Rapport",
       "generating": "Génération en cours...",
@@ -247,6 +237,7 @@
     "useCurrentLocation": "Utiliser l'emplacement actuel",
     "locationObtained": "Emplacement obtenu",
     "locationObtainedDesc": "Votre emplacement actuel a été capturé avec succès.",
+    "locationUnavailable": "Il n'est pas possible d'obtenir l'emplacement actuel pour le moment.",
     "locationFailed": "Impossible d'obtenir votre emplacement. Veuillez vérifier les paramètres de votre navigateur et réessayer.",
     "locationDenied": "L'accès à l'emplacement a été refusé. Veuillez activer les autorisations de localisation dans les paramètres de votre navigateur pour utiliser cette fonctionnalité.",
     "coordinatesRequired": "Des coordonnées de localisation valides sont requises pour l'analyse de la concurrence.",
@@ -463,58 +454,6 @@
       "retail": "Magasins physiques en concurrence dans les zones commerciales",
       "conclusion": "Si vous avez une entreprise locale avec de la concurrence autour, Competitor Watcher est fait pour vous."
     },
-    "pricing": {
-      "title": "Forfaits et tarifs",
-      "subtitle": "Trouvez le forfait idéal pour votre entreprise, que vous débutiez ou que vous gériez plusieurs emplacements.",
-      "noContracts": "Sans engagement. Annulez à tout moment.",
-      "perMonth": "/mois",
-      "essential": {
-        "subtitle": "Parfait pour les petites entreprises qui souhaitent commencer à analyser la concurrence simplement.",
-        "button": "Démarrer maintenant",
-        "features": [
-          "1 Emplacement",
-          "Rapports bi-hebdomadaires (PDF)",
-          "Rayon jusqu'à 5 km",
-          "Alertes de nouveaux avis",
-          "Analyse IA de base",
-          "~ Historique des concurrents",
-          "~ Alertes de concurrents",
-          "~ Analyse du sentiment des avis",
-          "Assistance incluse"
-        ]
-      },
-      "professional": {
-        "subtitle": "Pour les entreprises en croissance qui ont besoin d'analyses approfondies et d'alertes intelligentes.",
-        "button": "Essayer Professional",
-        "features": [
-          "Jusqu'à 3 emplacements",
-          "10 Rapports/mois (PDF et HTML)",
-          "Rayon jusqu'à 20 km",
-          "Analyse IA avancée",
-          "Historique des concurrents",
-          "Alertes de concurrents",
-          "Comparaison automatique mois par mois",
-          "Analyse du sentiment des avis",
-          "~ Image de marque personnalisée sur les PDF",
-          "~ Tableau de bord multi-entreprises",
-          "Assistance incluse"
-        ]
-      },
-      "agency": {
-        "subtitle": "Pour les consultants, les agences et les réseaux d'entreprises ayant besoin d'envergure, d'organisation et de rapports professionnels.",
-        "button": "Devenir partenaire",
-        "features": [
-          "Jusqu'à 10 emplacements",
-          "Rapports illimités (PDF, HTML, CSV)",
-          "Rayon jusqu'à 50 km",
-          "Analyse IA avancée + Stratégie",
-          "Historique et alertes Premium",
-          "Image de marque personnalisée sur les PDF",
-          "Tableau de bord multi-entreprises",
-          "Assistance prioritaire"
-        ]
-      }
-    },
     "faq": {
       "title": "Foire aux questions",
       "q1": {
@@ -675,6 +614,7 @@
       "description": "Mettez à jour vos informations personnelles et vos identifiants",
       "name": "Nom",
       "email": "E-mail",
+      "languageHint": "Cette langue sera utilisée pour vos e-mails.",
       "currentPassword": "Mot de passe actuel",
       "newPassword": "Nouveau mot de passe",
       "confirmPassword": "Confirmer le nouveau mot de passe",
@@ -700,13 +640,18 @@
         "title": "Profil mis à jour",
         "description": "Vos informations ont été enregistrées avec succès."
       },
+      "languageUpdated": {
+        "title": "Langue mise à jour",
+        "description": "Votre préférence linguistique a été enregistrée."
+      },
       "accountDeleted": {
         "title": "Compte supprimé",
         "description": "Votre compte a été définitivement supprimé."
       },
       "error": {
         "title": "Erreur",
-        "delete": "Impossible de supprimer le compte. Veuillez réessayer."
+        "delete": "Impossible de supprimer le compte. Veuillez réessayer.",
+        "language": "Échec de l'enregistrement de la préférence linguistique."
       }
     }
   },
