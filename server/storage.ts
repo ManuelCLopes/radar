@@ -435,7 +435,7 @@ export class MemStorage implements IStorage {
       ...user,
       id,
       email: normalizedEmail,
-      createdAt: new Date(),
+      createdAt: user.createdAt || new Date(),
       updatedAt: new Date(),
       firstName: user.firstName || null,
       lastName: user.lastName || null,
