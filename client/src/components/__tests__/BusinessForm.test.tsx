@@ -413,9 +413,13 @@ describe("BusinessForm", () => {
 
         it("handles location fetch error (permission denied)", async () => {
             const user = userEvent.setup();
+
+            // Cast to any to bypass TS check on constructor signature while using the mocked class
+            const MockGeoError = global.GeolocationPositionError as any;
+
             const mockGeolocation = {
                 getCurrentPosition: vi.fn().mockImplementation((_success, error) => error(
-                    new GeolocationPositionError(1, "User denied Geolocation")
+                    new MockGeoError(1, "User denied Geolocation")
                 ))
             };
             Object.defineProperty(global.navigator, 'geolocation', {
