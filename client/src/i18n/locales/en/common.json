@@ -248,6 +248,7 @@
     "useCurrentLocation": "Use Current Location",
     "locationObtained": "Location obtained",
     "locationObtainedDesc": "Your current location has been captured successfully.",
+    "locationUnavailable": "It is not possible to obtain the current location at this moment.",
     "locationFailed": "Could not get your location. Please check your browser settings and try again.",
     "locationDenied": "Location access was denied. Please enable location permissions in your browser settings to use this feature.",
     "coordinatesRequired": "Valid location coordinates are required for competitor analysis.",
