@@ -1,16 +1,5 @@
 {
-  "app": {
-    "title": "Lokaler Wettbewerbs-Analysator",
-    "description": "Analysieren Sie Ihren lokalen Wettbewerb mit KI-gestützten Erkenntnissen"
-  },
-  "nav": {
-    "dashboard": "Dashboard"
-  },
   "dashboard": {
-    "header": {
-      "title": "Lokaler Wettbewerbs-Analysator",
-      "subtitle": "Registrieren Sie Ihr Unternehmen und entdecken Sie Wettbewerber in Ihrer Nähe mit KI-gestützter Analyse"
-    },
     "stats": {
       "registeredBusinesses": "Registrierte Unternehmen",
       "analysisStatus": "Analyse-Status",
@@ -95,6 +84,7 @@
     "list": {
       "title": "Ihre Unternehmen",
       "empty": "Noch keine Unternehmen registriert. Fügen Sie Ihr erstes Unternehmen hinzu.",
+      "emptyDesc": "Starten Sie, indem Sie ein Unternehmen verfolgen, um Wettbewerber zu analysieren.",
       "generateReport": "Bericht erstellen",
       "report": "Bericht",
       "generating": "Erstellung läuft...",
@@ -247,6 +237,7 @@
     "useCurrentLocation": "Aktuellen Standort verwenden",
     "locationObtained": "Standort ermittelt",
     "locationObtainedDesc": "Ihr aktueller Standort wurde erfolgreich erfasst.",
+    "locationUnavailable": "Es ist derzeit nicht möglich, den aktuellen Standort abzurufen.",
     "locationFailed": "Ihr Standort konnte nicht ermittelt werden. Bitte überprüfen Sie Ihre Browsereinstellungen und versuchen Sie es erneut.",
     "locationDenied": "Der Zugriff auf den Standort wurde verweigert. Bitte aktivieren Sie die Standortberechtigungen in Ihren Browsereinstellungen, um diese Funktion zu nutzen.",
     "coordinatesRequired": "Für die Wettbewerbsanalyse sind gültige Standortkoordinaten erforderlich.",
@@ -463,58 +454,6 @@
       "retail": "Physische Geschäfte, die in Gewerbegebieten konkurrieren",
       "conclusion": "Wenn Sie ein lokales Unternehmen haben und Wettbewerb um sich herum, wurde Competitor Watcher für Sie gemacht."
     },
-    "pricing": {
-      "title": "Pläne und Preise",
-      "subtitle": "Finden Sie den idealen Tarif für Ihr Unternehmen – egal, ob Sie gerade erst anfangen oder mehrere Standorte verwalten.",
-      "noContracts": "Keine Verträge. Jederzeit kündbar.",
-      "perMonth": "/Monat",
-      "essential": {
-        "subtitle": "Perfekt für kleine Unternehmen, die einfach in die Wettbewerbsanalyse einsteigen möchten.",
-        "button": "Jetzt starten",
-        "features": [
-          "1 Standort",
-          "Zweiwöchentliche Berichte (PDF)",
-          "Radius bis zu 5 km",
-          "Benachrichtigungen bei neuen Rezensionen",
-          "Basis-KI-Analyse",
-          "~ Wettbewerber-Verlauf",
-          "~ Wettbewerber-Benachrichtigungen",
-          "~ Rezensionsstimmungsanalyse",
-          "Support inklusive"
-        ]
-      },
-      "professional": {
-        "subtitle": "Für wachsende Unternehmen, die tiefe Analysen und intelligente Benachrichtigungen benötigen.",
-        "button": "Professional ausprobieren",
-        "features": [
-          "Bis zu 3 Standorte",
-          "10 Berichte/Monat (PDF & HTML)",
-          "Radius bis zu 20 km",
-          "Erweiterte KI-Analyse",
-          "Wettbewerber-Verlauf",
-          "Wettbewerber-Benachrichtigungen",
-          "Automatischer Monatsvergleich",
-          "Rezensionsstimmungsanalyse",
-          "~ Eigenes Branding auf PDFs",
-          "~ Dashboard für mehrere Unternehmen",
-          "Support inklusive"
-        ]
-      },
-      "agency": {
-        "subtitle": "Für Berater, Agenturen und Unternehmensnetzwerke, die Skalierung, Organisation und professionelle Berichte benötigen.",
-        "button": "Partner werden",
-        "features": [
-          "Bis zu 10 Standorte",
-          "Unbegrenzte Berichte (PDF, HTML, CSV)",
-          "Radius bis zu 50 km",
-          "Erweiterte KI-Analyse + Strategie",
-          "Premium-Verlauf & Benachrichtigungen",
-          "Eigenes Branding auf PDFs",
-          "Dashboard für mehrere Unternehmen",
-          "Priorisierter Support"
-        ]
-      }
-    },
     "faq": {
       "title": "Häufig gestellte Fragen",
       "q1": {
@@ -675,6 +614,7 @@
       "description": "Aktualisieren Sie Ihre persönlichen Daten und Zugangsdaten",
       "name": "Name",
       "email": "E-Mail",
+      "languageHint": "Diese Sprache wird für Ihre E-Mails verwendet.",
       "currentPassword": "Aktuelles Passwort",
       "newPassword": "Neues Passwort",
       "confirmPassword": "Neues Passwort bestätigen",
@@ -700,13 +640,18 @@
         "title": "Profil aktualisiert",
         "description": "Ihre Informationen wurden erfolgreich gespeichert."
       },
+      "languageUpdated": {
+        "title": "Sprache aktualisiert",
+        "description": "Ihre Spracheinstellung wurde gespeichert."
+      },
       "accountDeleted": {
         "title": "Konto gelöscht",
         "description": "Ihr Konto wurde dauerhaft entfernt."
       },
       "error": {
         "title": "Fehler",
-        "delete": "Konto konnte nicht entfernt werden. Bitte versuchen Sie es erneut."
+        "delete": "Konto konnte nicht entfernt werden. Bitte versuchen Sie es erneut.",
+        "language": "Spracheinstellung konnte nicht gespeichert werden."
       }
     }
   },

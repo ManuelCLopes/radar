@@ -1,16 +1,5 @@
 {
-  "app": {
-    "title": "Local Competitor Analyzer",
-    "description": "Analyze your local competition with AI-powered insights"
-  },
-  "nav": {
-    "dashboard": "Dashboard"
-  },
   "dashboard": {
-    "header": {
-      "title": "Local Competitor Analyzer",
-      "subtitle": "Register your business and discover nearby competitors with AI-powered analysis"
-    },
     "stats": {
       "registeredBusinesses": "Registered Businesses",
       "analysisStatus": "Analysis Status",
@@ -464,58 +453,6 @@
       "hotels": "Small hotels, local accommodations, guesthouses",
       "retail": "Physical stores competing in commercial areas",
       "conclusion": "If you have a local business and competition around you, Competitor Watcher was made for you."
-    },
-    "pricing": {
-      "title": "Plans and Pricing",
-      "subtitle": "Find the ideal plan for your business — whether you're just starting out or managing multiple locations.",
-      "noContracts": "No contracts. Cancel anytime.",
-      "perMonth": "/month",
-      "essential": {
-        "subtitle": "Perfect for small businesses that want to start analyzing the competition simply.",
-        "button": "Start Now",
-        "features": [
-          "1 Location",
-          "Bi-weekly Reports (PDF)",
-          "Radius up to 5 km",
-          "New Review Alerts",
-          "Basic AI Analysis",
-          "~ Competitor History",
-          "~ Competitor Alerts",
-          "~ Review Sentiment Analysis",
-          "Support included"
-        ]
-      },
-      "professional": {
-        "subtitle": "For growing businesses that need deep analysis and intelligent alerts.",
-        "button": "Try Professional",
-        "features": [
-          "Up to 3 Locations",
-          "10 Reports/month (PDF & HTML)",
-          "Radius up to 20 km",
-          "Advanced AI Analysis",
-          "Competitor History",
-          "Competitor Alerts",
-          "Automatic Month-over-Month Comparison",
-          "Review Sentiment Analysis",
-          "~ Custom Branding on PDFs",
-          "~ Multi-business Dashboard",
-          "Support included"
-        ]
-      },
-      "agency": {
-        "subtitle": "For consultants, agencies, and business networks needing scale, organization, and professional reporting.",
-        "button": "Become a Partner",
-        "features": [
-          "Up to 10 Locations",
-          "Unlimited Reports (PDF, HTML, CSV)",
-          "Radius up to 50 km",
-          "Advanced AI Analysis + Strategy",
-          "Premium History & Alerts",
-          "Custom Branding on PDFs",
-          "Multi-business Dashboard",
-          "Priority Support"
-        ]
-      }
     },
     "faq": {
       "title": "Frequently asked questions",

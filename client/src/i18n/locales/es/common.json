@@ -1,16 +1,5 @@
 {
-  "app": {
-    "title": "Analizador de Competencia Local",
-    "description": "Analiza tu competencia local con insights impulsados por IA"
-  },
-  "nav": {
-    "dashboard": "Panel"
-  },
   "dashboard": {
-    "header": {
-      "title": "Analizador de Competencia Local",
-      "subtitle": "Registra tu negocio y descubre competidores cercanos con análisis impulsado por IA"
-    },
     "stats": {
       "registeredBusinesses": "Negocios Registrados",
       "analysisStatus": "Estado del Análisis",
@@ -95,6 +84,7 @@
     "list": {
       "title": "Tus Negocios",
       "empty": "Aún no hay negocios registrados. Añade tu primer negocio.",
+      "emptyDesc": "Comienza por rastrear un negocio para analizar a la competencia.",
       "generateReport": "Generar Informe",
       "report": "Informe",
       "generating": "Generando...",
@@ -247,6 +237,7 @@
     "useCurrentLocation": "Usar Ubicación Actual",
     "locationObtained": "Ubicación obtenida",
     "locationObtainedDesc": "Tu ubicación actual se ha capturado correctamente.",
+    "locationUnavailable": "No es posible obtener la ubicación actual en este momento.",
     "locationFailed": "No se pudo obtener tu ubicación. Por favor, comprueba los ajustes del navegador e inténtalo de nuevo.",
     "locationDenied": "Se denegó el acceso a la ubicación. Por favor, habilita los permisos de ubicación en los ajustes de tu navegador para usar esta función.",
     "coordinatesRequired": "Se requieren coordenadas de ubicación válidas para el análisis de competencia.",
@@ -463,58 +454,6 @@
       "retail": "Tiendas físicas que compiten en zonas comerciales",
       "conclusion": "Si tiene un negocio local y competencia a su alrededor, Competitor Watcher fue hecho para usted."
     },
-    "pricing": {
-      "title": "Planes y Precios",
-      "subtitle": "Encuentre el plan ideal para su negocio, ya sea que esté comenzando o gestionando múltiples ubicaciones.",
-      "noContracts": "Sin contratos. Cancele cuando quiera.",
-      "perMonth": "/mes",
-      "essential": {
-        "subtitle": "Perfecto para pequeños negocios que quieren comenzar a analizar a la competencia de forma sencilla.",
-        "button": "Empezar ahora",
-        "features": [
-          "1 Ubicación",
-          "Informes quincenales (PDF)",
-          "Radio hasta 5 km",
-          "Alertas de nuevas reseñas",
-          "Análisis IA Básico",
-          "~ Historial de Competidores",
-          "~ Alertas de Competidores",
-          "~ Análisis de Sentimento de Reseñas",
-          "Soporte incluido"
-        ]
-      },
-      "professional": {
-        "subtitle": "Para negocios en crecimiento que necesitan análisis profundo y alertas inteligentes.",
-        "button": "Probar Profesional",
-        "features": [
-          "Hasta 3 Ubicaciones",
-          "10 Informes/mes (PDF y HTML)",
-          "Radio hasta 20 km",
-          "Análisis IA Avanzado",
-          "Historial de Competidores",
-          "Alertas de Competidores",
-          "Comparación Mensual Automática",
-          "Análisis de Sentimiento de Reseñas",
-          "~ Marca personalizada en PDFs",
-          "~ Panel multi-negocio",
-          "Soporte incluido"
-        ]
-      },
-      "agency": {
-        "subtitle": "Para consultores, agencias y redes de negocios que necesitan escala, organización e informes profesionales.",
-        "button": "Convertirse en Socio",
-        "features": [
-          "Hasta 10 Ubicaciones",
-          "Informes ilimitados (PDF, HTML, CSV)",
-          "Radio hasta 50 km",
-          "Análisis IA Avanzado + Estrategia",
-          "Historial y Alertas Premium",
-          "Marca personalizada en PDFs",
-          "Panel multi-negocio",
-          "Soporte Prioritario"
-        ]
-      }
-    },
     "faq": {
       "title": "Preguntas frecuentes",
       "q1": {
@@ -675,6 +614,7 @@
       "description": "Actualiza tus datos personales y credenciales",
       "name": "Nombre",
       "email": "Correo electrónico",
+      "languageHint": "Este idioma se utilizará para tus correos electrónicos.",
       "currentPassword": "Contraseña Actual",
       "newPassword": "Nueva Contraseña",
       "confirmPassword": "Confirmar Nueva Contraseña",
@@ -700,13 +640,18 @@
         "title": "Perfil actualizado",
         "description": "Tu información se ha guardado correctamente."
       },
+      "languageUpdated": {
+        "title": "Idioma actualizado",
+        "description": "Tu preferencia de idioma se ha guardado."
+      },
       "accountDeleted": {
         "title": "Cuenta eliminada",
         "description": "Tu cuenta ha sido eliminada permanentemente."
       },
       "error": {
         "title": "Error",
-        "delete": "No se pudo eliminar la cuenta. Por favor, inténtalo de nuevo."
+        "delete": "No se pudo eliminar la cuenta. Por favor, inténtalo de nuevo.",
+        "language": "Error al guardar la preferencia de idioma."
       }
     }
   },
