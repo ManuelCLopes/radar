@@ -285,7 +285,13 @@ export async function reverseGeocode(lat: number, lng: number): Promise<string |
 
     const data = await response.json();
 
-    if (data.status !== "OK" || !data.results || data.results.length === 0) {
+    if (data.status !== "OK") {
+      console.error(`Google Geocoding API Error: Status=${data.status}, Message=${data.error_message || 'No message'}`);
+      return null;
+    }
+
+    if (!data.results || data.results.length === 0) {
+      console.warn("Google Geocoding API: No results found for coordinates");
       return null;
     }
 
