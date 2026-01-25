@@ -4,6 +4,7 @@ import { runReportForBusiness } from "../reports";
 import { isAuthenticated } from "../auth";
 import { type User as AppUser } from "@shared/schema";
 import { searchPlacesByAddress, hasGoogleApiKey } from "../googlePlaces";
+import { getPlanLimits } from "../limits";
 
 export function registerReportRoutes(app: Express) {
     app.post("/api/reports/save-existing", isAuthenticated, async (req, res) => {
@@ -50,6 +51,17 @@ export function registerReportRoutes(app: Express) {
             // Verify account status
             if ((req.user as AppUser).verificationToken && !(req.user as AppUser).isVerified) {
                 return res.status(403).json({ error: "Please verify your email address to generate reports" });
+            }
+
+            // Check report limits
+            const limits = getPlanLimits((req.user as AppUser).plan);
+            const currentUsage = await storage.countReportsCurrentMonth((req.user as AppUser).id);
+
+            if (limits.maxMonthlyReports !== Infinity && currentUsage >= limits.maxMonthlyReports) {
+                return res.status(403).json({
+                    error: "Report limit reached",
+                    message: `Your current plan allows for ${limits.maxMonthlyReports} reports per month. Please upgrade to create more reports.`
+                });
             }
 
             const report = await runReportForBusiness(businessId, language, undefined, (req.user as AppUser).id);
@@ -162,12 +174,31 @@ export function registerReportRoutes(app: Express) {
             return res.status(403).json({ error: "Please verify your email address to generate reports" });
         }
 
+        const limits = getPlanLimits((req.user as AppUser).plan);
+
+        // Check report limits
+        const currentUsage = await storage.countReportsCurrentMonth((req.user as AppUser).id);
+        if (limits.maxMonthlyReports !== Infinity && currentUsage >= limits.maxMonthlyReports) {
+            return res.status(403).json({
+                error: "Report limit reached",
+                message: `Your current plan allows for ${limits.maxMonthlyReports} reports per month. Please upgrade to create more reports.`
+            });
+        }
+
         try {
             const { address, type, radius, language = 'en', latitude, longitude } = req.body;
 
             // Require either address OR coordinates
             if ((!address && (!latitude || !longitude)) || !type || !radius) {
                 return res.status(400).json({ error: "Missing required fields" });
+            }
+
+            // Check radius limit
+            if (radius > limits.maxRadius) {
+                return res.status(403).json({
+                    error: "Radius limit reached",
+                    message: `Your current plan allows for a maximum radius of ${limits.maxRadius / 1000}km. Please upgrade to analyze larger areas.`
+                });
             }
 
             // Search for coordinates OR use provided

@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { storage } from "../storage";
 import { insertBusinessSchema, type User as AppUser } from "@shared/schema";
 import { isAuthenticated } from "../auth";
+import { getPlanLimits } from "../limits";
 
 export function registerBusinessRoutes(app: Express) {
     // Protected API routes
@@ -17,6 +18,17 @@ export function registerBusinessRoutes(app: Express) {
 
     app.post("/api/businesses", isAuthenticated, async (req, res) => {
         try {
+            const user = req.user as AppUser;
+            const limits = getPlanLimits(user.plan);
+            const existingBusinesses = await storage.listBusinesses(user.id);
+
+            if (existingBusinesses.length >= limits.maxBusinesses) {
+                return res.status(403).json({
+                    error: "Business limit reached",
+                    message: `Your current plan allows for ${limits.maxBusinesses} business(es). Please upgrade to add more.`
+                });
+            }
+
             const validationResult = insertBusinessSchema.safeParse(req.body);
 
             if (!validationResult.success) {
