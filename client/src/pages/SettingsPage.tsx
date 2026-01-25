@@ -30,6 +30,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { usePricingModal } from "@/context/PricingModalContext";
 
 // Plans removed - app is now 100% free with donations
 
@@ -38,6 +39,7 @@ export default function SettingsPage() {
     const { t, i18n } = useTranslation();
     const { toast } = useToast();
     const [, setLocation] = useLocation();
+    const { openPricing } = usePricingModal();
 
     const [isEditing, setIsEditing] = useState(false);
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -348,11 +350,12 @@ export default function SettingsPage() {
                                 {t('settings.subscription.manage')}
                             </Button>
                         ) : (
-                            <Link href="/pricing">
-                                <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white">
-                                    {t('settings.subscription.upgrade')}
-                                </Button>
-                            </Link>
+                            <Button
+                                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
+                                onClick={openPricing}
+                            >
+                                {t('settings.subscription.upgrade')}
+                            </Button>
                         )}
                     </CardContent>
                 </Card>

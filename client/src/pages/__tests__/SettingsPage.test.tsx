@@ -13,6 +13,12 @@ vi.mock('wouter', () => ({
     useLocation: () => ['/settings', vi.fn()],
 }));
 
+// Mock Pricing Context
+vi.mock("@/context/PricingModalContext", () => ({
+    usePricingModal: () => ({ openPricing: vi.fn(), closePricing: vi.fn(), isPricingOpen: false }),
+    PricingModalProvider: ({ children }: any) => <div>{children}</div>
+}));
+
 // Mock LanguageSelector
 vi.mock("@/components/LanguageSelector", () => ({
     LanguageSelector: () => <div data-testid="language-selector" />,
@@ -104,12 +110,9 @@ describe('SettingsPage', () => {
 
         it('should display upgrade button for free users', () => {
             renderSettingsPage();
-            const upgradeLinks = screen.getAllByRole('link');
-            const pricingLink = upgradeLinks.find(link =>
-                link.getAttribute('href') === '/pricing'
-            );
-            expect(pricingLink).toBeInTheDocument();
-            expect(screen.getByText(/Upgrade to Pro/i)).toBeInTheDocument();
+            // It's now a button that opens the modal, not a link
+            const upgradeButton = screen.getByRole('button', { name: /Upgrade/i });
+            expect(upgradeButton).toBeInTheDocument();
         });
     });
 
