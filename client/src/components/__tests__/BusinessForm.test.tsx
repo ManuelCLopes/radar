@@ -386,10 +386,10 @@ describe("BusinessForm", () => {
                 writable: true
             });
 
-            const mockFetch = vi.fn().mockResolvedValue({
+            const mockFetch = vi.fn((...args: any[]) => Promise.resolve({
                 ok: true,
                 json: async () => ({ address: "New York, NY" })
-            });
+            }));
             vi.stubGlobal('fetch', mockFetch);
 
             render(<BusinessForm onSubmit={mockOnSubmit} />);
