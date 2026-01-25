@@ -446,9 +446,28 @@ export default function Dashboard() {
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel>{t("business.form.address")}</FormLabel>
-                                  <FormControl>
-                                    <Input {...field} placeholder={t("dashboard.analysis.addressPlaceholder")} />
-                                  </FormControl>
+                                  <div className="relative">
+                                    <FormControl>
+                                      <Input
+                                        {...field}
+                                        placeholder={t("dashboard.analysis.addressPlaceholder")}
+                                        className="pr-10"
+                                      />
+                                    </FormControl>
+                                    <button
+                                      type="button"
+                                      onClick={handleUseCurrentLocation}
+                                      disabled={isGettingLocation}
+                                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all"
+                                      title={t("addressSearch.useCurrentLocation")}
+                                    >
+                                      {isGettingLocation ? (
+                                        <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+                                      ) : (
+                                        <Navigation className={`h-4 w-4 ${manualCoordinates ? 'text-blue-600 fill-blue-100' : ''}`} />
+                                      )}
+                                    </button>
+                                  </div>
                                   <FormMessage />
                                 </FormItem>
                               )}
