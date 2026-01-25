@@ -297,8 +297,6 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
       setPendingLocationAddress(null);
 
       // Fetch explicit address
-      form.setValue("address", t("addressSearch.obtainingLocation") || "Getting address...");
-
       try {
         const response = await fetch('/api/places/reverse-geocode', {
           method: 'POST',
