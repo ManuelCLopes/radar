@@ -21,11 +21,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
+import { usePricingModal } from "@/context/PricingModalContext";
+
 // Pricing removed - app is 100% free with donations
 
 export default function LandingPage() {
   const { isAuthenticated, isLoading } = useAuth();
   const { t } = useTranslation();
+  const { openPricing } = usePricingModal();
 
   // Quick search state
   const [isSearching, setIsSearching] = useState(false);
@@ -675,12 +678,10 @@ export default function LandingPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/pricing">
-                <button className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200" data-testid="link-pricing">
-                  <Rocket className="w-4 h-4" />
-                  <span>{t('landing.valueProp.cta')}</span>
-                </button>
-              </Link>
+              <button onClick={openPricing} className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200" data-testid="link-pricing">
+                <Rocket className="w-4 h-4" />
+                <span>{t('landing.valueProp.cta')}</span>
+              </button>
 
               <Link href="/support">
                 <button className="group inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-semibold rounded-full shadow-md hover:shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-700" data-testid="link-support-landing">

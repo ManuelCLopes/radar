@@ -42,6 +42,7 @@ import { type Business, type InsertBusiness, type Report, businessTypes } from "
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { usePricingModal } from "@/context/PricingModalContext";
 
 const analysisSchema = z.object({
   address: z.string().min(1, "Address is required"),
@@ -55,6 +56,7 @@ export default function Dashboard() {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const { user, logoutMutation } = useAuth();
+  const { openPricing } = usePricingModal();
 
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [manualCoordinates, setManualCoordinates] = useState<{ lat: number; lng: number } | null>(null);
@@ -351,16 +353,15 @@ export default function Dashboard() {
           <div className="flex items-center gap-2">
             <LanguageSelector />
             <ThemeToggle />
-            <Link href="/pricing">
-              <Button
-                variant="ghost"
-                size="icon"
-                title="Subscrição"
-              >
-                <Star className="h-5 w-5 text-amber-500" />
-                <span className="sr-only">Subscrição</span>
-              </Button>
-            </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              title="Subscrição"
+              onClick={openPricing}
+            >
+              <Star className="h-5 w-5 text-amber-500" />
+              <span className="sr-only">Subscrição</span>
+            </Button>
             <Link href="/settings">
               <Button
                 variant="ghost"

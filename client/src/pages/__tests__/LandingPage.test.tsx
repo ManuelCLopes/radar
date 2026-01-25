@@ -13,6 +13,12 @@ vi.mock("wouter", () => ({
     useLocation: () => ["/", vi.fn()],
 }));
 
+// Mock Pricing Context
+vi.mock("@/context/PricingModalContext", () => ({
+    usePricingModal: () => ({ openPricing: vi.fn(), closePricing: vi.fn(), isPricingOpen: false }),
+    PricingModalProvider: ({ children }: any) => <div>{children}</div>
+}));
+
 // Mock components
 vi.mock("@/components/ThemeToggle", () => ({ ThemeToggle: () => <div>ThemeToggle</div> }));
 vi.mock("@/components/LanguageSelector", () => ({ LanguageSelector: () => <div>LanguageSelector</div> }));

@@ -11,7 +11,6 @@ import Dashboard from "@/pages/Dashboard";
 import SettingsPage from "@/pages/SettingsPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
-import PricingPage from "@/pages/PricingPage";
 import AdminDashboard from "@/pages/AdminDashboard";
 import AdminUsers from "@/pages/AdminUsers";
 import AdminActivity from "@/pages/AdminActivity";
@@ -21,11 +20,11 @@ import CookiePolicy from "@/pages/legal/CookiePolicy";
 import NotFound from "@/pages/not-found";
 import ScrollToTop from "@/components/ScrollToTop";
 import './i18n';
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "wouter";
 import VerifyEmail from "@/pages/VerifyEmail";
 import { VerificationBanner } from "@/components/VerificationBanner";
+import { PricingModalProvider } from "@/context/PricingModalContext";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -81,7 +80,6 @@ function Router() {
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/cookie-policy" component={CookiePolicy} />
       <Route path="/dashboard" component={ProtectedDashboard} />
-      <Route path="/pricing" component={PricingPage} />
       <Route path="/settings" component={ProtectedSettings} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/users" component={AdminUsers} />
@@ -95,9 +93,11 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <ScrollToTop />
-        <Router />
+        <PricingModalProvider>
+          <Toaster />
+          <ScrollToTop />
+          <Router />
+        </PricingModalProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
