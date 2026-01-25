@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { BusinessForm } from "../BusinessForm";
 import userEvent from "@testing-library/user-event";
 
@@ -414,7 +414,7 @@ describe("BusinessForm", () => {
         it("handles location fetch error (permission denied)", async () => {
             const user = userEvent.setup();
             const mockGeolocation = {
-                getCurrentPosition: vi.fn().mockImplementation((_, error) => error(
+                getCurrentPosition: vi.fn().mockImplementation((_success, error) => error(
                     new GeolocationPositionError(1, "User denied Geolocation")
                 ))
             };
