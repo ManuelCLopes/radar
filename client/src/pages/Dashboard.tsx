@@ -249,9 +249,6 @@ export default function Dashboard() {
 
     setIsGettingLocation(true);
 
-    // Set initial loading state in form
-    analysisForm.setValue("address", t("addressSearch.obtainingLocation") || "Getting address...");
-
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         setIsGettingLocation(false);
