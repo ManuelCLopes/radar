@@ -295,6 +295,31 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
       setManualCoordinates(coords);
       setSelectedPlace(null);
       setPendingLocationAddress(null);
+
+      // Fetch explicit address
+      form.setValue("address", t("addressSearch.obtainingLocation") || "Getting address...");
+
+      try {
+        const response = await fetch('/api/places/reverse-geocode', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ latitude: coords.lat, longitude: coords.lng })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.address) {
+            form.setValue("address", data.address);
+          } else {
+            form.setValue("address", `${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`);
+          }
+        } else {
+          form.setValue("address", `${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`);
+        }
+      } catch (e) {
+        form.setValue("address", "Current Location");
+      }
+
       setShowNoResultsDialog(false);
       setShowApiKeyMissingDialog(false);
       toast({
@@ -434,7 +459,7 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
                         placeholder={t("business.form.addressPlaceholder")}
                         data-testid="input-address"
                         {...field}
-                        className={selectedPlace ? "pr-10 border-green-500 ring-green-500/10" : ""}
+                        className={selectedPlace ? "pr-10 border-green-500 ring-green-500/10" : "pr-10"}
                         onChange={(e) => {
                           field.onChange(e);
                           if (selectedPlace) {
@@ -449,8 +474,22 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
                         }}
                       />
                     </FormControl>
-                    {selectedPlace && (
+                    {selectedPlace ? (
                       <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-green-500 animate-in zoom-in duration-300" />
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleUseCurrentLocation}
+                        disabled={isGettingLocation}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all"
+                        title={t("addressSearch.useCurrentLocation")}
+                      >
+                        {isGettingLocation ? (
+                          <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+                        ) : (
+                          <Navigation className={`h-4 w-4 ${manualCoordinates ? 'text-blue-600 fill-blue-100' : ''}`} />
+                        )}
+                      </button>
                     )}
                   </div>
                   <Button

@@ -24,12 +24,13 @@ export function registerSearchRoutes(app: Express) {
                 // console.warn("Database connection missing - skipping rate limiting");
             }
 
-            const { address, type, radius, language = 'en' } = req.body;
+            const { address, type, radius, language = 'en', latitude, longitude } = req.body;
 
-            if (!address || !type || !radius) {
+            // Require either address OR coordinates
+            if ((!address && (!latitude || !longitude)) || !type || !radius) {
                 return res.status(400).json({
                     error: "Missing required fields",
-                    message: "Address, type, and radius are required"
+                    message: "Address (or coordinates), type, and radius are required"
                 });
             }
 
@@ -42,9 +43,12 @@ export function registerSearchRoutes(app: Express) {
                 });
             }
 
-            // Search for the address to get coordinates
+            // Search for the address to get coordinates OR use provided coordinates
             let coordinates = null;
-            if (hasGoogleApiKey()) {
+
+            if (latitude && longitude) {
+                coordinates = { latitude, longitude };
+            } else if (hasGoogleApiKey() && address) {
                 const searchResults = await searchPlacesByAddress(address);
                 if (searchResults && searchResults.length > 0) {
                     coordinates = {
@@ -56,8 +60,8 @@ export function registerSearchRoutes(app: Express) {
 
             if (!coordinates) {
                 return res.status(400).json({
-                    error: "Address not found",
-                    message: "Could not find coordinates for the provided address"
+                    error: "Location not found",
+                    message: "Could not determine location coordinates"
                 });
             }
 
@@ -125,5 +129,34 @@ export function registerSearchRoutes(app: Express) {
     // START: Google Places API status endpoint
     app.get("/api/google-places/status", async (req, res) => {
         res.json({ configured: hasGoogleApiKey() });
+    });
+
+    app.post("/api/places/reverse-geocode", async (req, res) => {
+        try {
+            const { latitude, longitude } = req.body;
+
+            if (!latitude || !longitude) {
+                return res.status(400).json({ error: "Latitude and Longitude are required" });
+            }
+
+            if (!hasGoogleApiKey()) {
+                // Determine if browser has geolocation API
+                // If no API key, we just return null and the client keeps "Current Location" (or coordinates)
+                return res.json({ address: "Current Location (Approx)" });
+                // Actually, better to return null so client handles it, or return "Lat, Lng"
+            }
+
+            const { reverseGeocode } = await import("../googlePlaces");
+            const address = await reverseGeocode(latitude, longitude);
+
+            if (!address) {
+                return res.status(404).json({ error: "Could not determine address" });
+            }
+
+            res.json({ address });
+        } catch (error) {
+            console.error("Reverse geocoding error:", error);
+            res.status(500).json({ error: "Failed to reverse geocode" });
+        }
     });
 }
