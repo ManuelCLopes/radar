@@ -79,6 +79,14 @@ describe("BusinessForm", () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        // Mock GeolocationPositionError
+        global.GeolocationPositionError = class extends Error {
+            code: number;
+            constructor(code: number, message: string) {
+                super(message);
+                this.code = code;
+            }
+        } as any;
     });
 
     it("renders the form correctly", () => {
@@ -351,6 +359,68 @@ describe("BusinessForm", () => {
         await waitFor(() => {
             expect(screen.queryByText("addressSearch.apiKeyMissing.title")).not.toBeInTheDocument();
             expect(screen.getByTestId("select-business-type")).toBeInTheDocument();
+        });
+    });
+
+    it("fetches current location successfully", async () => {
+        const user = userEvent.setup();
+        const mockGeolocation = {
+            getCurrentPosition: vi.fn().mockImplementation((success) => success({
+                coords: { latitude: 40.7, longitude: -74.0 }
+            }))
+        };
+        Object.defineProperty(global.navigator, 'geolocation', {
+            value: mockGeolocation,
+            writable: true
+        });
+
+        // Mock fetch for reverse geocode inside BusinessForm
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({ address: "New York, NY" })
+        });
+
+        render(<BusinessForm onSubmit={mockOnSubmit} />);
+
+        const locationButton = screen.getByTitle("addressSearch.useCurrentLocation");
+        await user.click(locationButton);
+
+        await waitFor(() => {
+            expect(global.fetch).toHaveBeenCalledWith("/api/places/reverse-geocode", expect.objectContaining({
+                body: JSON.stringify({ latitude: 40.7, longitude: -74.0 })
+            }));
+        });
+
+        await waitFor(() => {
+            expect(screen.getByTestId("input-address")).toHaveValue("New York, NY");
+            expect(mockToast).toHaveBeenCalledWith(expect.objectContaining({
+                title: "addressSearch.locationObtained"
+            }));
+        });
+    });
+
+    it("handles location fetch error (permission denied)", async () => {
+        const user = userEvent.setup();
+        const mockGeolocation = {
+            getCurrentPosition: vi.fn().mockImplementation((_, error) => error(
+                new GeolocationPositionError(1, "User denied Geolocation")
+            ))
+        };
+        Object.defineProperty(global.navigator, 'geolocation', {
+            value: mockGeolocation,
+            writable: true
+        });
+
+        render(<BusinessForm onSubmit={mockOnSubmit} />);
+
+        const locationButton = screen.getByTitle("addressSearch.useCurrentLocation");
+        await user.click(locationButton);
+
+        await waitFor(() => {
+            expect(mockToast).toHaveBeenCalledWith(expect.objectContaining({
+                description: "addressSearch.locationDenied",
+                variant: "destructive"
+            }));
         });
     });
 });
