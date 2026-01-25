@@ -106,7 +106,7 @@ export default function LandingPage() {
             }
           }
           // Fallback if failed
-          form.setValue('address', `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+          form.setValue('address', "Current Location");
         } catch (e) {
           // Fallback
           form.setValue('address', "Current Location");

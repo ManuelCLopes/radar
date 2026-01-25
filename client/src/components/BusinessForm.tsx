@@ -311,10 +311,10 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
           if (data.address) {
             form.setValue("address", data.address);
           } else {
-            form.setValue("address", `${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`);
+            form.setValue("address", "Current Location");
           }
         } else {
-          form.setValue("address", `${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`);
+          form.setValue("address", "Current Location");
         }
       } catch (e) {
         form.setValue("address", "Current Location");
