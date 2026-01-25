@@ -111,12 +111,13 @@ export default function LandingPage() {
       form.setValue('address', "Current Location");
     }
   },
-    (error) => {
-      setIsGettingLocation(false);
-      let errorMessage = "Could not get your location";
-      if (error.code === 1) errorMessage = "Location permission denied";
-      setSearchError(errorMessage);
-    }
+  },
+(error) => {
+  setIsGettingLocation(false);
+  let errorMessage = "Could not get your location";
+  if (error.code === 1) errorMessage = "Location permission denied";
+  setSearchError(errorMessage);
+}
   );
 }, [form]);
 
