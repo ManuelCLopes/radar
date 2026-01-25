@@ -10,11 +10,6 @@ export const SUBSCRIPTION_LIMITS = {
         maxMonthlyReports: 10,
         maxRadius: 20000,
     },
-    agency: {
-        maxBusinesses: 10,
-        maxMonthlyReports: Infinity,
-        maxRadius: 50000,
-    },
 } as const;
 
 export type SubscriptionPlan = keyof typeof SUBSCRIPTION_LIMITS;

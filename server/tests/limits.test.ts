@@ -107,16 +107,6 @@ describe("Subscription Limits", () => {
             expect(res.status).toBe(403);
             expect(res.body.error).toBe("Report limit reached");
         });
-
-        it("Agency plan: should allow unlimited reports", async () => {
-            authMocks.user = { id: "agency-user", plan: "agency", isVerified: true };
-            vi.spyOn(storage, "countReportsCurrentMonth").mockResolvedValue(100);
-            vi.spyOn(storage, "getBusiness").mockResolvedValue({ id: "bus-1", userId: "agency-user" } as any);
-            (runReportForBusiness as any).mockResolvedValue({});
-
-            const res = await request(app).post("/api/run-report/bus-1");
-            expect(res.status).toBe(200);
-        });
     });
 
     describe("Radius Limits", () => {
