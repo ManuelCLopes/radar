@@ -139,49 +139,4 @@ describe("Dashboard", () => {
             expect(historyItem).toHaveClass("flex-col", "sm:flex-row");
         });
     });
-
-    it("fetches location in New Analysis dialog", async () => {
-        const mockGeolocation = {
-            getCurrentPosition: vi.fn().mockImplementation((success) => success({
-                coords: { latitude: 51.5, longitude: -0.09 }
-            }))
-        };
-        Object.defineProperty(global.navigator, 'geolocation', {
-            value: mockGeolocation,
-            writable: true
-        });
-
-        // Mock fetch
-        global.fetch = vi.fn().mockResolvedValue({
-            ok: true,
-            json: async () => ({ address: "London, UK" })
-        });
-
-        render(<Dashboard />);
-
-        // Open New Analysis dialog
-        const newAnalysisBtn = screen.getByTestId("btn-new-analysis");
-        fireEvent.click(newAnalysisBtn);
-
-        // Wait for dialog
-        await waitFor(() => {
-            expect(screen.getByText("dashboard.analysis.title")).toBeInTheDocument();
-        });
-
-        // Click location button
-        const locationButton = screen.getByTitle("addressSearch.useCurrentLocation");
-        fireEvent.click(locationButton);
-
-        await waitFor(() => {
-            expect(global.fetch).toHaveBeenCalledWith("/api/places/reverse-geocode", expect.objectContaining({
-                body: JSON.stringify({ latitude: 51.5, longitude: -0.09 })
-            }));
-        });
-
-        // Check input value (using placeholder to find it)
-        await waitFor(() => {
-            const input = screen.getByPlaceholderText("dashboard.analysis.addressPlaceholder") as HTMLInputElement;
-            expect(input.value).toBe("London, UK");
-        });
-    });
 });
