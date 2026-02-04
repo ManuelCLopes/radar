@@ -76,8 +76,8 @@ describe("Reports Logic", () => {
         const result = await runReportForBusiness("1", "en", undefined, "user-1");
 
         expect(storage.getBusiness).toHaveBeenCalledWith("1");
-        expect(searchNearby).toHaveBeenCalledWith(10, 20, "restaurant", 1500, true, "en");
-        expect(analyzeCompetitors).toHaveBeenCalledWith(mockBusiness, mockCompetitors, "en", "essential");
+        expect(searchNearby).toHaveBeenCalledWith(10, 20, "restaurant", 1500, true, "en", 10);
+        expect(analyzeCompetitors).toHaveBeenCalledWith(mockBusiness, mockCompetitors, "en", "free");
         expect(storage.saveReport).toHaveBeenCalledWith(expect.objectContaining({
             businessId: "1",
             userId: "user-1",
@@ -141,7 +141,7 @@ describe("Reports Logic", () => {
 
         const result = await runReportForBusiness("1", "pt");
 
-        expect(analyzeCompetitors).toHaveBeenCalledWith(mockBusiness, [], "pt", "essential");
+        expect(analyzeCompetitors).toHaveBeenCalledWith(mockBusiness, [], "pt", "free");
         expect(result.executiveSummary).toBe("Resumo em PT");
     });
     it("should handle error during data fetching gracefully", async () => {

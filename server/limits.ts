@@ -4,11 +4,13 @@ export const SUBSCRIPTION_LIMITS = {
         maxBusinesses: 1,
         maxMonthlyReports: 2,
         maxRadius: 5000,
+        maxCompetitors: 10,
     },
     pro: {
         maxBusinesses: 3,
         maxMonthlyReports: 10,
         maxRadius: 20000,
+        maxCompetitors: 100,
     },
 } as const;
 

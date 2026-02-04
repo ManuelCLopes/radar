@@ -3,6 +3,7 @@ import { storage } from "./storage";
 import { searchNearby } from "./googlePlaces";
 import { analyzeCompetitors } from "./ai";
 import type { Report, Business, InsertReport } from "@shared/schema";
+import { getPlanLimits } from "./limits";
 
 export async function runReportForBusiness(
   businessId: string,
@@ -21,13 +22,15 @@ export async function runReportForBusiness(
     throw new Error(`Business "${business.name}" has pending location verification. Please verify the business location before generating a report.`);
   }
 
-  let userPlan = "essential";
+  let userPlan = "free";
   if (userId) {
     const user = await storage.getUser(userId);
     if (user) {
       userPlan = user.plan;
     }
   }
+
+  const limits = getPlanLimits(userPlan);
 
   let competitors: import("@shared/schema").Competitor[] = [];
   let aiAnalysis: import("./ai").StructuredAnalysis;
@@ -39,7 +42,8 @@ export async function runReportForBusiness(
       business.type,
       radius,
       true, // Always include reviews
-      language
+      language,
+      limits.maxCompetitors
     );
 
     /*
