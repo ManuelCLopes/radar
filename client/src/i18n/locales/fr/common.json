@@ -757,6 +757,7 @@
     "marketActivity": "Activité du Marché",
     "marketActivityDesc": "Nombre de concurrents trouvés par rapport",
     "avgRating": "Note Moyenne",
+    "yourRating": "Votre Note",
     "competitorCount": "Concurrents",
     "noData": "Pas encore de données",
     "noDataDesc": "Générez plus de rapports au fil du temps pour voir apparaître des tendances."

@@ -758,6 +758,7 @@
     "marketActivity": "Marktaktivität",
     "marketActivityDesc": "Anzahl der pro Bericht gefundenen Wettbewerber",
     "avgRating": "Ø Bewertung",
+    "yourRating": "Ihre Bewertung",
     "competitorCount": "Wettbewerber",
     "noData": "Noch keine Trenddaten",
     "noDataDesc": "Generieren Sie im Laufe der Zeit mehr Berichte, um hier Trends zu sehen."

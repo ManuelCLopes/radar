@@ -759,6 +759,7 @@
     "marketActivity": "Actividad de Mercado",
     "marketActivityDesc": "Número de competidores encontrados por informe",
     "avgRating": "Calif. Promedio",
+    "yourRating": "Tu Calificación",
     "competitorCount": "Competidores",
     "noData": "Sin datos de tendencias",
     "noDataDesc": "Genere más informes a lo largo del tiempo para ver aparecer tendencias aquí."

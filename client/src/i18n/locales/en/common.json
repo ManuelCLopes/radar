@@ -757,6 +757,7 @@
     "marketActivity": "Market Activity",
     "marketActivityDesc": "Number of competitors found per report",
     "avgRating": "Avg Rating",
+    "yourRating": "Your Rating",
     "competitorCount": "Competitors",
     "noData": "No trend data yet",
     "noDataDesc": "Generate more reports over time to see trends appear here."

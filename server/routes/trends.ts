@@ -51,11 +51,20 @@ export function registerTrendRoutes(app: Express) {
                     ? ratings.reduce((a, b) => a + b, 0) / ratings.length
                     : 0;
 
+                // Attempt to find the business's own rating within the competitors list
+                // This assumes the business was found in the search results
+                const businessEntry = competitors.find(c =>
+                    c.name.toLowerCase() === business.name.toLowerCase() ||
+                    (c.address && business.address && c.address.includes(business.address))
+                );
+                const businessRating = businessEntry?.rating || null;
+
                 return {
                     id: report.id,
                     date: report.generatedAt,
                     competitorCount: competitors.length,
                     avgRating: Number(avgRating.toFixed(2)),
+                    businessRating: businessRating ? Number(businessRating) : null,
                     minRating: ratings.length > 0 ? Math.min(...ratings) : 0,
                     maxRating: ratings.length > 0 ? Math.max(...ratings) : 0
                 };

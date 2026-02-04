@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Line } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Lock, TrendingUp, Users } from "lucide-react";
@@ -13,6 +13,7 @@ interface TrendData {
     id: string;
     date: string;
     avgRating: number;
+    businessRating: number | null;
     competitorCount: number;
     minRating: number;
     maxRating: number;
@@ -143,6 +144,16 @@ export function TrendsDashboard({ business }: TrendsDashboardProps) {
                                         fill="url(#colorRating)"
                                         strokeWidth={2}
                                         name={t("trends.avgRating", "Avg Rating")}
+                                    />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="businessRating"
+                                        stroke="#10b981" // emerald-500
+                                        strokeWidth={3}
+                                        dot={{ r: 4, fill: "#10b981" }}
+                                        activeDot={{ r: 6 }}
+                                        connectNulls
+                                        name={t("trends.yourRating", "Your Rating")}
                                     />
                                 </AreaChart>
                             </ResponsiveContainer>

@@ -758,6 +758,7 @@
     "marketActivity": "Atividade do Mercado",
     "marketActivityDesc": "Número de concorrentes encontrados por relatório",
     "avgRating": "Classificação Média",
+    "yourRating": "Sua Classificação",
     "competitorCount": "Concorrentes",
     "noData": "Sem dados de tendências",
     "noDataDesc": "Gere mais relatórios ao longo do tempo para ver as tendências aparecerem aqui."
