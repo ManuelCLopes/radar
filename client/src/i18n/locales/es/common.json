@@ -160,6 +160,12 @@
     "email": {
       "enterAddress": "Insira o endereço de email do destinatário abaixo.",
       "send": "Enviar Email"
+    },
+    "deleteDialog": {
+      "title": "Eliminar Informe",
+      "description": "¿Está seguro de que desea eliminar este informe? Esta acción no se puede deshacer.",
+      "cancel": "Cancelar",
+      "confirm": "Eliminar"
     }
   },
   "toast": {
@@ -174,6 +180,10 @@
     "reportGenerated": {
       "title": "Relatório gerado",
       "description": "O seu relatório de análise de concorrência está pronto."
+    },
+    "reportDeleted": {
+      "title": "Informe eliminado",
+      "description": "El informe ha sido eliminado."
     },
     "reportDownloaded": {
       "title": "Relatório transferido",
@@ -741,6 +751,27 @@
       "description": "Estamos finalizando los detalles de nuestro plan Pro para asegurar que ofrezca el mejor valor para su negocio.",
       "footer": "En este momento, el plan Pro aún no está disponible para suscripción. ¡Agradecemos su interés y estamos trabajando duro para lanzarlo pronto!",
       "gotIt": "Entendido"
+    },
+    "trends": {
+      "lockedTitle": "Desbloquear Tendencias",
+      "lockedDesc": "Rastree el rendimiento de su calificación y la densidad del mercado a lo largo del tiempo con análisis profesionales.",
+      "unlock": "Obtener Acceso Pro"
     }
+  },
+  "trends": {
+    "title": "Tendencias",
+    "selectBusiness": "Seleccionar Negocio:",
+    "selectBusinessPlaceholder": "Seleccionar un negocio",
+    "selectToView": "Seleccione un negocio para ver las tendencias",
+    "selectToViewDesc": "Elija uno de sus negocios registrados para ver su rendimiento histórico.",
+    "ratingHistory": "Tendencias de Calificación",
+    "ratingHistoryDesc": "Calificación promedio de competidores a lo largo del tiempo",
+    "marketActivity": "Actividad de Mercado",
+    "marketActivityDesc": "Número de competidores encontrados por informe",
+    "avgRating": "Calif. Promedio",
+    "yourRating": "Tu Calificación",
+    "competitorCount": "Competidores",
+    "noData": "Sin datos de tendencias",
+    "noDataDesc": "Genere más informes a lo largo del tiempo para ver aparecer tendencias aquí."
   }
 }

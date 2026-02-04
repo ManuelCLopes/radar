@@ -159,6 +159,12 @@
     "email": {
       "enterAddress": "Enter the recipient's email address below.",
       "send": "Send Email"
+    },
+    "deleteDialog": {
+      "title": "Delete Report",
+      "description": "Are you sure you want to delete this report? This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Delete"
     }
   },
   "toast": {
@@ -173,6 +179,10 @@
     "reportGenerated": {
       "title": "Report generated",
       "description": "Your competitor analysis report is ready."
+    },
+    "reportDeleted": {
+      "title": "Report deleted",
+      "description": "The report has been removed."
     },
     "reportDownloaded": {
       "title": "Report downloaded",
@@ -739,6 +749,27 @@
       "description": "We are currently finalizing the details of our Pro plan to ensure it delivers the best value for your business.",
       "footer": "At this moment, the Pro plan is not yet available for subscription. We appreciate your interest and are working hard to launch it soon!",
       "gotIt": "Got it"
+    },
+    "trends": {
+      "lockedTitle": "Unlock Competitor Trends",
+      "lockedDesc": "Track your rating performance and market density over time with professional analytics.",
+      "unlock": "Get Pro Access"
     }
+  },
+  "trends": {
+    "title": "Trends",
+    "selectBusiness": "Select Business:",
+    "selectBusinessPlaceholder": "Select a business",
+    "selectToView": "Select a business to view trends",
+    "selectToViewDesc": "Choose one of your registered businesses to see its historical performance.",
+    "ratingHistory": "Competitor Rating Trends",
+    "ratingHistoryDesc": "Average competitor rating over time",
+    "marketActivity": "Market Activity",
+    "marketActivityDesc": "Number of competitors found per report",
+    "avgRating": "Avg Rating",
+    "yourRating": "Your Rating",
+    "competitorCount": "Competitors",
+    "noData": "No trend data yet",
+    "noDataDesc": "Generate more reports over time to see trends appear here."
   }
 }

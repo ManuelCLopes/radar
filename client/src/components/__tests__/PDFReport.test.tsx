@@ -61,7 +61,9 @@ This is the market overview.
         marketTrends: [],
         targetAudience: {},
         marketingStrategy: {},
-        customerSentiment: {}
+        customerSentiment: {},
+        businessRating: null,
+        businessUserRatingsTotal: null
     };
 
     const mockT = (key: string) => key;

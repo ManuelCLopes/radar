@@ -13,6 +13,7 @@ import { registerUserRoutes } from "./users";
 import { registerAdminRoutes } from "./admin";
 import { registerStaticRoutes } from "./static";
 import { registerPaymentRoutes } from "./payments";
+import { registerTrendRoutes } from "./trends";
 
 export async function registerRoutes(
     httpServer: Server,
@@ -32,6 +33,7 @@ export async function registerRoutes(
     registerUserRoutes(app);
     registerAdminRoutes(app);
     registerPaymentRoutes(app);
+    registerTrendRoutes(app);
     registerStaticRoutes(app);
 
     // Start background scheduler

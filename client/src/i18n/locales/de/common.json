@@ -160,6 +160,12 @@
     "email": {
       "enterAddress": "Insira o endereço de email do destinatário abaixo.",
       "send": "Enviar Email"
+    },
+    "deleteDialog": {
+      "title": "Bericht löschen",
+      "description": "Sind Sie sicher, dass Sie diesen Bericht löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "cancel": "Abbrechen",
+      "confirm": "Löschen"
     }
   },
   "toast": {
@@ -174,6 +180,10 @@
     "reportGenerated": {
       "title": "Relatório gerado",
       "description": "O seu relatório de análise de concorrência está pronto."
+    },
+    "reportDeleted": {
+      "title": "Bericht gelöscht",
+      "description": "Der Bericht wurde gelöscht."
     },
     "reportDownloaded": {
       "title": "Relatório transferido",
@@ -740,6 +750,27 @@
       "description": "Wir arbeiten derzeit an den letzten Details unseres Pro-Plans, um sicherzustellen, dass er den besten Wert für Ihr Unternehmen bietet.",
       "footer": "Derzeit ist der Pro-Plan noch nicht abonnementfähig. Wir freuen uns über Ihr Interesse und arbeiten hart daran, ihn bald zu starten!",
       "gotIt": "Verstanden"
+    },
+    "trends": {
+      "lockedTitle": "Trends Freischalten",
+      "lockedDesc": "Verfolgen Sie Ihre Bewertungsleistung und Marktdichte im Laufe der Zeit mit professionellen Analysen.",
+      "unlock": "Pro-Zugang Erhalten"
     }
+  },
+  "trends": {
+    "title": "Trends",
+    "selectBusiness": "Geschäft Auswählen:",
+    "selectBusinessPlaceholder": "Wählen Sie ein Geschäft",
+    "selectToView": "Wählen Sie ein Geschäft, um Trends anzuzeigen",
+    "selectToViewDesc": "Wählen Sie eines Ihrer registrierten Unternehmen, um dessen historische Leistung zu sehen.",
+    "ratingHistory": "Bewertungstrends",
+    "ratingHistoryDesc": "Durchschnittliche Bewertung der Wettbewerber im Zeitverlauf",
+    "marketActivity": "Marktaktivität",
+    "marketActivityDesc": "Anzahl der pro Bericht gefundenen Wettbewerber",
+    "avgRating": "Ø Bewertung",
+    "yourRating": "Ihre Bewertung",
+    "competitorCount": "Wettbewerber",
+    "noData": "Noch keine Trenddaten",
+    "noDataDesc": "Generieren Sie im Laufe der Zeit mehr Berichte, um hier Trends zu sehen."
   }
 }

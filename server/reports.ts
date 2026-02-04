@@ -3,6 +3,7 @@ import { storage } from "./storage";
 import { searchNearby } from "./googlePlaces";
 import { analyzeCompetitors } from "./ai";
 import type { Report, Business, InsertReport } from "@shared/schema";
+import { getPlanLimits } from "./limits";
 
 export async function runReportForBusiness(
   businessId: string,
@@ -21,7 +22,7 @@ export async function runReportForBusiness(
     throw new Error(`Business "${business.name}" has pending location verification. Please verify the business location before generating a report.`);
   }
 
-  let userPlan = "essential";
+  let userPlan = "free";
   if (userId) {
     const user = await storage.getUser(userId);
     if (user) {
@@ -29,8 +30,12 @@ export async function runReportForBusiness(
     }
   }
 
+  const limits = getPlanLimits(userPlan);
+
   let competitors: import("@shared/schema").Competitor[] = [];
   let aiAnalysis: import("./ai").StructuredAnalysis;
+  let currentRating = business.rating || null;
+  let currentReviews = business.userRatingsTotal || null;
 
   try {
     competitors = await searchNearby(
@@ -39,7 +44,8 @@ export async function runReportForBusiness(
       business.type,
       radius,
       true, // Always include reviews
-      language
+      language,
+      limits.maxCompetitors
     );
 
     /*
@@ -50,19 +56,39 @@ export async function runReportForBusiness(
      */
     aiAnalysis = await analyzeCompetitors(business, competitors, language, userPlan);
 
+    // Attempt to fetch and update the business's own rating for trends
+
+    if (!providedBusiness) {
+      try {
+        // Import searchPlacesByAddress dynamically or use top-level import
+        const { searchPlacesByAddress } = await import("./googlePlaces");
+        const businessSearchResults = await searchPlacesByAddress(
+          `${business.name}, ${business.address}`
+        );
+
+        if (businessSearchResults.length > 0) {
+          const selfMatch = businessSearchResults[0];
+          if (selfMatch.rating) {
+            currentRating = selfMatch.rating;
+            currentReviews = selfMatch.userRatingsTotal || null;
+
+            await storage.updateBusiness(business.id, {
+              rating: selfMatch.rating,
+              userRatingsTotal: selfMatch.userRatingsTotal
+            });
+            console.log(`[Report] Updated rating for business ${business.name}: ${selfMatch.rating}`);
+          }
+        }
+      } catch (err) {
+        console.warn(`[Report] Failed to update business rating:`, err);
+        // Non-blocking error
+      }
+    }
+
   } catch (error: any) {
     console.error(`Error generating report for business ${business.name}:`, error);
 
-    // Create an error state analysis
-    competitors = [];
-    aiAnalysis = {
-      executiveSummary: `Error: Unable to fetch competitor data. ${error.message || "Unknown error"}. Please try again later or contact administrator.`,
-      swot: { strengths: [], weaknesses: [], opportunities: [], threats: [] },
-      marketTrends: [],
-      targetAudience: { demographics: "N/A", psychographics: "N/A", painPoints: "N/A" },
-      marketingStrategy: { primaryChannels: "N/A", contentIdeas: "N/A", promotionalTactics: "N/A" },
-      customerSentiment: { commonPraises: [], recurringComplaints: [], unmetNeeds: [] }
-    };
+    throw error;
   }
 
   // Only save report if not a temporary business
@@ -79,6 +105,8 @@ export async function runReportForBusiness(
       targetAudience: aiAnalysis.targetAudience,
       marketingStrategy: aiAnalysis.marketingStrategy,
       customerSentiment: aiAnalysis.customerSentiment,
+      businessRating: currentRating,
+      businessUserRatingsTotal: currentReviews,
       // HTML field is not used for new reports as we use structured data
       html: undefined,
       userId: userId || null,

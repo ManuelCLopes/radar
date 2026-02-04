@@ -159,6 +159,12 @@
     "email": {
       "enterAddress": "Entrez l'adresse e-mail du destinataire ci-dessous.",
       "send": "Envoyer l'e-mail"
+    },
+    "deleteDialog": {
+      "title": "Supprimer le rapport",
+      "description": "Êtes-vous sûr de vouloir supprimer ce rapport ? Cette action est irréversible.",
+      "cancel": "Annuler",
+      "confirm": "Supprimer"
     }
   },
   "toast": {
@@ -173,6 +179,10 @@
     "reportGenerated": {
       "title": "Rapport généré",
       "description": "Votre rapport d'analyse de la concurrence est prêt."
+    },
+    "reportDeleted": {
+      "title": "Rapport supprimé",
+      "description": "Le rapport a été supprimé."
     },
     "reportDownloaded": {
       "title": "Rapport téléchargé",
@@ -739,6 +749,27 @@
       "description": "Nous finalisons actuellement les détails de notre plan Pro pour garantir qu'il offre la meilleure valeur pour votre entreprise.",
       "footer": "Pour le moment, le plan Pro n'est pas encore disponible à l'abonnement. Nous apprécions votre intérêt et travaillons dur pour le lancer bientôt !",
       "gotIt": "Compris"
+    },
+    "trends": {
+      "lockedTitle": "Débloquer les Tendances",
+      "lockedDesc": "Suivez l'évolution de votre classement et la densité du marché au fil du temps grâce à des analyses professionnelles.",
+      "unlock": "Obtenir l'Accès Pro"
     }
+  },
+  "trends": {
+    "title": "Tendances",
+    "selectBusiness": "Sélectionner une Entreprise :",
+    "selectBusinessPlaceholder": "Sélectionnez une entreprise",
+    "selectToView": "Sélectionnez une entreprise pour voir les tendances",
+    "selectToViewDesc": "Choisissez l'une de vos entreprises enregistrées pour voir ses performances historiques.",
+    "ratingHistory": "Tendances des Notes",
+    "ratingHistoryDesc": "Note moyenne des concurrents au fil du temps",
+    "marketActivity": "Activité du Marché",
+    "marketActivityDesc": "Nombre de concurrents trouvés par rapport",
+    "avgRating": "Note Moyenne",
+    "yourRating": "Votre Note",
+    "competitorCount": "Concurrents",
+    "noData": "Pas encore de données",
+    "noDataDesc": "Générez plus de rapports au fil du temps pour voir apparaître des tendances."
   }
 }

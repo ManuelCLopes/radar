@@ -48,6 +48,8 @@ export const businesses = pgTable("businesses", {
   longitude: real("longitude"),
   address: text("address"),
   locationStatus: text("location_status").default("validated").$type<LocationStatus>(),
+  rating: real("rating"),
+  userRatingsTotal: integer("user_ratings_total"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -126,6 +128,8 @@ export const reports = pgTable("reports", {
   targetAudience: jsonb("target_audience"),
   marketingStrategy: jsonb("marketing_strategy"),
   customerSentiment: jsonb("customer_sentiment"),
+  businessRating: real("business_rating"),
+  businessUserRatingsTotal: integer("business_user_ratings_total"),
   radius: integer("radius"), // Added radius field
 });
 
@@ -163,6 +167,8 @@ export const insertReportSchema = z.object({
   targetAudience: z.record(z.any()).optional(),
   marketingStrategy: z.record(z.any()).optional(),
   customerSentiment: z.record(z.any()).optional(),
+  businessRating: z.number().optional().nullable(),
+  businessUserRatingsTotal: z.number().optional().nullable(),
   radius: z.number().optional(),
   generatedAt: z.union([z.string(), z.date()]).optional(), // Allow backdating for seed
 });

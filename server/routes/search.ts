@@ -76,7 +76,9 @@ export function registerSearchRoutes(app: Express) {
                 locationStatus: 'validated' as const,
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                userId: null // Temp business has no user
+                userId: null, // Temp business has no user
+                rating: null,
+                userRatingsTotal: null
             };
 
             // Generate report (this will use existing report logic)

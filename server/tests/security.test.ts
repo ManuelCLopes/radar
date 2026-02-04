@@ -18,6 +18,7 @@ const { mockStorage } = vi.hoisted(() => ({
         getReportsByBusinessId: vi.fn(),
         getReportsByUserId: vi.fn(),
         createReport: vi.fn(),
+        deleteReport: vi.fn(),
     }
 }));
 
@@ -102,5 +103,42 @@ describe("Report Security (IDOR)", () => {
         const res = await request(app).get("/api/reports/business/biz123");
 
         expect(res.status).toBe(403);
+    });
+
+    it("should prevent deleting a report belonging to another user", async () => {
+        mockStorage.getReport.mockResolvedValue({
+            id: "report123",
+            userId: "user2", // Different user
+            businessId: "biz1",
+            generatedAt: new Date()
+        });
+
+        const res = await request(app).delete("/api/reports/report123");
+
+        expect(res.status).toBe(403);
+        expect(mockStorage.deleteReport).not.toHaveBeenCalled();
+    });
+
+    it("should allow deleting own report", async () => {
+        mockStorage.getReport.mockResolvedValue({
+            id: "report123",
+            userId: "user1", // Same user
+            businessId: "biz1",
+            generatedAt: new Date()
+        });
+        mockStorage.deleteReport.mockResolvedValue(true);
+
+        const res = await request(app).delete("/api/reports/report123");
+
+        expect(res.status).toBe(200);
+        expect(mockStorage.deleteReport).toHaveBeenCalledWith("report123");
+    });
+
+    it("should return 404 when deleting non-existent report", async () => {
+        mockStorage.getReport.mockResolvedValue(null);
+
+        const res = await request(app).delete("/api/reports/non-existent");
+
+        expect(res.status).toBe(404);
     });
 });

@@ -70,7 +70,8 @@ export async function searchNearby(
   type: string,
   radius: number = 1500,
   includeReviews: boolean = true,
-  language: string = "en"
+  language: string = "en",
+  limit: number = 10
 ): Promise<Competitor[]> {
   if (!API_KEY) {
     console.log("Google API Key not configured");
@@ -110,7 +111,7 @@ export async function searchNearby(
         },
         body: JSON.stringify({
           includedTypes: [type],
-          maxResultCount: 10,
+          maxResultCount: Math.min(limit, 20),
           languageCode: language,
           locationRestriction: {
             circle: {

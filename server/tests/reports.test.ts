@@ -137,4 +137,40 @@ describe("Reports API", () => {
             expect(res.body.length).toBeGreaterThan(0);
         });
     });
+
+    describe("DELETE /api/reports/:id", () => {
+        it("should delete a report successfully", async () => {
+            // First create a report via analyze-address
+            const createRes = await request(app)
+                .post("/api/analyze-address")
+                .send({
+                    address: "Delete Test Address",
+                    radius: 1000,
+                    type: "restaurant"
+                });
+
+            expect(createRes.status).toBe(200);
+            const reportId = createRes.body.id;
+
+            // Now delete it
+            const deleteRes = await request(app)
+                .delete(`/api/reports/${reportId}`);
+
+            expect(deleteRes.status).toBe(200);
+            expect(deleteRes.body.message).toBe("Report deleted successfully");
+
+            // Verify it's gone
+            const getRes = await request(app)
+                .get(`/api/reports/${reportId}`);
+
+            expect(getRes.status).toBe(404);
+        });
+
+        it("should return 404 for non-existent report", async () => {
+            const res = await request(app)
+                .delete("/api/reports/non-existent-id");
+
+            expect(res.status).toBe(404);
+        });
+    });
 });
