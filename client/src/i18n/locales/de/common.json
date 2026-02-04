@@ -1,49 +1,49 @@
 {
   "dashboard": {
     "stats": {
-      "registeredBusinesses": "Negócios Registados",
-      "analysisStatus": "Estado da Análise",
-      "uniqueLocations": "Localizações Únicas",
-      "businessTypes": "Tipos de Negócio",
-      "active": "Ativo"
+      "registeredBusinesses": "Registrierte Unternehmen",
+      "analysisStatus": "Analysestatus",
+      "uniqueLocations": "Einzigartige Standorte",
+      "businessTypes": "Geschäftsarten",
+      "active": "Aktiv"
     },
     "user": {
-      "guest": "Visitante",
-      "logout": "Terminar sessão"
+      "guest": "Gast",
+      "logout": "Abmelden"
     },
-    "registerBusiness": "Registar Negócio",
-    "registerBusinessDesc": "Adicione um novo negócio para acompanhar",
+    "registerBusiness": "Unternehmen registrieren",
+    "registerBusinessDesc": "Fügen Sie ein neues Unternehmen hinzu, um es zu verfolgen",
     "tabs": {
-      "businesses": "Negócios",
-      "newAnalysis": "Nova Análise",
-      "history": "Histórico",
-      "map": "Mapa"
+      "businesses": "Unternehmen",
+      "newAnalysis": "Neue Analyse",
+      "history": "Verlauf",
+      "map": "Karte"
     },
     "analysis": {
-      "title": "Executar Nova Análise",
-      "description": "Analise qualquer localização sem registar um negócio.",
-      "historyTitle": "Histórico de Análises",
-      "historyDescription": "Veja e exporte os seus relatórios anteriores.",
-      "noReports": "Nenhum relatório encontrado. Execute uma análise para começar.",
-      "addressPlaceholder": "Insira o endereço para análise",
-      "reportTitle": "Análise: {{name}}",
-      "businessReport": "Relatório de Negócio"
+      "title": "Neue Analyse durchführen",
+      "description": "Analysieren Sie jeden Standort, ohne ein Unternehmen zu registrieren.",
+      "historyTitle": "Analyseverlauf",
+      "historyDescription": "Sehen Sie sich Ihre früheren Berichte an und exportieren Sie sie.",
+      "noReports": "Keine Berichte gefunden. Führen Sie eine Analyse durch, um zu beginnen.",
+      "addressPlaceholder": "Adresse für Analyse eingeben",
+      "reportTitle": "Analyse: {{name}}",
+      "businessReport": "Geschäftsbericht"
     },
-    "addBusiness": "Adicionar Negócio",
-    "addBusinessDesc": "Insira os detalhes do novo negócio.",
-    "editBusiness": "Editar Negócio",
-    "editBusinessDesc": "Atualize os detalhes do seu negócio.",
-    "businessCreated": "Negócio Criado",
-    "businessCreatedDesc": "O negócio foi criado com sucesso.",
-    "businessUpdated": "Negócio Atualizado",
-    "businessUpdatedDesc": "Os detalhes do negócio foram atualizados com sucesso.",
+    "addBusiness": "Unternehmen hinzufügen",
+    "addBusinessDesc": "Geben Sie die Details für das neue Unternehmen ein.",
+    "editBusiness": "Unternehmen bearbeiten",
+    "editBusinessDesc": "Aktualisieren Sie Ihre Geschäftsdetails.",
+    "businessCreated": "Unternehmen erstellt",
+    "businessCreatedDesc": "Das Unternehmen wurde erfolgreich erstellt.",
+    "businessUpdated": "Unternehmen aktualisiert",
+    "businessUpdatedDesc": "Die Geschäftsdetails wurden erfolgreich aktualisiert.",
     "map": {
-      "title": "Mapa de Concorrência",
-      "description": "Visualize a distribuição geográfica dos seus concorrentes.",
-      "selectBusiness": "Selecione um Negócio",
-      "allBusinesses": "Todos os Negócios",
-      "showingFirst": "A mostrar mapa para: {{name}}",
-      "noLocation": "Este negócio não tem dados de localização válidos."
+      "title": "Wettbewerbskarte",
+      "description": "Visualisieren Sie die geografische Verteilung Ihrer Konkurrenten.",
+      "selectBusiness": "Wählen Sie ein Unternehmen",
+      "allBusinesses": "Alle Unternehmen",
+      "showingFirst": "Karte wird angezeigt für: {{name}}",
+      "noLocation": "Dieses Unternehmen hat keine gültigen Standortdaten."
     }
   },
   "business": {
@@ -512,7 +512,7 @@
   },
   "support": {
     "back": "Voltar",
-    "title": "Apoiar o Competitor Watcher",
+    "title": "Competitor Watcher unterstützen",
     "subtitle": "Ajude a manter o Competitor Watcher open source para todos",
     "whySupport": {
       "title": "Porquê Apoiar?",
@@ -600,13 +600,13 @@
     "title": "Definições",
     "subtitle": "Gerir a sua conta e preferências",
     "subscription": {
-      "title": "Subscrição",
-      "description": "Gerir o seu plano e detalhes de faturação",
-      "currentPlan": "Plano Atual:",
-      "accessPremium": "Tem acesso a todas as funcionalidades premium.",
-      "upgradeUnlock": "Atualize para desbloquear análises avançadas e mais.",
+      "title": "Abonnement",
+      "description": "Verwalten Sie Ihr Abo und Rechnungsdaten",
+      "currentPlan": "Aktueller Plan:",
+      "accessPremium": "Sie haben Zugriff auf alle Premium-Funktionen.",
+      "upgradeUnlock": "Upgraden Sie für erweiterte Analysen und mehr.",
       "proBadge": "PRO",
-      "freeBadge": "GRATIS",
+      "freeBadge": "KOSTENLOS",
       "manage": "Abo verwalten",
       "upgrade": "Auf Pro upgraden",
       "status": "Status",

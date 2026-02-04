@@ -1,49 +1,49 @@
 {
   "dashboard": {
     "stats": {
-      "registeredBusinesses": "Negócios Registados",
-      "analysisStatus": "Estado da Análise",
-      "uniqueLocations": "Localizações Únicas",
-      "businessTypes": "Tipos de Negócio",
-      "active": "Ativo"
+      "registeredBusinesses": "Negocios Registrados",
+      "analysisStatus": "Estado del Análisis",
+      "uniqueLocations": "Ubicaciones Únicas",
+      "businessTypes": "Tipos de Negocio",
+      "active": "Activo"
     },
     "user": {
       "guest": "Visitante",
-      "logout": "Terminar sessão"
+      "logout": "Cerrar sesión"
     },
-    "registerBusiness": "Registar Negócio",
-    "registerBusinessDesc": "Adicione um novo negócio para acompanhar",
+    "registerBusiness": "Registrar Negocio",
+    "registerBusinessDesc": "Añade un nuevo negocio para seguir",
     "tabs": {
-      "businesses": "Negócios",
-      "newAnalysis": "Nova Análise",
-      "history": "Histórico",
+      "businesses": "Negocios",
+      "newAnalysis": "Nuevo Análisis",
+      "history": "Historial",
       "map": "Mapa"
     },
     "analysis": {
-      "title": "Executar Nova Análise",
-      "description": "Analise qualquer localização sem registar um negócio.",
-      "historyTitle": "Histórico de Análises",
-      "historyDescription": "Veja e exporte os seus relatórios anteriores.",
-      "noReports": "Nenhum relatório encontrado. Execute uma análise para começar.",
-      "addressPlaceholder": "Insira o endereço para análise",
-      "reportTitle": "Análise: {{name}}",
-      "businessReport": "Relatório de Negócio"
+      "title": "Ejecutar Nuevo Análisis",
+      "description": "Analiza cualquier ubicación sin registrar un negocio.",
+      "historyTitle": "Historial de Análisis",
+      "historyDescription": "Vea y exporte sus informes anteriores.",
+      "noReports": "No se encontraron informes. Ejecute un análisis para comenzar.",
+      "addressPlaceholder": "Ingrese la dirección para el análisis",
+      "reportTitle": "Análisis: {{name}}",
+      "businessReport": "Informe de Negocio"
     },
-    "addBusiness": "Adicionar Negócio",
-    "addBusinessDesc": "Insira os detalhes do novo negócio.",
-    "editBusiness": "Editar Negócio",
-    "editBusinessDesc": "Atualize os detalhes do seu negócio.",
-    "businessCreated": "Negócio Criado",
-    "businessCreatedDesc": "O negócio foi criado com sucesso.",
-    "businessUpdated": "Negócio Atualizado",
-    "businessUpdatedDesc": "Os detalhes do negócio foram atualizados com sucesso.",
+    "addBusiness": "Añadir Negocio",
+    "addBusinessDesc": "Ingrese los detalles del nuevo negocio.",
+    "editBusiness": "Editar Negocio",
+    "editBusinessDesc": "Actualice los detalles de su negocio.",
+    "businessCreated": "Negocio Creado",
+    "businessCreatedDesc": "El negocio fue creado con éxito.",
+    "businessUpdated": "Negocio Actualizado",
+    "businessUpdatedDesc": "Los detalles del negocio fueron actualizados con éxito.",
     "map": {
-      "title": "Mapa de Concorrência",
-      "description": "Visualize a distribuição geográfica dos seus concorrentes.",
-      "selectBusiness": "Selecione um Negócio",
-      "allBusinesses": "Todos os Negócios",
-      "showingFirst": "A mostrar mapa para: {{name}}",
-      "noLocation": "Este negócio não tem dados de localização válidos."
+      "title": "Mapa de Competencia",
+      "description": "Visualice la distribución geográfica de sus competidores.",
+      "selectBusiness": "Seleccione un Negocio",
+      "allBusinesses": "Todos los Negocios",
+      "showingFirst": "Mostrando mapa para: {{name}}",
+      "noLocation": "Este negocio no tiene datos de ubicación válidos."
     }
   },
   "business": {
@@ -130,8 +130,8 @@
       "strengths": "Pontos Fortes",
       "weaknesses": "Pontos Fracos",
       "opportunities": "Oportunidades",
-      "threats": "Ameaças",
-      "marketTrends": "Tendências de Mercado",
+      "threats": "Amenazas",
+      "marketTrends": "Tendencias de Mercado",
       "targetAudience": "Público-Alvo",
       "marketingStrategy": "Estratégia de Marketing",
       "demographics": "Demografia",
@@ -511,20 +511,20 @@
     "5km": "5km (Área)"
   },
   "support": {
-    "back": "Voltar",
-    "title": "Apoiar o Competitor Watcher",
-    "subtitle": "Ajude a manter o Competitor Watcher open source para todos",
+    "back": "Volver",
+    "title": "Apoyar Competitor Watcher",
+    "subtitle": "Ayuda a mantener Competitor Watcher open source para todos",
     "whySupport": {
-      "title": "Porquê Apoiar?",
-      "description": "O Competitor Watcher é um projeto de paixão construído para ajudar pequenos negócios a competir. Cada doação mantém as luzes acesas."
+      "title": "¿Por Qué Apoyar?",
+      "description": "Competitor Watcher es un proyecto de pasión construido para ayudar a pequeñas empresas a competir. Cada donación mantiene las luces encendidas."
     },
     "costs": {
-      "maps": "Dados de Localização & Mapas",
-      "mapsDesc": "Google Places API alimenta a descoberta de concorrentes",
-      "hosting": "Hosting & Infraestrutura",
-      "hostingDesc": "Servidores confiáveis para manter o Competitor Watcher a funcionar 24/7",
-      "ai": "Insights AI",
-      "aiDesc": "OpenAI API gera análise acionável de concorrentes"
+      "maps": "Datos de Ubicación y Mapas",
+      "mapsDesc": "Google Places API alimenta el descubrimiento de competidores",
+      "hosting": "Hosting e Infraestructura",
+      "hostingDesc": "Servidores confiables para mantener Competitor Watcher funcionando 24/7",
+      "ai": "Insights de IA",
+      "aiDesc": "OpenAI API genera análisis accionables de competidores"
     },
     "mission": "Nossa Missão: Capacitar Negócios Locais",
     "missionDesc": "Ferramentas profissionais para todos os negócios, construídas para ajudar a prosperar.",
@@ -597,72 +597,72 @@
     }
   },
   "settings": {
-    "title": "Definições",
-    "subtitle": "Gerir a sua conta e preferências",
+    "title": "Configuración",
+    "subtitle": "Administrar su cuenta y preferencias",
     "subscription": {
-      "title": "Subscrição",
-      "description": "Gerir o seu plano e detalhes de faturação",
-      "currentPlan": "Plano Atual:",
-      "accessPremium": "Tem acesso a todas as funcionalidades premium.",
-      "upgradeUnlock": "Atualize para desbloquear análises avançadas e mais.",
+      "title": "Suscripción",
+      "description": "Administre su plan y detalles de facturación",
+      "currentPlan": "Plan Actual:",
+      "accessPremium": "Tiene acceso a todas las funciones premium.",
+      "upgradeUnlock": "Actualice para desbloquear análisis avanzados y más.",
       "proBadge": "PRO",
       "freeBadge": "GRATIS",
-      "manage": "Gerir Subscrição",
+      "manage": "Administrar Suscripción",
       "upgrade": "Actualizar a Pro",
       "status": "Estado",
-      "statusActive": "Activa",
-      "statusCanceled": "Cancelada",
+      "statusActive": "Activo",
+      "statusCanceled": "Cancelado",
       "statusPastDue": "Pago Atrasado",
       "accessUntil": "Acceso hasta",
-      "reactivateHint": "Haz clic en 'Administrar Suscripción' para reactivar tu plan",
+      "reactivateHint": "Haga clic en 'Administrar Suscripción' para reactivar su plan",
       "until": "hasta",
-      "canceledAccess": "Tienes acceso Pro hasta que termine el período de facturación",
+      "canceledAccess": "Tiene acceso Pro hasta que termine el período de facturación",
       " manage": "Administrar Suscripción",
       "reactivate": "Reactivar Plan Pro"
     },
     "account": {
-      "title": "Informação da Conta",
-      "description": "Atualize os seus dados pessoais e credenciais",
-      "name": "Nome",
-      "email": "Email",
-      "languageHint": "Este idioma será utilizado para o envio dos seus emails.",
-      "currentPassword": "Password Atual",
-      "newPassword": "Nova Password",
-      "confirmPassword": "Confirmar Nova Password",
-      "save": "Guardar Alterações",
+      "title": "Información de la Cuenta",
+      "description": "Actualice sus datos personales y credenciales",
+      "name": "Nombre",
+      "email": "Correo electrónico",
+      "languageHint": "Este idioma será utilizado para el envío de sus correos.",
+      "currentPassword": "Contraseña Actual",
+      "newPassword": "Nueva Contraseña",
+      "confirmPassword": "Confirmar Nueva Contraseña",
+      "save": "Guardar Cambios",
       "cancel": "Cancelar",
       "edit": "Editar Perfil"
     },
     "danger": {
-      "title": "Zona de Perigo",
-      "description": "Ações irreversíveis relacionadas com a sua conta",
-      "deleteAccount": "Remover Conta",
-      "deleteDesc": "Eliminar permanentemente a sua conta e todos os dados",
-      "button": "Eliminar Conta",
+      "title": "Zona de Peligro",
+      "description": "Acciones irreversibles relacionadas con su cuenta",
+      "deleteAccount": "Eliminar Cuenta",
+      "deleteDesc": "Eliminar permanentemente su cuenta y todos los datos",
+      "button": "Eliminar Cuenta",
       "dialog": {
-        "title": "Eliminar Conta",
-        "description": "Esta ação é <strong class=\"text-destructive\">permanente e irreversível</strong>. Todos os seus dados, relatórios e configurações serão eliminados. Tem a certeza absoluta que pretende continuar?",
+        "title": "Eliminar Cuenta",
+        "description": "Esta acción es <strong class=\"text-destructive\">permanente e irreversible</strong>. Todos sus datos, informes y configuraciones serán eliminados. ¿Está absolutamente seguro de que desea continuar?",
         "cancel": "Cancelar",
-        "confirm": "Sim, Eliminar Conta"
+        "confirm": "Sí, Eliminar Cuenta"
       }
     },
     "toast": {
       "profileUpdated": {
-        "title": "Perfil atualizado",
-        "description": "As suas informações foram guardadas com sucesso."
+        "title": "Perfil actualizado",
+        "description": "Sus datos han sido guardados con éxito."
       },
       "languageUpdated": {
-        "title": "Idioma atualizado",
-        "description": "A sua preferência de idioma foi guardada."
+        "title": "Idioma actualizado",
+        "description": "Su preferencia de idioma ha sido guardada."
       },
       "accountDeleted": {
-        "title": "Conta removida",
-        "description": "A sua conta foi permanentemente removida."
+        "title": "Cuenta eliminada",
+        "description": "Su cuenta ha sido eliminada permanentemente."
       },
       "error": {
-        "title": "Erro",
-        "delete": "Não foi possível remover a conta. Tente novamente.",
-        "language": "Falha ao guardar a preferência de idioma."
+        "title": "Error",
+        "delete": "No fue posible eliminar la cuenta. Intente nuevamente.",
+        "language": "Fallo al guardar la preferencia de idioma."
       }
     }
   },

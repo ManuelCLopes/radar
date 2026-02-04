@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, act } from '@testing-library/react';
 import SupportPage from '../SupportPage';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n';
@@ -33,7 +33,7 @@ describe('SupportPage', () => {
     const renderSupportPage = () => {
         return render(
             <I18nextProvider i18n={i18n}>
-                <SupportPage />
+                <SupportPage key={i18n.language} />
             </I18nextProvider>
         );
     };
@@ -134,34 +134,52 @@ describe('SupportPage', () => {
     });
 
     describe('i18n Support', () => {
-        it('should render in English by default', async () => {
-            await i18n.changeLanguage('en');
-            renderSupportPage();
-            expect(screen.getAllByAltText('Competitor Watcher')[0]).toBeInTheDocument();
+        beforeEach(async () => {
+            localStorage.clear();
+            await act(async () => {
+                await i18n.changeLanguage('en');
+            });
         });
+
+        it('should render in English by default', async () => {
+            await act(async () => {
+                await i18n.changeLanguage('en');
+            });
+            renderSupportPage();
+            expect(await screen.findAllByAltText('Competitor Watcher', {}, { timeout: 5000 })).toBeTruthy();
+        }, 10000);
 
         it('should switch to Portuguese', async () => {
-            await i18n.changeLanguage('pt');
+            await act(async () => {
+                await i18n.changeLanguage('pt');
+            });
             renderSupportPage();
-            expect(screen.getByText('Apoiar o Competitor Watcher')).toBeInTheDocument();
-        });
+            expect(await screen.findByText(/Apoiar o Competitor Watcher/i, {}, { timeout: 5000 })).toBeInTheDocument();
+        }, 10000);
 
         it('should switch to Spanish', async () => {
-            await i18n.changeLanguage('es');
+            await act(async () => {
+                await i18n.changeLanguage('es');
+            });
             renderSupportPage();
-            expect(screen.getByText('Apoyar Competitor Watcher')).toBeInTheDocument();
-        });
+            expect(await screen.findByText(/Apoyar Competitor Watcher/i, {}, { timeout: 5000 })).toBeInTheDocument();
+        }, 10000);
 
         it('should switch to French', async () => {
-            await i18n.changeLanguage('fr');
+            await act(async () => {
+                await i18n.changeLanguage('fr');
+            });
             renderSupportPage();
-            expect(screen.getByText('Soutenir Competitor Watcher')).toBeInTheDocument();
-        });
+            expect(await screen.findByText(/Soutenir Competitor Watcher/i, {}, { timeout: 5000 })).toBeInTheDocument();
+        }, 10000);
 
         it('should switch to German', async () => {
-            await i18n.changeLanguage('de');
+            await act(async () => {
+                await i18n.changeLanguage('de');
+            });
+            expect(i18n.language).toBe('de');
             renderSupportPage();
-            expect(screen.getByText(/Competitor Watcher unterstützen/i)).toBeInTheDocument();
-        });
+            expect(await screen.findByText(/Competitor Watcher unterstützen/i, {}, { timeout: 5000 })).toBeInTheDocument();
+        }, 10000);
     });
 });

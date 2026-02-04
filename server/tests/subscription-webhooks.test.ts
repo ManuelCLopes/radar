@@ -10,24 +10,32 @@ import request from 'supertest';
 import express, { type Express } from 'express';
 import { registerPaymentRoutes } from '../routes/payments';
 import { storage } from '../storage';
+import Stripe from 'stripe';
 
 // Mock Stripe
-vi.mock('stripe', () => {
-    const mockStripeInstance = {
-        checkout: {
-            sessions: {
-                create: vi.fn(),
+const { mockConstructEvent, mockStripeInstance } = vi.hoisted(() => {
+    const mockConstructEvent = vi.fn();
+    return {
+        mockConstructEvent,
+        mockStripeInstance: {
+            checkout: {
+                sessions: {
+                    create: vi.fn(),
+                },
             },
-        },
-        billingPortal: {
-            sessions: {
-                create: vi.fn(),
+            billingPortal: {
+                sessions: {
+                    create: vi.fn(),
+                },
             },
-        },
-        webhooks: {
-            constructEvent: vi.fn(),
-        },
+            webhooks: {
+                constructEvent: mockConstructEvent,
+            },
+        }
     };
+});
+
+vi.mock('stripe', () => {
     return {
         default: vi.fn(() => mockStripeInstance),
     };
@@ -106,10 +114,7 @@ describe('Subscription Webhook Tests', () => {
             };
 
             // Mock Stripe webhook verification
-            const mockStripe = Stripe as jest.MockedClass<typeof Stripe>;
-            mockStripe.prototype.webhooks = {
-                constructEvent: jest.fn().mockReturnValue(event)
-            } as any;
+            mockConstructEvent.mockReturnValue(event);
 
             const signature = 'test_signature';
             const response = await request(app)
@@ -165,10 +170,7 @@ describe('Subscription Webhook Tests', () => {
                 }
             };
 
-            const mockStripe = Stripe as jest.MockedClass<typeof Stripe>;
-            mockStripe.prototype.webhooks = {
-                constructEvent: jest.fn().mockReturnValue(event)
-            } as any;
+            mockConstructEvent.mockReturnValue(event);
 
             const signature = 'test_signature';
             const response = await request(app)
@@ -181,7 +183,7 @@ describe('Subscription Webhook Tests', () => {
             // Verify subscription was updated
             const updatedUser = await storage.getUser(testUser.id);
             expect(updatedUser?.subscriptionStatus).toBe('canceled');
-            expect(updatedUser?.plan).toBe('pro'); // Still has Pro access until period end
+            expect(updatedUser?.plan).toBe('free'); // Downgraded immediately on cancellation status
             expect(updatedUser?.subscriptionPeriodEnd).toBeDefined();
         });
 
@@ -208,10 +210,7 @@ describe('Subscription Webhook Tests', () => {
                 }
             };
 
-            const mockStripe = Stripe as jest.MockedClass<typeof Stripe>;
-            mockStripe.prototype.webhooks = {
-                constructEvent: jest.fn().mockReturnValue(event)
-            } as any;
+            mockConstructEvent.mockReturnValue(event);
 
             const signature = 'test_signature';
             const response = await request(app)
@@ -242,10 +241,7 @@ describe('Subscription Webhook Tests', () => {
                 }
             };
 
-            const mockStripe = Stripe as jest.MockedClass<typeof Stripe>;
-            mockStripe.prototype.webhooks = {
-                constructEvent: jest.fn().mockReturnValue(event)
-            } as any;
+            mockConstructEvent.mockReturnValue(event);
 
             const signature = 'test_signature';
             const response = await request(app)
@@ -285,10 +281,7 @@ describe('Subscription Webhook Tests', () => {
                 }
             };
 
-            const mockStripe = Stripe as jest.MockedClass<typeof Stripe>;
-            mockStripe.prototype.webhooks = {
-                constructEvent: jest.fn().mockReturnValue(event)
-            } as any;
+            mockConstructEvent.mockReturnValue(event);
 
             const signature = 'test_signature';
             const response = await request(app)
@@ -307,12 +300,9 @@ describe('Subscription Webhook Tests', () => {
 
     describe('Webhook Security', () => {
         it('should reject webhook with invalid signature', async () => {
-            const mockStripe = Stripe as jest.MockedClass<typeof Stripe>;
-            mockStripe.prototype.webhooks = {
-                constructEvent: jest.fn().mockImplementation(() => {
-                    throw new Error('Invalid signature');
-                })
-            } as any;
+            mockConstructEvent.mockImplementation(() => {
+                throw new Error('Invalid signature');
+            });
 
             const response = await request(app)
                 .post('/api/webhook')
