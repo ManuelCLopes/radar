@@ -511,20 +511,20 @@
     "5km": "5km (Área)"
   },
   "support": {
-    "back": "Voltar",
-    "title": "Apoiar o Competitor Watcher",
-    "subtitle": "Ajude a manter o Competitor Watcher open source para todos",
+    "back": "Volver",
+    "title": "Apoyar Competitor Watcher",
+    "subtitle": "Ayuda a mantener Competitor Watcher open source para todos",
     "whySupport": {
-      "title": "Porquê Apoiar?",
-      "description": "O Competitor Watcher é um projeto de paixão construído para ajudar pequenos negócios a competir. Cada doação mantém as luzes acesas."
+      "title": "¿Por Qué Apoyar?",
+      "description": "Competitor Watcher es un proyecto de pasión construido para ayudar a pequeñas empresas a competir. Cada donación mantiene las luces encendidas."
     },
     "costs": {
-      "maps": "Dados de Localização & Mapas",
-      "mapsDesc": "Google Places API alimenta a descoberta de concorrentes",
-      "hosting": "Hosting & Infraestrutura",
-      "hostingDesc": "Servidores confiáveis para manter o Competitor Watcher a funcionar 24/7",
-      "ai": "Insights AI",
-      "aiDesc": "OpenAI API gera análise acionável de concorrentes"
+      "maps": "Datos de Ubicación y Mapas",
+      "mapsDesc": "Google Places API alimenta el descubrimiento de competidores",
+      "hosting": "Hosting e Infraestructura",
+      "hostingDesc": "Servidores confiables para mantener Competitor Watcher funcionando 24/7",
+      "ai": "Insights de IA",
+      "aiDesc": "OpenAI API genera análisis accionables de competidores"
     },
     "mission": "Nossa Missão: Capacitar Negócios Locais",
     "missionDesc": "Ferramentas profissionais para todos os negócios, construídas para ajudar a prosperar.",

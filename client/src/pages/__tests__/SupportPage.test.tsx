@@ -165,21 +165,13 @@ describe('SupportPage', () => {
             expect(await screen.findByText(/Apoyar Competitor Watcher/i, {}, { timeout: 5000 })).toBeInTheDocument();
         }, 10000);
 
-        // TODO: This test is flaky in the test environment (persists in exhibiting Portuguese).
-        // Verified manually that the translation file is correct.
-        // it('should switch to French', async () => {
-        //     // Force correct translation in memory to bypass file loading issues
-        //     i18n.addResource('fr', 'translation', 'support.title', 'Soutenir Competitor Watcher');
-        //
-        //     await act(async () => {
-        //         await i18n.changeLanguage('fr');
-        //     });
-        //     // Give time for language switch to propagate
-        //     await new Promise(resolve => setTimeout(resolve, 500));
-        //
-        //     renderSupportPage();
-        //     expect(await screen.findByText(/Soutenir Competitor Watcher/i, {}, { timeout: 5000 })).toBeInTheDocument();
-        // }, 10000);
+        it('should switch to French', async () => {
+            await act(async () => {
+                await i18n.changeLanguage('fr');
+            });
+            renderSupportPage();
+            expect(await screen.findByText(/Soutenir Competitor Watcher/i, {}, { timeout: 5000 })).toBeInTheDocument();
+        }, 10000);
 
         it('should switch to German', async () => {
             await act(async () => {
