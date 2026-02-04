@@ -57,16 +57,7 @@ export async function runReportForBusiness(
   } catch (error: any) {
     console.error(`Error generating report for business ${business.name}:`, error);
 
-    // Create an error state analysis
-    competitors = [];
-    aiAnalysis = {
-      executiveSummary: `Error: Unable to fetch competitor data. ${error.message || "Unknown error"}. Please try again later or contact administrator.`,
-      swot: { strengths: [], weaknesses: [], opportunities: [], threats: [] },
-      marketTrends: [],
-      targetAudience: { demographics: "N/A", psychographics: "N/A", painPoints: "N/A" },
-      marketingStrategy: { primaryChannels: "N/A", contentIdeas: "N/A", promotionalTactics: "N/A" },
-      customerSentiment: { commonPraises: [], recurringComplaints: [], unmetNeeds: [] }
-    };
+    throw error;
   }
 
   // Only save report if not a temporary business

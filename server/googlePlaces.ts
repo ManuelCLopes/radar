@@ -111,7 +111,7 @@ export async function searchNearby(
         },
         body: JSON.stringify({
           includedTypes: [type],
-          maxResultCount: limit,
+          maxResultCount: Math.min(limit, 20),
           languageCode: language,
           locationRestriction: {
             circle: {
