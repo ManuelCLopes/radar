@@ -740,6 +740,26 @@
       "description": "Estamos a finalizar os detalhes do nosso plano Pro para garantir que ofereça o melhor valor para o seu negócio.",
       "footer": "Neste momento, o plano Pro ainda não está disponível para subscrição. Agradecemos o seu interesse e estamos a trabalhar para lançá-lo em breve!",
       "gotIt": "Entendido"
+    },
+    "trends": {
+      "lockedTitle": "Desbloquear Tendências",
+      "lockedDesc": "Acompanhe o desempenho da sua classificação e a densidade do mercado ao longo do tempo com análises profissionais.",
+      "unlock": "Desbloquear Métricas Pro"
     }
+  },
+  "trends": {
+    "title": "Tendências",
+    "selectBusiness": "Selecionar Negócio:",
+    "selectBusinessPlaceholder": "Selecione um negócio",
+    "selectToView": "Selecione um negócio para ver as tendências",
+    "selectToViewDesc": "Escolha um dos seus negócios registados para ver o seu desempenho histórico.",
+    "ratingHistory": "Tendências de Classificação",
+    "ratingHistoryDesc": "Classificação média dos concorrentes ao longo do tempo",
+    "marketActivity": "Atividade do Mercado",
+    "marketActivityDesc": "Número de concorrentes encontrados por relatório",
+    "avgRating": "Classificação Média",
+    "competitorCount": "Concorrentes",
+    "noData": "Sem dados de tendências",
+    "noDataDesc": "Gere mais relatórios ao longo do tempo para ver as tendências aparecerem aqui."
   }
 }

@@ -739,6 +739,26 @@
       "description": "Nous finalisons actuellement les détails de notre plan Pro pour garantir qu'il offre la meilleure valeur pour votre entreprise.",
       "footer": "Pour le moment, le plan Pro n'est pas encore disponible à l'abonnement. Nous apprécions votre intérêt et travaillons dur pour le lancer bientôt !",
       "gotIt": "Compris"
+    },
+    "trends": {
+      "lockedTitle": "Débloquer les Tendances",
+      "lockedDesc": "Suivez l'évolution de votre classement et la densité du marché au fil du temps grâce à des analyses professionnelles.",
+      "unlock": "Débloquer les Métriques Pro"
     }
+  },
+  "trends": {
+    "title": "Tendances",
+    "selectBusiness": "Sélectionner une Entreprise :",
+    "selectBusinessPlaceholder": "Sélectionnez une entreprise",
+    "selectToView": "Sélectionnez une entreprise pour voir les tendances",
+    "selectToViewDesc": "Choisissez l'une de vos entreprises enregistrées pour voir ses performances historiques.",
+    "ratingHistory": "Tendances des Notes",
+    "ratingHistoryDesc": "Note moyenne des concurrents au fil du temps",
+    "marketActivity": "Activité du Marché",
+    "marketActivityDesc": "Nombre de concurrents trouvés par rapport",
+    "avgRating": "Note Moyenne",
+    "competitorCount": "Concurrents",
+    "noData": "Pas encore de données",
+    "noDataDesc": "Générez plus de rapports au fil du temps pour voir apparaître des tendances."
   }
 }
