@@ -171,6 +171,64 @@ describe("Storage", () => {
                 const allReports = await storage.listAllReports();
                 expect(allReports).toContainEqual(createdReport);
             });
+
+            it("should delete a report", async () => {
+                const newBusiness: InsertBusiness = {
+                    name: "Delete Report Business",
+                    type: "retail",
+                    address: "789 Delete St"
+                };
+                const business = await storage.addBusiness(newBusiness);
+
+                const newReport: InsertReport = {
+                    businessId: business.id,
+                    businessName: business.name,
+                    competitors: [],
+                    aiAnalysis: "Analysis",
+                    html: "<div>Report</div>",
+                    userId: "user-123"
+                };
+
+                const createdReport = await storage.createReport(newReport);
+                expect(createdReport).toBeDefined();
+
+                // Delete
+                const deleted = await storage.deleteReport(createdReport.id.toString());
+                expect(deleted).toBe(true);
+
+                // Verify deletion
+                const deletedReport = await storage.getReport(createdReport.id.toString());
+                expect(deletedReport).toBeUndefined();
+            });
+
+            it("should return false when deleting non-existent report", async () => {
+                const deleted = await storage.deleteReport("non-existent-id");
+                expect(deleted).toBe(false);
+            });
+
+            it("should save report with businessRating fields", async () => {
+                const newBusiness: InsertBusiness = {
+                    name: "Rating Business",
+                    type: "restaurant",
+                    address: "123 Rating St"
+                };
+                const business = await storage.addBusiness(newBusiness);
+
+                const newReport: InsertReport = {
+                    businessId: business.id,
+                    businessName: business.name,
+                    competitors: [],
+                    aiAnalysis: "Analysis",
+                    html: "<div>Report</div>",
+                    userId: "user-123",
+                    businessRating: 4.5,
+                    businessUserRatingsTotal: 150
+                };
+
+                const createdReport = await storage.createReport(newReport);
+                expect(createdReport.businessRating).toBe(4.5);
+                expect(createdReport.businessUserRatingsTotal).toBe(150);
+            });
         });
 
         describe("Search Operations", () => {
