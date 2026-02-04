@@ -734,6 +734,12 @@
         "description": "Descubra concorrentes em uma área mais ampla"
       },
       "cta": "Começar"
+    },
+    "comingSoon": {
+      "title": "Demnächst Verfügbar",
+      "description": "Wir arbeiten derzeit an den letzten Details unseres Pro-Plans, um sicherzustellen, dass er den besten Wert für Ihr Unternehmen bietet.",
+      "footer": "Derzeit ist der Pro-Plan noch nicht abonnementfähig. Wir freuen uns über Ihr Interesse und arbeiten hart daran, ihn bald zu starten!",
+      "gotIt": "Verstanden"
     }
   }
 }

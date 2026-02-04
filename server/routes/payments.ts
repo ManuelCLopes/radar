@@ -15,6 +15,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "mock_key", {
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
 export function registerPaymentRoutes(app: Express) {
+    // Check Stripe Configuration Status
+    app.get("/api/stripe-config-status", (req, res) => {
+        const configured = !!(process.env.STRIPE_SECRET_KEY && process.env.STRIPE_PUBLISHABLE_KEY);
+        res.json({ configured });
+    });
+
     // Create Checkout Session
     app.post("/api/create-checkout-session", async (req, res) => {
         if (!req.user) {

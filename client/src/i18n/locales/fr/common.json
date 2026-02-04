@@ -733,6 +733,12 @@
         "description": "Découvrez des concurrents dans une zone plus large"
       },
       "cta": "Commencer"
+    },
+    "comingSoon": {
+      "title": "Bientôt Disponible",
+      "description": "Nous finalisons actuellement les détails de notre plan Pro pour garantir qu'il offre la meilleure valeur pour votre entreprise.",
+      "footer": "Pour le moment, le plan Pro n'est pas encore disponible à l'abonnement. Nous apprécions votre intérêt et travaillons dur pour le lancer bientôt !",
+      "gotIt": "Compris"
     }
   }
 }
