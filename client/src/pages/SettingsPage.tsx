@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/select"
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { usePricingModal } from "@/context/PricingModalContext";
+import { ProWelcomeModal } from "@/components/ProWelcomeModal";
 
 // Plans removed - app is now 100% free with donations
 
@@ -48,6 +49,7 @@ export default function SettingsPage() {
     const [isLoadingPortal, setIsLoadingPortal] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [showProWelcome, setShowProWelcome] = useState(false);
 
     const [formData, setFormData] = useState({
         name: user?.firstName || user?.email || "",
@@ -56,6 +58,37 @@ export default function SettingsPage() {
         newPassword: "",
         confirmPassword: "",
     });
+
+    // Check for Stripe checkout success and refresh user data
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const sessionId = params.get('session_id');
+
+        if (sessionId) {
+            // Remove session_id from URL
+            window.history.replaceState({}, '', '/settings');
+
+            // Refresh user data to get updated plan status
+            queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+
+            // Show welcome modal after a short delay to allow user data to refresh
+            setTimeout(() => {
+                if (user?.plan === 'pro') {
+                    setShowProWelcome(true);
+                }
+            }, 500);
+        }
+    }, [user?.plan]);
+
+    // Also check if user just became pro (for real-time webhook updates)
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const hadSessionId = params.has('session_id');
+
+        if (user?.plan === 'pro' && !showProWelcome && hadSessionId) {
+            setShowProWelcome(true);
+        }
+    }, [user?.plan, showProWelcome]);
 
     const handleSaveProfile = async () => {
         toast({
@@ -326,11 +359,18 @@ export default function SettingsPage() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-                            <div>
-                                <p className="font-medium">{t('settings.subscription.currentPlan')} <span className="capitalize">{user?.plan || 'free'}</span></p>
+                            <div className="flex-1">
+                                <p className="font-medium">
+                                    {t('settings.subscription.currentPlan')}{' '}
+                                    <span className="capitalize">{user?.plan || 'free'}</span>
+                                </p>
+
+                                {/* Show description based on subscription status */}
                                 <p className="text-sm text-muted-foreground">
                                     {user?.plan === 'pro'
-                                        ? t('settings.subscription.accessPremium')
+                                        ? user?.subscriptionStatus === 'canceled' && user?.subscriptionPeriodEnd
+                                            ? `${t('settings.subscription.statusCanceled')} • ${t('settings.subscription.accessUntil')} ${new Date(user.subscriptionPeriodEnd).toLocaleDateString()}`
+                                            : t('settings.subscription.accessPremium')
                                         : t('settings.subscription.upgradeUnlock')}
                                 </p>
                             </div>
@@ -344,10 +384,12 @@ export default function SettingsPage() {
                                 onClick={handleManageSubscription}
                                 disabled={isLoadingPortal}
                                 className="w-full"
-                                variant="outline"
+                                variant={user.subscriptionStatus === 'canceled' ? 'default' : 'outline'}
                             >
                                 {isLoadingPortal && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                {t('settings.subscription.manage')}
+                                {user.subscriptionStatus === 'canceled'
+                                    ? t('settings.subscription.reactivate')
+                                    : t('settings.subscription.manage')}
                             </Button>
                         ) : (
                             <Button
@@ -406,6 +448,12 @@ export default function SettingsPage() {
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
+
+                {/* Pro Welcome Modal */}
+                <ProWelcomeModal
+                    open={showProWelcome}
+                    onClose={() => setShowProWelcome(false)}
+                />
             </main>
         </div>
     );

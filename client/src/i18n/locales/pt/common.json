@@ -608,7 +608,16 @@
       "proBadge": "PRO",
       "freeBadge": "GRÁTIS",
       "manage": "Gerir Subscrição",
-      "upgrade": "Atualizar para Pro"
+      "upgrade": "Atualizar para Pro",
+      "status": "Estado",
+      "statusActive": "Ativa",
+      "statusCanceled": "Cancelada",
+      "statusPastDue": "Pagamento Atrasado",
+      "accessUntil": "Acesso até",
+      "reactivateHint": "Clique em 'Gerir Subscrição' para reativar o seu plano",
+      "until": "até",
+      "canceledAccess": "Tem acesso Pro até ao fim do período de faturação",
+      "reactivate": "Reativar Plano Pro"
     },
     "account": {
       "title": "Informação da Conta",
@@ -707,5 +716,24 @@
     "accept": "Aceitar",
     "decline": "Recusar",
     "learnMore": "Saber mais"
+  },
+  "pro": {
+    "welcome": {
+      "title": "Bem-vindo ao Pro! 🎉",
+      "subtitle": "Você desbloqueou recursos poderosos para crescer seu negócio",
+      "feature1": {
+        "title": "3 Perfis de Negócios",
+        "description": "Acompanhe múltiplas localizações e marcas"
+      },
+      "feature2": {
+        "title": "10 Relatórios por Mês",
+        "description": "Gere análises abrangentes da concorrência"
+      },
+      "feature3": {
+        "title": "Raio de Busca de 20km",
+        "description": "Descubra concorrentes em uma área mais ampla"
+      },
+      "cta": "Começar"
+    }
   }
 }

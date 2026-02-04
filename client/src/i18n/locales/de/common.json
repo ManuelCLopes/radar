@@ -1,213 +1,214 @@
 {
   "dashboard": {
     "stats": {
-      "registeredBusinesses": "Registrierte Unternehmen",
-      "analysisStatus": "Analyse-Status",
-      "uniqueLocations": "Einzigartige Standorte",
-      "businessTypes": "Unternehmensarten",
-      "active": "Aktiv"
+      "registeredBusinesses": "Negócios Registados",
+      "analysisStatus": "Estado da Análise",
+      "uniqueLocations": "Localizações Únicas",
+      "businessTypes": "Tipos de Negócio",
+      "active": "Ativo"
     },
     "user": {
-      "guest": "Gast",
-      "logout": "Abmelden"
+      "guest": "Visitante",
+      "logout": "Terminar sessão"
     },
-    "registerBusiness": "Unternehmen registrieren",
-    "registerBusinessDesc": "Ein neues Unternehmen zum Verfolgen hinzufügen",
+    "registerBusiness": "Registar Negócio",
+    "registerBusinessDesc": "Adicione um novo negócio para acompanhar",
     "tabs": {
-      "businesses": "Unternehmen",
-      "newAnalysis": "Neue Analyse",
-      "history": "Verlauf"
+      "businesses": "Negócios",
+      "newAnalysis": "Nova Análise",
+      "history": "Histórico",
+      "map": "Mapa"
     },
     "analysis": {
-      "title": "Neue Analyse starten",
-      "description": "Analysieren Sie jeden beliebigen Standort, ohne ein Unternehmen zu registrieren.",
-      "historyTitle": "Analyse-Verlauf",
-      "historyDescription": "Sehen Sie sich Ihre bisherigen Berichte an und exportieren Sie diese.",
-      "noReports": "Keine Berichte gefunden. Starten Sie eine Analyse, um loszulegen.",
-      "addressPlaceholder": "Adresse für die Analyse eingeben",
-      "reportTitle": "Analyse: {{name}}",
-      "businessReport": "Unternehmensbericht"
+      "title": "Executar Nova Análise",
+      "description": "Analise qualquer localização sem registar um negócio.",
+      "historyTitle": "Histórico de Análises",
+      "historyDescription": "Veja e exporte os seus relatórios anteriores.",
+      "noReports": "Nenhum relatório encontrado. Execute uma análise para começar.",
+      "addressPlaceholder": "Insira o endereço para análise",
+      "reportTitle": "Análise: {{name}}",
+      "businessReport": "Relatório de Negócio"
     },
-    "addBusiness": "Unternehmen hinzufügen",
-    "addBusinessDesc": "Geben Sie die Details des neuen Unternehmens ein.",
-    "editBusiness": "Unternehmen bearbeiten",
-    "editBusinessDesc": "Aktualisieren Sie die Details Ihres Unternehmens.",
-    "businessCreated": "Unternehmen erstellt",
-    "businessCreatedDesc": "Das Unternehmen wurde erfolgreich erstellt.",
-    "businessUpdated": "Unternehmen aktualisiert",
-    "businessUpdatedDesc": "Die Unternehmensdetails wurden erfolgreich aktualisiert.",
+    "addBusiness": "Adicionar Negócio",
+    "addBusinessDesc": "Insira os detalhes do novo negócio.",
+    "editBusiness": "Editar Negócio",
+    "editBusinessDesc": "Atualize os detalhes do seu negócio.",
+    "businessCreated": "Negócio Criado",
+    "businessCreatedDesc": "O negócio foi criado com sucesso.",
+    "businessUpdated": "Negócio Atualizado",
+    "businessUpdatedDesc": "Os detalhes do negócio foram atualizados com sucesso.",
     "map": {
-      "title": "Wettbewerber-Karte",
-      "description": "Visualisieren Sie die geografische Verteilung Ihrer Wettbewerber.",
-      "selectBusiness": "Wählen Sie ein Unternehmen",
-      "allBusinesses": "Alle Unternehmen",
-      "showingFirst": "Zeige Karte für: {{name}}",
-      "noLocation": "Dieses Unternehmen verfügt über keine gültigen Standortdaten."
+      "title": "Mapa de Concorrência",
+      "description": "Visualize a distribuição geográfica dos seus concorrentes.",
+      "selectBusiness": "Selecione um Negócio",
+      "allBusinesses": "Todos os Negócios",
+      "showingFirst": "A mostrar mapa para: {{name}}",
+      "noLocation": "Este negócio não tem dados de localização válidos."
     }
   },
   "business": {
     "form": {
-      "title": "Neues Unternehmen registrieren",
-      "name": "Unternehmensname",
-      "namePlaceholder": "Unternehmensnamen eingeben",
-      "type": "Unternehmensart",
-      "typePlaceholder": "Wählen Sie eine Art",
-      "latitude": "Breitengrad",
-      "latitudePlaceholder": "z. B. 40.7128",
-      "longitude": "Längengrad",
-      "longitudePlaceholder": "z. B. -74.0060",
-      "address": "Adresse",
-      "addressPlaceholder": "Geben Sie Ihre Geschäftsadresse ein",
-      "submit": "Unternehmen registrieren",
-      "submitting": "Registrierung läuft...",
-      "typeAutoDetected": "Diese Unternehmensart wurde automatisch aus öffentlichen Aufzeichnungen erkannt.",
-      "noTypeDetected": "Kein Typ automatisch erkannt"
+      "title": "Registar Novo Negócio",
+      "name": "Nome do Negócio",
+      "namePlaceholder": "Introduza o nome do negócio",
+      "type": "Tipo de Negócio",
+      "typePlaceholder": "Selecione um tipo",
+      "latitude": "Latitude",
+      "latitudePlaceholder": "ex., 38.7223",
+      "longitude": "Longitude",
+      "longitudePlaceholder": "ex., -9.1393",
+      "address": "Morada",
+      "addressPlaceholder": "Introduza a morada do seu negócio",
+      "submit": "Registar Negócio",
+      "submitting": "A registar...",
+      "typeAutoDetected": "Este tipo de negócio foi detetado automaticamente a partir de registos públicos.",
+      "noTypeDetected": "Nenhum tipo detetado automaticamente"
     },
     "types": {
-      "restaurant": "Restaurant",
+      "restaurant": "Restaurante",
       "cafe": "Café",
-      "retail": "Einzelhandel",
-      "gym": "Fitnessstudio",
-      "salon": "Salon / Spa",
+      "retail": "Loja de Retalho",
+      "gym": "Ginásio / Fitness",
+      "salon": "Salão / Spa",
       "hotel": "Hotel",
       "bar": "Bar / Pub",
-      "bakery": "Bäckerei",
-      "pharmacy": "Apotheke",
-      "supermarket": "Supermarkt",
-      "clinic": "Medizinische Klinik",
-      "dentist": "Zahnarzt",
-      "bank": "Bank",
-      "gas_station": "Tankstelle",
-      "car_repair": "Kfz-Werkstatt",
-      "other": "Andere"
+      "bakery": "Padaria",
+      "pharmacy": "Farmácia",
+      "supermarket": "Supermercado",
+      "clinic": "Clínica Médica",
+      "dentist": "Dentista",
+      "bank": "Banco",
+      "gas_station": "Posto de Combustível",
+      "car_repair": "Oficina Automóvel",
+      "other": "Outro"
     },
     "list": {
-      "title": "Ihre Unternehmen",
-      "empty": "Noch keine Unternehmen registriert. Fügen Sie Ihr erstes Unternehmen hinzu.",
-      "emptyDesc": "Starten Sie, indem Sie ein Unternehmen verfolgen, um Wettbewerber zu analysieren.",
-      "generateReport": "Bericht erstellen",
-      "report": "Bericht",
-      "generating": "Erstellung läuft...",
-      "viewHistory": "Berichtsverlauf anzeigen",
-      "delete": "Löschen"
+      "title": "Os Seus Negócios",
+      "empty": "Ainda não há negócios registados. Adicione o seu primeiro negócio.",
+      "emptyDesc": "Comece por registar um negócio para analisar a concorrência.",
+      "generateReport": "Gerar Relatório",
+      "report": "Relatório",
+      "generating": "A gerar...",
+      "viewHistory": "Ver Histórico de Relatórios",
+      "delete": "Eliminar"
     },
     "deleteDialog": {
-      "title": "Unternehmen löschen",
-      "description": "Sind Sie sicher, dass Sie „{{name}}“ löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden und löscht auch alle zugehörigen Berichte.",
-      "cancel": "Abbrechen",
-      "confirm": "Löschen"
+      "title": "Eliminar Negócio",
+      "description": "Tem a certeza que pretende eliminar \"{{name}}\"? Esta ação não pode ser desfeita e irá também eliminar todos os relatórios associados.",
+      "cancel": "Cancelar",
+      "confirm": "Eliminar"
     }
   },
   "report": {
     "view": {
-      "title": "Wettbewerbsanalyse-Bericht",
-      "export": "Exportieren",
-      "downloadHtml": "HTML herunterladen",
-      "printPdf": "PDF drucken",
-      "emailReport": "Bericht senden",
-      "businessLabel": "Unternehmen:",
-      "dateLabel": "Datum:"
+      "title": "Relatório de Análise de Concorrência",
+      "export": "Exportar",
+      "downloadHtml": "Transferir HTML",
+      "printPdf": "Imprimir PDF",
+      "emailReport": "Enviar Email",
+      "businessLabel": "Negócio:",
+      "dateLabel": "Data:"
     },
     "stats": {
-      "competitorsFound": "Gefundene Wettbewerber",
-      "avgRating": "Durchschnittl. Bewertung",
-      "totalReviews": "Gesamtbewertungen"
+      "competitorsFound": "Concorrentes Encontrados",
+      "avgRating": "Classificação Média",
+      "totalReviews": "Total de Avaliações"
     },
     "sections": {
-      "radius": "Radius",
-      "aiAnalysis": "KI-Analyse",
-      "aiPoweredInsights": "KI-gestützte Erkenntnisse",
-      "nearbyCompetitors": "Wettbewerber in der Nähe",
-      "noCompetitors": "Keine Wettbewerber in der näheren Umgebung gefunden.",
-      "marketOverview": "Marktübersicht",
-      "keyCompetitors": "Hauptwettbewerber",
-      "reviewAnalysis": "Bewertungsanalyse",
-      "marketGaps": "Marktlücken",
-      "recommendations": "Empfehlungen",
-      "differentiation": "Differenzierungsstrategien",
-      "swotAnalysis": "SWOT-Analyse",
-      "strengths": "Stärken",
-      "weaknesses": "Schwächen",
-      "opportunities": "Chancen",
-      "threats": "Risiken",
-      "marketTrends": "Markttrends",
-      "targetAudience": "Zielgruppe",
-      "marketingStrategy": "Marketingstrategie",
-      "demographics": "Demografie",
-      "psychographics": "Psychografie",
-      "painPoints": "Probleme & Bedürfnisse",
-      "primaryChannels": "Hauptkanäle",
-      "contentIdeas": "Inhaltliche Ideen",
-      "promotionalTactics": "Werbetaktiken",
-      "customerSentiment": "Kundenzufriedenheit & Bewertungs-Insights",
-      "commonPraises": "Häufiges Lob",
-      "recurringComplaints": "Wiederkehrende Beschwerden",
-      "unmetNeeds": "Unerfüllte Bedürfnisse"
+      "radius": "Raio",
+      "aiAnalysis": "Análise IA",
+      "aiPoweredInsights": "Insights Gerados por IA",
+      "marketOverview": "Visão Geral do Mercado",
+      "nearbyCompetitors": "Concorrentes Próximos",
+      "noCompetitors": "Não foram encontrados concorrentes na área próxima.",
+      "keyCompetitors": "Principais Concorrentes",
+      "reviewAnalysis": "Análise de Temas de Avaliação",
+      "marketGaps": "Lacunas de Mercado",
+      "recommendations": "Recomendações Práticas",
+      "differentiation": "Estratégias de Diferenciação",
+      "swotAnalysis": "Análise SWOT",
+      "strengths": "Pontos Fortes",
+      "weaknesses": "Pontos Fracos",
+      "opportunities": "Oportunidades",
+      "threats": "Ameaças",
+      "marketTrends": "Tendências de Mercado",
+      "targetAudience": "Público-Alvo",
+      "marketingStrategy": "Estratégia de Marketing",
+      "demographics": "Demografia",
+      "psychographics": "Psicografia",
+      "painPoints": "Dores e Necessidades",
+      "primaryChannels": "Canais Principais",
+      "contentIdeas": "Ideias de Conteúdo",
+      "promotionalTactics": "Táticas Promocionais",
+      "customerSentiment": "Sentimento do Cliente e Insights de Avaliação",
+      "commonPraises": "Elogios Comuns",
+      "recurringComplaints": "Reclamações Recorrentes",
+      "unmetNeeds": "Necessidades Não Atendidas"
     },
     "competitor": {
-      "reviews": "{{count}} Bewertungen",
-      "recentReviews": "Aktuelle Bewertungen"
+      "reviews": "{{count}} avaliações",
+      "recentReviews": "Avaliações Recentes"
     },
     "history": {
-      "title": "Berichtsverlauf",
-      "description": "Bisherige Wettbewerbsanalyse-Berichte für {{name}}",
-      "empty": "Für dieses Unternehmen wurden noch keine Berichte erstellt.",
-      "competitorsAnalyzed": "{{count}} Wettbewerber analysiert",
-      "view": "Anzeigen",
-      "download": "Herunterladen"
+      "title": "Histórico de Relatórios",
+      "description": "Relatórios de análise de concorrência anteriores para {{name}}",
+      "empty": "Ainda não foram gerados relatórios para este negócio.",
+      "competitorsAnalyzed": "{{count}} concorrentes analisados",
+      "view": "Ver",
+      "download": "Transferir"
     },
     "email": {
-      "enterAddress": "Geben Sie unten die E-Mail-Adresse des Empfängers ein.",
-      "send": "E-Mail senden"
+      "enterAddress": "Insira o endereço de email do destinatário abaixo.",
+      "send": "Enviar Email"
     }
   },
   "toast": {
     "businessRegistered": {
-      "title": "Unternehmen registriert",
-      "description": "Ihr Unternehmen wurde erfolgreich registriert."
+      "title": "Negócio registado",
+      "description": "O seu negócio foi registado com sucesso."
     },
     "businessDeleted": {
-      "title": "Unternehmen gelöscht",
-      "description": "Das Unternehmen wurde entfernt."
+      "title": "Negócio eliminado",
+      "description": "O negócio foi removido."
     },
     "reportGenerated": {
-      "title": "Bericht erstellt",
-      "description": "Ihr Wettbewerbsanalyse-Bericht ist fertig."
+      "title": "Relatório gerado",
+      "description": "O seu relatório de análise de concorrência está pronto."
     },
     "reportDownloaded": {
-      "title": "Bericht heruntergeladen",
-      "description": "Der HTML-Bericht wurde in Ihren Downloads gespeichert."
+      "title": "Relatório transferido",
+      "description": "O relatório HTML foi guardado nas suas transferências."
     },
     "printDialogOpened": {
-      "title": "Druckdialog geöffnet",
-      "description": "Verwenden Sie die Option „Als PDF speichern“, um den Bericht als PDF zu speichern."
+      "title": "Diálogo de impressão aberto",
+      "description": "Use a opção 'Guardar como PDF' para guardar como PDF."
     },
     "emailClientOpened": {
-      "title": "E-Mail-Programm geöffnet",
-      "description": "Ihr Standard-E-Mail-Programm wurde mit der Berichtsübersicht geöffnet."
+      "title": "Cliente de email aberto",
+      "description": "A sua aplicação de email foi aberta com o resumo do relatório."
     },
     "emailSent": {
-      "title": "E-Mail gesendet",
-      "description": "Der Bericht wurde erfolgreich gesendet."
+      "title": "Email enviado",
+      "description": "O relatório foi enviado com sucesso."
     },
     "error": {
-      "title": "Fehler",
-      "fetchBusinesses": "Unternehmen konnten nicht geladen werden",
-      "registerBusiness": "Unternehmen konnte nicht registriert werden",
-      "deleteBusiness": "Unternehmen konnte nicht gelöscht werden",
-      "generateReport": "Bericht konnte nicht erstellt werden",
-      "fetchReports": "Berichte konnten nicht geladen werden",
-      "login": "Anmeldung fehlgeschlagen",
-      "logout": "Abmeldung fehlgeschlagen",
-      "register": "Registrierung fehlgeschlagen"
+      "title": "Erro",
+      "fetchBusinesses": "Falha ao carregar negócios",
+      "registerBusiness": "Falha ao registar negócio",
+      "deleteBusiness": "Falha ao eliminar negócio",
+      "generateReport": "Falha ao gerar o relatório",
+      "fetchReports": "Falha ao carregar relatórios",
+      "login": "Falha ao iniciar sessão",
+      "logout": "Falha ao terminar sessão",
+      "register": "Falha ao registar"
     },
     "linkCopied": {
-      "title": "Link kopiert!",
-      "description": "Der Link zur Startseite wurde in Ihre Zwischenablage kopiert."
+      "title": "Link copiado!",
+      "description": "O link para a página inicial foi copiado para a área de transferência."
     }
   },
   "language": {
-    "select": "Sprache",
+    "select": "Idioma",
     "en": "English",
     "pt": "Português (Portugal)",
     "es": "Español",
@@ -215,496 +216,524 @@
     "de": "Deutsch"
   },
   "theme": {
-    "light": "Hell",
-    "dark": "Dunkel",
-    "system": "System"
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
   },
   "common": {
-    "sending": "Senden...",
-    "language": "de",
-    "cancel": "Abbrechen",
-    "refresh": "Aktualisieren",
-    "loading": "Laden...",
-    "change": "Ändern"
+    "sending": "A enviar...",
+    "language": "pt",
+    "cancel": "Cancelar",
+    "refresh": "Atualizar",
+    "loading": "A carregar...",
+    "change": "Alterar"
   },
   "addressSearch": {
-    "enterAddress": "Bitte geben Sie eine Adresse für die Suche ein",
-    "searchFailed": "Adresssuche fehlgeschlagen. Bitte versuchen Sie es erneut.",
-    "placeSelected": "Adresse verifiziert",
-    "addressVerified": "Adresse verifiziert und Standort bestätigt",
-    "typeAutoSelected": "Adresse verifiziert. Unternehmensart auf {{type}} festgelegt",
-    "usingCurrentLocation": "Verwendung Ihres aktuellen Standorts",
-    "useCurrentLocation": "Aktuellen Standort verwenden",
-    "locationObtained": "Standort ermittelt",
-    "locationObtainedDesc": "Ihr aktueller Standort wurde erfolgreich erfasst.",
-    "locationUnavailable": "Es ist derzeit nicht möglich, den aktuellen Standort abzurufen.",
-    "locationFailed": "Ihr Standort konnte nicht ermittelt werden. Bitte überprüfen Sie Ihre Browsereinstellungen und versuchen Sie es erneut.",
-    "locationDenied": "Der Zugriff auf den Standort wurde verweigert. Bitte aktivieren Sie die Standortberechtigungen in Ihren Browsereinstellungen, um diese Funktion zu nutzen.",
-    "coordinatesRequired": "Für die Wettbewerbsanalyse sind gültige Standortkoordinaten erforderlich.",
-    "proceedWithAddress": "Mit Adresse fortfahren",
-    "proceedingWithAddress": "Adresse gespeichert",
-    "proceedingWithAddressDesc": "Das Unternehmen wird mit ausstehendem Standort registriert. Berichte können erst generiert werden, wenn der Standort verifiziert wurde.",
-    "pendingVerification": "Standortverifizierung ausstehend – Berichte nicht verfügbar",
+    "enterAddress": "Por favor, introduza uma morada para pesquisar",
+    "searchFailed": "Falha ao pesquisar morada. Por favor, tente novamente.",
+    "placeSelected": "Morada verificada",
+    "addressVerified": "Morada verificada e localização confirmada",
+    "typeAutoSelected": "Morada verificada. Tipo de negócio definido para {{type}}",
+    "usingCurrentLocation": "A usar a sua localização atual",
+    "useCurrentLocation": "Usar Localização Atual",
+    "locationObtained": "Localização obtida",
+    "locationObtainedDesc": "A sua localização atual foi capturada com sucesso.",
+    "locationUnavailable": "Não é possível obter a localização atual neste momento.",
+    "locationFailed": "Não foi possível obter a sua localização. Por favor, verifique as definições do navegador e tente novamente.",
+    "locationDenied": "O acesso à localização foi negado. Por favor, ative as permissões de localização nas definições do seu navegador.",
+    "coordinatesRequired": "São necessárias coordenadas válidas para a análise de concorrência.",
+    "proceedWithAddress": "Continuar com a Morada",
+    "proceedingWithAddress": "Morada guardada",
+    "proceedingWithAddressDesc": "O negócio será registado com localização pendente. Os relatórios não podem ser gerados até a localização ser verificada.",
+    "pendingVerification": "Localização pendente de verificação - relatórios indisponíveis",
     "multipleResults": {
-      "title": "Mehrere Standorte gefunden",
-      "description": "Wir haben mehrere Unternehmen an dieser Adresse gefunden. Bitte wählen Sie das richtige aus:"
+      "title": "Vários Locais Encontrados",
+      "description": "Encontrámos vários negócios nesta morada. Por favor, selecione o correto:"
     },
     "suggestion": {
-      "title": "Adresse gefunden",
-      "description": "Wir haben ein passendes Unternehmen mit einer vollständigeren Adresse gefunden. Möchten Sie diese verwenden?",
-      "useThis": "Diese Adresse verwenden",
-      "keepOriginal": "Meine Adresse beibehalten"
+      "title": "Morada Encontrada",
+      "description": "Encontrámos um negócio correspondente com uma morada mais completa. Gostaria de a usar?",
+      "useThis": "Usar Esta Morada",
+      "keepOriginal": "Manter a Minha Morada"
     },
     "noResults": {
-      "title": "Adresse nicht gefunden",
-      "description": "Wir konnten diese Adresse nicht verifizieren. Sie können versuchen, eine spezifischere Adresse einzugeben, Ihren aktuellen Standort zu verwenden oder mit der eingegebenen Adresse fortfahren (Berichte sind erst nach Standortverifizierung verfügbar).",
-      "editAddress": "Adresse bearbeiten"
+      "title": "Morada Não Encontrada",
+      "description": "Não conseguimos verificar esta morada. Pode tentar uma morada mais específica, usar a sua localização atual, ou continuar com a morada introduzida (os relatórios ficarão indisponíveis até a localização ser verificada).",
+      "editAddress": "Editar Morada"
     },
     "apiKeyMissing": {
-      "title": "Adressvalidierung nicht verfügbar",
-      "description": "Die Adressvalidierung ist vorübergehend nicht verfügbar. Sie können Ihren aktuellen Standort verwenden oder mit der eingegebenen Adresse fortfahren (Berichte sind erst nach Standortverifizierung verfügbar)."
+      "title": "Validação de Morada Indisponível",
+      "description": "A validação de morada está temporariamente indisponível. Pode usar a sua localização atual ou continuar com a morada introduzida (os relatórios ficarão indisponíveis até a localização ser verificada)."
     }
   },
   "validation": {
-    "required": "Dieses Feld ist erforderlich",
-    "emailRequired": "E-Mail ist erforderlich",
-    "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
-    "passwordMin": "Das Passwort muss mindestens {{min}} Zeichen lang sein",
-    "passwordMismatch": "Passwörter stimmen nicht überein",
-    "radiusMin": "Der Radius muss mindestens {{min}} Meter betragen",
-    "radiusMax": "Der Radius darf {{max}} Meter nicht überschreiten"
+    "required": "Este campo é obrigatório",
+    "emailRequired": "O email é obrigatório",
+    "emailInvalid": "Por favor, insira um endereço de email válido",
+    "passwordMin": "A palavra-passe deve ter pelo menos {{min}} caracteres",
+    "passwordMismatch": "As palavras-passe não coincidem",
+    "radiusMin": "O raio deve ser de pelo menos {{min}} metros",
+    "radiusMax": "O raio não pode exceder {{max}} metros"
   },
   "auth": {
-    "login": "Anmelden",
-    "signUp": "Registrieren",
-    "email": "E-Mail",
-    "password": "Passwort",
-    "confirmPassword": "Passwort bestätigen",
-    "firstName": "Vorname",
-    "lastName": "Nachname",
-    "loggingIn": "Anmeldung läuft...",
-    "creatingAccount": "Konto wird erstellt...",
-    "createAccount": "Konto erstellen",
-    "orContinueWith": "Oder fortfahren mit",
-    "continueWithGoogle": "Mit Google fortfahren",
-    "noAccount": "Sie haben noch kein Konto?",
-    "haveAccount": "Sie haben bereits ein Konto?",
-    "passwordMismatch": "Passwörter stimmen nicht überein",
-    "passwordTooShort": "Das Passwort muss mindestens 6 Zeichen lang sein",
-    "passwordMinChars": "Mindestens 6 Zeichen",
-    "freeBadge": "✨ Kostenlos starten • Keine Kreditkarte erforderlich",
-    "forgotPassword": "Passwort vergessen?",
-    "forgotPasswordTitle": "Passwort wiederherstellen",
-    "forgotPasswordDesc": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts",
-    "sendResetLink": "Link zum Zurücksetzen senden",
-    "sendingLink": "Wird gesendet...",
-    "resetSuccess": "Wenn ein Konto mit dieser E-Mail-Adresse existiert, erhalten Sie in Kürze einen Wiederherstellungslink. Bitte prüfen Sie auch Ihren Spam-Ordner.",
-    "backToLogin": "Zurück zum Login",
-    "resetPasswordTitle": "Passwort zurücksetzen",
-    "resetPasswordDesc": "Wählen Sie ein neues Passwort für Ihr Konto",
-    "newPassword": "Neues Passwort",
-    "resetting": "Wird zurückgesetzt...",
-    "resetComplete": "Passwort erfolgreich zurückgesetzt! Sie können sich nun mit Ihrem neuen Passwort anmelden.",
-    "goToLogin": "Zum Login gehen",
-    "invalidToken": "Ungültiger oder abgelaufener Link",
-    "validatingToken": "Link wird validiert...",
-    "requestNewLink": "Neuen Link anfordern",
+    "login": "Entrar",
+    "signUp": "Criar Conta",
+    "email": "Email",
+    "password": "Palavra-passe",
+    "confirmPassword": "Confirmar Palavra-passe",
+    "firstName": "Primeiro Nome",
+    "lastName": "Último Nome",
+    "loggingIn": "A entrar...",
+    "creatingAccount": "A criar conta...",
+    "createAccount": "Criar Conta",
+    "orContinueWith": "Ou continuar com",
+    "continueWithGoogle": "Continuar com Google",
+    "noAccount": "Não tem conta?",
+    "haveAccount": "Já tem conta?",
+    "passwordMismatch": "As palavras-passe não coincidem",
+    "passwordTooShort": "A palavra-passe deve ter pelo menos 6 caracteres",
+    "passwordMinChars": "Mínimo de 6 caracteres",
+    "freeBadge": "✨ Comece Gratuitamente • Sem cartão de crédito",
+    "forgotPassword": "Esqueceu a password?",
+    "forgotPasswordTitle": "Recuperar Password",
+    "forgotPasswordDesc": "Introduza o seu email e enviaremos um link para redefinir a sua password",
+    "sendResetLink": "Enviar Link de Recuperação",
+    "sendingLink": "A enviar...",
+    "resetSuccess": "Se existe uma conta com este email, receberá um link de recuperação em breve. Por favor verifique também a pasta de spam.",
+    "backToLogin": "Voltar para Login",
+    "resetPasswordTitle": "Redefinir Password",
+    "resetPasswordDesc": "Escolha uma nova password para a sua conta",
+    "newPassword": "Nova Password",
+    "resetting": "A redefinir...",
+    "resetComplete": "Password redefinida com sucesso! Pode agora fazer login com a sua nova password.",
+    "goToLogin": "Ir para Login",
+    "invalidToken": "Token inválido ou expirado",
+    "validatingToken": "A validar token...",
+    "requestNewLink": "Solicitar novo link",
     "errors": {
-      "invalidCredentials": "Die eingegebene E-Mail-Adresse oder das Passwort ist falsch.",
-      "useGoogle": "Bitte nutzen Sie für dieses Konto die Google-Anmeldung",
-      "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+      "invalidCredentials": "O email ou a palavra-passe estão incorretos.",
+      "useGoogle": "Por favor, usa o login com Google para esta conta",
+      "generic": "Ocorreu um erro. Por favor, tenta novamente."
     },
-    "continue": "Weiter",
-    "back": "Zurück",
-    "backToHome": "Zurück zur Startseite",
-    "stepAccount": "Konto",
-    "stepPlan": "Tarif",
-    "stepPayment": "Zahlung",
-    "choosePlan": "Wählen Sie Ihren Tarif",
-    "paymentMethod": "Zahlungsmethode",
-    "selectedPlan": "Ausgewählter Tarif",
-    "popular": "Beliebt",
-    "creditCard": "Kredit-/Debitkarte",
+    "continue": "Continuar",
+    "back": "Voltar",
+    "backToHome": "Voltar à página inicial",
+    "stepAccount": "Conta",
+    "stepPlan": "Plano",
+    "stepPayment": "Pagamento",
+    "choosePlan": "Escolha o seu plano",
+    "paymentMethod": "Método de pagamento",
+    "selectedPlan": "Plano selecionado",
+    "popular": "Popular",
+    "creditCard": "Cartão de Crédito/Débito",
     "creditCardDesc": "Visa, Mastercard, Amex",
     "multibanco": "Multibanco",
-    "multibancoDesc": "MB-Referenz",
-    "perMonth": "/Monat"
+    "multibancoDesc": "Referência MB",
+    "perMonth": "/mês"
   },
   "quickSearch": {
-    "title": "Entdecken Sie Ihren lokalen Wettbewerb",
-    "subtitle": "Analysieren Sie Wettbewerber an jedem Standort sofort",
-    "addressPlaceholder": "Geschäftsadresse eingeben",
-    "selectType": "Unternehmensart",
-    "selectRadius": "Suchradius",
-    "analyzeButton": "Wettbewerb analysieren",
-    "noSignupRequired": "Keine Registrierung erforderlich",
-    "searching": "Suche läuft...",
-    "error": "Suche fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "title": "Descubra a Sua Concorrência Local",
+    "subtitle": "Analise concorrentes em qualquer localização instantaneamente",
+    "addressPlaceholder": "Introduza a morada do negócio",
+    "selectType": "Tipo de negócio",
+    "selectRadius": "Raio de pesquisa",
+    "analyzeButton": "Analisar Concorrência",
+    "noSignupRequired": "Sem registo necessário",
+    "searching": "A pesquisar...",
+    "error": "Pesquisa falhou. Por favor tente novamente.",
     "errors": {
-      "addressNotFound": "Koordinaten für die angegebene Adresse konnten nicht gefunden werden",
-      "invalidRadius": "Der Radius muss einer der folgenden sein: 500, 1000, 2000, 5000 Meter",
-      "missingFields": "Adresse, Art und Radius sind erforderlich",
-      "rateLimitExceeded": "Zu viele Suchanfragen. Erstellen Sie ein kostenloses Konto für unbegrenzte Suchen.",
-      "searchFailed": "Suche konnte nicht durchgeführt werden. Bitte versuchen Sie es erneut."
+      "addressNotFound": "Não foi possível encontrar coordenadas para a morada fornecida",
+      "invalidRadius": "O raio deve ser um de: 500, 1000, 2000, 5000 metros",
+      "missingFields": "Morada, tipo e raio são obrigatórios",
+      "rateLimitExceeded": "Demasiadas pesquisas. Crie uma conta grátis para pesquisas ilimitadas.",
+      "searchFailed": "Falha ao realizar pesquisa. Por favor tente novamente."
     }
   },
   "businessTypes": {
-    "restaurant": "Restaurant",
+    "restaurant": "Restaurante",
     "cafe": "Café",
-    "retail": "Einzelhandel",
-    "gym": "Fitnessstudio",
-    "salon": "Salon / Spa",
+    "retail": "Loja de Retalho",
+    "gym": "Ginásio / Fitness",
+    "salon": "Salão / Spa",
     "hotel": "Hotel",
     "bar": "Bar / Pub",
-    "bakery": "Bäckerei",
-    "pharmacy": "Apotheke",
-    "supermarket": "Supermarkt",
-    "clinic": "Medizinische Klinik",
-    "dentist": "Zahnarzt",
-    "bank": "Bank",
-    "gas_station": "Tankstelle",
-    "car_repair": "Kfz-Werkstatt",
-    "other": "Andere"
+    "bakery": "Padaria",
+    "pharmacy": "Farmácia",
+    "supermarket": "Supermercado",
+    "clinic": "Clínica Médica",
+    "dentist": "Dentista",
+    "bank": "Banco",
+    "gas_station": "Posto de Combustível",
+    "car_repair": "Oficina Automóvel",
+    "other": "Outro"
   },
   "previewReport": {
-    "title": "Vorschaubericht",
-    "radius": "Radius",
-    "avgRating": "Durchschnittl. Bewertung",
-    "nearbyCompetitors": "Wettbewerber in der Nähe",
-    "reviews": "Bewertungen",
-    "competitorsFound": "{{count}} Wettbewerber gefunden",
-    "showingPreview": "Zeige die ersten {{count}}",
-    "moreCompetitors": "+{{count}} weitere Wettbewerber",
-    "unlockFull": "Vollständigen Bericht freischalten",
-    "getCompleteAccess": "Erhalten Sie vollen Zugriff auf alle Funktionen",
-    "aiPreview": "KI-Insights (Vorschau)",
-    "createAccount": "Kostenloses Konto erstellen – Es ist gratis!",
-    "noCreditCard": "Keine Kreditkarte erforderlich • Sofortiger Zugriff • Jederzeit kündbar",
+    "title": "Relatório de Pré-visualização",
+    "radius": "raio",
+    "avgRating": "Classificação Média",
+    "nearbyCompetitors": "Concorrentes Próximos",
+    "reviews": "avaliações",
+    "competitorsFound": "{{count}} concorrentes encontrados",
+    "showingPreview": "A mostrar primeiros {{count}}",
+    "moreCompetitors": "+{{count}} concorrentes adicionais",
+    "unlockFull": "Desbloquear Relatório Completo",
+    "getCompleteAccess": "Obtenha acesso completo a todas as funcionalidades",
+    "aiPreview": "Insights IA (Pré-visualização)",
+    "createAccount": "Criar Conta Grátis - É Grátis!",
+    "noCreditCard": "Sem cartão de crédito • Acesso instantâneo • Cancele quando quiser",
     "benefits": {
-      "allCompetitors": "Alle {{count}} Wettbewerber sehen",
-      "fullAnalysis": "Vollständige KI-Analyse",
-      "export": "Als PDF/HTML exportieren",
-      "saveTrack": "Änderungen speichern und verfolgen",
-      "signupToSave": "Registrieren zum Speichern & Exportieren",
-      "limitReachedTitle": "Berichtslimit erreicht",
-      "limitReachedDesc": "Sie haben bereits Ihren kostenlosen Bericht generiert. Erstellen Sie ein Konto, um unbegrenzt Berichte zu generieren, Ihren Verlauf zu speichern und mehr."
+      "allCompetitors": "Ver todos os {{count}} concorrentes",
+      "fullAnalysis": "Análise IA completa",
+      "export": "Exportar para PDF/HTML",
+      "saveTrack": "Guardar e acompanhar alterações",
+      "signupToSave": "Registe-se para guardar e exportar",
+      "limitReachedTitle": "Limite de Relatórios Atingido",
+      "limitReachedDesc": "Já gerou o seu relatório gratuito. Crie uma conta para gerar relatórios ilimitados, guardar o histórico e muito mais."
     }
   },
   "landing": {
     "brandName": "Competitor Watcher",
     "heroFeatures": {
-      "competitors": "Wettbewerber in Ihrem gewählten Radius",
-      "ratings": "Bewertungen, Rezensionen und Preise",
-      "monthlyReport": "Monatlicher Bericht in Ihrer E-Mail"
+      "competitors": "Concorrentes num raio à sua escolha",
+      "ratings": "Ratings, reviews e preços",
+      "monthlyReport": "Relatório mensal no seu email"
     },
     "howItWorks": {
-      "title": "Wie funktioniert es?",
+      "title": "Como funciona?",
       "step1": {
-        "title": "Fügen Sie Ihr Unternehmen hinzu",
-        "description": "Name, Adresse und Art des Unternehmens. Wir validieren den Standort, um genaue Daten zu gewährleisten."
+        "title": "Adicione o seu negócio",
+        "description": "Nome, morada e tipo de negócio. Validamos a localização para garantir dados precisos."
       },
       "step2": {
-        "title": "Erhalten Sie einen monatlichen Bericht",
-        "description": "Automatisch an Ihre E-Mail gesendet. Keine Anmeldung oder Überprüfung erforderlich."
+        "title": "Receba um relatório mensal",
+        "description": "Enviado automaticamente para o seu email. Não precisa de iniciar sessão nem verificar nada."
       },
       "step3": {
-        "title": "Treffen Sie bessere Entscheidungen",
-        "description": "Nutzen Sie die Erkenntnisse, um Ihr Unternehmen zu verbessern und dem Wettbewerb einen Schritt voraus zu sein."
+        "title": "Tome melhores decisões",
+        "description": "Use os insights para melhorar o seu negócio e manter-se à frente da concorrência."
       }
     },
     "reportFeatures": {
-      "title": "Was ist im monatlichen Bericht enthalten?",
-      "subtitle": "Keine weitere Excel-Tabelle. Eine Zusammenfassung, die jeder in Ihrem Team verstehen kann.",
+      "title": "O que vem no relatório mensal?",
+      "subtitle": "Não é mais uma folha de Excel. É um resumo que qualquer pessoa do staff consegue entender.",
       "map": {
-        "title": "Lokale Wettbewerber-Karte",
-        "description": "Sehen Sie, wer um Sie herum ist, wie weit sie entfernt sind und wie sie im Vergleich abschneiden."
+        "title": "Mapa de concorrência local",
+        "description": "Veja quem está à sua volta, a que distância, e como se comparam."
       },
       "comparison": {
-        "title": "Direkter Vergleich mit Ihnen",
-        "description": "Bewertungen, Anzahl der Rezensionen, Preisniveau. Wissen, wo Sie stehen."
+        "title": "Comparação direta com o seu negócio",
+        "description": "Ratings, número de reviews, nível de preço. Saiba onde está posicionado."
       },
       "reviews": {
-        "title": "Thematische Analyse der Rezensionen",
-        "description": "Was Kunden über Wettbewerber sagen. Identifizieren Sie Chancen."
+        "title": "Análise de temas das reviews",
+        "description": "O que os clientes dizem sobre a concorrência. Identifica oportunidades."
       },
       "recommendations": {
-        "title": "3–5 praktische Empfehlungen",
-        "description": "Handlungsorientierte Erkenntnisse basierend auf den Daten. Was zu verbessern und was beizubehalten ist."
+        "title": "3–5 recomendações práticas",
+        "description": "Insights acionáveis baseados nos dados. O que melhorar, o que manter."
       }
     },
     "sampleSection": {
-      "title": "Eine kleine Kostprobe dessen, was Sie erhalten",
-      "description": "Erkunden Sie das nebenstehende Beispiel, um die wichtigsten Erkenntnisse zu sehen, die Sie erhalten werden: Wettbewerber-Karte, SWOT-Analyse, lokale Markttrends und Stimmungsanalyse. Jeder Bericht ist personalisiert für Ihr Unternehmen und wird direkt an Ihre E-Mail gesendet.",
+      "title": "Uma pequena amostra do que irá receber",
+      "description": "Explore o exemplo ao lado para ver os principais insights que receberá: mapa de concorrentes, análise SWOT, tendências de mercado e análise de sentimento. Cada relatório é personalizado para o seu negócio e enviado diretamente para o seu email.",
       "features": {
         "keyPoints": {
-          "map": "Interaktive Wettbewerber-Karte",
-          "swot": "SWOT-Analyse",
-          "trends": "Lokale Markttrends",
-          "sentiment": "Kundenstimmungsanalyse"
+          "map": "Mapa Interativo de Concorrentes",
+          "swot": "Análise SWOT",
+          "trends": "Tendências de Mercado Local",
+          "sentiment": "Análise de Sentimento do Cliente"
         }
       }
     },
     "targetAudience": {
-      "title": "Für wen ist Competitor Watcher gedacht?",
-      "subtitle": "Ideal für lokale Unternehmen, die von ihrem Ruf und ihren Bewertungen abhängen:",
-      "restaurants": "Restaurants, Cafés und Bäckereien",
-      "beauty": "Schönheitskliniken, Friseure, Barbershops",
-      "fitness": "Fitnessstudios und Trainingsstudios",
-      "hotels": "Kleine Hotels, lokale Unterkünfte, Pensionen",
-      "retail": "Physische Geschäfte, die in Gewerbegebieten konkurrieren",
-      "conclusion": "Wenn Sie ein lokales Unternehmen haben und Wettbewerb um sich herum, wurde Competitor Watcher für Sie gemacht."
+      "title": "Para quem é o Competitor Watcher?",
+      "subtitle": "Ideal para negócios locais que dependem de reputação e reviews",
+      "restaurants": "Restaurantes, cafés e pastelarias",
+      "beauty": "Clínicas de estética, cabeleireiros, barbearias",
+      "fitness": "Ginásios e estúdios de treino",
+      "hotels": "Pequenos hotéis, alojamentos locais, guesthouses",
+      "retail": "Lojas físicas que competem em zonas comerciais",
+      "conclusion": "Se tem um negócio local e tem concorrência à sua volta, o Competitor Watcher foi feito para si."
     },
     "faq": {
-      "title": "Häufig gestellte Fragen",
+      "title": "Perguntas frequentes",
       "q1": {
-        "question": "Woher stammen die Daten?",
-        "answer": "Aus öffentlichen Quellen wie Google Maps. Wir greifen nicht auf private oder vertrauliche Informationen zu."
+        "question": "De onde vêm os dados?",
+        "answer": "De fontes públicas como o Google Maps. No acedemos a informação privada ou confidencial."
       },
       "q2": {
-        "question": "Muss ich etwas installieren?",
-        "answer": "Nein. Alles funktioniert per E-Mail. Sie erhalten den Bericht einfach in Ihren Posteingang."
+        "question": "Preciso de instalar alguma coisa?",
+        "answer": "Não. Tudo funciona por email. Recebe apenas o relatório na sua caixa de entrada."
       },
       "q3": {
-        "question": "Ersetzt dies einen Marketingberater?",
-        "answer": "Nein. Es ist ein Werkzeug, um Zeit zu sparen. Für Strategie und Umsetzung bietet ein Berater einen höheren Mehrwert."
+        "question": "Isto substitui um consultor de marketing?",
+        "answer": "Não. É uma ferramenta para lhe poupar tempo. Para estratégia e execução, um consultor acrescenta mais valor."
       },
       "q4": {
-        "question": "Kann ich jederzeit kündigen?",
-        "answer": "Ja. Keine Verpflichtung. Kündigen Sie, wann immer Sie möchten, direkt über Ihr Dashboard."
+        "question": "Posso cancelar quando quiser?",
+        "answer": "Sim. Sem compromisso. Cancele quando quiser, directamente do seu painel."
       },
       "q5": {
-        "question": "Kann ich vor der Zahlung testen?",
-        "answer": "Ja. Fordern Sie einen Musterbericht per E-Mail an, und wir senden Ihnen ein Beispiel für Ihre Region."
+        "question": "Posso experimentar antes de pagar?",
+        "answer": "Sim. Pede uma amostra de relatório por email e enviamos-lhe um exemplo para a sua zona."
       }
     },
     "support": {
-      "title": "Gefällt Ihnen Competitor Watcher? Helfen Sie mit, es kostenlos zu halten",
-      "description": "Competitor Watcher ist zu 100 % kostenlos und quelloffen. Wir benötigen Unterstützung, um die Kosten für APIs, Hosting und Infrastruktur zu decken. Jeder Beitrag hilft.",
-      "cta": "Projekt unterstützen",
-      "footer": "Vielen Dank für Ihre Unterstützung"
+      "title": "Gosta do Competitor Watcher? Ajude a mantê-lo gratuito",
+      "description": "O Competitor Watcher é 100% gratuito e open source. Precisamos de apoio para cobrir custos de APIs, hosting e infraestrutura. Cada contribuição ajuda.",
+      "cta": "Apoiar o Projeto",
+      "footer": "Obrigado pelo seu apoio"
     },
     "cta": {
-      "existingAccount": "Haben Sie bereits ein Konto? Greifen Sie hier auf Ihr Dashboard zu"
+      "existingAccount": "Já tem conta? Aceda ao seu painel aqui"
     },
     "valueProp": {
-      "title": "Kostenlos starten. Grenzenlos wachsen.",
-      "description": "Wir glauben, dass jedes Unternehmen Zugang zu Marktintelligenz verdient. Deshalb enthält unser kostenloser Plan 2 detaillierte Berichte pro Monat. Brauchen Sie mehr? Der Pro-Plan entfernt alle Limits.",
-      "cta": "Preise ansehen",
-      "supportCta": "Projekt unterstützen",
-      "footer": "Schließen Sie sich hunderten klugen Unternehmen an."
+      "title": "Comece Gratuitamente. Cresça sem Limites.",
+      "description": "Acreditamos que todos os negócios merecem acesso a inteligência de mercado. Por isso, o nosso plano gratuito inclui 2 relatórios detalhados todos os meses. Precisa de mais? O plano Pro remove todos os limites.",
+      "cta": "Ver Planos",
+      "supportCta": "Apoiar o Projeto",
+      "footer": "Junte-se a centenas de empresas inteligentes."
     }
   },
   "locationStatus": {
-    "validated": "Standort verifiziert",
-    "pending": "Standort ausstehend",
-    "pendingNote": "Berichte erst nach Standortverifizierung verfügbar"
+    "validated": "Localização verificada",
+    "pending": "Localização pendente",
+    "pendingNote": "Relatórios indisponíveis até a localização ser verificada"
   },
   "radiusOptions": {
-    "immediate": "Unmittelbare Nähe",
-    "walking": "Fußläufig erreichbar",
-    "drive": "Kurze Autofahrt",
-    "extended": "Erweiterter Bereich",
-    "500m": "500m (Fußweg)",
-    "1km": "1km (Nachbarschaft)",
-    "2km": "2km (Lokal)",
-    "5km": "5km (Umgebung)"
+    "immediate": "Vizinhança imediata",
+    "walking": "Distância a pé",
+    "drive": "Curta distância de carro",
+    "extended": "Área alargada",
+    "500m": "500m (A pé)",
+    "1km": "1km (Bairro)",
+    "2km": "2km (Local)",
+    "5km": "5km (Área)"
   },
   "support": {
-    "back": "Zurück",
-    "title": "Competitor Watcher unterstützen",
-    "subtitle": "Helfen Sie mit, Competitor Watcher für alle quelloffen zu halten",
+    "back": "Voltar",
+    "title": "Apoiar o Competitor Watcher",
+    "subtitle": "Ajude a manter o Competitor Watcher open source para todos",
     "whySupport": {
-      "title": "Warum Ihre Unterstützung wichtig ist",
-      "description": "Competitor Watcher ist ein Herzensprojekt, das entwickelt wurde, um kleinen Unternehmen zu helfen, wettbewerbsfähig zu bleiben. Jede Spende trägt dazu bei, den Betrieb aufrechtzuerhalten."
+      "title": "Porquê Apoiar?",
+      "description": "O Competitor Watcher é um projeto de paixão construído para ajudar pequenos negócios a competir. Cada doação mantém as luzes acesas."
     },
     "costs": {
-      "maps": "Standortdaten & Karten",
-      "mapsDesc": "Die Google Places API ermöglicht unsere Wettbewerber-Suche",
-      "hosting": "Hosting & Infrastruktur",
-      "hostingDesc": "Zuverlässige Server, um Competitor Watcher rund um die Uhr am Laufen zu halten",
-      "ai": "KI-gestützte Erkenntnisse",
-      "aiDesc": "Die OpenAI API generiert handlungsorientierte Wettbewerbsanalysen"
+      "maps": "Dados de Localização & Mapas",
+      "mapsDesc": "Google Places API alimenta a descoberta de concorrentes",
+      "hosting": "Hosting & Infraestrutura",
+      "hostingDesc": "Servidores confiáveis para manter o Competitor Watcher a funcionar 24/7",
+      "ai": "Insights AI",
+      "aiDesc": "OpenAI API gera análise acionável de concorrentes"
     },
-    "mission": "Unsere Mission: Lokale Unternehmen stärken",
-    "missionDesc": "Professionelle Werkzeuge, entwickelt, um lokalen Unternehmen zum Erfolg zu verhelfen.",
-    "howToSupport": "Wählen Sie, wie Sie unterstützen möchten",
-    "everyContribution": "Jeder Beitrag hilft, egal wie groß oder klein!",
+    "mission": "Nossa Missão: Capacitar Negócios Locais",
+    "missionDesc": "Ferramentas profissionais para todos os negócios, construídas para ajudar a prosperar.",
+    "howToSupport": "Escolha Como Apoiar",
+    "everyContribution": "Cada contribuição ajuda, não importa o tamanho!",
     "platforms": {
       "github": {
         "name": "GitHub Sponsors",
-        "desc": "Monatliche wiederkehrende Unterstützung • 0 % Gebühren",
-        "cta": "Sponsoren"
+        "desc": "Suporte mensal recorrente • 0% taxas",
+        "cta": "Patrocinar"
       },
       "kofi": {
         "name": "Ko-fi",
-        "desc": "Einmaliger Kaffee • 0 % Gebühren",
-        "cta": "Einen Kaffee kaufen"
+        "desc": "Café único • 0% taxas",
+        "cta": "Comprar um Café"
       },
       "bmac": {
         "name": "Buy Me a Coffee",
-        "desc": "Einmalige Unterstützung • 5 % Gebühren",
-        "cta": "Unterstützen"
+        "desc": "Apoio único • 5% taxas",
+        "cta": "Apoiar"
       }
     },
     "other": {
-      "title": "Sie können nicht spenden? Kein Problem!",
-      "description": "Es gibt viele andere Möglichkeiten, wie Sie helfen können",
-      "starGithub": "Auf GitHub mit Stern markieren",
-      "starGithubDesc": "Es hilft sehr!",
-      "reportBugs": "Fehler melden",
-      "reportBugsDesc": "Helfen Sie mit, die Qualität zu verbessern",
-      "suggestFeatures": "Funktionen vorschlagen",
-      "suggestFeaturesDesc": "Teilen Sie Ihre Ideen mit uns",
-      "shareWithFriends": "Mit Freunden teilen",
-      "shareWithFriendsDesc": "Sagen Sie es weiter"
+      "title": "Não Pode Doar? Sem Problema!",
+      "description": "Existem muitas outras formas de ajudar",
+      "starGithub": "Dar Estrela no GitHub",
+      "starGithubDesc": "Ajuda muito!",
+      "reportBugs": "Reportar Bugs",
+      "reportBugsDesc": "Ajude a melhorar a qualidade",
+      "suggestFeatures": "Sugerir Funcionalidades",
+      "suggestFeaturesDesc": "Partilhe as suas ideias",
+      "shareWithFriends": "Partilhar com Amigos",
+      "shareWithFriendsDesc": "Espalhe a palavra"
     },
-    "thankYou": "Vielen Dank!",
-    "thankYouMessage": "Ihre Unterstützung macht es möglich, Competitor Watcher für alle kostenlos zu halten"
+    "thankYou": "Obrigado!",
+    "thankYouMessage": "O seu apoio torna possível manter o Competitor Watcher gratuito para todos"
   },
   "pricing": {
-    "title": "Einfache, transparente Preise",
-    "subtitle": "Wählen Sie den Plan, der zu Ihrem Unternehmen passt",
+    "title": "Preços Simples e Transparentes",
+    "subtitle": "Escolha o plano ideal para o seu negócio",
     "free": {
-      "title": "Kostenlos",
-      "description": "Perfekt für den Einstieg",
+      "title": "Gratuito",
+      "description": "Perfeito para começar",
       "price": "0€"
     },
     "pro": {
       "title": "Pro",
-      "description": "Für wachsende Unternehmen",
+      "description": "Para negócios em crescimento",
       "price": "29,99€",
       "originalPrice": "49,99€",
-      "period": "/Monat",
-      "recommended": "Empfohlen"
+      "period": "/mês",
+      "recommended": "Recomendado"
     },
     "features": {
-      "basicAnalysis": "Wettbewerbsanalyse",
-      "oneBusiness": "1 Unternehmensprofil",
-      "standardSupport": "Standard-Support",
-      "advancedInsights": "Unbegrenzte KI-Berichte",
-      "unlimitedBusinesses": "Unbegrenzte Unternehmensprofile",
-      "prioritySupport": "Priorisierter Support",
-      "exportPdf": "Als PDF exportieren",
-      "weeklyReport": "Wöchentlicher E-Mail-Bericht",
-      "reportsLimit": "2 Berichte pro Monat"
+      "basicAnalysis": "Análise de Concorrência",
+      "oneBusiness": "1 Perfil de Negócio",
+      "standardSupport": "Suporte Padrão",
+      "advancedInsights": "Relatórios IA Ilimitados",
+      "unlimitedBusinesses": "Perfis de Negócio Ilimitados",
+      "prioritySupport": "Suporte Prioritário",
+      "exportPdf": "Exportar para PDF",
+      "weeklyReport": "Relatório Semanal por Email",
+      "reportsLimit": "2 Relatórios por Mês"
     },
     "buttons": {
-      "currentPlan": "Aktueller Plan",
+      "currentPlan": "Plano Atual",
       "downgrade": "Downgrade",
-      "upgrade": "Auf Pro upgraden",
-      "manage": "Abo verwalten"
+      "upgrade": "Atualizar para Pro",
+      "manage": "Gerir Subscrição"
     }
   },
   "settings": {
-    "title": "Einstellungen",
-    "subtitle": "Verwalten Sie Ihr Konto und Ihre Präferenzen",
+    "title": "Definições",
+    "subtitle": "Gerir a sua conta e preferências",
     "subscription": {
-      "title": "Abonnement",
-      "description": "Verwalten Sie Ihren Plan und Ihre Rechnungsdaten",
-      "currentPlan": "Aktueller Plan:",
-      "accessPremium": "Sie haben Zugriff auf alle Premium-Funktionen.",
-      "upgradeUnlock": "Upgraden Sie für erweiterte Analysen und mehr.",
+      "title": "Subscrição",
+      "description": "Gerir o seu plano e detalhes de faturação",
+      "currentPlan": "Plano Atual:",
+      "accessPremium": "Tem acesso a todas as funcionalidades premium.",
+      "upgradeUnlock": "Atualize para desbloquear análises avançadas e mais.",
       "proBadge": "PRO",
       "freeBadge": "GRATIS",
       "manage": "Abo verwalten",
-      "upgrade": "Auf Pro upgraden"
+      "upgrade": "Auf Pro upgraden",
+      "status": "Status",
+      "statusActive": "Aktiv",
+      "statusCanceled": "Gekündigt",
+      "statusPastDue": "Zahlung Überfällig",
+      "accessUntil": "Zugriff bis",
+      "reactivateHint": "Klicken Sie auf 'Abo verwalten', um Ihren Plan zu reaktivieren",
+      "until": "bis",
+      "canceledAccess": "Sie haben Pro-Zugang bis zum Ende Ihres Abrechnungszeitraums",
+      "reactivate": "Pro-Plan Reaktivieren"
     },
     "account": {
-      "title": "Kontoinformationen",
-      "description": "Aktualisieren Sie Ihre persönlichen Daten und Zugangsdaten",
-      "name": "Name",
-      "email": "E-Mail",
-      "languageHint": "Diese Sprache wird für Ihre E-Mails verwendet.",
-      "currentPassword": "Aktuelles Passwort",
-      "newPassword": "Neues Passwort",
-      "confirmPassword": "Neues Passwort bestätigen",
-      "save": "Änderungen speichern",
-      "cancel": "Abbrechen",
-      "edit": "Profil bearbeiten"
+      "title": "Informação da Conta",
+      "description": "Atualize os seus dados pessoais e credenciais",
+      "name": "Nome",
+      "email": "Email",
+      "languageHint": "Este idioma será utilizado para o envio dos seus emails.",
+      "currentPassword": "Password Atual",
+      "newPassword": "Nova Password",
+      "confirmPassword": "Confirmar Nova Password",
+      "save": "Guardar Alterações",
+      "cancel": "Cancelar",
+      "edit": "Editar Perfil"
     },
     "danger": {
-      "title": "Gefahrenzone",
-      "description": "Unwiderrufliche Aktionen im Zusammenhang mit Ihrem Konto",
-      "deleteAccount": "Konto löschen",
-      "deleteDesc": "Ihr Konto und alle Daten dauerhaft löschen",
-      "button": "Konto löschen",
+      "title": "Zona de Perigo",
+      "description": "Ações irreversíveis relacionadas com a sua conta",
+      "deleteAccount": "Remover Conta",
+      "deleteDesc": "Eliminar permanentemente a sua conta e todos os dados",
+      "button": "Eliminar Conta",
       "dialog": {
-        "title": "Konto löschen",
-        "description": "Diese Aktion ist <strong class=\"text-destructive\">dauerhaft und unwiderruflich</strong>. Alle Ihre Daten, Berichte und Einstellungen werden gelöscht. Sind Sie absolut sicher, dass Sie fortfahren möchten?",
-        "cancel": "Abbrechen",
-        "confirm": "Ja, Konto löschen"
+        "title": "Eliminar Conta",
+        "description": "Esta ação é <strong class=\"text-destructive\">permanente e irreversível</strong>. Todos os seus dados, relatórios e configurações serão eliminados. Tem a certeza absoluta que pretende continuar?",
+        "cancel": "Cancelar",
+        "confirm": "Sim, Eliminar Conta"
       }
     },
     "toast": {
       "profileUpdated": {
-        "title": "Profil aktualisiert",
-        "description": "Ihre Informationen wurden erfolgreich gespeichert."
+        "title": "Perfil atualizado",
+        "description": "As suas informações foram guardadas com sucesso."
       },
       "languageUpdated": {
-        "title": "Sprache aktualisiert",
-        "description": "Ihre Spracheinstellung wurde gespeichert."
+        "title": "Idioma atualizado",
+        "description": "A sua preferência de idioma foi guardada."
       },
       "accountDeleted": {
-        "title": "Konto gelöscht",
-        "description": "Ihr Konto wurde dauerhaft entfernt."
+        "title": "Conta removida",
+        "description": "A sua conta foi permanentemente removida."
       },
       "error": {
-        "title": "Fehler",
-        "delete": "Konto konnte nicht entfernt werden. Bitte versuchen Sie es erneut.",
-        "language": "Spracheinstellung konnte nicht gespeichert werden."
+        "title": "Erro",
+        "delete": "Não foi possível remover a conta. Tente novamente.",
+        "language": "Falha ao guardar a preferência de idioma."
       }
     }
   },
   "footer": {
-    "mission": "Unterstützung lokaler Unternehmen mit KI-gestützten Wettbewerbsanalysen. Heute kostenlos starten.",
+    "mission": "Capacitando negócios locais com análises de competidores via IA. Comece grátis hoje.",
     "sections": {
-      "project": "Projekt",
-      "account": "Konto",
-      "legal": "Rechtliches"
+      "project": "Projeto",
+      "account": "Conta",
+      "legal": "Legal"
     },
     "links": {
-      "support": "Unterstützen Sie uns",
-      "home": "Startseite",
-      "dashboard": "Dashboard"
+      "support": "Apoie-nos",
+      "home": "Início",
+      "dashboard": "Painel"
     },
-    "allRightsReserved": "Alle Rechte vorbehalten.",
-    "madeWith": "Hergestellt mit",
-    "forSmallBusinesses": "für kleine Unternehmen."
+    "allRightsReserved": "Todos os direitos reservados.",
+    "madeWith": "Feito com",
+    "forSmallBusinesses": "para pequenos negócios."
   },
   "legal": {
     "privacy": {
-      "title": "Datenschutzerklärung",
-      "lastUpdated": "Zuletzt aktualisiert: Dezember 2025",
-      "intro": "Wir schätzen Ihre Privatsphäre und setzen uns für den Schutz Ihrer personenbezogenen Daten ein. Diese Richtlinie erklärt, wie wir Ihre Informationen sammeln, verwenden und schützen, wenn Sie unsere Wettbewerbsanalysedienste nutzen. Durch die Nutzung unserer Plattform stimmen Sie der Erhebung und Verwendung von Informationen gemäß dieser Richtlinie zu.",
-      "dataCollection": "Wir sammeln Informationen, die Sie uns direkt zur Verfügung stellen, wie Ihren Namen und Ihre E-Mail-Adresse, wenn Sie ein Konto erstellen. Zusätzlich können wir Nutzungsdaten, Browsertyp und Standortinformationen über unsere Adresssuchfunktionen sammeln, um genaue Wettbewerbsberichte bereitzustellen. Wir erhalten auch Informationen von Drittanbietern, wenn Sie sich über Google anmelden.",
-      "useOfInfo": "Die von uns gesammelten Informationen werden verwendet, um unseren Service bereitzustellen und zu verbessern, einschließlich der Erstellung Ihrer monatlichen Wettbewerbsberichte. Wir verwenden Ihre Daten, um Ihr Erlebnis zu personalisieren, wichtige Service-Updates zu versenden und die Leistung unserer Plattform zu überwachen, um ein reibosloses Erlebnis für alle Nutzer zu gewährleisten.",
-      "userRights": "Sie haben das Recht, jederzeit über Ihre Kontoeinstellungen auf Ihre personenbezogenen Daten zuzugreifen, diese zu aktualisieren oder zu löschen. Wir halten uns an die DSGVO und andere Datenschutzbestimmungen, um sicherzustellen, dass Sie die volle Kontrolle über Ihre Daten haben. Wenn Sie Fragen zu Ihren Rechten haben, wenden Sie sich bitte an unser Support-Team.",
+      "title": "Política de Privacidade",
+      "lastUpdated": "Última atualização: Dezembro 2025",
+      "intro": "Valorizamos a sua privacidade e estamos empenhados em proteger os seus dados pessoais. Esta política explica como recolhemos, utilizamos e salvaguardamos a sua informação ao utilizar os nossos serviços de análise de concorrência. Ao utilizar a nossa plataforma, concorda com a recolha e utilização de informações de acordo com esta política.",
+      "dataCollection": "Recolhemos informações que nos fornece diretamente, como o seu nome e email ao criar uma conta. Além disso, podemos recolher dados de utilização, tipo de navegador e informações de localização através das nossas funcionalidades de pesquisa de morada para fornecer relatórios de concorrência precisos. Também recebemos informações de serviços de terceiros se optar por fazer login através do Google.",
+      "useOfInfo": "As informações que recolhemos são utilizadas para fornecer e melhorar o nosso serviço, incluindo a geração dos seus relatórios mensais de concorrência. Utilizamos os seus dados para personalizar a sua experiência, enviar atualizações importantes do serviço e monitorizar o desempenho da nossa plataforma para garantir uma experiência sem falhas para todos os utilizadores.",
+      "userRights": "Tem o direito de aceder, atualizar ou eliminar as suas informações pessoais a qualquer momento através das definições da sua conta. Cumprimos o RGPD e outros regulamentos de privacidade, garantindo que tem total controlo sobre os seus dados. Se tiver alguma dúvida sobre os seus direitos, contacte a nossa equipa de suporte.",
       "sections": {
-        "dataCollection": "1. Datenerhebung",
-        "useOfInfo": "2. Verwendung von Informationen",
-        "userRights": "3. Nutzerrechte",
-        "contact": "Kontaktieren Sie uns"
+        "dataCollection": "1. Recolha de Dados",
+        "useOfInfo": "2. Utilização de Informação",
+        "userRights": "3. Direitos do Utilizador",
+        "contact": "Contacte-nos"
       },
-      "contactDesc": "Wenn Sie Fragen zu dieser Datenschutzerklärung haben, kontaktieren Sie uns bitte unter support@competitorwatcher.com"
+      "contactDesc": "Se tiver alguma dúvida sobre esta Política de Privacidade, contacte-nos em support@competitorwatcher.com"
     },
     "cookies": {
-      "title": "Cookie-Richtlinie",
-      "lastUpdated": "Zuletzt aktualisiert: Dezember 2025",
-      "intro": "Diese Richtlinie erklärt, wie wir Cookies und ähnliche Technologien verwenden, um Ihr Erlebnis zu verbessern. Cookies sind kleine Datendateien, die auf Ihrem Gerät gespeichert werden und uns helfen zu verstehen, wie Sie mit unserer Website interagieren. Wir verwenden sowohl Sitzungscookies als auch dauerhafte Cookies, um eine funktionale und optimierte Plattform bereitzustellen.",
-      "essential": "Diese Cookies sind für das ordnungsgemäße Funktionieren der Plattform unbedingt erforderlich. Sie verwalten die Benutzerauthentifizierung, Sicherheitsfunktionen und dauerhafte Einstellungen wie Ihre Sprach- und Themenwahl. Ohne diese Cookies wären die Basisfunktionen von Competitor Watcher nicht verfügbar.",
-      "analytical": "Analytische Cookies helfen uns zu verstehen, wie Besucher unsere Website nutzen, indem sie anonyme Informationen sammeln. Wir verwenden diese Daten, um unsere Wettbewerbskarten zu verbessern, die Leistung der Berichterstellung zu verfolgen und Verbesserungsbereiche zu identifizieren. Alle gesammelten Daten sind aggregiert und identifizieren Sie nicht persönlich.",
+      "title": "Política de Cookies",
+      "lastUpdated": "Última atualização: Dezembro 2025",
+      "intro": "Esta política explica como utilizamos cookies e tecnologias semelhantes para melhorar a sua experiência. Os cookies são pequenos ficheiros de dados armazenados no seu dispositivo que nos ajudam a compreender como interage com o nosso site. Utilizamos tanto cookies de sessão como cookies persistentes para fornecer uma plataforma funcional e otimizada.",
+      "essential": "Estes cookies são estritamente necessários para o funcionamento correto da plataforma. Eles gerem a autenticação do utilizador, funcionalidades de segurança e preferências persistentes como a sua escolha de idioma e tema. Sem estes cookies, as funcionalidades básicas do Competitor Watcher não estariam disponíveis.",
+      "analytical": "Os cookies analíticos ajudam-nos a compreender como os visitantes utilizam o nosso site através da recolha de informações anónimas. Utilizamos estes dados para melhorar os nossos mapas de concorrência, acompanhar o desempenho da geração de relatórios e identificar áreas de melhoria. Todos os dados recolhidos são agregados e não o identificam pessoalmente.",
       "sections": {
-        "essential": "Essentielle Cookies",
-        "analytical": "Analytische Cookies",
-        "managing": "Verwaltung von Cookies"
+        "essential": "Cookies Essenciais",
+        "analytical": "Cookies Analíticos",
+        "managing": "Gestão de Cookies"
       },
-      "managingDesc": "Sie können Ihre Cookie-Einstellungen über das Banner verwalten, das bei Ihrem ersten Besuch angezeigt wurde, oder über Ihre Browsereinstellungen."
+      "managingDesc": "Pode gerir as suas preferências de cookies através do banner que apareceu quando visitou pela primeira vez, ou através das definições do seu navegador."
     }
   },
   "cookies": {
-    "banner": "Wir verwenden Cookies, um Ihre Erfahrung zu verbessern und den Website-Verkehr zu analysieren.",
-    "accept": "Akzeptieren",
-    "decline": "Ablehnen",
-    "learnMore": "Mehr erfahren"
+    "banner": "Utilizamos cookies para melhorar a sua experiência e analisar o tráfego do site.",
+    "accept": "Aceitar",
+    "decline": "Recusar",
+    "learnMore": "Saber mais"
+  },
+  "pro": {
+    "welcome": {
+      "title": "Bem-vindo ao Pro! 🎉",
+      "subtitle": "Você desbloqueou recursos poderosos para crescer seu negócio",
+      "feature1": {
+        "title": "3 Perfis de Negócios",
+        "description": "Acompanhe múltiplas localizações e marcas"
+      },
+      "feature2": {
+        "title": "10 Relatórios por Mês",
+        "description": "Gere análises abrangentes da concorrência"
+      },
+      "feature3": {
+        "title": "Raio de Busca de 20km",
+        "description": "Descubra concorrentes em uma área mais ampla"
+      },
+      "cta": "Começar"
+    }
   }
 }
