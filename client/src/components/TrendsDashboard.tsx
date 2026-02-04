@@ -48,7 +48,7 @@ export function TrendsDashboard({ business }: TrendsDashboardProps) {
                         {t("pro.trends.lockedDesc", "Track your rating performance and market density over time with professional analytics.")}
                     </p>
                     <Button onClick={() => openPricing()}>
-                        {t("pro.upgrade", "Upgrade to Pro")}
+                        {t("pro.trends.unlock", "Unlock Pro Metrics")}
                     </Button>
                 </div>
 
