@@ -735,6 +735,12 @@
         "description": "Descubra concorrentes em uma área mais ampla"
       },
       "cta": "Começar"
+    },
+    "comingSoon": {
+      "title": "Próximamente",
+      "description": "Estamos finalizando los detalles de nuestro plan Pro para asegurar que ofrezca el mejor valor para su negocio.",
+      "footer": "En este momento, el plan Pro aún no está disponible para suscripción. ¡Agradecemos su interés y estamos trabajando duro para lanzarlo pronto!",
+      "gotIt": "Entendido"
     }
   }
 }

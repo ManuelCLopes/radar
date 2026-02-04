@@ -733,6 +733,12 @@
         "description": "Discover competitors across a wider area"
       },
       "cta": "Get Started"
+    },
+    "comingSoon": {
+      "title": "Coming Soon",
+      "description": "We are currently finalizing the details of our Pro plan to ensure it delivers the best value for your business.",
+      "footer": "At this moment, the Pro plan is not yet available for subscription. We appreciate your interest and are working hard to launch it soon!",
+      "gotIt": "Got it"
     }
   }
 }
