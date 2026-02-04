@@ -53,11 +53,17 @@ export function registerTrendRoutes(app: Express) {
 
                 // Attempt to find the business's own rating within the competitors list
                 // This assumes the business was found in the search results
-                const businessEntry = competitors.find(c =>
-                    c.name.toLowerCase() === business.name.toLowerCase() ||
-                    (c.address && business.address && c.address.includes(business.address))
+                const matchingCompetitor = competitors.find(c =>
+                    c.name.toLowerCase().trim() === business.name.toLowerCase().trim() ||
+                    (c.address && business.address && c.address.toLowerCase().includes(business.address.toLowerCase()))
                 );
-                const businessRating = businessEntry?.rating || null;
+
+                if (!matchingCompetitor) {
+                    // Log for debugging (optional, remove later if noisy)
+                    console.log(`[Trends] Business '${business.name}' not found in report ${report.id}. Competitors: ${competitors.map(c => c.name).join(", ")}`);
+                }
+
+                const businessRating = matchingCompetitor?.rating || business.rating || null;
 
                 return {
                     id: report.id,

@@ -48,6 +48,8 @@ export const businesses = pgTable("businesses", {
   longitude: real("longitude"),
   address: text("address"),
   locationStatus: text("location_status").default("validated").$type<LocationStatus>(),
+  rating: real("rating"),
+  userRatingsTotal: integer("user_ratings_total"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

@@ -54,6 +54,32 @@ export async function runReportForBusiness(
      */
     aiAnalysis = await analyzeCompetitors(business, competitors, language, userPlan);
 
+    // Attempt to fetch and update the business's own rating for trends
+    if (!providedBusiness) {
+      try {
+        // Import searchPlacesByAddress dynamically or use top-level import
+        // I'll assume top-level import needs to be added, but I can use import()
+        const { searchPlacesByAddress } = await import("./googlePlaces");
+        const businessSearchResults = await searchPlacesByAddress(
+          `${business.name}, ${business.address}`
+        );
+
+        if (businessSearchResults.length > 0) {
+          const selfMatch = businessSearchResults[0];
+          if (selfMatch.rating) {
+            await storage.updateBusiness(business.id, {
+              rating: selfMatch.rating,
+              userRatingsTotal: selfMatch.userRatingsTotal
+            });
+            console.log(`[Report] Updated rating for business ${business.name}: ${selfMatch.rating}`);
+          }
+        }
+      } catch (err) {
+        console.warn(`[Report] Failed to update business rating:`, err);
+        // Non-blocking error
+      }
+    }
+
   } catch (error: any) {
     console.error(`Error generating report for business ${business.name}:`, error);
 
