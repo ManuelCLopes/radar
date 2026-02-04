@@ -43,7 +43,9 @@ describe("BusinessList", () => {
             locationStatus: "validated",
             createdAt: new Date(),
             updatedAt: new Date(),
-            userId: "1"
+            userId: "1",
+            rating: null,
+            userRatingsTotal: null
         },
         {
             id: "2",
@@ -55,7 +57,9 @@ describe("BusinessList", () => {
             locationStatus: "pending",
             createdAt: new Date(),
             updatedAt: new Date(),
-            userId: "1"
+            userId: "1",
+            rating: null,
+            userRatingsTotal: null
         }
     ];
 
