@@ -26,6 +26,7 @@ export interface IStorage {
   getReportsByBusinessId(businessId: string): Promise<Report[]>;
   listAllReports(): Promise<Report[]>;
   countReportsCurrentMonth(userId: string): Promise<number>;
+  deleteReport(id: string): Promise<boolean>;
 
   // Password reset
   createPasswordResetToken(data: { userId: string; token: string; expiresAt: Date }): Promise<void>;
@@ -242,6 +243,11 @@ export class DatabaseStorage implements IStorage {
         )
       );
     return Number(result?.count || 0);
+  }
+
+  async deleteReport(id: string): Promise<boolean> {
+    const [deleted] = await db!.delete(reports).where(eq(reports.id, id)).returning();
+    return !!deleted;
   }
 
   async trackSearch(search: InsertSearch): Promise<void> {
@@ -522,7 +528,9 @@ export class MemStorage implements IStorage {
       latitude: business.latitude ?? null,
       longitude: business.longitude ?? null,
       locationStatus: business.locationStatus ?? "validated",
-      userId: business.userId || null // Add userId to MemStorage
+      userId: business.userId || null,
+      rating: business.rating ?? null,
+      userRatingsTotal: business.userRatingsTotal ?? null,
     };
     this.businesses.set(id, newBusiness);
     return newBusiness;
@@ -568,6 +576,8 @@ export class MemStorage implements IStorage {
       targetAudience: insertReport.targetAudience || null,
       marketingStrategy: insertReport.marketingStrategy || null,
       customerSentiment: insertReport.customerSentiment || null,
+      businessRating: insertReport.businessRating ?? null,
+      businessUserRatingsTotal: insertReport.businessUserRatingsTotal ?? null,
     };
     this.reports.set(id, report);
     return report;
@@ -600,6 +610,10 @@ export class MemStorage implements IStorage {
     return Array.from(this.reports.values()).filter(r =>
       r.userId === userId && r.generatedAt >= startOfMonth
     ).length;
+  }
+
+  async deleteReport(id: string): Promise<boolean> {
+    return this.reports.delete(id);
   }
 
   async trackSearch(search: InsertSearch): Promise<void> {

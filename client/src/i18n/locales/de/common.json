@@ -160,6 +160,12 @@
     "email": {
       "enterAddress": "Insira o endereço de email do destinatário abaixo.",
       "send": "Enviar Email"
+    },
+    "deleteDialog": {
+      "title": "Bericht löschen",
+      "description": "Sind Sie sicher, dass Sie diesen Bericht löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "cancel": "Abbrechen",
+      "confirm": "Löschen"
     }
   },
   "toast": {
@@ -174,6 +180,10 @@
     "reportGenerated": {
       "title": "Relatório gerado",
       "description": "O seu relatório de análise de concorrência está pronto."
+    },
+    "reportDeleted": {
+      "title": "Bericht gelöscht",
+      "description": "Der Bericht wurde gelöscht."
     },
     "reportDownloaded": {
       "title": "Relatório transferido",

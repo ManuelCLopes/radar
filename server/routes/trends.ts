@@ -63,7 +63,7 @@ export function registerTrendRoutes(app: Express) {
                     console.log(`[Trends] Business '${business.name}' not found in report ${report.id}. Competitors: ${competitors.map(c => c.name).join(", ")}`);
                 }
 
-                const businessRating = matchingCompetitor?.rating || business.rating || null;
+                const businessRating = report.businessRating || matchingCompetitor?.rating || business.rating || null;
 
                 return {
                     id: report.id,

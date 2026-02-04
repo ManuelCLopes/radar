@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Line } from "recharts";
+import { ComposedChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Line } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Lock, TrendingUp, Users } from "lucide-react";
@@ -110,7 +110,7 @@ export function TrendsDashboard({ business }: TrendsDashboardProps) {
                     <CardContent>
                         <div className="h-[300px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={trends}>
+                                <ComposedChart data={trends}>
                                     <defs>
                                         <linearGradient id="colorRating" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
@@ -155,7 +155,7 @@ export function TrendsDashboard({ business }: TrendsDashboardProps) {
                                         connectNulls
                                         name={t("trends.yourRating", "Your Rating")}
                                     />
-                                </AreaChart>
+                                </ComposedChart>
                             </ResponsiveContainer>
                         </div>
                     </CardContent>

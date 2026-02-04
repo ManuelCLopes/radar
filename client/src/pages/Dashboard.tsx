@@ -39,6 +39,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { type Business, type InsertBusiness, type Report, businessTypes } from "@shared/schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -66,6 +76,8 @@ export default function Dashboard() {
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [generatingReportId, setGeneratingReportId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletingReportId, setDeletingReportId] = useState<string | null>(null);
+  const [reportToDelete, setReportToDelete] = useState<Report | null>(null);
   const [historyBusiness, setHistoryBusiness] = useState<Business | null>(null);
   const [historyDialogOpen, setHistoryDialogOpen] = useState(false);
   const [isAnalysisOpen, setIsAnalysisOpen] = useState(false);
@@ -173,6 +185,31 @@ export default function Dashboard() {
     },
     onSettled: () => {
       setDeletingId(null);
+    },
+  });
+
+  const deleteReportMutation = useMutation({
+    mutationFn: async (id: string) => {
+      setDeletingReportId(id);
+      await apiRequest("DELETE", `/api/reports/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/reports/history"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/reports/business"] });
+      toast({
+        title: t("toast.reportDeleted.title"),
+        description: t("toast.reportDeleted.description"),
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: t("toast.error.title"),
+        description: error.message || t("toast.error.deleteReport", "Failed to delete report"),
+        variant: "destructive",
+      });
+    },
+    onSettled: () => {
+      setDeletingReportId(null);
     },
   });
 
@@ -760,12 +797,27 @@ export default function Dashboard() {
                                   variant="outline"
                                   size="sm"
                                   onClick={() => {
-                                    setSelectedReport(report);
-                                    setReportViewOpen(true);
+                                    setCurrentReport(report);
+                                    setReportDialogOpen(true);
                                   }}
                                 >
                                   <FileText className="h-4 w-4 mr-2" />
                                   {t("report.history.view")}
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setReportToDelete(report);
+                                  }}
+                                  disabled={deletingReportId === report.id}
+                                >
+                                  {deletingReportId === report.id ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <Trash2 className="h-4 w-4" />
+                                  )}
                                 </Button>
                               </div>
                             </CardContent>
@@ -891,6 +943,31 @@ export default function Dashboard() {
           />
         )
       }
+
+      {/* Delete Report Confirmation Dialog */}
+      <AlertDialog open={!!reportToDelete} onOpenChange={(open) => !open && setReportToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("report.deleteDialog.title")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("report.deleteDialog.description")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("report.deleteDialog.cancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (reportToDelete) {
+                  deleteReportMutation.mutate(reportToDelete.id);
+                  setReportToDelete(null);
+                }
+              }}
+            >
+              {t("report.deleteDialog.confirm")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

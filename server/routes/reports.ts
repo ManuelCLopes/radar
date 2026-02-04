@@ -165,6 +165,27 @@ export function registerReportRoutes(app: Express) {
         }
     });
 
+    app.delete("/api/reports/:id", isAuthenticated, async (req, res) => {
+        try {
+            const report = await storage.getReport(req.params.id);
+
+            if (!report) {
+                return res.status(404).json({ error: "Report not found" });
+            }
+
+            // Verify ownership
+            if (report.userId && report.userId !== (req.user as AppUser).id) {
+                return res.status(403).json({ error: "Unauthorized access to this report" });
+            }
+
+            await storage.deleteReport(req.params.id);
+            res.json({ message: "Report deleted successfully" });
+        } catch (error) {
+            console.error("Error deleting report:", error);
+            res.status(500).json({ error: "Failed to delete report" });
+        }
+    });
+
     // Authenticated Address Analysis
     app.post("/api/analyze-address", async (req, res) => {
         if (!req.isAuthenticated()) return res.sendStatus(401);
@@ -231,7 +252,9 @@ export function registerReportRoutes(app: Express) {
                 locationStatus: 'validated' as const,
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                userId: null // Temp business has no user
+                userId: null, // Temp business has no user
+                rating: null,
+                userRatingsTotal: null
             };
 
             // Generate report

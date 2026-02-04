@@ -34,6 +34,8 @@ export async function runReportForBusiness(
 
   let competitors: import("@shared/schema").Competitor[] = [];
   let aiAnalysis: import("./ai").StructuredAnalysis;
+  let currentRating = business.rating || null;
+  let currentReviews = business.userRatingsTotal || null;
 
   try {
     competitors = await searchNearby(
@@ -55,10 +57,10 @@ export async function runReportForBusiness(
     aiAnalysis = await analyzeCompetitors(business, competitors, language, userPlan);
 
     // Attempt to fetch and update the business's own rating for trends
+
     if (!providedBusiness) {
       try {
         // Import searchPlacesByAddress dynamically or use top-level import
-        // I'll assume top-level import needs to be added, but I can use import()
         const { searchPlacesByAddress } = await import("./googlePlaces");
         const businessSearchResults = await searchPlacesByAddress(
           `${business.name}, ${business.address}`
@@ -67,6 +69,9 @@ export async function runReportForBusiness(
         if (businessSearchResults.length > 0) {
           const selfMatch = businessSearchResults[0];
           if (selfMatch.rating) {
+            currentRating = selfMatch.rating;
+            currentReviews = selfMatch.userRatingsTotal || null;
+
             await storage.updateBusiness(business.id, {
               rating: selfMatch.rating,
               userRatingsTotal: selfMatch.userRatingsTotal
@@ -100,6 +105,8 @@ export async function runReportForBusiness(
       targetAudience: aiAnalysis.targetAudience,
       marketingStrategy: aiAnalysis.marketingStrategy,
       customerSentiment: aiAnalysis.customerSentiment,
+      businessRating: currentRating,
+      businessUserRatingsTotal: currentReviews,
       // HTML field is not used for new reports as we use structured data
       html: undefined,
       userId: userId || null,

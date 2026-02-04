@@ -160,6 +160,12 @@
     "email": {
       "enterAddress": "Insira o endereço de email do destinatário abaixo.",
       "send": "Enviar Email"
+    },
+    "deleteDialog": {
+      "title": "Eliminar Relatório",
+      "description": "Tem a certeza que pretende eliminar este relatório? Esta ação não pode ser desfeita.",
+      "cancel": "Cancelar",
+      "confirm": "Eliminar"
     }
   },
   "toast": {
@@ -174,6 +180,10 @@
     "reportGenerated": {
       "title": "Relatório gerado",
       "description": "O seu relatório de análise de concorrência está pronto."
+    },
+    "reportDeleted": {
+      "title": "Relatório eliminado",
+      "description": "O relatório foi removido."
     },
     "reportDownloaded": {
       "title": "Relatório transferido",
