@@ -10,6 +10,7 @@ import { RadiusSelector } from "@/components/RadiusSelector";
 import { ReportView } from "@/components/ReportView";
 import { ReportHistory } from "@/components/ReportHistory";
 import { CompetitorMap } from "@/components/CompetitorMap";
+import { TrendsDashboard } from "@/components/TrendsDashboard";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useToast } from "@/hooks/use-toast";
@@ -414,6 +415,12 @@ export default function Dashboard() {
                       {t("dashboard.tabs.history")}
                     </span>
                   </TabsTrigger>
+                  <TabsTrigger value="trends" className="group flex items-center" data-testid="tab-trends">
+                    <TrendingUp className="h-4 w-4" />
+                    <span className="max-w-0 overflow-hidden opacity-0 whitespace-nowrap transition-all duration-300 ease-in-out group-data-[state=active]:max-w-[150px] group-data-[state=active]:opacity-100 group-data-[state=active]:ml-2 sm:max-w-none sm:opacity-100 sm:ml-2 sm:inline">
+                      {t("trends.title", "Trends")}
+                    </span>
+                  </TabsTrigger>
                 </TabsList>
 
                 <div className="flex gap-2">
@@ -768,6 +775,43 @@ export default function Dashboard() {
                     )}
                   </CardContent>
                 </Card>
+              </TabsContent>
+
+              <TabsContent value="trends" className="space-y-6">
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <Label>{t("trends.selectBusiness", "Select Business:")}</Label>
+                    <Select
+                      value={selectedMapBusinessId}
+                      onValueChange={setSelectedMapBusinessId}
+                    >
+                      <SelectTrigger className="w-[280px]">
+                        <SelectValue placeholder={t("trends.selectBusinessPlaceholder", "Select a business")} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {businesses.map(b => (
+                          <SelectItem key={b.id} value={b.id}>
+                            {b.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {selectedMapBusinessId && selectedMapBusinessId !== "all" ? (
+                    <TrendsDashboard
+                      business={businesses.find(b => b.id === selectedMapBusinessId)!}
+                    />
+                  ) : (
+                    <div className="text-center py-12 border rounded-lg bg-muted/10">
+                      <TrendingUp className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-medium">{t("trends.selectToView", "Select a business to view trends")}</h3>
+                      <p className="text-muted-foreground mt-2">
+                        {t("trends.selectToViewDesc", "Choose one of your registered businesses to see its historical performance.")}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </TabsContent>
 
             </Tabs>
