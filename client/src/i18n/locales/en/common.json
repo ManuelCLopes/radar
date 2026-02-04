@@ -607,7 +607,16 @@
       "proBadge": "PRO",
       "freeBadge": "FREE",
       "manage": "Manage Subscription",
-      "upgrade": "Upgrade to Pro"
+      "upgrade": "Upgrade to Pro",
+      "status": "Status",
+      "statusActive": "Active",
+      "statusCanceled": "Canceled",
+      "statusPastDue": "Past Due",
+      "accessUntil": "Access until",
+      "reactivateHint": "Click 'Manage Subscription' to reactivate your plan",
+      "until": "until",
+      "canceledAccess": "You have Pro access until your billing period ends",
+      "reactivate": "Reactivate Pro Plan"
     },
     "account": {
       "title": "Account Information",
@@ -706,5 +715,24 @@
     "accept": "Accept",
     "decline": "Decline",
     "learnMore": "Learn More"
+  },
+  "pro": {
+    "welcome": {
+      "title": "Welcome to Pro! 🎉",
+      "subtitle": "You've unlocked powerful features to grow your business",
+      "feature1": {
+        "title": "3 Business Profiles",
+        "description": "Track multiple locations and brands"
+      },
+      "feature2": {
+        "title": "10 Reports per Month",
+        "description": "Generate comprehensive competitor analyses"
+      },
+      "feature3": {
+        "title": "20km Search Radius",
+        "description": "Discover competitors across a wider area"
+      },
+      "cta": "Get Started"
+    }
   }
 }
