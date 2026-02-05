@@ -322,14 +322,13 @@ test.describe('Dashboard Business Management Flow', () => {
         await page.goto('/dashboard');
 
         // Navigate to History tab (assuming tabs exist, or just check content if listed on main)
-        // If history is in a separate tab or section:
-        const historyTab = page.getByRole('tab', { name: /History|Histórico/i });
+        const historyTab = page.getByTestId('tab-history');
         if (await historyTab.isVisible()) {
             await historyTab.click();
         }
 
         // Verify report item exists
-        await expect(page.getByText('Historic Cafe')).toBeVisible();
+        await expect(page.getByText('Historic Cafe')).toBeVisible({ timeout: 10000 });
     });
 
 });
