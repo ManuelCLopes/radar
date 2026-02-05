@@ -14,8 +14,8 @@ import { storage } from "../storage";
 import Stripe from "stripe";
 
 // Mock Stripe
-vi.mock("stripe", () => {
-    const mockStripeInstance = {
+const { mockStripeInstance } = vi.hoisted(() => ({
+    mockStripeInstance: {
         checkout: {
             sessions: {
                 create: vi.fn(),
@@ -29,9 +29,16 @@ vi.mock("stripe", () => {
         webhooks: {
             constructEvent: vi.fn(),
         },
-    };
+    }
+}));
+
+vi.mock("stripe", () => {
     return {
-        default: vi.fn(() => mockStripeInstance),
+        default: class MockStripe {
+            checkout = mockStripeInstance.checkout;
+            billingPortal = mockStripeInstance.billingPortal;
+            webhooks = mockStripeInstance.webhooks;
+        },
     };
 });
 

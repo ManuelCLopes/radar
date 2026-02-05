@@ -37,7 +37,11 @@ const { mockConstructEvent, mockStripeInstance } = vi.hoisted(() => {
 
 vi.mock('stripe', () => {
     return {
-        default: vi.fn(() => mockStripeInstance),
+        default: class MockStripe {
+            checkout = mockStripeInstance.checkout;
+            billingPortal = mockStripeInstance.billingPortal;
+            webhooks = mockStripeInstance.webhooks;
+        },
     };
 });
 
