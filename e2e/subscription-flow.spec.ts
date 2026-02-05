@@ -154,30 +154,33 @@ test.describe('Subscription Management', () => {
         // Use the Header Language Selector (consistent with i18n test)
         const langSelector = page.getByTestId('button-language-selector');
 
-        // Test Portuguese
-        await langSelector.click({ force: true });
-        await page.getByTestId('button-lang-pt').click({ force: true });
+        // Helper to open selector and click language
+        const switchLang = async (langId: string, expectedText: string | RegExp) => {
+            // Focus and use Space to open to avoid click timing issues with Radix
+            await langSelector.focus();
+            await page.keyboard.press('Space');
+            const item = page.getByTestId(langId);
+            await expect(item).toBeVisible({ timeout: 5000 });
+            await item.click();
+            await expect(page.getByText(expectedText)).toBeVisible({ timeout: 10000 });
+        };
 
-        // Wait for update
-        await expect(page.getByText(/Plano Atual/i)).toBeVisible({ timeout: 5000 });
+        // Test Portuguese
+        await switchLang('button-lang-pt', /Plano Atual/i);
         await expect(page.getByText(/Gerir Subscrição/i)).toBeVisible();
 
         // Test Spanish
-        await langSelector.click({ force: true });
-        await page.getByTestId('button-lang-es').click({ force: true });
-        await expect(page.getByText(/Plan Actual/i)).toBeVisible({ timeout: 5000 });
+        await switchLang('button-lang-es', /Plan Actual/i);
         await expect(page.getByText(/Administrar Suscripción/i)).toBeVisible();
 
         // Test German
-        await langSelector.click({ force: true });
-        await page.getByTestId('button-lang-de').click({ force: true });
-        await expect(page.getByText(/Aktueller Plan/i)).toBeVisible({ timeout: 5000 });
+        await switchLang('button-lang-de', /Aktueller Plan/i);
         await expect(page.getByText(/Abo verwalten/i)).toBeVisible();
 
         // Test French
-        await langSelector.click({ force: true });
-        await page.getByTestId('button-lang-fr').click({ force: true });
-        await expect(page.getByText(/Plan Actuel/i)).toBeVisible({ timeout: 5000 });
+        await switchLang('button-lang-fr', /Plan Actuel/i);
+        // Verify specifically for French as it might overlap with Spanish "Plan Actual"
+        await expect(page.getByText(/Gérer l'abonnement/i)).toBeVisible();
         // 'Gérer' matches both 'Gérer l'abonnement' and generally.
         // en/common.json key "manage" -> SettingsPage.tsx t('settings.subscription.manage')
         // Using regex for safety
