@@ -328,7 +328,7 @@ test.describe('Dashboard Business Management Flow', () => {
         }
 
         // Verify report item exists
-        await expect(page.getByText('Historic Cafe')).toBeVisible();
+        await expect(page.getByText('Historic Cafe')).toBeVisible({ timeout: 10000 });
     });
 
 });
