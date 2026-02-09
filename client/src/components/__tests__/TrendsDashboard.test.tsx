@@ -42,7 +42,7 @@ describe("TrendsDashboard", () => {
     const mockBusiness = {
         id: "biz-1",
         name: "Test Business",
-        type: "restaurant",
+        type: "restaurant" as const,
         address: "123 Test St",
         latitude: 40.7,
         longitude: -74.0,

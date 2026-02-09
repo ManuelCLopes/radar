@@ -23,12 +23,12 @@ describe("Footer", () => {
         vi.clearAllMocks();
         vi.mocked(useAuth).mockReturnValue({
             isAuthenticated: false,
-            user: null,
+            user: undefined,
             isLoading: false,
-            login: vi.fn(),
-            logout: vi.fn(),
-            register: vi.fn()
-        });
+            loginMutation: { mutateAsync: vi.fn() } as any,
+            logoutMutation: { mutateAsync: vi.fn() } as any,
+            registerMutation: { mutateAsync: vi.fn() } as any
+        } as any);
     });
 
     describe("Base Rendering", () => {
@@ -74,10 +74,10 @@ describe("Footer", () => {
                 isAuthenticated: true,
                 user: { id: "1", email: "test@example.com" } as any,
                 isLoading: false,
-                login: vi.fn(),
-                logout: vi.fn(),
-                register: vi.fn()
-            });
+                loginMutation: { mutateAsync: vi.fn() } as any,
+                logoutMutation: { mutateAsync: vi.fn() } as any,
+                registerMutation: { mutateAsync: vi.fn() } as any
+            } as any);
         });
 
         it("should show dashboard link for authenticated users", () => {
