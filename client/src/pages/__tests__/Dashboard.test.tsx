@@ -12,8 +12,12 @@ vi.mock("@tanstack/react-query", async () => {
     return {
         ...actual,
         useQuery: vi.fn(),
-        useMutation: vi.fn(() => ({
-            mutate: vi.fn(),
+        useMutation: vi.fn((options: any) => ({
+            mutate: (variables: any) => {
+                if (options?.mutationFn) {
+                    return options.mutationFn(variables);
+                }
+            },
             isPending: false,
         })),
     };
@@ -29,10 +33,27 @@ vi.mock("@/context/PricingModalContext", () => ({
     PricingModalProvider: ({ children }: any) => <div>{children}</div>
 }));
 
+// Mock API Request
+vi.mock("@/lib/queryClient", async () => {
+    const actual = await vi.importActual("@/lib/queryClient");
+    return {
+        ...actual,
+        apiRequest: vi.fn().mockResolvedValue({ json: () => ({}) }),
+    };
+});
+import { apiRequest } from "@/lib/queryClient";
+
 // Mock components
 vi.mock("@/components/ThemeToggle", () => ({ ThemeToggle: () => <div>ThemeToggle</div> }));
 vi.mock("@/components/LanguageSelector", () => ({ LanguageSelector: () => <div>LanguageSelector</div> }));
-vi.mock("@/components/BusinessList", () => ({ BusinessList: () => <div>BusinessList</div> }));
+vi.mock("@/components/BusinessList", () => ({
+    BusinessList: ({ onDelete }: any) => (
+        <div>
+            BusinessList
+            <button data-testid="mock-delete-business" onClick={() => onDelete("1")}>Delete Business</button>
+        </div>
+    )
+}));
 vi.mock("@/components/CompetitorMap", () => ({ CompetitorMap: () => <div>CompetitorMap</div> }));
 vi.mock("@/components/ReportView", () => ({ ReportView: () => <div>ReportView</div> }));
 vi.mock("@/components/ReportHistory", () => ({ ReportHistory: () => <div>ReportHistory</div> }));
@@ -407,6 +428,25 @@ describe("Dashboard", () => {
 
         await waitFor(() => {
             expect(screen.getByText("3km")).toBeInTheDocument();
+        });
+    });
+    it("integrates with BusinessList to delete a business", async () => {
+        const mockBusinesses = [{ id: "1", name: "Test Business", type: "restaurant", address: "123 Main St" }];
+
+        (useQuery as any).mockImplementation(({ queryKey }: any) => {
+            if (queryKey[0] === "/api/businesses") {
+                return { data: mockBusinesses, isLoading: false };
+            }
+            return { data: [], isLoading: false };
+        });
+
+        render(<Dashboard />);
+
+        const deleteBtn = screen.getByTestId("mock-delete-business");
+        fireEvent.click(deleteBtn);
+
+        await waitFor(() => {
+            expect(apiRequest).toHaveBeenCalledWith("DELETE", "/api/businesses/1");
         });
     });
 });
