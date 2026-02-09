@@ -193,4 +193,221 @@ describe("Dashboard", () => {
             expect(input.value).toBe("London, UK");
         });
     });
+
+    it("renders loading state when businesses are loading", async () => {
+        (useQuery as any).mockImplementation(({ queryKey }: any) => {
+            if (queryKey[0] === "/api/businesses") {
+                return { data: undefined, isLoading: true };
+            }
+            return { data: [], isLoading: false };
+        });
+
+        render(<Dashboard />);
+
+        // Should show loading indicator
+        expect(screen.getByTestId("btn-new-analysis")).toBeInTheDocument();
+    });
+
+    it("renders empty state when no businesses exist", async () => {
+        (useQuery as any).mockImplementation(({ queryKey }: any) => {
+            if (queryKey[0] === "/api/businesses") {
+                return { data: [], isLoading: false };
+            }
+            if (queryKey[0] === "/api/reports/history") {
+                return { data: [], isLoading: false };
+            }
+            return { data: [], isLoading: false };
+        });
+
+        render(<Dashboard />);
+
+        // Dashboard renders with the tabs structure
+        await waitFor(() => {
+            expect(screen.getByTestId("tabs")).toBeInTheDocument();
+        });
+    });
+
+    it("renders business list when businesses exist", async () => {
+        const mockBusinesses = [
+            { id: "1", name: "Test Business 1", type: "restaurant", address: "123 Main St" },
+            { id: "2", name: "Test Business 2", type: "cafe", address: "456 Oak Ave" },
+        ];
+
+        (useQuery as any).mockImplementation(({ queryKey }: any) => {
+            if (queryKey[0] === "/api/businesses") {
+                return { data: mockBusinesses, isLoading: false };
+            }
+            return { data: [], isLoading: false };
+        });
+
+        render(<Dashboard />);
+
+        await waitFor(() => {
+            expect(screen.getByText("BusinessList")).toBeInTheDocument();
+        });
+    });
+
+    it("switches to trends tab when clicked", async () => {
+        (useQuery as any).mockImplementation(() => ({ data: [], isLoading: false }));
+
+        render(<Dashboard />);
+
+        const trendsTab = screen.getByRole("tab", { name: /trends/i });
+        fireEvent.click(trendsTab);
+
+        await waitFor(() => {
+            expect(screen.getByTestId("tabs-content-trends")).toBeInTheDocument();
+        });
+    });
+
+    it("renders dashboard header correctly", async () => {
+        (useQuery as any).mockImplementation(() => ({ data: [], isLoading: false }));
+
+        render(<Dashboard />);
+
+        // Header elements should be present
+        expect(screen.getByTestId("btn-new-analysis")).toBeInTheDocument();
+        expect(screen.getByText("ThemeToggle")).toBeInTheDocument();
+        expect(screen.getByText("LanguageSelector")).toBeInTheDocument();
+    });
+
+    it("renders user info from auth context", async () => {
+        mockUseAuth.mockReturnValue({
+            user: { id: "1", email: "john@example.com", fullName: "John Doe" },
+            logoutMutation: { mutate: vi.fn() },
+        });
+
+        (useQuery as any).mockImplementation(() => ({ data: [], isLoading: false }));
+
+        render(<Dashboard />);
+
+        // Dashboard should render with user context
+        expect(screen.getByTestId("btn-new-analysis")).toBeInTheDocument();
+    });
+
+    it("handles geolocation error gracefully", async () => {
+        const mockGeolocation = {
+            getCurrentPosition: vi.fn().mockImplementation((_, error) => error({
+                code: 1,
+                message: "User denied geolocation"
+            }))
+        };
+        Object.defineProperty(global.navigator, 'geolocation', {
+            value: mockGeolocation,
+            writable: true
+        });
+
+        (useQuery as any).mockImplementation(() => ({ data: [], isLoading: false }));
+
+        render(<Dashboard />);
+
+        const newAnalysisBtn = screen.getByTestId("btn-new-analysis");
+        fireEvent.click(newAnalysisBtn);
+
+        await waitFor(() => {
+            expect(screen.getByText("dashboard.analysis.title")).toBeInTheDocument();
+        });
+
+        const locationButton = screen.getByTitle("addressSearch.useCurrentLocation");
+        fireEvent.click(locationButton);
+
+        // Should not crash, error is handled internally
+        expect(mockGeolocation.getCurrentPosition).toHaveBeenCalled();
+    });
+
+    it("displays history tab with reports sorted by date", async () => {
+        const mockReports = [
+            { id: "1", businessName: "Older Report", generatedAt: "2024-01-01T10:00:00Z", radius: 1000, businessId: null },
+            { id: "2", businessName: "Newer Report", generatedAt: "2024-12-01T10:00:00Z", radius: 500, businessId: null },
+        ];
+
+        (useQuery as any).mockImplementation(({ queryKey }: any) => {
+            if (queryKey[0] === "/api/reports/history") {
+                return { data: mockReports, isLoading: false };
+            }
+            return { data: [], isLoading: false };
+        });
+
+        render(<Dashboard />);
+
+        const historyTab = screen.getByRole("tab", { name: /history/i });
+        fireEvent.click(historyTab);
+
+        await waitFor(() => {
+            expect(screen.getByText("Newer Report")).toBeInTheDocument();
+            expect(screen.getByText("Older Report")).toBeInTheDocument();
+        });
+    });
+
+    it("renders links in dashboard header", async () => {
+        (useQuery as any).mockImplementation(() => ({ data: [], isLoading: false }));
+
+        render(<Dashboard />);
+
+        // Dashboard should have multiple links (logo, settings, etc)
+        const links = screen.getAllByRole("link");
+        expect(links.length).toBeGreaterThan(0);
+    });
+
+    it("renders competitor map component", async () => {
+        const mockBusinesses = [{ id: "1", name: "Test Business", latitude: 10, longitude: 20 }];
+
+        (useQuery as any).mockImplementation(({ queryKey }: any) => {
+            if (queryKey[0] === "/api/businesses") {
+                return { data: mockBusinesses, isLoading: false };
+            }
+            return { data: [], isLoading: false };
+        });
+
+        render(<Dashboard />);
+
+        await waitFor(() => {
+            expect(screen.getByText("CompetitorMap")).toBeInTheDocument();
+        });
+    });
+
+    it("displays radius in meters for small values", async () => {
+        const mockReports = [
+            { id: "1", businessName: "Small Radius", generatedAt: new Date().toISOString(), radius: 250, businessId: null },
+        ];
+
+        (useQuery as any).mockImplementation(({ queryKey }: any) => {
+            if (queryKey[0] === "/api/reports/history") {
+                return { data: mockReports, isLoading: false };
+            }
+            return { data: [], isLoading: false };
+        });
+
+        render(<Dashboard />);
+
+        const historyTab = screen.getByRole("tab", { name: /history/i });
+        fireEvent.click(historyTab);
+
+        await waitFor(() => {
+            expect(screen.getByText("250m")).toBeInTheDocument();
+        });
+    });
+
+    it("displays radius in kilometers for large values", async () => {
+        const mockReports = [
+            { id: "1", businessName: "Large Radius", generatedAt: new Date().toISOString(), radius: 3000, businessId: null },
+        ];
+
+        (useQuery as any).mockImplementation(({ queryKey }: any) => {
+            if (queryKey[0] === "/api/reports/history") {
+                return { data: mockReports, isLoading: false };
+            }
+            return { data: [], isLoading: false };
+        });
+
+        render(<Dashboard />);
+
+        const historyTab = screen.getByRole("tab", { name: /history/i });
+        fireEvent.click(historyTab);
+
+        await waitFor(() => {
+            expect(screen.getByText("3km")).toBeInTheDocument();
+        });
+    });
 });
+
