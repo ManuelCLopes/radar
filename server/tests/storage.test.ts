@@ -309,5 +309,155 @@ describe("Storage", () => {
             expect(mockFrom).toHaveBeenCalled();
             expect(mockOrderBy).toHaveBeenCalled();
         });
+
+        it("should get user by id", async () => {
+            const mockUser = { id: "1", email: "test@example.com" };
+            const mockWhere = vi.fn().mockResolvedValue([mockUser]);
+            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+            const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
+            (db.select as any).mockImplementation(mockSelect);
+
+            const result = await storage.getUser("1");
+
+            expect(db.select).toHaveBeenCalled();
+            expect(result).toEqual(mockUser);
+        });
+
+        it("should get user by email", async () => {
+            const mockUser = { id: "1", email: "test@example.com" };
+            const mockWhere = vi.fn().mockResolvedValue([mockUser]);
+            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+            const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
+            (db.select as any).mockImplementation(mockSelect);
+
+            const result = await storage.getUserByEmail("test@example.com");
+
+            expect(db.select).toHaveBeenCalled();
+            expect(result).toEqual(mockUser);
+        });
+
+        it("should upsert new user", async () => {
+            const newUser = { email: "new@example.com", firstName: "New" };
+            const mockReturning = vi.fn().mockResolvedValue([{ id: "1", ...newUser }]);
+            const mockConflict = vi.fn().mockReturnValue({ returning: mockReturning });
+            const mockValues = vi.fn().mockReturnValue({ onConflictDoUpdate: mockConflict });
+            (db.insert as any).mockReturnValue({ values: mockValues });
+
+            const result = await storage.upsertUser(newUser);
+
+            expect(db.insert).toHaveBeenCalled();
+            expect(result.email).toBe(newUser.email);
+        });
+
+        it("should get business by id", async () => {
+            const mockBusiness = { id: "1", name: "Test Business" };
+            const mockWhere = vi.fn().mockResolvedValue([mockBusiness]);
+            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+            const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
+            (db.select as any).mockImplementation(mockSelect);
+
+            const result = await storage.getBusiness("1");
+
+            expect(db.select).toHaveBeenCalled();
+            expect(result).toEqual(mockBusiness);
+        });
+
+        it("should add business", async () => {
+            const newBusiness = { name: "New Business", type: "restaurant", address: "123 St" };
+            const mockReturning = vi.fn().mockResolvedValue([{ id: "1", ...newBusiness }]);
+            const mockValues = vi.fn().mockReturnValue({ returning: mockReturning });
+            (db.insert as any).mockReturnValue({ values: mockValues });
+
+            const result = await storage.addBusiness(newBusiness as any);
+
+            expect(db.insert).toHaveBeenCalled();
+            expect(result.name).toBe(newBusiness.name);
+        });
+
+        it("should create report", async () => {
+            const newReport = { businessName: "Test", competitors: [], aiAnalysis: "Analysis" };
+            const mockReturning = vi.fn().mockResolvedValue([{ id: "1", ...newReport }]);
+            const mockValues = vi.fn().mockReturnValue({ returning: mockReturning });
+            (db.insert as any).mockReturnValue({ values: mockValues });
+
+            const result = await storage.createReport(newReport as any);
+
+            expect(db.insert).toHaveBeenCalled();
+            expect(result.businessName).toBe(newReport.businessName);
+        });
+
+        it("should get report by id", async () => {
+            const mockReport = { id: "1", businessName: "Test" };
+            const mockWhere = vi.fn().mockResolvedValue([mockReport]);
+            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+            const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
+            (db.select as any).mockImplementation(mockSelect);
+
+            const result = await storage.getReport("1");
+
+            expect(db.select).toHaveBeenCalled();
+            expect(result).toEqual(mockReport);
+        });
+
+        it("should get reports by business id", async () => {
+            const mockReports = [{ id: "1", businessId: "biz-1" }];
+            const mockOrderBy = vi.fn().mockResolvedValue(mockReports);
+            const mockWhere = vi.fn().mockReturnValue({ orderBy: mockOrderBy });
+            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+            const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
+            (db.select as any).mockImplementation(mockSelect);
+
+            const result = await storage.getReportsByBusinessId("biz-1");
+
+            expect(db.select).toHaveBeenCalled();
+            expect(result).toEqual(mockReports);
+        });
+
+        it("should update business", async () => {
+            const mockUpdated = { id: "1", name: "Updated Name" };
+            const mockReturning = vi.fn().mockResolvedValue([mockUpdated]);
+            const mockWhere = vi.fn().mockReturnValue({ returning: mockReturning });
+            const mockSet = vi.fn().mockReturnValue({ where: mockWhere });
+            (db.update as any).mockReturnValue({ set: mockSet });
+
+            const result = await storage.updateBusiness("1", { name: "Updated Name" });
+
+            expect(db.update).toHaveBeenCalled();
+            expect(result.name).toBe("Updated Name");
+        });
+
+        it("should delete business", async () => {
+            const mockReturning = vi.fn().mockResolvedValue([{ id: "1" }]);
+            const mockWhere = vi.fn().mockReturnValue({ returning: mockReturning });
+            (db.delete as any).mockReturnValue({ where: mockWhere });
+
+            const result = await storage.deleteBusiness("1");
+
+            expect(db.delete).toHaveBeenCalled();
+            expect(result).toBe(true);
+        });
+
+        it("should delete report", async () => {
+            const mockReturning = vi.fn().mockResolvedValue([{ id: "1" }]);
+            const mockWhere = vi.fn().mockReturnValue({ returning: mockReturning });
+            (db.delete as any).mockReturnValue({ where: mockWhere });
+
+            const result = await storage.deleteReport("1");
+
+            expect(db.delete).toHaveBeenCalled();
+            expect(result).toBe(true);
+        });
+
+        it("should track API usage", async () => {
+            const usage = { service: "google_places", endpoint: "textSearch", costUnits: 1 };
+            const mockValues = vi.fn().mockResolvedValue(undefined);
+            (db.insert as any).mockReturnValue({ values: mockValues });
+
+            await storage.trackApiUsage(usage as any);
+
+            expect(db.insert).toHaveBeenCalled();
+            expect(mockValues).toHaveBeenCalled();
+        });
     });
 });
+
