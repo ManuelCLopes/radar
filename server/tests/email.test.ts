@@ -216,4 +216,140 @@ describe("generateWeeklyReportContent", () => {
         expect(subject).toContain("Relatório Semanal de Concorrência");
         expect(html).toContain("O Seu Resumo Semanal");
     });
+
+    it("should generate Spanish weekly report", () => {
+        const esUser = { ...mockUser, language: "es" };
+        const { subject, html } = generateWeeklyReportContent(esUser, [mockReport]);
+        expect(subject).toContain("Informe Semanal de Competencia");
+        expect(html).toContain("Su Resumen Semanal");
+    });
+
+    it("should generate French weekly report", () => {
+        const frUser = { ...mockUser, language: "fr" };
+        const { subject, html } = generateWeeklyReportContent(frUser, [mockReport]);
+        expect(subject).toContain("Rapport Hebdomadaire de Concurrence");
+        expect(html).toContain("Votre Résumé Hebdomadaire");
+    });
+
+    it("should generate German weekly report", () => {
+        const deUser = { ...mockUser, language: "de" };
+        const { subject, html } = generateWeeklyReportContent(deUser, [mockReport]);
+        expect(subject).toContain("Wöchentlicher Wettbewerbsbericht");
+        expect(html).toContain("Ihre Wöchentliche Zusammenfassung");
+    });
+
+    it("should handle empty reports array", () => {
+        const { html, subject } = generateWeeklyReportContent(mockUser, []);
+        expect(subject).toBeDefined();
+        expect(html).toContain("0 businesses");
+    });
+
+    it("should calculate average rating correctly", () => {
+        const reportWithMultipleCompetitors = {
+            ...mockReport,
+            competitors: [
+                { name: "Comp 1", rating: 4.0 },
+                { name: "Comp 2", rating: 5.0 },
+                { name: "Comp 3", rating: 3.0 }
+            ]
+        } as any;
+        const { html } = generateWeeklyReportContent(mockUser, [reportWithMultipleCompetitors]);
+        expect(html).toContain("4.0"); // average of 4, 5, 3
+    });
+
+    it("should handle report without competitors", () => {
+        const reportNoCompetitors = { ...mockReport, competitors: [] } as any;
+        const { html } = generateWeeklyReportContent(mockUser, [reportNoCompetitors]);
+        expect(html).toContain("0");
+        expect(html).toContain("-"); // N/A rating
+    });
 });
+
+import { generateVerificationEmail, ConsoleEmailService } from "../email";
+
+describe("generateVerificationEmail", () => {
+    const testLink = "https://example.com/verify?token=abc123";
+
+    it("should generate Portuguese verification email by default", () => {
+        const { html, text, subject } = generateVerificationEmail(testLink);
+        expect(subject).toBe("Verifique o seu email - Competitor Watcher");
+        expect(html).toContain("Verifique o seu email");
+        expect(html).toContain("Verificar Email");
+        expect(html).toContain(testLink);
+        expect(text).toContain(testLink);
+    });
+
+    it("should generate English verification email", () => {
+        const { html, text, subject } = generateVerificationEmail(testLink, "en");
+        expect(subject).toBe("Verify your email - Competitor Watcher");
+        expect(html).toContain("Verify your email");
+        expect(html).toContain("Verify Email");
+        expect(text).toContain("verify your email");
+    });
+
+    it("should generate Spanish verification email", () => {
+        const { html, text, subject } = generateVerificationEmail(testLink, "es");
+        expect(subject).toContain("Verifique su correo electrónico");
+        expect(html).toContain("Verificar Correo Electrónico");
+    });
+
+    it("should generate French verification email", () => {
+        const { html, text, subject } = generateVerificationEmail(testLink, "fr");
+        expect(subject).toContain("Vérifiez votre e-mail");
+        expect(html).toContain("Vérifier l'E-mail");
+    });
+
+    it("should generate German verification email", () => {
+        const { html, text, subject } = generateVerificationEmail(testLink, "de");
+        expect(subject).toContain("Bestätigen Sie Ihre E-Mail");
+        expect(html).toContain("E-Mail Bestätigen");
+    });
+
+    it("should fallback to English for unknown language", () => {
+        const { subject } = generateVerificationEmail(testLink, "zh");
+        expect(subject).toBe("Verify your email - Competitor Watcher");
+    });
+
+    it("should normalize language code (e.g. en-US -> en)", () => {
+        const { subject } = generateVerificationEmail(testLink, "en-US");
+        expect(subject).toBe("Verify your email - Competitor Watcher");
+    });
+
+    it("should include warning about unverified accounts", () => {
+        const { html } = generateVerificationEmail(testLink, "en");
+        expect(html).toContain("7 days");
+    });
+});
+
+describe("ConsoleEmailService", () => {
+    const service = new ConsoleEmailService();
+    const mockUser = {
+        id: "1",
+        email: "test@example.com",
+        language: "en"
+    } as any;
+
+    const mockReport = {
+        id: "1",
+        businessName: "Test Business",
+        generatedAt: new Date(),
+        competitors: [],
+        aiAnalysis: "Test analysis"
+    } as any;
+
+    it("should send weekly report and return true", async () => {
+        const result = await service.sendWeeklyReport(mockUser, [mockReport]);
+        expect(result).toBe(true);
+    });
+
+    it("should send ad-hoc report and return true", async () => {
+        const result = await service.sendAdHocReport("test@example.com", mockReport, "en");
+        expect(result).toBe(true);
+    });
+
+    it("should send verification email and return true", async () => {
+        const result = await service.sendVerificationEmail("test@example.com", "https://example.com/verify", "en");
+        expect(result).toBe(true);
+    });
+});
+

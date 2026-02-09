@@ -10,6 +10,64 @@ import type { User } from "@shared/schema";
 
 const SALT_ROUNDS = 10;
 
+export async function verifyLocal(email: string, password: string, done: (err: any, user?: any, info?: any) => void) {
+    try {
+        const user = await storage.getUserByEmail(email);
+        if (!user) {
+            return done(null, false, { message: "Invalid email or password", code: "INVALID_CREDENTIALS" } as any);
+        }
+
+        if (!user.passwordHash) {
+            return done(null, false, { message: "Please use Google login for this account", code: "GOOGLE_LOGIN_REQUIRED" } as any);
+        }
+
+        const isValid = await bcrypt.compare(password, user.passwordHash);
+        if (!isValid) {
+            return done(null, false, { message: "Invalid email or password", code: "INVALID_CREDENTIALS" } as any);
+        }
+
+        return done(null, user);
+    } catch (error) {
+        return done(error);
+    }
+}
+
+export async function verifyGoogle(accessToken: string, refreshToken: string, profile: any, done: (err: any, user?: any) => void) {
+    try {
+        const email = profile.emails?.[0]?.value;
+        if (!email) {
+            return done(new Error("No email found in Google profile"));
+        }
+
+        let user = await storage.getUserByEmail(email);
+
+        if (!user) {
+            // Create new user
+            user = await storage.upsertUser({
+                email,
+                provider: "google",
+                firstName: profile.name?.givenName || null,
+                lastName: profile.name?.familyName || null,
+                profileImageUrl: profile.photos?.[0]?.value || null,
+            });
+        } else {
+            // Update existing user
+            user = await storage.upsertUser({
+                id: user.id,
+                email: user.email,
+                provider: "google",
+                firstName: profile.name?.givenName || user.firstName,
+                lastName: profile.name?.familyName || user.lastName,
+                profileImageUrl: profile.photos?.[0]?.value || user.profileImageUrl,
+            });
+        }
+
+        return done(null, user);
+    } catch (error) {
+        return done(error as Error);
+    }
+}
+
 export function getSession() {
     const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
 
@@ -59,31 +117,13 @@ export async function setupAuth(app: Express) {
         }
     });
 
+
+
     // Local Strategy (Email/Password)
     passport.use(
         new LocalStrategy(
             { usernameField: "email" },
-            async (email, password, done) => {
-                try {
-                    const user = await storage.getUserByEmail(email);
-                    if (!user) {
-                        return done(null, false, { message: "Invalid email or password", code: "INVALID_CREDENTIALS" } as any);
-                    }
-
-                    if (!user.passwordHash) {
-                        return done(null, false, { message: "Please use Google login for this account", code: "GOOGLE_LOGIN_REQUIRED" } as any);
-                    }
-
-                    const isValid = await bcrypt.compare(password, user.passwordHash);
-                    if (!isValid) {
-                        return done(null, false, { message: "Invalid email or password", code: "INVALID_CREDENTIALS" } as any);
-                    }
-
-                    return done(null, user);
-                } catch (error) {
-                    return done(error);
-                }
-            }
+            verifyLocal
         )
     );
 
@@ -98,6 +138,8 @@ export async function setupAuth(app: Express) {
             }
         }
 
+
+
         passport.use(
             new GoogleStrategy(
                 {
@@ -105,41 +147,7 @@ export async function setupAuth(app: Express) {
                     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
                     callbackURL: callbackURL,
                 },
-                async (accessToken, refreshToken, profile, done) => {
-                    try {
-                        const email = profile.emails?.[0]?.value;
-                        if (!email) {
-                            return done(new Error("No email found in Google profile"));
-                        }
-
-                        let user = await storage.getUserByEmail(email);
-
-                        if (!user) {
-                            // Create new user
-                            user = await storage.upsertUser({
-                                email,
-                                provider: "google",
-                                firstName: profile.name?.givenName || null,
-                                lastName: profile.name?.familyName || null,
-                                profileImageUrl: profile.photos?.[0]?.value || null,
-                            });
-                        } else {
-                            // Update existing user
-                            user = await storage.upsertUser({
-                                id: user.id,
-                                email: user.email,
-                                provider: "google",
-                                firstName: profile.name?.givenName || user.firstName,
-                                lastName: profile.name?.familyName || user.lastName,
-                                profileImageUrl: profile.photos?.[0]?.value || user.profileImageUrl,
-                            });
-                        }
-
-                        return done(null, user);
-                    } catch (error) {
-                        return done(error as Error);
-                    }
-                }
+                verifyGoogle
             )
         );
     }

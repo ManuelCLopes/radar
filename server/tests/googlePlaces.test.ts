@@ -155,4 +155,237 @@ describe("Google Places API (Dynamic)", () => {
         expect(result[0].priceLevel).toBe("$$");
         expect(result[0].distance).toBeDefined();
     });
+
+    it("should throw error if searchNearby API call fails", async () => {
+        process.env.GOOGLE_API_KEY = "test-key";
+        const { searchNearby } = await import("../googlePlaces");
+
+        (global.fetch as any).mockResolvedValue({
+            ok: false,
+            statusText: "Service Unavailable"
+        });
+
+        await expect(searchNearby(10, 20, "restaurant")).rejects.toThrow("Google Places API Error");
+    });
+
+    it("should return empty array if searchNearby returns no places", async () => {
+        process.env.GOOGLE_API_KEY = "test-key";
+        const { searchNearby } = await import("../googlePlaces");
+
+        (global.fetch as any).mockResolvedValue({
+            ok: true,
+            json: async () => ({ places: [] })
+        });
+
+        const result = await searchNearby(10, 20, "restaurant");
+        expect(result).toEqual([]);
+    });
+
+    it("should include reviews when includeReviews is true", async () => {
+        process.env.GOOGLE_API_KEY = "test-key";
+        const { searchNearby } = await import("../googlePlaces");
+
+        (global.fetch as any).mockResolvedValue({
+            ok: true,
+            json: async () => ({
+                places: [{
+                    displayName: { text: "Competitor 1" },
+                    formattedAddress: "456 Comp St",
+                    location: { latitude: 10.01, longitude: 20.01 },
+                    rating: 4.0,
+                    reviews: [
+                        {
+                            text: { text: "Great place!" },
+                            originalText: { text: "Great place!" },
+                            authorAttribution: { displayName: "John Doe" },
+                            rating: 5,
+                            publishTime: "2024-01-15T10:00:00Z"
+                        }
+                    ]
+                }]
+            })
+        });
+
+        const result = await searchNearby(10, 20, "restaurant", 1500, true);
+        expect(result[0].reviews).toBeDefined();
+        expect(result[0].reviews).toHaveLength(1);
+        expect(result[0].reviews![0].author).toBe("John Doe");
+    });
+
+    it("should not include reviews when includeReviews is false", async () => {
+        process.env.GOOGLE_API_KEY = "test-key";
+        const { searchNearby } = await import("../googlePlaces");
+
+        (global.fetch as any).mockResolvedValue({
+            ok: true,
+            json: async () => ({
+                places: [{
+                    displayName: { text: "Competitor 1" },
+                    formattedAddress: "456 Comp St",
+                    location: { latitude: 10.01, longitude: 20.01 },
+                    rating: 4.0
+                }]
+            })
+        });
+
+        const result = await searchNearby(10, 20, "restaurant", 1500, false);
+        expect(result[0].reviews).toBeUndefined();
+    });
 });
+
+describe("reverseGeocode", () => {
+    beforeEach(() => {
+        vi.resetModules();
+        global.fetch = vi.fn();
+    });
+
+    it("should return null if API key is missing", async () => {
+        delete process.env.GOOGLE_API_KEY;
+        const { reverseGeocode } = await import("../googlePlaces");
+
+        const result = await reverseGeocode(10, 20);
+        expect(result).toBeNull();
+    });
+
+    it("should return formatted address on success", async () => {
+        process.env.GOOGLE_API_KEY = "test-key";
+        const { reverseGeocode } = await import("../googlePlaces");
+
+        (global.fetch as any).mockResolvedValue({
+            ok: true,
+            json: async () => ({
+                status: "OK",
+                results: [{ formatted_address: "123 Main Street, City" }]
+            })
+        });
+
+        const result = await reverseGeocode(10, 20);
+        expect(result).toBe("123 Main Street, City");
+    });
+
+    it("should return null if API returns error status", async () => {
+        process.env.GOOGLE_API_KEY = "test-key";
+        const { reverseGeocode } = await import("../googlePlaces");
+
+        (global.fetch as any).mockResolvedValue({
+            ok: true,
+            json: async () => ({
+                status: "ZERO_RESULTS",
+                results: []
+            })
+        });
+
+        const result = await reverseGeocode(10, 20);
+        expect(result).toBeNull();
+    });
+
+    it("should return null if API call fails", async () => {
+        process.env.GOOGLE_API_KEY = "test-key";
+        const { reverseGeocode } = await import("../googlePlaces");
+
+        (global.fetch as any).mockResolvedValue({
+            ok: false,
+            statusText: "Error"
+        });
+
+        const result = await reverseGeocode(10, 20);
+        expect(result).toBeNull();
+    });
+
+    it("should return null if fetch throws", async () => {
+        process.env.GOOGLE_API_KEY = "test-key";
+        const { reverseGeocode } = await import("../googlePlaces");
+
+        (global.fetch as any).mockRejectedValue(new Error("Network error"));
+
+        const result = await reverseGeocode(10, 20);
+        expect(result).toBeNull();
+    });
+
+    it("should return null if no results in response", async () => {
+        process.env.GOOGLE_API_KEY = "test-key";
+        const { reverseGeocode } = await import("../googlePlaces");
+
+        (global.fetch as any).mockResolvedValue({
+            ok: true,
+            json: async () => ({
+                status: "OK",
+                results: []
+            })
+        });
+
+        const result = await reverseGeocode(10, 20);
+        expect(result).toBeNull();
+    });
+});
+
+describe("hasGoogleApiKey", () => {
+    beforeEach(() => {
+        vi.resetModules();
+    });
+
+    it("should return true when API key is set", async () => {
+        process.env.GOOGLE_API_KEY = "test-key";
+        const { hasGoogleApiKey } = await import("../googlePlaces");
+        expect(hasGoogleApiKey()).toBe(true);
+    });
+
+    it("should return false when API key is not set", async () => {
+        delete process.env.GOOGLE_API_KEY;
+        const { hasGoogleApiKey } = await import("../googlePlaces");
+        expect(hasGoogleApiKey()).toBe(false);
+    });
+});
+
+describe("searchPlacesByAddress edge cases", () => {
+    beforeEach(() => {
+        vi.resetModules();
+        global.fetch = vi.fn();
+    });
+
+    it("should return empty array if no places in response", async () => {
+        process.env.GOOGLE_API_KEY = "test-key";
+        const { searchPlacesByAddress } = await import("../googlePlaces");
+
+        (global.fetch as any).mockResolvedValue({
+            ok: true,
+            json: async () => ({ places: null })
+        });
+
+        const result = await searchPlacesByAddress("test");
+        expect(result).toEqual([]);
+    });
+
+    it("should handle missing fields gracefully", async () => {
+        process.env.GOOGLE_API_KEY = "test-key";
+        const { searchPlacesByAddress } = await import("../googlePlaces");
+
+        (global.fetch as any).mockResolvedValue({
+            ok: true,
+            json: async () => ({
+                places: [{
+                    id: "place1"
+                    // Missing displayName, formattedAddress, location
+                }]
+            })
+        });
+
+        const result = await searchPlacesByAddress("test");
+        expect(result).toHaveLength(1);
+        expect(result[0].name).toBe("Unknown");
+        expect(result[0].address).toBe("");
+        expect(result[0].latitude).toBe(0);
+        expect(result[0].longitude).toBe(0);
+    });
+
+    it("should return empty array if fetch throws", async () => {
+        process.env.GOOGLE_API_KEY = "test-key";
+        const { searchPlacesByAddress } = await import("../googlePlaces");
+
+        (global.fetch as any).mockRejectedValue(new Error("Network error"));
+
+        const result = await searchPlacesByAddress("test");
+        expect(result).toEqual([]);
+    });
+});
+
