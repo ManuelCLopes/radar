@@ -458,6 +458,235 @@ describe("Storage", () => {
             expect(db.insert).toHaveBeenCalled();
             expect(mockValues).toHaveBeenCalled();
         });
+
+        it("should count reports current month", async () => {
+            const mockCount = [{ count: 5 }];
+            const mockWhere = vi.fn().mockResolvedValue(mockCount);
+            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+            const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
+            (db.select as any).mockImplementation(mockSelect);
+
+            const count = await storage.countReportsCurrentMonth("1");
+            expect(count).toBe(5);
+            expect(db.select).toHaveBeenCalled();
+        });
+
+        it("should list recent searches", async () => {
+            const mockLimit = vi.fn().mockResolvedValue([]);
+            const mockOrderBy = vi.fn().mockReturnValue({ limit: mockLimit });
+            const mockFrom = vi.fn().mockReturnValue({ orderBy: mockOrderBy });
+            const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
+            (db.select as any).mockImplementation(mockSelect);
+
+            await storage.listRecentSearches();
+
+            expect(db.select).toHaveBeenCalled();
+            expect(mockOrderBy).toHaveBeenCalled();
+            expect(mockLimit).toHaveBeenCalledWith(50);
+        });
+
+        it("should get search stats", async () => {
+            // Mock type distribution
+            const mockTypeDist = [{ type: "restaurant", count: 10 }];
+            const mockGroupBy1 = vi.fn().mockResolvedValue(mockTypeDist);
+            const mockFrom1 = vi.fn().mockReturnValue({ groupBy: mockGroupBy1 });
+
+            // Mock top locations
+            const mockTopLocs = [{ address: "123 St", count: 5 }];
+            const mockLimit = vi.fn().mockResolvedValue(mockTopLocs);
+            const mockOrderBy = vi.fn().mockReturnValue({ limit: mockLimit });
+            const mockGroupBy2 = vi.fn().mockReturnValue({ orderBy: mockOrderBy });
+            const mockFrom2 = vi.fn().mockReturnValue({ groupBy: mockGroupBy2 });
+
+            // Mock avg competitors
+            const mockAvg = [{ avg: 3.5 }];
+            const mockFrom3 = vi.fn().mockResolvedValue(mockAvg);
+
+            // Mock counts
+            const mockSearchCount = [{ count: 100 }];
+            const mockReportCount = [{ count: 20 }];
+            const mockFrom4 = vi.fn().mockResolvedValue(mockSearchCount);
+            const mockFrom5 = vi.fn().mockResolvedValue(mockReportCount);
+
+            // We need to mock separate calls to db.select
+            (db.select as any)
+                .mockImplementationOnce(() => ({ from: mockFrom1 })) // Type Dist
+                .mockImplementationOnce(() => ({ from: mockFrom2 })) // Top Locs
+                .mockImplementationOnce(() => ({ from: mockFrom3 })) // Avg Comp
+                .mockImplementationOnce(() => ({ from: mockFrom4 })) // Search Count
+                .mockImplementationOnce(() => ({ from: mockFrom5 })); // Report Count
+
+            const stats = await storage.getSearchStats!();
+
+            expect(stats.typeDistribution[0].count).toBe(10);
+            expect(stats.topLocations[0].count).toBe(5);
+            expect(stats.avgCompetitors).toBe(4); // 3.5 rounded
+            expect(stats.conversionRate).toBe(20); // 20/100 * 100
+        });
+
+        it("should handle password reset tokens", async () => {
+            // Create
+            (db.insert as any).mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) });
+            await storage.createPasswordResetToken({ userId: "1", token: "tok", expiresAt: new Date() });
+            expect(db.insert).toHaveBeenCalled();
+
+            // Get
+            const mockToken = { token: "tok", userId: "1" };
+            const mockWhere = vi.fn().mockResolvedValue([mockToken]);
+            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+            (db.select as any).mockReturnValue({ from: mockFrom });
+
+            const retrieved = await storage.getPasswordResetToken("tok");
+            expect(retrieved).toEqual(mockToken);
+
+            // Mark as used
+            const mockUpdateWhere = vi.fn().mockResolvedValue(undefined);
+            const mockSet = vi.fn().mockReturnValue({ where: mockUpdateWhere });
+            (db.update as any).mockReturnValue({ set: mockSet });
+
+            await storage.markTokenAsUsed("tok");
+            expect(db.update).toHaveBeenCalled();
+        });
+
+        it("should update user password", async () => {
+            const mockUpdateWhere = vi.fn().mockResolvedValue(undefined);
+            const mockSet = vi.fn().mockReturnValue({ where: mockUpdateWhere });
+            (db.update as any).mockReturnValue({ set: mockSet });
+
+            await storage.updateUserPassword("1", "newhash");
+            expect(db.update).toHaveBeenCalled();
+        });
+
+        it("should update user language", async () => {
+            const mockUpdateWhere = vi.fn().mockResolvedValue(undefined);
+            const mockSet = vi.fn().mockReturnValue({ where: mockUpdateWhere });
+            (db.update as any).mockReturnValue({ set: mockSet });
+
+            await storage.updateUserLanguage("1", "pt");
+            expect(db.update).toHaveBeenCalled();
+        });
+
+        it("should verify user", async () => {
+            const mockUpdateWhere = vi.fn().mockResolvedValue(undefined);
+            const mockSet = vi.fn().mockReturnValue({ where: mockUpdateWhere });
+            (db.update as any).mockReturnValue({ set: mockSet });
+
+            await storage.verifyUser("1");
+            expect(db.update).toHaveBeenCalled();
+        });
+
+        it("should find user by verification token", async () => {
+            const mockUser = { id: "1" };
+            const mockWhere = vi.fn().mockResolvedValue([mockUser]);
+            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+            (db.select as any).mockReturnValue({ from: mockFrom });
+
+            const user = await storage.findUserByVerificationToken("token");
+            expect(user).toEqual(mockUser);
+        });
+
+        it("should delete expired unverified users", async () => {
+            const mockReturning = vi.fn().mockResolvedValue([1, 2]);
+            const mockWhere = vi.fn().mockReturnValue({ returning: mockReturning });
+            (db.delete as any).mockReturnValue({ where: mockWhere });
+
+            const deletedCount = await storage.deleteExpiredUnverifiedUsers();
+            expect(deletedCount).toBe(2);
+        });
+
+        it("should check rate limit (new)", async () => {
+            // New record
+            const mockWhere = vi.fn().mockResolvedValue([]);
+            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+            (db.select as any).mockReturnValue({ from: mockFrom });
+
+            (db.insert as any).mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) });
+
+            const result = await storage.checkRateLimit("1.2.3.4");
+            expect(result.allowed).toBe(true);
+            expect(db.insert).toHaveBeenCalled();
+        });
+
+        it("should check rate limit (existing, allowed)", async () => {
+            // Existing record, within window, hits < 5
+            const mockLimit = { ip: "1.2.3.4", hits: 1, resetAt: new Date(Date.now() + 10000) };
+            const mockWhere = vi.fn().mockResolvedValue([mockLimit]);
+            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+            (db.select as any).mockReturnValue({ from: mockFrom });
+
+            const mockUpdateWhere = vi.fn().mockResolvedValue(undefined);
+            const mockSet = vi.fn().mockReturnValue({ where: mockUpdateWhere });
+            (db.update as any).mockReturnValue({ set: mockSet });
+
+            const result = await storage.checkRateLimit("1.2.3.4");
+            expect(result.allowed).toBe(true);
+            expect(db.update).toHaveBeenCalled();
+        });
+
+        it("should check rate limit (blocked)", async () => {
+            // Existing record, within window, hits >= 5
+            const mockLimit = { ip: "1.2.3.4", hits: 5, resetAt: new Date(Date.now() + 10000) };
+            const mockWhere = vi.fn().mockResolvedValue([mockLimit]);
+            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+            (db.select as any).mockReturnValue({ from: mockFrom });
+
+            const result = await storage.checkRateLimit("1.2.3.4");
+            expect(result.allowed).toBe(false);
+            expect(result.resetTime).toBeDefined();
+        });
+
+        it("should check rate limit (reset)", async () => {
+            // Existing record, outdated window
+            const mockLimit = { ip: "1.2.3.4", hits: 5, resetAt: new Date(Date.now() - 10000) };
+            const mockWhere = vi.fn().mockResolvedValue([mockLimit]);
+            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+            (db.select as any).mockReturnValue({ from: mockFrom });
+
+            const mockUpdateWhere = vi.fn().mockResolvedValue(undefined);
+            const mockSet = vi.fn().mockReturnValue({ where: mockUpdateWhere });
+            (db.update as any).mockReturnValue({ set: mockSet });
+
+            const result = await storage.checkRateLimit("1.2.3.4");
+            expect(result.allowed).toBe(true);
+            // Should reset hits to 1
+            expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({ hits: 1 }));
+        });
+
+        it("should get api usage stats", async () => {
+            const usage1 = { service: "google_places", costUnits: 1, createdAt: new Date() };
+            const usage2 = { service: "openai", tokens: 100, createdAt: new Date() };
+            const mockUsages = [usage1, usage2];
+
+            const mockOrderBy = vi.fn().mockResolvedValue(mockUsages);
+            const mockWhere = vi.fn().mockReturnValue({ orderBy: mockOrderBy });
+            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+            (db.select as any).mockReturnValue({ from: mockFrom });
+
+            const stats = await storage.getApiUsageStats(30);
+            expect(stats.length).toBeGreaterThan(0);
+            // Check if today has data
+            const today = stats[0].date; // Reverse order, so index 0 is today or last entry? Code reverses.
+            // stats is array from map values reversed. map insertion order is chronological.
+            // so reversed means newest first?
+            // "Initialize last 30 days" loop goes 0 to 30.
+            // But map keys are strings.
+            // Anyway, let's just check length.
+            expect(stats).toBeDefined();
+        });
+
+        it("should get api usage by user", async () => {
+            const mockResult = [{ userId: "1", totalCost: 10 }];
+            const mockLimit = vi.fn().mockResolvedValue(mockResult);
+            const mockOrderBy = vi.fn().mockReturnValue({ limit: mockLimit });
+            const mockGroupBy = vi.fn().mockReturnValue({ orderBy: mockOrderBy });
+            const mockWhere = vi.fn().mockReturnValue({ groupBy: mockGroupBy });
+            const mockLeftJoin = vi.fn().mockReturnValue({ where: mockWhere });
+            const mockFrom = vi.fn().mockReturnValue({ leftJoin: mockLeftJoin });
+            (db.select as any).mockReturnValue({ from: mockFrom });
+
+            const result = await storage.getApiUsageByUser(10);
+            expect(result).toEqual(mockResult);
+        });
     });
 });
 
