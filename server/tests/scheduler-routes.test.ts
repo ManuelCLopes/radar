@@ -30,6 +30,13 @@ vi.mock("../auth", () => ({
     }
 }));
 
+// Mock storage
+vi.mock("../storage", () => ({
+    storage: {
+        deleteOldUnverifiedUsers: vi.fn().mockResolvedValue(5)
+    }
+}));
+
 describe("Scheduler Routes", () => {
     let app: express.Express;
     const originalEnv = process.env;
@@ -125,6 +132,33 @@ describe("Scheduler Routes", () => {
 
             expect(res.status).toBe(202);
             expect(res.body.message).toContain("triggered successfully");
+        });
+    });
+
+    describe("POST /api/cron/cleanup-users", () => {
+        it("should return 401 if no cron secret header", async () => {
+            process.env.CRON_SECRET = "valid-secret";
+            const res = await request(app).post("/api/cron/cleanup-users");
+            expect(res.status).toBe(401);
+        });
+
+        it("should return 401 if cron secret header is wrong", async () => {
+            process.env.CRON_SECRET = "valid-secret";
+            const res = await request(app)
+                .post("/api/cron/cleanup-users")
+                .set("x-cron-secret", "wrong-secret");
+            expect(res.status).toBe(401);
+        });
+
+        it("should trigger cleanup with valid cron secret", async () => {
+            process.env.CRON_SECRET = "valid-secret";
+            const res = await request(app)
+                .post("/api/cron/cleanup-users")
+                .set("x-cron-secret", "valid-secret");
+
+            expect(res.status).toBe(200);
+            expect(res.body.message).toContain("Cleanup completed");
+            expect(res.body.deletedCount).toBe(5);
         });
     });
 });

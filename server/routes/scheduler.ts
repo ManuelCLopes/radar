@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { getSchedulerStatus, runScheduledReports } from "../scheduler";
 import { isAuthenticated } from "../auth";
+import { storage } from "../storage";
 
 export function registerSchedulerRoutes(app: Express) {
     app.get("/api/scheduler/status", isAuthenticated, async (req, res) => {
@@ -46,6 +47,33 @@ export function registerSchedulerRoutes(app: Express) {
         } catch (error) {
             console.error("[Cron] Error triggering reports:", error);
             res.status(500).json({ error: "Failed to trigger reports" });
+        }
+    });
+
+    // Cleanup Unverified Users Endpoint
+    app.post("/api/cron/cleanup-users", async (req, res) => {
+        try {
+            const authHeader = req.headers["x-cron-secret"];
+            const cronSecret = process.env.CRON_SECRET;
+
+            if (!cronSecret || authHeader !== cronSecret) {
+                return res.status(401).json({ error: "Unauthorized" });
+            }
+
+            console.log("[Cron] Triggered unverified user cleanup via API");
+
+            // Delete users created > 7 days ago
+            const count = await storage.deleteOldUnverifiedUsers(7);
+
+            console.log(`[Cron] Cleanup completed. Deleted ${count} unverified users.`);
+
+            res.json({
+                message: "Cleanup completed successfully",
+                deletedCount: count
+            });
+        } catch (error) {
+            console.error("[Cron] Error cleaning up users:", error);
+            res.status(500).json({ error: "Failed to cleanup users" });
         }
     });
 }
