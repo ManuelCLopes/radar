@@ -12,6 +12,7 @@ describe("Business API", () => {
     let app: express.Express;
     let server: any;
     let userId: string;
+    const createdUserIds: string[] = [];
 
     beforeEach(async () => {
         app = express();
@@ -36,6 +37,7 @@ describe("Business API", () => {
             plan: "professional"
         });
         userId = user.id.toString();
+        createdUserIds.push(userId);
 
         // Mock authentication middleware
         app.use((req: any, res, next) => {
@@ -49,8 +51,15 @@ describe("Business API", () => {
         server = httpServer;
     });
 
-    afterAll(() => {
+    afterAll(async () => {
         if (server) server.close();
+
+        // Cleanup users
+        for (const id of createdUserIds) {
+            try {
+                await storage.deleteUser(id);
+            } catch (ignore) { }
+        }
     });
 
     describe("POST /api/businesses", () => {
