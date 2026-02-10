@@ -24,17 +24,28 @@ describe("User Cleanup (DatabaseStorage)", () => {
     });
 
     it("should delete unverified users older than X days based on createdAt", async () => {
-        const returningMock = vi.fn().mockResolvedValue([{ id: "user-1" }, { id: "user-2" }]);
+        const usersMock = [{ id: "user-1" }, { id: "user-2" }];
+        const selectMock = vi.fn().mockReturnValue({
+            from: vi.fn().mockReturnValue({
+                where: vi.fn().mockResolvedValue(usersMock)
+            })
+        });
+
+        const returningMock = vi.fn().mockResolvedValue(usersMock);
         const whereMock = vi.fn().mockReturnValue({ returning: returningMock });
         const deleteMock = vi.fn().mockReturnValue({ where: whereMock });
 
+        (db as any).select = selectMock;
         (db as any).delete = deleteMock;
 
         const count = await storage.deleteOldUnverifiedUsers(7);
 
-        expect(db!.delete).toHaveBeenCalledWith(users);
-        expect(whereMock).toHaveBeenCalled();
-        expect(returningMock).toHaveBeenCalled();
+        // Verify select called
+        expect(db!.select).toHaveBeenCalled();
+
+        // Verify multiple deletes (apiUsage, businesses, reports, users)
+        expect(deleteMock).toHaveBeenCalledTimes(4);
+
         expect(count).toBe(2);
     });
 });
