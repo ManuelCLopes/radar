@@ -68,16 +68,7 @@ export function registerAdminRoutes(app: Express) {
     });
 
     // Temporary seed endpoint for demo
-    app.post("/api/admin/seed", async (req, res) => {
-        // Protection: Admin or secret query param for curl (only if SEED_SECRET is set)
-        const user = req.user as any;
-        const seedSecret = process.env.SEED_SECRET;
-        const isAuthorized = (req.isAuthenticated() && user?.role === "admin") ||
-            (seedSecret && req.query.secret === seedSecret);
-
-        if (!isAuthorized) {
-            return res.status(403).json({ message: "Forbidden" });
-        }
+    app.post("/api/admin/seed", isAdmin, async (req, res) => {
         try {
             const { seed } = await import("../seed");
             await seed();
