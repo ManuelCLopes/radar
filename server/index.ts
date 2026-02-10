@@ -5,6 +5,7 @@ import { serveStatic } from "./static";
 import { createServer } from "http";
 import { log } from "./log";
 import { initSentry } from "./sentry";
+import cors from "cors";
 
 initSentry();
 
@@ -17,6 +18,11 @@ declare module "http" {
     rawBody: unknown;
   }
 }
+
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(",") : true,
+  credentials: true,
+}));
 
 app.use(
   express.json({

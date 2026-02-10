@@ -44,7 +44,7 @@ export interface IStorage {
   }>;
   deleteUser(id: string): Promise<void>;
   updateUserLanguage(userId: string, language: string): Promise<void>;
-  checkRateLimit(ip: string): Promise<{ allowed: boolean, resetTime?: Date }>;
+
 
   // API Usage
   trackApiUsage(usage: InsertApiUsage): Promise<void>;
@@ -297,37 +297,7 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, userId));
   }
 
-  async checkRateLimit(ip: string): Promise<{ allowed: boolean, resetTime?: Date }> {
-    const now = new Date();
-    const [rateLimit] = await db!.select().from(rateLimits).where(eq(rateLimits.ip, ip));
 
-    if (rateLimit) {
-      if (now > rateLimit.resetAt) {
-        // Reset window
-        await db!.update(rateLimits)
-          .set({ hits: 1, resetAt: new Date(now.getTime() + 60 * 60 * 1000) })
-          .where(eq(rateLimits.ip, ip));
-        return { allowed: true };
-      } else {
-        // Within window
-        if (rateLimit.hits >= 5) {
-          return { allowed: false, resetTime: rateLimit.resetAt };
-        }
-        await db!.update(rateLimits)
-          .set({ hits: rateLimit.hits + 1 })
-          .where(eq(rateLimits.ip, ip));
-        return { allowed: true };
-      }
-    } else {
-      // New record
-      await db!.insert(rateLimits).values({
-        ip,
-        hits: 1,
-        resetAt: new Date(now.getTime() + 60 * 60 * 1000)
-      });
-      return { allowed: true };
-    }
-  }
 
   async trackApiUsage(usage: InsertApiUsage): Promise<void> {
     const usageToSave = {

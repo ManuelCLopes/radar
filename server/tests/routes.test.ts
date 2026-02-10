@@ -81,7 +81,6 @@ describe("API Routes Integration", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         authMocks.user = null;
-        vi.spyOn(storage, "checkRateLimit").mockResolvedValue({ allowed: true });
     });
 
     describe("POST /api/quick-search", () => {
@@ -133,27 +132,7 @@ describe("API Routes Integration", () => {
             expect(res.body.report.aiAnalysis).toBe("Test analysis");
         });
 
-        it.skip("should handle rate limiting", async () => {
-            // Mock successful search setup
-            (hasGoogleApiKey as any).mockReturnValue(true);
-            (searchPlacesByAddress as any).mockResolvedValue([{ latitude: 10, longitude: 20 }]);
-            (runReportForBusiness as any).mockResolvedValue({});
 
-            // Make 5 requests (limit is 5)
-            for (let i = 0; i < 5; i++) {
-                await request(app)
-                    .post("/api/quick-search")
-                    .send({ address: "Test", type: "test", radius: 1000 });
-            }
-
-            // 6th request should fail
-            const res = await request(app)
-                .post("/api/quick-search")
-                .send({ address: "Test", type: "test", radius: 1000 });
-
-            expect(res.status).toBe(429);
-            expect(res.body.error).toBe("Rate limit exceeded");
-        });
     });
 
     describe("GET /api/places/search", () => {
@@ -211,7 +190,7 @@ describe("Routes Coverage (Edge Cases)", () => {
 
     beforeEach(async () => {
         vi.restoreAllMocks();
-        vi.spyOn(storage, "checkRateLimit").mockResolvedValue({ allowed: true });
+
         app = express();
         app.use(express.json());
         // Mock isAuthenticated for all requests
@@ -387,7 +366,7 @@ describe("Report Email Export", () => {
 
     beforeEach(async () => {
         vi.restoreAllMocks();
-        vi.spyOn(storage, "checkRateLimit").mockResolvedValue({ allowed: true });
+
         app = express();
         app.use(express.json());
         // Mock isAuthenticated for all requests
