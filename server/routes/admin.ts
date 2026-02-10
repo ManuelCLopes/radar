@@ -67,17 +67,7 @@ export function registerAdminRoutes(app: Express) {
         }
     });
 
-    // Temporary seed endpoint for demo
-    app.post("/api/admin/seed", isAdmin, async (req, res) => {
-        try {
-            const { seed } = await import("../seed");
-            await seed();
-            res.json({ message: "Seeded successfully" });
-        } catch (e) {
-            console.error(e);
-            res.status(500).json({ message: "Seed failed" });
-        }
-    });
+
 
     app.get("/api/admin/analytics", isAdmin, async (req, res) => {
         try {
