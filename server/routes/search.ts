@@ -3,26 +3,13 @@ import { storage } from "../storage";
 import { searchPlacesByAddress, hasGoogleApiKey } from "../googlePlaces";
 import { runReportForBusiness } from "../reports";
 import { isAuthenticated } from "../auth";
+import { searchRateLimiter } from "../middleware/rate-limit";
 
 export function registerSearchRoutes(app: Express) {
-    app.post("/api/quick-search", async (req, res) => {
+    app.post("/api/quick-search", searchRateLimiter, async (req, res) => {
         try {
             const clientIp = typeof req.ip === 'string' ? req.ip : (req.socket.remoteAddress || 'unknown');
 
-            // Database Rate Limiting
-            try {
-                const limitResult = await storage.checkRateLimit(clientIp);
-                if (!limitResult.allowed) {
-                    return res.status(429).json({
-                        error: "Rate limit exceeded",
-                        message: "Too many searches. Create a free account for unlimited searches.",
-                        resetTime: limitResult.resetTime?.getTime()
-                    });
-                }
-            } catch (error) {
-                // Fallback or skip rate limiting if DB is not connected
-                // console.warn("Database connection missing - skipping rate limiting");
-            }
 
             const { address, type, radius, language = 'en', latitude, longitude } = req.body;
 
@@ -104,7 +91,7 @@ export function registerSearchRoutes(app: Express) {
         }
     });
 
-    app.get("/api/places/search", isAuthenticated, async (req, res) => {
+    app.get("/api/places/search", isAuthenticated, searchRateLimiter, async (req, res) => {
         try {
             const query = req.query.q as string;
 
