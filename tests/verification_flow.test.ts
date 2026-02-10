@@ -41,7 +41,7 @@ describe("Email Verification System", () => {
         // Create an unverified user
         const token = crypto.randomBytes(32).toString("hex");
         const user = await storage.upsertUser({
-            email: "unverified@example.com",
+            email: `unverified_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`,
             passwordHash: "hash",
             firstName: "Unverified",
             lastName: "User",
@@ -76,7 +76,7 @@ describe("Email Verification System", () => {
     it("should fail with expired token", async () => {
         const token = crypto.randomBytes(32).toString("hex");
         await storage.upsertUser({
-            email: "expired@example.com",
+            email: `expired_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`,
             passwordHash: "hash",
             firstName: "Expired",
             lastName: "User",
@@ -122,7 +122,7 @@ describe("Email Verification System", () => {
         // Create expired user
         const token = crypto.randomBytes(32).toString("hex");
         await storage.upsertUser({
-            email: "tobeDeleted@example.com",
+            email: `tobedeleted_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`,
             passwordHash: "hash",
             isVerified: false,
             verificationToken: token,

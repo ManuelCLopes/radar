@@ -79,7 +79,7 @@ describe("API Usage Monitor", () => {
     it("GET /api/admin/usage/users returns top consumers", async () => {
         // Create a user and track some usage
         const user = await storage.upsertUser({
-            email: "bigspender@example.com",
+            email: `bigspender_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`,
             passwordHash: "password",
             role: "user",
             firstName: "Big",

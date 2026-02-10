@@ -107,10 +107,11 @@ describe("Authentication API", () => {
 
     describe("POST /api/register", () => {
         it("should register a new user", async () => {
+            const email = `test_register_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`;
             const res = await request(app)
                 .post("/api/register")
                 .send({
-                    email: "test_register@example.com",
+                    email,
                     password: "password123",
                     firstName: "Test",
                     lastName: "User",
@@ -119,18 +120,31 @@ describe("Authentication API", () => {
 
             expect(res.status).toBe(200);
             expect(res.body.user).toBeDefined();
-            expect(res.body.user.email).toBe("test_register@example.com");
+            expect(res.body.user.email).toBe(email);
         });
 
         it("should fail with duplicate email", async () => {
+            // Create a user first
+            const email = `duplicate_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`;
+            await request(app)
+                .post("/api/register")
+                .send({
+                    email,
+                    password: "password123",
+                    firstName: "Test",
+                    lastName: "User"
+                });
+
+            // Try to register again
             const res = await request(app)
                 .post("/api/register")
                 .send({
-                    email: "test_register@example.com", // Same email as above
+                    email, // Same email
                     password: "password123"
                 });
 
             expect(res.status).toBe(400);
+            expect(res.body.message).toMatch(/registered/i);
         });
     });
 

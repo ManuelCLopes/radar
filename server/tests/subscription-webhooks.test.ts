@@ -70,7 +70,7 @@ describe('Subscription Webhook Tests', () => {
 
         // Create test user
         testUser = await storage.upsertUser({
-            email: 'test@example.com',
+            email: `webhook_test_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`,
             password: 'hashed_password',
             plan: 'free',
             stripeCustomerId: 'cus_test123'

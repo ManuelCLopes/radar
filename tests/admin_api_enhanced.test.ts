@@ -41,7 +41,7 @@ describe("Enhanced Admin API", () => {
         if (storage.trackSearch) {
             // Create user first to satisfy foreign key constraint
             const user = await storage.upsertUser({
-                email: `admin_test_${Date.now()}@example.com`,
+                email: `admin_test_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`,
                 passwordHash: "password",
                 role: "user",
                 firstName: "AdminTest",
@@ -95,7 +95,7 @@ describe("Enhanced Admin API", () => {
     it("PATCH /api/admin/users/:id/role updates user role", async () => {
         // Create a dummy user first
         const user = await storage.upsertUser({
-            email: "testrole@example.com",
+            email: `testrole_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`,
             passwordHash: "password",
             role: "user",
             plan: "free",
