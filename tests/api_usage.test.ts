@@ -100,7 +100,7 @@ describe("API Usage Monitor", () => {
 
         const spender = res.body.find((u: any) => u.userId === user.id);
         expect(spender).toBeDefined();
-        expect(spender.totalCost).toBeGreaterThanOrEqual(5);
+        expect(Number(spender.totalCost)).toBeGreaterThanOrEqual(5);
         expect(spender.firstName).toBe("Big");
     });
 });

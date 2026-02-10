@@ -39,14 +39,24 @@ describe("Enhanced Admin API", () => {
 
         // Seed some data
         if (storage.trackSearch) {
+            // Create user first to satisfy foreign key constraint
+            const user = await storage.upsertUser({
+                email: `admin_test_${Date.now()}@example.com`,
+                passwordHash: "password",
+                role: "user",
+                firstName: "AdminTest",
+                lastName: "User",
+                plan: "free"
+            } as any);
+
             await storage.trackSearch({
                 type: "restaurant",
                 address: "Lisbon",
                 radius: 5000,
                 competitorsFound: 5,
-                latitude: "38.7223",
-                longitude: "-9.1393",
-                userId: "user-123"
+                latitude: 38.7223,
+                longitude: -9.1393,
+                userId: user.id
             });
         }
     });

@@ -28,7 +28,7 @@ describe("Business API", () => {
 
         // Create a test user
         const user = await storage.upsertUser({
-            email: "business_test@example.com",
+            email: `business_test_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`,
             passwordHash: "password",
             firstName: "Business",
             lastName: "Owner",
