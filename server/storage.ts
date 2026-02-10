@@ -1,6 +1,6 @@
 import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type Search, type PasswordResetToken, type InsertApiUsage, type ApiUsage, businesses, reports, users, searches, passwordResetTokens, rateLimits, apiUsage } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, sql, isNotNull, lt, and, gte } from "drizzle-orm";
+import { eq, desc, sql, isNotNull, lt, and, gte, inArray } from "drizzle-orm";
 
 export interface IStorage {
   // User operations (IMPORTANT: mandatory for Replit Auth)
@@ -422,15 +422,43 @@ export class DatabaseStorage implements IStorage {
 
   async deleteOldUnverifiedUsers(days: number): Promise<number> {
     const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-    const result = await db!
-      .delete(users)
+
+    // Find users to delete
+    const usersToDelete = await db!
+      .select({ id: users.id })
+      .from(users)
       .where(
         and(
           eq(users.isVerified, false),
           lt(users.createdAt, cutoffDate)
         )
-      )
+      );
+
+    if (usersToDelete.length === 0) {
+      return 0;
+    }
+
+    const userIds = usersToDelete.map(u => u.id);
+
+    // Manual Cascade Delete
+    // 1. Delete API Usage
+    await db!.delete(apiUsage).where(inArray(apiUsage.userId, userIds));
+
+    // 2. Delete Businesses
+    await db!.delete(businesses).where(inArray(businesses.userId, userIds));
+
+    // 3. Delete Reports
+    await db!.delete(reports).where(inArray(reports.userId, userIds));
+
+    // 4. Delete Searches (already has ON DELETE CASCADE but good for safety if schema not synced)
+    // await db!.delete(searches).where(inArray(searches.userId, userIds));
+
+    // 5. Finally delete Users
+    const result = await db!
+      .delete(users)
+      .where(inArray(users.id, userIds))
       .returning();
+
     return result.length;
   }
 }
