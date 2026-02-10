@@ -67,22 +67,7 @@ export function registerAdminRoutes(app: Express) {
         }
     });
 
-    // Temporary seed endpoint for demo
-    app.post("/api/admin/seed", async (req, res) => {
-        // Protection: Admin or secret query param for curl
-        const user = req.user as any;
-        if ((!req.isAuthenticated() || user?.role !== "admin") && req.query.secret !== "dev_seed_secret") {
-            return res.sendStatus(403);
-        }
-        try {
-            const { seed } = await import("../seed");
-            await seed();
-            res.json({ message: "Seeded successfully" });
-        } catch (e) {
-            console.error(e);
-            res.status(500).json({ message: "Seed failed" });
-        }
-    });
+
 
     app.get("/api/admin/analytics", isAdmin, async (req, res) => {
         try {
