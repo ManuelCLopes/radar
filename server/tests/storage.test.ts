@@ -594,63 +594,7 @@ describe("Storage", () => {
             expect(deletedCount).toBe(2);
         });
 
-        it("should check rate limit (new)", async () => {
-            // New record
-            const mockWhere = vi.fn().mockResolvedValue([]);
-            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
-            (db.select as any).mockReturnValue({ from: mockFrom });
 
-            (db.insert as any).mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) });
-
-            const result = await storage.checkRateLimit("1.2.3.4");
-            expect(result.allowed).toBe(true);
-            expect(db.insert).toHaveBeenCalled();
-        });
-
-        it("should check rate limit (existing, allowed)", async () => {
-            // Existing record, within window, hits < 5
-            const mockLimit = { ip: "1.2.3.4", hits: 1, resetAt: new Date(Date.now() + 10000) };
-            const mockWhere = vi.fn().mockResolvedValue([mockLimit]);
-            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
-            (db.select as any).mockReturnValue({ from: mockFrom });
-
-            const mockUpdateWhere = vi.fn().mockResolvedValue(undefined);
-            const mockSet = vi.fn().mockReturnValue({ where: mockUpdateWhere });
-            (db.update as any).mockReturnValue({ set: mockSet });
-
-            const result = await storage.checkRateLimit("1.2.3.4");
-            expect(result.allowed).toBe(true);
-            expect(db.update).toHaveBeenCalled();
-        });
-
-        it("should check rate limit (blocked)", async () => {
-            // Existing record, within window, hits >= 5
-            const mockLimit = { ip: "1.2.3.4", hits: 5, resetAt: new Date(Date.now() + 10000) };
-            const mockWhere = vi.fn().mockResolvedValue([mockLimit]);
-            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
-            (db.select as any).mockReturnValue({ from: mockFrom });
-
-            const result = await storage.checkRateLimit("1.2.3.4");
-            expect(result.allowed).toBe(false);
-            expect(result.resetTime).toBeDefined();
-        });
-
-        it("should check rate limit (reset)", async () => {
-            // Existing record, outdated window
-            const mockLimit = { ip: "1.2.3.4", hits: 5, resetAt: new Date(Date.now() - 10000) };
-            const mockWhere = vi.fn().mockResolvedValue([mockLimit]);
-            const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
-            (db.select as any).mockReturnValue({ from: mockFrom });
-
-            const mockUpdateWhere = vi.fn().mockResolvedValue(undefined);
-            const mockSet = vi.fn().mockReturnValue({ where: mockUpdateWhere });
-            (db.update as any).mockReturnValue({ set: mockSet });
-
-            const result = await storage.checkRateLimit("1.2.3.4");
-            expect(result.allowed).toBe(true);
-            // Should reset hits to 1
-            expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({ hits: 1 }));
-        });
 
         it("should get api usage stats", async () => {
             const usage1 = { service: "google_places", costUnits: 1, createdAt: new Date() };

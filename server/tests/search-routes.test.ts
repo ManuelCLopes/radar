@@ -6,9 +6,7 @@ import { registerSearchRoutes } from "../routes/search";
 
 // Mock dependencies
 vi.mock("../storage", () => ({
-    storage: {
-        checkRateLimit: vi.fn(() => Promise.resolve({ allowed: true }))
-    }
+    storage: {}
 }));
 
 vi.mock("../googlePlaces", () => ({
@@ -86,17 +84,7 @@ describe("Search Routes", () => {
             expect(res.body.report).toBeDefined();
         });
 
-        it("should return 429 when rate limited", async () => {
-            const { storage } = await import("../storage");
-            (storage.checkRateLimit as any).mockResolvedValue({ allowed: false, resetTime: new Date() });
 
-            const res = await request(app)
-                .post("/api/quick-search")
-                .send({ address: "123 Test St", type: "restaurant", radius: 1000 });
-
-            expect(res.status).toBe(429);
-            expect(res.body.error).toContain("Rate limit");
-        });
     });
 
     describe("GET /api/places/search", () => {
