@@ -55,6 +55,7 @@ export interface IStorage {
   verifyUser(userId: string): Promise<void>;
   findUserByVerificationToken(token: string): Promise<User | undefined>;
   deleteExpiredUnverifiedUsers(): Promise<number>;
+  deleteOldUnverifiedUsers(days: number): Promise<number>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -413,6 +414,20 @@ export class DatabaseStorage implements IStorage {
         and(
           eq(users.isVerified, false),
           lt(users.verificationTokenExpiresAt, new Date())
+        )
+      )
+      .returning();
+    return result.length;
+  }
+
+  async deleteOldUnverifiedUsers(days: number): Promise<number> {
+    const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    const result = await db!
+      .delete(users)
+      .where(
+        and(
+          eq(users.isVerified, false),
+          lt(users.createdAt, cutoffDate)
         )
       )
       .returning();
@@ -851,6 +866,18 @@ export class MemStorage implements IStorage {
     const now = new Date();
     for (const [id, user] of Array.from(this.users.entries())) {
       if (!user.isVerified && user.verificationTokenExpiresAt && user.verificationTokenExpiresAt < now) {
+        this.users.delete(id);
+        count++;
+      }
+    }
+    return count;
+  }
+
+  async deleteOldUnverifiedUsers(days: number): Promise<number> {
+    let count = 0;
+    const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    for (const [id, user] of Array.from(this.users.entries())) {
+      if (!user.isVerified && user.createdAt && user.createdAt < cutoffDate) {
         this.users.delete(id);
         count++;
       }

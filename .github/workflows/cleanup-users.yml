@@ -1,0 +1,18 @@
+name: User Cleanup Scheduler
+
+on:
+  schedule:
+    # Runs at 04:00 daily
+    - cron: '0 4 * * *'
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  cleanup-users:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger User Cleanup
+        run: |
+          curl -X POST https://competitorwatcher.pt/api/cron/cleanup-users \
+          -H "Content-Type: application/json" \
+          -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+          --fail
