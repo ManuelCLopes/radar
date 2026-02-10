@@ -24,8 +24,9 @@ describe("Storage", () => {
 
         describe("User Operations", () => {
             it("should create and retrieve a user", async () => {
+                const email = `test_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`;
                 const newUser: UpsertUser = {
-                    email: "test@example.com",
+                    email,
                     passwordHash: "hashed_password",
                     firstName: "Test",
                     lastName: "User",
@@ -46,15 +47,18 @@ describe("Storage", () => {
             });
 
             it("should support roles and list users", async () => {
+                const adminEmail = `admin_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`;
+                const userEmail = `user_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`;
+
                 const adminUser: UpsertUser = {
-                    email: "admin@example.com",
+                    email: adminEmail,
                     role: "admin",
                     firstName: "Admin",
                     createdAt: new Date("2024-01-02")
                 };
 
                 const regularUser: UpsertUser = {
-                    email: "user@example.com",
+                    email: userEmail,
                     role: "user",
                     firstName: "User",
                     createdAt: new Date("2024-01-01")
@@ -70,13 +74,13 @@ describe("Storage", () => {
                 expect(users).toHaveLength(2);
 
                 // Check sorting (descending by createdAt)
-                expect(users[0].email).toBe("admin@example.com");
-                expect(users[1].email).toBe("user@example.com");
+                expect(users[0].email).toBe(adminEmail);
+                expect(users[1].email).toBe(userEmail);
             });
 
             it("should default role to 'user' if not specified", async () => {
                 const newUser: UpsertUser = {
-                    email: "default@example.com"
+                    email: `default_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`
                 };
                 const created = await storage.upsertUser(newUser);
                 expect(created.role).toBe("user");

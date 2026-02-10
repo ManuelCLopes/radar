@@ -49,16 +49,27 @@ describe('Subscription Webhook Tests', () => {
     let app: Express;
     let testUser: any;
     const webhookSecret = 'whsec_test_secret';
+    let stripeCustomerId: string;
+    let stripeSubscriptionId: string;
 
     beforeAll(async () => {
         // Set up test environment
         process.env.STRIPE_WEBHOOK_SECRET = webhookSecret;
         process.env.STRIPE_SECRET_KEY = 'sk_test_123';
 
+        // Generate unique IDs for this test run
+        stripeCustomerId = `cus_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+        stripeSubscriptionId = `sub_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+
         // Create Express app
         app = express();
-        app.use(express.json());
-        app.use(express.raw({ type: 'application/json' }));
+        app.use(
+            express.json({
+                verify: (req: any, _res, buf) => {
+                    req.rawBody = buf;
+                },
+            })
+        );
 
         // Mock authentication
         app.use((req, _res, next) => {
@@ -70,10 +81,10 @@ describe('Subscription Webhook Tests', () => {
 
         // Create test user
         testUser = await storage.upsertUser({
-            email: 'test@example.com',
+            email: `webhook_test_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`,
             password: 'hashed_password',
             plan: 'free',
-            stripeCustomerId: 'cus_test123'
+            stripeCustomerId: stripeCustomerId
         });
     });
 
@@ -109,8 +120,8 @@ describe('Subscription Webhook Tests', () => {
                 data: {
                     object: {
                         id: 'cs_test_123',
-                        customer: 'cus_test123',
-                        subscription: 'sub_test_123',
+                        customer: stripeCustomerId,
+                        subscription: stripeSubscriptionId,
                         client_reference_id: testUser.id,
                         payment_status: 'paid'
                     }
@@ -133,8 +144,8 @@ describe('Subscription Webhook Tests', () => {
             const updatedUser = await storage.getUser(testUser.id);
             expect(updatedUser?.plan).toBe('pro');
             expect(updatedUser?.subscriptionStatus).toBe('active');
-            expect(updatedUser?.stripeCustomerId).toBe('cus_test123');
-            expect(updatedUser?.stripeSubscriptionId).toBe('sub_test_123');
+            expect(updatedUser?.stripeCustomerId).toBe(stripeCustomerId);
+            expect(updatedUser?.stripeSubscriptionId).toBe(stripeSubscriptionId);
         });
 
         it('should return 400 if webhook signature is missing', async () => {
@@ -152,7 +163,7 @@ describe('Subscription Webhook Tests', () => {
             await storage.updateUser(testUser.id, {
                 plan: 'pro',
                 subscriptionStatus: 'active',
-                stripeSubscriptionId: 'sub_test_123'
+                stripeSubscriptionId: stripeSubscriptionId
             });
         });
 
@@ -164,8 +175,8 @@ describe('Subscription Webhook Tests', () => {
                 type: 'customer.subscription.updated',
                 data: {
                     object: {
-                        id: 'sub_test_123',
-                        customer: 'cus_test123',
+                        id: stripeSubscriptionId,
+                        customer: stripeCustomerId,
                         status: 'canceled',
                         current_period_end: Math.floor(periodEnd.getTime() / 1000),
                         cancel_at_period_end: false,
@@ -204,8 +215,8 @@ describe('Subscription Webhook Tests', () => {
                 type: 'customer.subscription.updated',
                 data: {
                     object: {
-                        id: 'sub_test_123',
-                        customer: 'cus_test123',
+                        id: stripeSubscriptionId,
+                        customer: stripeCustomerId,
                         status: 'active',
                         current_period_end: Math.floor(new Date('2026-03-01').getTime() / 1000),
                         cancel_at_period_end: false,
@@ -237,8 +248,8 @@ describe('Subscription Webhook Tests', () => {
                 type: 'customer.subscription.updated',
                 data: {
                     object: {
-                        id: 'sub_test_123',
-                        customer: 'cus_test123',
+                        id: stripeSubscriptionId,
+                        customer: stripeCustomerId,
                         status: 'past_due',
                         current_period_end: Math.floor(new Date('2026-02-01').getTime() / 1000)
                     }
@@ -267,7 +278,7 @@ describe('Subscription Webhook Tests', () => {
             await storage.updateUser(testUser.id, {
                 plan: 'pro',
                 subscriptionStatus: 'active',
-                stripeSubscriptionId: 'sub_test_123'
+                stripeSubscriptionId: stripeSubscriptionId
             });
         });
 
@@ -278,8 +289,8 @@ describe('Subscription Webhook Tests', () => {
                 type: 'customer.subscription.deleted',
                 data: {
                     object: {
-                        id: 'sub_test_123',
-                        customer: 'cus_test123',
+                        id: stripeSubscriptionId,
+                        customer: stripeCustomerId,
                         status: 'canceled'
                     }
                 }

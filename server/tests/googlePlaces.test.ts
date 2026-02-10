@@ -3,6 +3,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { searchPlacesByAddress, searchNearby, hasGoogleApiKey } from "../googlePlaces";
 
+// Mock storage to prevent DB calls
+vi.mock("../storage", () => ({
+    storage: {
+        trackApiUsage: vi.fn().mockResolvedValue(undefined),
+    }
+}));
+
 describe("Google Places API", () => {
     const originalEnv = process.env;
 

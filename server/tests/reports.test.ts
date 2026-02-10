@@ -52,7 +52,7 @@ describe("Reports API", () => {
 
         // Create a test user first
         const user = await storage.upsertUser({
-            email: "reports_test@example.com",
+            email: `reports_test_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`,
             passwordHash: "password",
             firstName: "Reports",
             lastName: "Test",

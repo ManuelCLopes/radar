@@ -72,7 +72,7 @@ describe("Advanced Reports", () => {
     it("should include SWOT and Trends in prompt for professional plan", async () => {
         // Create a user with professional plan
         const user = await storage.upsertUser({
-            email: "pro@example.com",
+            email: `pro_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`,
             plan: "professional",
         });
 
@@ -106,7 +106,7 @@ describe("Advanced Reports", () => {
     it("should include all advanced features in prompt for essential plan (upgraded)", async () => {
         // Create a user with essential plan
         const user = await storage.upsertUser({
-            email: "essential@example.com",
+            email: `essential_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`,
             plan: "essential",
         });
 

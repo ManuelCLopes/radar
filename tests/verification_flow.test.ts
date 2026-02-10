@@ -41,7 +41,7 @@ describe("Email Verification System", () => {
         // Create an unverified user
         const token = crypto.randomBytes(32).toString("hex");
         const user = await storage.upsertUser({
-            email: "unverified@example.com",
+            email: `unverified_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`,
             passwordHash: "hash",
             firstName: "Unverified",
             lastName: "User",
@@ -76,7 +76,7 @@ describe("Email Verification System", () => {
     it("should fail with expired token", async () => {
         const token = crypto.randomBytes(32).toString("hex");
         await storage.upsertUser({
-            email: "expired@example.com",
+            email: `expired_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`,
             passwordHash: "hash",
             firstName: "Expired",
             lastName: "User",
@@ -120,9 +120,10 @@ describe("Email Verification System", () => {
 
     it("should delete expired unverified users", async () => {
         // Create expired user
+        const expiredEmail = `tobedeleted_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`;
         const token = crypto.randomBytes(32).toString("hex");
         await storage.upsertUser({
-            email: "tobeDeleted@example.com",
+            email: expiredEmail,
             passwordHash: "hash",
             isVerified: false,
             verificationToken: token,
@@ -130,8 +131,9 @@ describe("Email Verification System", () => {
         } as any);
 
         // Create valid unverified user
+        const keepEmail = `keep_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`;
         await storage.upsertUser({
-            email: "keep@example.com",
+            email: keepEmail,
             passwordHash: "hash",
             isVerified: false,
             verificationToken: "valid",
@@ -141,10 +143,10 @@ describe("Email Verification System", () => {
         const deletedCount = await storage.deleteExpiredUnverifiedUsers();
         expect(deletedCount).toBeGreaterThanOrEqual(1);
 
-        const deletedUser = await storage.getUserByEmail("tobeDeleted@example.com");
+        const deletedUser = await storage.getUserByEmail(expiredEmail);
         expect(deletedUser).toBeUndefined();
 
-        const keptUser = await storage.getUserByEmail("keep@example.com");
+        const keptUser = await storage.getUserByEmail(keepEmail);
         expect(keptUser).toBeDefined();
     });
 });
