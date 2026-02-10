@@ -81,7 +81,7 @@ export function registerPaymentRoutes(app: Express) {
     });
 
     // Webhook Handler
-    app.post("/api/webhook", express.raw({ type: 'application/json' }), async (req: Request, res) => {
+    app.post("/api/webhook", async (req: Request, res) => {
         const signature = req.headers["stripe-signature"];
         const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 

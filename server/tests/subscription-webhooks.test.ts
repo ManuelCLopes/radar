@@ -57,8 +57,13 @@ describe('Subscription Webhook Tests', () => {
 
         // Create Express app
         app = express();
-        app.use(express.json());
-        app.use(express.raw({ type: 'application/json' }));
+        app.use(
+            express.json({
+                verify: (req: any, _res, buf) => {
+                    req.rawBody = buf;
+                },
+            })
+        );
 
         // Mock authentication
         app.use((req, _res, next) => {

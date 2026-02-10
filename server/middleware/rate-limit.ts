@@ -30,9 +30,7 @@ export const searchRateLimiter = rateLimit({
         error: "Rate limit exceeded",
         message: "Too many searches. Please upgrade your plan for higher limits."
     },
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-    validate: {
-        ip: false, // Disable IPv6 check warning as we rely on Express req.ip
-    }
+    standardHeaders: true,
+    legacyHeaders: false,
+    validate: false
 });

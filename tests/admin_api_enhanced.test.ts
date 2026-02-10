@@ -114,7 +114,7 @@ describe("Enhanced Admin API", () => {
     it("DELETE /api/admin/users/:id deletes a user", async () => {
         // Create a dummy user
         const user = await storage.upsertUser({
-            email: "delete@example.com",
+            email: `delete_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`,
             passwordHash: "password",
             role: "user",
             plan: "free",
