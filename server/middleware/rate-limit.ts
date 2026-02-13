@@ -24,7 +24,14 @@ export const searchRateLimiter = rateLimit({
     keyGenerator: (req: Request) => {
         // Limit authenticated users by ID, guests by IP
         const user = req.user as any;
-        return user ? user.id : (req.ip || "unknown-ip");
+        if (user) return user.id;
+
+        // Use forwarded IP (behind reverse proxy), direct IP, or socket address
+        const forwarded = req.headers["x-forwarded-for"];
+        const clientIp = typeof forwarded === "string"
+            ? forwarded.split(",")[0].trim()
+            : req.ip || req.socket?.remoteAddress || "unknown-ip";
+        return clientIp;
     },
     message: {
         error: "Rate limit exceeded",
