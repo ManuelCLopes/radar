@@ -649,7 +649,7 @@
       "button": "Supprimer le compte",
       "dialog": {
         "title": "Supprimer le compte",
-        "description": "Cette action est <strong class=\"text-destructive\">définitive et irréversible</strong>. Toutes vos données, rapports et paramètres seront supprimés. Êtes-vous absolument sûr de vouloir continuer ?",
+        "description": "Cette action est <strong>définitive et irréversible</strong>. Toutes vos données, rapports et paramètres seront supprimés. Êtes-vous absolument sûr de vouloir continuer ?",
         "cancel": "Annuler",
         "confirm": "Oui, supprimer le compte"
       }

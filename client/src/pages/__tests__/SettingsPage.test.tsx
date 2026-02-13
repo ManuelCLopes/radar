@@ -14,6 +14,7 @@ vi.mock("react-i18next", () => ({
             changeLanguage: vi.fn(),
         },
     }),
+    Trans: ({ i18nKey }: { i18nKey: string }) => <span>{i18nKey}</span>,
 }));
 
 // Mock wouter

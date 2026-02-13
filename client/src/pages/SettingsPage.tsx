@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import { User, LogOut, CreditCard, Eye, EyeOff, Trash2, Shield, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -435,7 +435,12 @@ export default function SettingsPage() {
                     <AlertDialogContent>
                         <AlertDialogHeader>
                             <AlertDialogTitle>{t('settings.danger.dialog.title')}</AlertDialogTitle>
-                            <AlertDialogDescription dangerouslySetInnerHTML={{ __html: t('settings.danger.dialog.description') }} />
+                            <AlertDialogDescription>
+                                <Trans
+                                    i18nKey="settings.danger.dialog.description"
+                                    components={{ strong: <strong className="text-destructive" /> }}
+                                />
+                            </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <AlertDialogCancel>{t('settings.danger.dialog.cancel')}</AlertDialogCancel>

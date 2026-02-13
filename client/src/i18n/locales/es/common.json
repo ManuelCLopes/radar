@@ -651,7 +651,7 @@
       "button": "Eliminar Cuenta",
       "dialog": {
         "title": "Eliminar Cuenta",
-        "description": "Esta acción es <strong class=\"text-destructive\">permanente e irreversible</strong>. Todos sus datos, informes y configuraciones serán eliminados. ¿Está absolutamente seguro de que desea continuar?",
+        "description": "Esta acción es <strong>permanente e irreversible</strong>. Todos sus datos, informes y configuraciones serán eliminados. ¿Está absolutamente seguro de que desea continuar?",
         "cancel": "Cancelar",
         "confirm": "Sí, Eliminar Cuenta"
       }
