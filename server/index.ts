@@ -6,6 +6,7 @@ import { createServer } from "http";
 import { log } from "./log";
 import { initSentry } from "./sentry";
 import cors from "cors";
+import helmet from "helmet";
 
 initSentry();
 
@@ -20,6 +21,16 @@ declare module "http" {
 }
 
 app.set("trust proxy", 1);
+
+// Security headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options, etc.)
+app.use(helmet({
+  contentSecurityPolicy: process.env.NODE_ENV === "production" ? undefined : false, // Disable CSP in dev for Vite HMR
+}));
+
+// CORS configuration
+if (process.env.NODE_ENV === "production" && !process.env.ALLOWED_ORIGINS) {
+  log("WARNING: ALLOWED_ORIGINS is not set in production. CORS is open to all origins.");
+}
 
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(",") : true,
