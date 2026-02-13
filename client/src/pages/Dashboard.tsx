@@ -11,6 +11,8 @@ import { ReportView } from "@/components/ReportView";
 import { ReportHistory } from "@/components/ReportHistory";
 import { CompetitorMap } from "@/components/CompetitorMap";
 import { TrendsDashboard } from "@/components/TrendsDashboard";
+import { OnboardingTour } from "@/components/OnboardingTour";
+import { ReportNotification } from "@/components/ReportNotification";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useToast } from "@/hooks/use-toast";
@@ -85,6 +87,7 @@ export default function Dashboard() {
   const [reportViewOpen, setReportViewOpen] = useState(false);
   const [editingBusiness, setEditingBusiness] = useState<Business | null>(null);
   const [selectedMapBusinessId, setSelectedMapBusinessId] = useState<string>("all");
+  const [notificationReport, setNotificationReport] = useState<Report | null>(null);
 
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(() => {
@@ -222,6 +225,7 @@ export default function Dashboard() {
     onSuccess: (report: Report) => {
       setCurrentReport(report);
       setReportDialogOpen(true);
+      setNotificationReport(report);
       queryClient.invalidateQueries({ queryKey: ["/api/reports/business"] });
       queryClient.invalidateQueries({ queryKey: ["/api/reports/history"] });
       toast({
@@ -250,6 +254,7 @@ export default function Dashboard() {
       setCurrentReport(report);
       setReportDialogOpen(true);
       setIsAnalysisOpen(false);
+      setNotificationReport(report);
       queryClient.invalidateQueries({ queryKey: ["/api/reports/history"] });
       toast({
         title: t("toast.reportGenerated.title"),
@@ -405,6 +410,7 @@ export default function Dashboard() {
                 variant="ghost"
                 size="icon"
                 title="Definições"
+                data-tour="settings"
               >
                 <Settings className="h-5 w-5" />
                 <span className="sr-only">Definições</span>
@@ -440,13 +446,13 @@ export default function Dashboard() {
             >
               <div className="flex items-center justify-between mb-6">
                 <TabsList className="flex w-auto">
-                  <TabsTrigger value="businesses" className="group flex items-center" data-testid="tab-businesses">
+                  <TabsTrigger value="businesses" className="group flex items-center" data-testid="tab-businesses" data-tour="welcome">
                     <Building2 className="h-4 w-4" />
                     <span className="max-w-0 overflow-hidden opacity-0 whitespace-nowrap transition-all duration-300 ease-in-out group-data-[state=active]:max-w-[150px] group-data-[state=active]:opacity-100 group-data-[state=active]:ml-2 sm:max-w-none sm:opacity-100 sm:ml-2 sm:inline">
                       {t("dashboard.tabs.businesses")}
                     </span>
                   </TabsTrigger>
-                  <TabsTrigger value="history" className="group flex items-center" data-testid="tab-history">
+                  <TabsTrigger value="history" className="group flex items-center" data-testid="tab-history" data-tour="history-tab">
                     <History className="h-4 w-4" />
                     <span className="max-w-0 overflow-hidden opacity-0 whitespace-nowrap transition-all duration-300 ease-in-out group-data-[state=active]:max-w-[150px] group-data-[state=active]:opacity-100 group-data-[state=active]:ml-2 sm:max-w-none sm:opacity-100 sm:ml-2 sm:inline">
                       {t("dashboard.tabs.history")}
@@ -461,13 +467,13 @@ export default function Dashboard() {
                 </TabsList>
 
                 <div className="flex gap-2">
-                  <Button onClick={() => setIsAddOpen(true)} className="gap-2" data-testid="btn-add-business">
+                  <Button onClick={() => setIsAddOpen(true)} className="gap-2" data-testid="btn-add-business" data-tour="add-business">
                     <Plus className="h-4 w-4" />
                     <span className="hidden sm:inline">{t("dashboard.addBusiness")}</span>
                   </Button>
                   <Dialog open={isAnalysisOpen} onOpenChange={setIsAnalysisOpen}>
                     <DialogTrigger asChild>
-                      <Button variant="outline" className="gap-2" data-testid="btn-new-analysis">
+                      <Button variant="outline" className="gap-2" data-testid="btn-new-analysis" data-tour="new-analysis">
                         <Search className="h-4 w-4" />
                         <span className="hidden sm:inline">{t("dashboard.tabs.newAnalysis")}</span>
                       </Button>
@@ -968,6 +974,19 @@ export default function Dashboard() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Onboarding Tour */}
+      <OnboardingTour isNewUser={businesses.length === 0 && reportHistory.length === 0} />
+
+      {/* Report Notification FAB */}
+      <ReportNotification
+        report={notificationReport}
+        onViewReport={(report) => {
+          setCurrentReport(report);
+          setReportDialogOpen(true);
+        }}
+        onDismiss={() => setNotificationReport(null)}
+      />
     </div>
   );
 }

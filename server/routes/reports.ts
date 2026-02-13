@@ -5,6 +5,7 @@ import { isAuthenticated } from "../auth";
 import { type User as AppUser } from "@shared/schema";
 import { searchPlacesByAddress, hasGoogleApiKey } from "../googlePlaces";
 import { getPlanLimits } from "../limits";
+import { log } from "../log";
 
 export function registerReportRoutes(app: Express) {
     app.post("/api/reports/save-existing", isAuthenticated, async (req, res) => {
@@ -65,6 +66,18 @@ export function registerReportRoutes(app: Express) {
             }
 
             const report = await runReportForBusiness(businessId, language, undefined, (req.user as AppUser).id);
+
+            // Fire-and-forget email notification
+            const userEmail = (req.user as AppUser).email;
+            if (userEmail) {
+                import("../email").then(({ emailService }) => {
+                    const lang = reportLanguage.substring(0, 2).toLowerCase();
+                    emailService?.sendAdHocReport?.(userEmail, report, lang)?.catch?.((err: unknown) =>
+                        log(`[Report Email] Failed to send report email: ${err}`, "email")
+                    );
+                }).catch(() => { /* email module not available */ });
+            }
+
             res.json(report);
         } catch (error) {
             console.error("Error generating report:", error);
@@ -282,6 +295,17 @@ export function registerReportRoutes(app: Express) {
                 latitude: tempBusiness.latitude,
                 longitude: tempBusiness.longitude
             });
+
+            // Fire-and-forget email notification
+            const userEmail = (req.user as AppUser).email;
+            if (userEmail) {
+                import("../email").then(({ emailService }) => {
+                    const lang = (language || "en").substring(0, 2).toLowerCase();
+                    emailService?.sendAdHocReport?.(userEmail, savedReport, lang)?.catch?.((err: unknown) =>
+                        log(`[Report Email] Failed to send report email: ${err}`, "email")
+                    );
+                }).catch(() => { /* email module not available */ });
+            }
         } catch (error) {
             console.error("Analysis error details:", error);
             res.status(500).json({ error: "Failed to run analysis" });

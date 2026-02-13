@@ -771,5 +771,36 @@
     "competitorCount": "Competitors",
     "noData": "No trend data yet",
     "noDataDesc": "Generate more reports over time to see trends appear here."
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "Welcome to Competitor Watcher!",
+      "description": "This tool helps you analyze your local competition, discover market opportunities, and track competitor performance over time."
+    },
+    "addBusiness": {
+      "title": "Register Your Business",
+      "description": "Start by adding your business here. We'll use its location to find nearby competitors and generate detailed reports."
+    },
+    "newAnalysis": {
+      "title": "Quick Address Analysis",
+      "description": "Don't have a registered business? Use Quick Analysis to explore any address and discover competitors in the area instantly."
+    },
+    "history": {
+      "title": "Report History",
+      "description": "All your generated reports are saved here. Review past analyses, track changes, and export reports anytime."
+    },
+    "settings": {
+      "title": "Your Settings",
+      "description": "Manage your account, change language, and configure notification preferences from the Settings page."
+    },
+    "skip": "Skip",
+    "next": "Next",
+    "previous": "Back",
+    "finish": "Get Started!"
+  },
+  "reportNotification": {
+    "title": "Report Ready!",
+    "viewReport": "View Report",
+    "emailSent": "A copy has been sent to your email"
   }
 }

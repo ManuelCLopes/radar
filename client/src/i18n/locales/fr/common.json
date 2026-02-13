@@ -771,5 +771,36 @@
     "competitorCount": "Concurrents",
     "noData": "Pas encore de données",
     "noDataDesc": "Générez plus de rapports au fil du temps pour voir apparaître des tendances."
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "Bienvenue sur Competitor Watcher !",
+      "description": "Cet outil vous aide à analyser la concurrence locale, découvrir des opportunités de marché et suivre la performance des concurrents au fil du temps."
+    },
+    "addBusiness": {
+      "title": "Enregistrez Votre Entreprise",
+      "description": "Commencez par ajouter votre entreprise ici. Nous utiliserons son emplacement pour trouver des concurrents proches et générer des rapports détaillés."
+    },
+    "newAnalysis": {
+      "title": "Analyse Rapide par Adresse",
+      "description": "Vous n'avez pas d'entreprise enregistrée ? Utilisez l'Analyse Rapide pour explorer n'importe quelle adresse et découvrir les concurrents dans la zone instantanément."
+    },
+    "history": {
+      "title": "Historique des Rapports",
+      "description": "Tous vos rapports générés sont sauvegardés ici. Consultez les analyses passées, suivez les changements et exportez des rapports à tout moment."
+    },
+    "settings": {
+      "title": "Vos Paramètres",
+      "description": "Gérez votre compte, changez la langue et configurez les préférences de notification depuis la page Paramètres."
+    },
+    "skip": "Passer",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "finish": "Commencer !"
+  },
+  "reportNotification": {
+    "title": "Rapport Prêt !",
+    "viewReport": "Voir le Rapport",
+    "emailSent": "Une copie a été envoyée à votre email"
   }
 }
