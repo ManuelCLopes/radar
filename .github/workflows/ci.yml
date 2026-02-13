@@ -7,6 +7,9 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    env:
+      # Map database URL for all steps in the job - check both Secrets and Variables
+      DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL || vars.DEV_DATABASE_URL }}
     strategy:
       matrix:
         node-version: [20.x]
@@ -22,12 +25,8 @@ jobs:
     - name: Type check
       run: npm run check
     - name: Push DB Schema
-      env:
-        DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
       run: npm run db:push
     - name: Run unit tests
-      env:
-        DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
       run: npm test
     - name: Build
       run: npm run build
@@ -35,6 +34,8 @@ jobs:
   e2e:
     needs: validate
     runs-on: ubuntu-latest
+    env:
+      DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL || vars.DEV_DATABASE_URL }}
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v6
@@ -48,8 +49,6 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      env:
-        DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
       run: npx playwright test
     - uses: actions/upload-artifact@v6
       if: failure()
