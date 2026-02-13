@@ -23,11 +23,11 @@ jobs:
       run: npm run check
     - name: Push DB Schema
       env:
-        DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+        DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
       run: npm run db:push
     - name: Run unit tests
       env:
-        DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+        DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
       run: npm test
     - name: Build
       run: npm run build
@@ -49,7 +49,7 @@ jobs:
       run: npx playwright install --with-deps
     - name: Run Playwright tests
       env:
-        DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+        DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
       run: npx playwright test
     - uses: actions/upload-artifact@v6
       if: failure()
