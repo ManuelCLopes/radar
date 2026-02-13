@@ -236,7 +236,18 @@
     "cancel": "Cancelar",
     "refresh": "Atualizar",
     "loading": "A carregar...",
-    "change": "Alterar"
+    "change": "Ändern",
+    "verificationRequired": "Verifizierung Erforderlich",
+    "pleaseVerifyEmail": "Bitte bestätigen Sie Ihre E-Mail-Adresse, um fortzufahren.",
+    "verificationRequiredForBusiness": "Sie müssen Ihre E-Mail bestätigen, um ein Unternehmen hinzuzufügen.",
+    "verifyYourEmail": "Überprüfen Sie Ihre E-Mail!",
+    "featuresLimited": "Einige Funktionen sind eingeschränkt, bis Sie Ihre E-Mail-Adresse bestätigen.",
+    "resendEmail": "E-Mail erneut senden",
+    "emailSentTitle": "E-Mail gesendet!",
+    "emailSentDesc": "Prüfen Sie Ihren Posteingang (und Spam), um den Link zu finden.",
+    "errorSendingEmail": "Fehler beim Senden der E-Mail",
+    "connectionError": "Verbindungsfehler",
+    "connectionErrorDesc": "Verbindung zum Server fehlgeschlagen."
   },
   "addressSearch": {
     "enterAddress": "Por favor, introduza uma morada para pesquisar",

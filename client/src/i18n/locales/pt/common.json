@@ -236,7 +236,18 @@
     "cancel": "Cancelar",
     "refresh": "Atualizar",
     "loading": "A carregar...",
-    "change": "Alterar"
+    "change": "Alterar",
+    "verificationRequired": "Verificação Necessária",
+    "pleaseVerifyEmail": "Por favor, verifique o seu endereço de email para continuar.",
+    "verificationRequiredForBusiness": "Tem de verificar o seu email para adicionar um negócio.",
+    "verifyYourEmail": "Verifique seu email!",
+    "featuresLimited": "Algumas funcionalidades estão limitadas até que você confirme seu endereço de email.",
+    "resendEmail": "Reenviar Email",
+    "emailSentTitle": "Email enviado!",
+    "emailSentDesc": "Verifique sua caixa de entrada (e spam) para encontrar o link.",
+    "errorSendingEmail": "Erro ao enviar email",
+    "connectionError": "Erro de conexão",
+    "connectionErrorDesc": "Não foi possível conectar ao servidor."
   },
   "addressSearch": {
     "enterAddress": "Por favor, introduza uma morada para pesquisar",

@@ -235,7 +235,18 @@
     "cancel": "Annuler",
     "refresh": "Actualiser",
     "loading": "Chargement...",
-    "change": "Modifier"
+    "change": "Modifier",
+    "verificationRequired": "Vérification Requise",
+    "pleaseVerifyEmail": "Veuillez vérifier votre adresse e-mail pour continuer.",
+    "verificationRequiredForBusiness": "Vous devez vérifier votre e-mail pour ajouter une entreprise.",
+    "verifyYourEmail": "Vérifiez votre e-mail !",
+    "featuresLimited": "Certaines fonctionnalités sont limitées jusqu'à ce que vous vérifiiez votre adresse e-mail.",
+    "resendEmail": "Renvoyer l'e-mail",
+    "emailSentTitle": "E-mail envoyé !",
+    "emailSentDesc": "Vérifiez votre boîte de réception (et spams) pour trouver le lien.",
+    "errorSendingEmail": "Erreur lors de l'envoi de l'e-mail",
+    "connectionError": "Erreur de connexion",
+    "connectionErrorDesc": "Impossible de se connecter au serveur."
   },
   "addressSearch": {
     "enterAddress": "Veuillez saisir une adresse à rechercher",

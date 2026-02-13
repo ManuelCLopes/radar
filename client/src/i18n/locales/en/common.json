@@ -235,7 +235,18 @@
     "cancel": "Cancel",
     "refresh": "Refresh",
     "loading": "Loading...",
-    "change": "Change"
+    "change": "Change",
+    "verificationRequired": "Verification Required",
+    "pleaseVerifyEmail": "Please verify your email address to continue.",
+    "verificationRequiredForBusiness": "You must verify your email to add a business.",
+    "verifyYourEmail": "Verify your email!",
+    "featuresLimited": "Some features are limited until you verify your email address.",
+    "resendEmail": "Resend Email",
+    "emailSentTitle": "Email sent!",
+    "emailSentDesc": "Check your inbox (and spam) to find the link.",
+    "errorSendingEmail": "Error sending email",
+    "connectionError": "Connection error",
+    "connectionErrorDesc": "Could not connect to the server."
   },
   "addressSearch": {
     "enterAddress": "Please enter an address to search",
