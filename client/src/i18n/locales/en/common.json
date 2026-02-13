@@ -205,7 +205,7 @@
       "fetchBusinesses": "Failed to load businesses",
       "registerBusiness": "Failed to register business",
       "deleteBusiness": "Failed to delete business",
-      "generateReport": "Failed to generate report",
+      "generateReport": "Failed to generate report. Please try again later.",
       "fetchReports": "Failed to load reports",
       "login": "Login failed",
       "logout": "Logout failed",
@@ -214,6 +214,11 @@
     "linkCopied": {
       "title": "Link copied!",
       "description": "The home page link has been copied to your clipboard."
+    },
+    "planLimit": {
+      "title": "Plan Limit Reached",
+      "reportDescription": "Your current plan allows for {{limit}} reports per month. Please upgrade to create more reports.",
+      "radiusDescription": "Your current plan allows for a maximum radius of {{limit}} km. Please upgrade to analyze larger areas."
     }
   },
   "language": {
@@ -798,20 +803,24 @@
     },
     "history": {
       "title": "Report History",
-      "description": "All your generated reports are saved here. Review past analyses, track changes, and export reports anytime."
+      "description": "Access all your past reports here. You can view, download, or delete them anytime."
     },
     "settings": {
-      "title": "Your Settings",
-      "description": "Manage your account, change language, and configure notification preferences from the Settings page."
+      "title": "Settings & Preferences",
+      "description": "Customize your account, change language, or update your subscription plan."
     },
-    "skip": "Skip",
-    "next": "Next",
-    "previous": "Back",
-    "finish": "Get Started!"
+    "steps": {
+      "next": "Next",
+      "back": "Back",
+      "finish": "Finish",
+      "skip": "Skip Tour"
+    }
   },
   "reportNotification": {
-    "title": "Report Ready!",
+    "title": "Report Ready",
     "viewReport": "View Report",
-    "emailSent": "A copy has been sent to your email"
+    "emailSent": "Email sent",
+    "generationStarted": "Report Generation Started",
+    "generationStartedDesc": "We are generating your report in the background. You will be notified when it is ready."
   }
 }

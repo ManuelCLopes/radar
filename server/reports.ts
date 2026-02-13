@@ -10,7 +10,8 @@ export async function runReportForBusiness(
   language: string = "en",
   providedBusiness?: Business,
   userId?: string,
-  radius: number = 1500 // Default to 1500m if not provided
+  radius: number = 1500, // Default to 1500m if not provided
+  existingReportId?: string
 ): Promise<Report> {
   const business = providedBusiness || await storage.getBusiness(businessId);
 
@@ -91,10 +92,11 @@ export async function runReportForBusiness(
     throw error;
   }
 
-  // Only save report if not a temporary business
-  if (!providedBusiness) {
+  // Only save report if not a temporary business OR if we are updating an existing placeholder
+  if (!providedBusiness || existingReportId) {
     const insertReport: InsertReport = {
-      businessId: business.id,
+      // If we are running for a temporary business (ad-hoc), do not update the businessId (keep it null)
+      businessId: providedBusiness ? undefined : business.id,
       businessName: business.name,
       competitors,
       aiAnalysis: "Structured Analysis", // Placeholder text or summary
@@ -113,11 +115,16 @@ export async function runReportForBusiness(
       radius: radius || undefined,
     };
 
-    const report = await storage.saveReport(insertReport);
-    return report;
+    if (existingReportId) {
+      // Update existing report
+      return await storage.updateReport(existingReportId, insertReport);
+    } else {
+      // Create new report
+      return await storage.saveReport(insertReport);
+    }
   }
 
-  // For temporary businesses, return report without saving
+  // For temporary businesses (without existing ID), return report without saving
   return {
     id: 'temp-' + Date.now(),
     businessId: business.id,

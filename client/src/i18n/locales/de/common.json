@@ -206,7 +206,7 @@
       "fetchBusinesses": "Falha ao carregar negócios",
       "registerBusiness": "Falha ao registar negócio",
       "deleteBusiness": "Falha ao eliminar negócio",
-      "generateReport": "Falha ao gerar o relatório",
+      "generateReport": "Bericht konnte nicht erstellt werden. Bitte versuchen Sie es später erneut.",
       "fetchReports": "Falha ao carregar relatórios",
       "login": "Falha ao iniciar sessão",
       "logout": "Falha ao terminar sessão",
@@ -215,6 +215,11 @@
     "linkCopied": {
       "title": "Link copiado!",
       "description": "O link para a página inicial foi copiado para a área de transferência."
+    },
+    "planLimit": {
+      "title": "Planlimit erreicht",
+      "reportDescription": "Ihr aktueller Plan erlaubt {{limit}} Berichte pro Monat. Bitte upgraden Sie, um mehr Berichte zu erstellen.",
+      "radiusDescription": "Ihr aktueller Plan erlaubt einen maximalen Radius von {{limit}} km. Bitte upgraden Sie, um größere Bereiche zu analysieren."
     }
   },
   "language": {
@@ -813,6 +818,8 @@
   "reportNotification": {
     "title": "Bericht fertig!",
     "viewReport": "Bericht anzeigen",
-    "emailSent": "Eine Kopie wurde an Ihre E-Mail gesendet"
+    "emailSent": "Eine Kopie wurde an Ihre E-Mail gesendet",
+    "generationStarted": "Berichterstellung gestartet",
+    "generationStartedDesc": "Wir erstellen Ihren Bericht im Hintergrund. Sie werden benachrichtigt, sobald er fertig ist."
   }
 }

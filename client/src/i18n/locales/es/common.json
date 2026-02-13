@@ -206,7 +206,7 @@
       "fetchBusinesses": "Falha ao carregar negócios",
       "registerBusiness": "Falha ao registar negócio",
       "deleteBusiness": "Falha ao eliminar negócio",
-      "generateReport": "Falha ao gerar o relatório",
+      "generateReport": "Error al generar el informe. Por favor, inténtelo de nuevo más tarde.",
       "fetchReports": "Falha ao carregar relatórios",
       "login": "Falha ao iniciar sessão",
       "logout": "Falha ao terminar sessão",
@@ -215,6 +215,11 @@
     "linkCopied": {
       "title": "Link copiado!",
       "description": "O link para a página inicial foi copiado para a área de transferência."
+    },
+    "planLimit": {
+      "title": "Límite del Plan Alcanzado",
+      "reportDescription": "Su plan actual permite {{limit}} informes al mes. Por favor, actualice su plan para crear más informes.",
+      "radiusDescription": "Su plan actual permite un radio máximo de {{limit}} km. Por favor, actualice su plan para analizar áreas más grandes."
     }
   },
   "language": {
@@ -814,6 +819,8 @@
   "reportNotification": {
     "title": "¡Informe Listo!",
     "viewReport": "Ver Informe",
-    "emailSent": "Se ha enviado una copia a tu correo"
+    "emailSent": "Se ha enviado una copia a tu correo",
+    "generationStarted": "Generación de Informe Iniciada",
+    "generationStartedDesc": "Estamos generando su informe en segundo plano. Se le notificará cuando esté listo."
   }
 }

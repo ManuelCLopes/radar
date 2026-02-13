@@ -205,7 +205,7 @@
       "fetchBusinesses": "Échec du chargement des entreprises",
       "registerBusiness": "Échec de l'enregistrement de l'entreprise",
       "deleteBusiness": "Échec de la suppression de l'entreprise",
-      "generateReport": "Échec de la génération du rapport",
+      "generateReport": "Échec de la génération du rapport. Veuillez réessayer plus tard.",
       "fetchReports": "Échec du chargement des rapports",
       "login": "Échec de la connexion",
       "logout": "Échec de la déconnexion",
@@ -214,6 +214,11 @@
     "linkCopied": {
       "title": "Lien copié !",
       "description": "Le lien de la page d'accueil a été copié dans votre presse-papiers."
+    },
+    "planLimit": {
+      "title": "Limite du Plan Atteinte",
+      "reportDescription": "Votre plan actuel permet {{limit}} rapports par mois. Veuillez mettre à niveau pour créer plus de rapports.",
+      "radiusDescription": "Votre plan actuel permet un rayon maximum de {{limit}} km. Veuillez mettre à niveau pour analyser de plus grandes zones."
     }
   },
   "language": {
@@ -812,6 +817,8 @@
   "reportNotification": {
     "title": "Rapport Prêt !",
     "viewReport": "Voir le Rapport",
-    "emailSent": "Une copie a été envoyée à votre email"
+    "emailSent": "Une copie a été envoyée à votre email",
+    "generationStarted": "Génération de rapport lancée",
+    "generationStartedDesc": "Nous générons votre rapport en arrière-plan. Vous serez notifié lorsqu'il sera prêt."
   }
 }

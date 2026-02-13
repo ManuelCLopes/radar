@@ -2,8 +2,29 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
-    const text = (await res.text()) || res.statusText;
-    throw new Error(`${res.status}: ${text}`);
+    const text = await res.text();
+    try {
+      const json = JSON.parse(text);
+      if (json.code) {
+        // Throw an error that includes the code and extra data
+        const error = new Error(json.error || json.message || "Unknown error") as Error & { code: string; limit?: number };
+        error.code = json.code;
+        if (json.limit) error.limit = json.limit;
+        throw error;
+      } else if (json.message) {
+        throw new Error(json.message);
+      } else if (json.error) {
+        throw new Error(json.error);
+      }
+    } catch (e) {
+      if (e instanceof Error && (e as any).code) {
+        throw e;
+      }
+      if (e instanceof Error && e.message !== "Unexpected end of JSON input" && !e.message.includes("JSON")) {
+        throw e;
+      }
+    }
+    throw new Error(text || res.statusText);
   }
 }
 
@@ -28,18 +49,18 @@ export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
-  async ({ queryKey }) => {
-    const res = await fetch(queryKey.join("/") as string, {
-      credentials: "include",
-    });
+    async ({ queryKey }) => {
+      const res = await fetch(queryKey.join("/") as string, {
+        credentials: "include",
+      });
 
-    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null;
-    }
+      if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+        return null;
+      }
 
-    await throwIfResNotOk(res);
-    return await res.json();
-  };
+      await throwIfResNotOk(res);
+      return await res.json();
+    };
 
 export const queryClient = new QueryClient({
   defaultOptions: {
