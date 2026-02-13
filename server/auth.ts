@@ -92,6 +92,7 @@ export function getSession() {
         cookie: {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
             maxAge: sessionTtl,
         },
     });
@@ -182,6 +183,10 @@ export async function setupAuth(app: Express) {
 
             if (!email || !password) {
                 return res.status(400).json({ message: "Email and password are required" });
+            }
+
+            if (password.length < 8) {
+                return res.status(400).json({ message: "Password must be at least 8 characters long" });
             }
 
             // Check if user already exists
@@ -375,10 +380,6 @@ export async function setupAuth(app: Express) {
     app.post("/api/auth/logout", logoutHandler);
     app.post("/api/logout", logoutHandler); // Alias
 
-    // Also support GET for logout link
-    app.get("/api/auth/logout", logoutHandler);
-    app.get("/api/logout", logoutHandler);
-
     // Get current user
     app.get("/api/auth/user", (req, res) => {
         // Prevent caching of user state
@@ -387,10 +388,11 @@ export async function setupAuth(app: Express) {
         res.header("Expires", "0");
         res.header("ETag", "false"); // Disable ETag to prevent 304
 
-        console.log(`[Auth Check] Session: ${req.sessionID}, User: ${req.user ? (req.user as any).id : 'null'}`);
-
         if (req.isAuthenticated()) {
-            res.json({ user: req.user });
+            // Sanitize: strip sensitive fields before sending to client
+            const user = req.user as User;
+            const { passwordHash, verificationToken, verificationTokenExpiresAt, stripeCustomerId, stripeSubscriptionId, ...safeUser } = user;
+            res.json({ user: safeUser });
         } else {
             res.status(401).json({ message: "Not authenticated" });
         }
