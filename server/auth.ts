@@ -85,7 +85,13 @@ export function getSession() {
     }
 
     return session({
-        secret: process.env.SESSION_SECRET || "local-dev-secret",
+        secret: (() => {
+            const secret = process.env.SESSION_SECRET;
+            if (!secret && process.env.NODE_ENV === "production") {
+                throw new Error("SESSION_SECRET must be set in production");
+            }
+            return secret || "local-dev-secret";
+        })(),
         store: store,
         resave: false,
         saveUninitialized: false,
@@ -352,8 +358,7 @@ export async function setupAuth(app: Express) {
     // Logout
     // Logout - Handle both paths to be safe
     const logoutHandler = (req: any, res: any, next: any) => {
-        const sessionId = req.sessionID;
-        console.log(`[Logout] Attempting logout for session: ${sessionId}`);
+        console.log(`[Logout] Attempting logout for user: ${req.user ? (req.user as any).id : 'unknown'}`);
 
         // Clear site data header to force browser to wipe cookies and storage
         res.setHeader("Clear-Site-Data", '"cookies", "storage"');
@@ -369,7 +374,7 @@ export async function setupAuth(app: Express) {
                     console.error("[Logout] Session destroy error:", err);
                     return next(err);
                 }
-                console.log(`[Logout] Session destroyed successfully: ${sessionId}`);
+                console.log(`[Logout] Session destroyed successfully`);
 
                 res.clearCookie("connect.sid", { path: '/' });
                 res.json({ success: true, message: "Logged out successfully" });

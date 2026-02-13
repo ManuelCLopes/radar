@@ -574,6 +574,7 @@ describe("Session Configuration", () => {
 
     it("should use production cookie settings in production", () => {
         process.env.NODE_ENV = "production";
+        process.env.SESSION_SECRET = "test-production-secret";
         const sessionMiddleware = getSession();
         expect(sessionMiddleware).toBeDefined();
     });
