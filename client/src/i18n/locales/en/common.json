@@ -649,7 +649,7 @@
       "button": "Delete Account",
       "dialog": {
         "title": "Delete Account",
-        "description": "This action is <strong class=\"text-destructive\">permanent and irreversible</strong>. All your data, reports, and settings will be deleted. Are you absolutely sure you want to continue?",
+        "description": "This action is <strong>permanent and irreversible</strong>. All your data, reports, and settings will be deleted. Are you absolutely sure you want to continue?",
         "cancel": "Cancel",
         "confirm": "Yes, Delete Account"
       }
