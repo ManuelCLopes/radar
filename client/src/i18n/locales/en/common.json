@@ -657,6 +657,16 @@
       "cancel": "Cancel",
       "edit": "Edit Profile"
     },
+    "privacy": {
+      "title": "Privacy & Data",
+      "description": "Manage your personal data and consent preferences",
+      "exportTitle": "Download your data",
+      "exportDesc": "Get a copy of your account data in JSON format.",
+      "exportButton": "Download data",
+      "cookieResetTitle": "Cookie preferences",
+      "cookieResetDesc": "Reset your cookie choices to review them again.",
+      "cookieResetButton": "Reset cookies"
+    },
     "danger": {
       "title": "Danger Zone",
       "description": "Irreversible actions related to your account",
@@ -678,6 +688,15 @@
       "languageUpdated": {
         "title": "Language updated",
         "description": "Your language preference has been saved."
+      },
+      "exportSuccess": {
+        "title": "Export ready",
+        "description": "Your data export has been downloaded."
+      },
+      "exportError": "Failed to export your data. Please try again.",
+      "cookieReset": {
+        "title": "Cookie preferences reset",
+        "description": "You can review your cookie choices again."
       },
       "accountDeleted": {
         "title": "Account deleted",
@@ -713,7 +732,7 @@
       "intro": "We value your privacy and are committed to protecting your personal data. This policy explains how we collect, use, and safeguard your information when you use our competitor analysis services. By using our platform, you agree to the collection and use of information in accordance with this policy.",
       "dataCollection": "We collect information you provide directly to us, such as your name and email when you create an account. Additionally, we may collect usage data, browser type, and location information through our address search features to provide accurate competitor reports. We also receive information from third-party services if you choose to log in via Google.",
       "useOfInfo": "The information we collect is used to provide and improve our service, including the generation of your monthly competitor reports. We use your data to personalize your experience, send important service updates, and monitor the performance of our platform to ensure a seamless experience for all users.",
-      "userRights": "You have the right to access, update, or delete your personal information at any time through your account settings. We comply with GDPR and other privacy regulations, ensuring you have full control over your data. If you have any questions about your rights, please reach out to our support team.",
+      "userRights": "You have the right to access, update, delete, or download a copy of your personal information at any time through your account settings. We comply with GDPR and other privacy regulations, ensuring you have full control over your data and cookie preferences. If you have any questions about your rights, please reach out to our support team.",
       "sections": {
         "dataCollection": "1. Data Collection",
         "useOfInfo": "2. Use of Information",
@@ -727,7 +746,7 @@
       "lastUpdated": "Last Updated: December 2025",
       "intro": "This policy explains how we use cookies and similar technologies to enhance your experience. Cookies are small data files stored on your device that help us understand how you interact with our site. We use both session cookies and persistent cookies to provide a functional and optimized platform.",
       "essential": "These cookies are strictly necessary for the platform to function correctly. They handle user authentication, security features, and persistent preferences like your language and theme choice. Without these cookies, basic features of Competitor Watcher would not be available.",
-      "analytical": "Analytical cookies help us understand how visitors use our site by collecting anonymous information. We use this data to improve our competitor maps, track the performance of report generation, and identify areas for improvement. All data collected is aggregated and does not personally identify you.",
+      "analytical": "Analytical cookies help us understand how visitors use our site by collecting anonymous information. We use this data to improve our competitor maps, track the performance of report generation, and identify areas for improvement. These cookies are only set with your consent, and the data is aggregated and does not personally identify you.",
       "sections": {
         "essential": "Essential Cookies",
         "analytical": "Analytical Cookies",

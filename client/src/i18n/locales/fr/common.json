@@ -657,6 +657,16 @@
       "cancel": "Annuler",
       "edit": "Modifier le profil"
     },
+    "privacy": {
+      "title": "Confidentialité et données",
+      "description": "Gérez vos données personnelles et vos préférences de consentement",
+      "exportTitle": "Télécharger vos données",
+      "exportDesc": "Obtenez une copie de vos données au format JSON.",
+      "exportButton": "Télécharger les données",
+      "cookieResetTitle": "Préférences de cookies",
+      "cookieResetDesc": "Réinitialisez vos choix de cookies pour les revoir.",
+      "cookieResetButton": "Réinitialiser les cookies"
+    },
     "danger": {
       "title": "Zone de danger",
       "description": "Actions irréversibles liées à votre compte",
@@ -678,6 +688,15 @@
       "languageUpdated": {
         "title": "Langue mise à jour",
         "description": "Votre préférence linguistique a été enregistrée."
+      },
+      "exportSuccess": {
+        "title": "Export prêt",
+        "description": "Votre exportation de données a été téléchargée."
+      },
+      "exportError": "Impossible d'exporter vos données. Veuillez réessayer.",
+      "cookieReset": {
+        "title": "Préférences de cookies réinitialisées",
+        "description": "Vous pouvez revoir vos choix de cookies."
       },
       "accountDeleted": {
         "title": "Compte supprimé",
@@ -713,7 +732,7 @@
       "intro": "Nous accordons une grande importance à votre vie privée et nous nous engageons à protéger vos données personnelles. Cette politique explique comment nous collectons, utilisons et protégeons vos informations lorsque vous utilisez nos services d'analyse de la concurrence. En utilisant notre plateforme, vous acceptez la collecte et l'utilisation d'informations conformément à cette politique.",
       "dataCollection": "Nous collectons les informations que vous nous fournissez directement, telles que votre nom et votre adresse e-mail lors de la création d'un compte. De plus, nous pouvons collecter des données d'utilisation, le type de navigateur et des informations de localisation via nos fonctionnalités de recherche d'adresse pour fournir des rapports précis sur la concurrence. Nous recevons également des informations de services tiers si vous choisissez de vous connecter via Google.",
       "useOfInfo": "Les informations que nous collectons sont utilisées pour fournir et améliorer notre service, y compris la génération de vos rapports mensuels sur la concurrence. Nous utilisons vos données pour personnaliser votre expérience, envoyer des mises à jour importantes sur le service et surveiller les performances de notre plateforme afin de garantir une expérience fluide pour tous les utilisateurs.",
-      "userRights": "Vous avez le droit d'accéder à vos informations personnelles, de les mettre à jour ou de les supprimer à tout moment via les paramètres de votre compte. Nous respectons le RGPD et d'autres réglementations sur la protection de la vie privée, garantissant que vous avez un contrôle total sur vos données. Si vous avez des questions sur vos droits, veuillez contacter notre équipe d'assistance.",
+      "userRights": "Vous avez le droit d'accéder, de mettre à jour, de supprimer ou de télécharger une copie de vos informations personnelles à tout moment via les paramètres de votre compte. Nous respectons le RGPD et d'autres réglementations sur la protection de la vie privée, garantissant que vous avez un contrôle total sur vos données et préférences de cookies. Si vous avez des questions sur vos droits, veuillez contacter notre équipe d'assistance.",
       "sections": {
         "dataCollection": "1. Collecte de Données",
         "useOfInfo": "2. Utilisation des Informations",
@@ -727,7 +746,7 @@
       "lastUpdated": "Dernière mise à jour : Décembre 2025",
       "intro": "Cette politique explique comment nous utilisons les cookies et les technologies similaires pour améliorer votre expérience. Les cookies sont de petits fichiers de données stockés sur votre appareil qui nous aident à comprendre comment vous interagissez avec notre site. Nous utilisons des cookies de session et des cookies persistants pour fournir une plateforme fonctionnelle et optimisée.",
       "essential": "Ces cookies sont strictement nécessaires au bon fonctionnement de la plateforme. Ils gèrent l'authentification des utilisateurs, les fonctions de sécurité et les préférences persistantes telles que votre choix de langue et de thème. Sans ces cookies, les fonctionnalités de base de Competitor Watcher ne seraient pas disponibles.",
-      "analytical": "Les cookies analytiques nous aident à comprendre comment les visiteurs utilisent notre site en collectant des informations anonymes. Nous utilisons ces données pour améliorer nos cartes de concurrence, suivre les performances de la génération de rapports et identifier les domaines à améliorer. Toutes les données collectées sont agrégées et ne vous identifient pas personnellement.",
+      "analytical": "Les cookies analytiques nous aident à comprendre comment les visiteurs utilisent notre site en collectant des informations anonymes. Nous utilisons ces données pour améliorer nos cartes de concurrence, suivre les performances de la génération de rapports et identifier les domaines à améliorer. Ces cookies ne sont définis qu'avec votre consentement, et les données sont agrégées et ne vous identifient pas personnellement.",
       "sections": {
         "essential": "Cookies Essentiels",
         "analytical": "Cookies Analytiques",

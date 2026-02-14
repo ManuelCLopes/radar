@@ -659,6 +659,16 @@
       "cancel": "Cancelar",
       "edit": "Editar Perfil"
     },
+    "privacy": {
+      "title": "Privacidad y Datos",
+      "description": "Gestione sus datos personales y preferencias de consentimiento",
+      "exportTitle": "Descargar sus datos",
+      "exportDesc": "Obtenga una copia de sus datos en formato JSON.",
+      "exportButton": "Descargar datos",
+      "cookieResetTitle": "Preferencias de cookies",
+      "cookieResetDesc": "Restablezca sus opciones de cookies para revisarlas nuevamente.",
+      "cookieResetButton": "Restablecer cookies"
+    },
     "danger": {
       "title": "Zona de Peligro",
       "description": "Acciones irreversibles relacionadas con su cuenta",
@@ -680,6 +690,15 @@
       "languageUpdated": {
         "title": "Idioma actualizado",
         "description": "Su preferencia de idioma ha sido guardada."
+      },
+      "exportSuccess": {
+        "title": "Exportación lista",
+        "description": "Su exportación de datos ha sido descargada."
+      },
+      "exportError": "No se pudo exportar sus datos. Inténtelo de nuevo.",
+      "cookieReset": {
+        "title": "Preferencias de cookies restablecidas",
+        "description": "Puede revisar sus opciones de cookies nuevamente."
       },
       "accountDeleted": {
         "title": "Cuenta eliminada",
@@ -715,7 +734,7 @@
       "intro": "Valorizamos a sua privacidade e estamos empenhados em proteger os seus dados pessoais. Esta política explica como recolhemos, utilizamos e salvaguardamos a sua informação ao utilizar os nossos serviços de análise de concorrência. Ao utilizar a nossa plataforma, concorda com a recolha e utilização de informações de acordo com esta política.",
       "dataCollection": "Recolhemos informações que nos fornece diretamente, como o seu nome e email ao criar uma conta. Além disso, podemos recolher dados de utilização, tipo de navegador e informações de localização através das nossas funcionalidades de pesquisa de morada para fornecer relatórios de concorrência precisos. Também recebemos informações de serviços de terceiros se optar por fazer login através do Google.",
       "useOfInfo": "As informações que recolhemos são utilizadas para fornecer e melhorar o nosso serviço, incluindo a geração dos seus relatórios mensais de concorrência. Utilizamos os seus dados para personalizar a sua experiência, enviar atualizações importantes do serviço e monitorizar o desempenho da nossa plataforma para garantir uma experiência sem falhas para todos os utilizadores.",
-      "userRights": "Tem o direito de aceder, atualizar ou eliminar as suas informações pessoais a qualquer momento através das definições da sua conta. Cumprimos o RGPD e outros regulamentos de privacidade, garantindo que tem total controlo sobre os seus dados. Se tiver alguma dúvida sobre os seus direitos, contacte a nossa equipa de suporte.",
+      "userRights": "Tem o direito de aceder, atualizar, eliminar ou transferir uma cópia das suas informações pessoais a qualquer momento através das definições da sua conta. Cumprimos o RGPD e outros regulamentos de privacidade, garantindo que tem total controlo sobre os seus dados e preferências de cookies. Se tiver alguma dúvida sobre os seus direitos, contacte a nossa equipa de suporte.",
       "sections": {
         "dataCollection": "1. Recolha de Dados",
         "useOfInfo": "2. Utilização de Informação",
@@ -729,7 +748,7 @@
       "lastUpdated": "Última atualização: Dezembro 2025",
       "intro": "Esta política explica como utilizamos cookies e tecnologias semelhantes para melhorar a sua experiência. Os cookies são pequenos ficheiros de dados armazenados no seu dispositivo que nos ajudam a compreender como interage com o nosso site. Utilizamos tanto cookies de sessão como cookies persistentes para fornecer uma plataforma funcional e otimizada.",
       "essential": "Estes cookies são estritamente necessários para o funcionamento correto da plataforma. Eles gerem a autenticação do utilizador, funcionalidades de segurança e preferências persistentes como a sua escolha de idioma e tema. Sem estes cookies, as funcionalidades básicas do Competitor Watcher não estariam disponíveis.",
-      "analytical": "Os cookies analíticos ajudam-nos a compreender como os visitantes utilizam o nosso site através da recolha de informações anónimas. Utilizamos estes dados para melhorar os nossos mapas de concorrência, acompanhar o desempenho da geração de relatórios e identificar áreas de melhoria. Todos os dados recolhidos são agregados e não o identificam pessoalmente.",
+      "analytical": "Os cookies analíticos ajudam-nos a compreender como os visitantes utilizam o nosso site através da recolha de informações anónimas. Utilizamos estes dados para melhorar os nossos mapas de concorrência, acompanhar o desempenho da geração de relatórios e identificar áreas de melhoria. Estes cookies só são definidos com o seu consentimento, e os dados são agregados e não o identificam pessoalmente.",
       "sections": {
         "essential": "Cookies Essenciais",
         "analytical": "Cookies Analíticos",
