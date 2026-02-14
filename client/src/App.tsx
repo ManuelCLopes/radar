@@ -19,6 +19,7 @@ import PrivacyPolicy from "@/pages/legal/PrivacyPolicy";
 import CookiePolicy from "@/pages/legal/CookiePolicy";
 import NotFound from "@/pages/not-found";
 import ScrollToTop from "@/components/ScrollToTop";
+import { CookieConsent } from "@/components/CookieConsent";
 import './i18n';
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -97,6 +98,7 @@ function App() {
           <Toaster />
           <ScrollToTop />
           <Router />
+          <CookieConsent />
         </PricingModalProvider>
       </TooltipProvider>
     </QueryClientProvider>

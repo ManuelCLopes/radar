@@ -12,7 +12,6 @@ import { ReportView } from "@/components/ReportView";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
-import { CookieConsent } from "@/components/CookieConsent";
 import Footer from "@/components/Footer";
 import "./LandingPage.css";
 
@@ -766,7 +765,6 @@ export default function LandingPage() {
         </DialogContent>
       </Dialog>
       <Footer />
-      <CookieConsent />
     </div>
   );
 }

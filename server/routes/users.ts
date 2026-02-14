@@ -125,5 +125,47 @@ export function registerUserRoutes(app: Express) {
             res.status(500).json({ error: "Failed to update language" });
         }
     });
-}
 
+    // GDPR: Data export (Right to Data Portability)
+    app.get("/api/user/export", isAuthenticated, async (req, res) => {
+        try {
+            const userId = (req.user as AppUser).id;
+            const user = await storage.getUser(userId);
+
+            if (!user) {
+                return res.status(404).json({ error: "User not found" });
+            }
+
+            const [businesses, reports, searches, apiUsage] = await Promise.all([
+                storage.listBusinesses(userId),
+                storage.getReportsByUserId(userId),
+                storage.listSearchesByUserId(userId),
+                storage.listApiUsageByUserId(userId),
+            ]);
+
+            const {
+                passwordHash,
+                verificationToken,
+                verificationTokenExpiresAt,
+                ...safeUser
+            } = user;
+
+            const exportPayload = {
+                exportedAt: new Date().toISOString(),
+                user: safeUser,
+                businesses,
+                reports,
+                searches,
+                apiUsage,
+            };
+
+            const filename = `competitor-watcher-data-${new Date().toISOString().slice(0, 10)}.json`;
+            res.setHeader("Content-Type", "application/json; charset=utf-8");
+            res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+            res.send(JSON.stringify(exportPayload, null, 2));
+        } catch (error) {
+            console.error("Error exporting user data:", error);
+            res.status(500).json({ error: "Failed to export user data" });
+        }
+    });
+}

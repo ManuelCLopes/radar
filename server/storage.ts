@@ -37,6 +37,7 @@ export interface IStorage {
   // Search tracking
   trackSearch?(search: InsertSearch): Promise<void>;
   listRecentSearches?(): Promise<Search[]>;
+  listSearchesByUserId(userId: string): Promise<Search[]>;
   getSearchStats?(): Promise<{
     typeDistribution: { type: string; count: number }[];
     topLocations: { address: string; count: number }[];
@@ -51,6 +52,7 @@ export interface IStorage {
   trackApiUsage(usage: InsertApiUsage): Promise<void>;
   getApiUsageStats(days?: number): Promise<any>;
   getApiUsageByUser(limit?: number): Promise<any>;
+  listApiUsageByUserId(userId: string): Promise<ApiUsage[]>;
 
   // Email Verification
   verifyUser(userId: string): Promise<void>;
@@ -295,6 +297,14 @@ export class DatabaseStorage implements IStorage {
     return await db!.select().from(searches).orderBy(desc(searches.createdAt)).limit(50);
   }
 
+  async listSearchesByUserId(userId: string): Promise<Search[]> {
+    return await db!
+      .select()
+      .from(searches)
+      .where(eq(searches.userId, userId))
+      .orderBy(desc(searches.createdAt));
+  }
+
   // Password reset methods
   async findUserByEmail(email: string): Promise<User | undefined> {
     return this.getUserByEmail(email);
@@ -321,6 +331,9 @@ export class DatabaseStorage implements IStorage {
 
   async deleteUser(id: string): Promise<void> {
     // Reports and Searches should ideally have ON DELETE CASCADE, but let's be safe
+    await db!.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, id));
+    await db!.delete(apiUsage).where(eq(apiUsage.userId, id));
+    await db!.delete(businesses).where(eq(businesses.userId, id));
     await db!.delete(reports).where(eq(reports.userId, id));
     await db!.delete(searches).where(eq(searches.userId, id));
     await db!.delete(users).where(eq(users.id, id));
@@ -396,6 +409,14 @@ export class DatabaseStorage implements IStorage {
       .limit(limit);
 
     return userUsage;
+  }
+
+  async listApiUsageByUserId(userId: string): Promise<ApiUsage[]> {
+    return await db!
+      .select()
+      .from(apiUsage)
+      .where(eq(apiUsage.userId, userId))
+      .orderBy(desc(apiUsage.createdAt));
   }
 
   async verifyUser(userId: string): Promise<void> {
@@ -702,6 +723,12 @@ export class MemStorage implements IStorage {
       .slice(0, 50);
   }
 
+  async listSearchesByUserId(userId: string): Promise<Search[]> {
+    return Array.from(this.searches.values())
+      .filter((search) => search.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
   async getSearchStats() {
     const searchList = Array.from(this.searches.values());
     const reportCount = this.reports.size;
@@ -772,6 +799,27 @@ export class MemStorage implements IStorage {
   }
 
   async deleteUser(id: string): Promise<void> {
+    // Delete password reset tokens
+    Array.from(this.resetTokens.entries()).forEach(([token, data]) => {
+      if (data.userId === id) {
+        this.resetTokens.delete(token);
+      }
+    });
+
+    // Delete API usage
+    Array.from(this.apiUsage.entries()).forEach(([usageId, usage]) => {
+      if (usage.userId === id) {
+        this.apiUsage.delete(usageId);
+      }
+    });
+
+    // Delete businesses
+    Array.from(this.businesses.entries()).forEach(([businessId, business]) => {
+      if (business.userId === id) {
+        this.businesses.delete(businessId);
+      }
+    });
+
     // Delete reports
     Array.from(this.reports.entries()).forEach(([reportId, report]) => {
       if (report.userId === id) {
@@ -898,6 +946,12 @@ export class MemStorage implements IStorage {
     }));
 
     return results;
+  }
+
+  async listApiUsageByUserId(userId: string): Promise<ApiUsage[]> {
+    return Array.from(this.apiUsage.values())
+      .filter((usage) => usage.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
   async verifyUser(userId: string): Promise<void> {

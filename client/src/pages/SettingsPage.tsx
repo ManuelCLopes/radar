@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation, Trans } from "react-i18next";
-import { User, LogOut, CreditCard, Eye, EyeOff, Trash2, Shield, Loader2 } from "lucide-react";
+import { User, LogOut, CreditCard, Eye, EyeOff, Trash2, Shield, Loader2, Download, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -32,6 +32,7 @@ import {
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { usePricingModal } from "@/context/PricingModalContext";
 import { ProWelcomeModal } from "@/components/ProWelcomeModal";
+import { resetCookieConsent } from "@/lib/consent";
 
 // Plans removed - app is now 100% free with donations
 
@@ -50,6 +51,7 @@ export default function SettingsPage() {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [showProWelcome, setShowProWelcome] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
 
     const [formData, setFormData] = useState({
         name: user?.firstName || user?.email || "",
@@ -176,6 +178,52 @@ export default function SettingsPage() {
             });
             setIsLoadingPortal(false);
         }
+    };
+
+    const handleDownloadData = async () => {
+        try {
+            setIsExporting(true);
+            const res = await fetch("/api/user/export");
+            if (!res.ok) {
+                throw new Error("Failed to export data");
+            }
+
+            const blob = await res.blob();
+            const disposition = res.headers.get("content-disposition");
+            const match = disposition ? /filename="([^"]+)"/.exec(disposition) : null;
+            const fallbackName = `competitor-watcher-data-${new Date().toISOString().slice(0, 10)}.json`;
+            const filename = match?.[1] || fallbackName;
+
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+
+            toast({
+                title: t("settings.toast.exportSuccess.title"),
+                description: t("settings.toast.exportSuccess.description"),
+            });
+        } catch (error) {
+            toast({
+                title: t("settings.toast.error.title"),
+                description: t("settings.toast.exportError"),
+                variant: "destructive",
+            });
+        } finally {
+            setIsExporting(false);
+        }
+    };
+
+    const handleResetCookiePreferences = () => {
+        resetCookieConsent();
+        toast({
+            title: t("settings.toast.cookieReset.title"),
+            description: t("settings.toast.cookieReset.description"),
+        });
     };
 
     return (
@@ -399,6 +447,52 @@ export default function SettingsPage() {
                                 {t('settings.subscription.upgrade')}
                             </Button>
                         )}
+                    </CardContent>
+                </Card>
+
+                {/* Privacy & Data */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Shield className="h-5 w-5" />
+                            {t("settings.privacy.title")}
+                        </CardTitle>
+                        <CardDescription>
+                            {t("settings.privacy.description")}
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <p className="font-semibold">{t("settings.privacy.exportTitle")}</p>
+                                <p className="text-sm text-muted-foreground">{t("settings.privacy.exportDesc")}</p>
+                            </div>
+                            <Button
+                                variant="outline"
+                                onClick={handleDownloadData}
+                                disabled={isExporting}
+                            >
+                                {isExporting ? (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                ) : (
+                                    <Download className="mr-2 h-4 w-4" />
+                                )}
+                                {t("settings.privacy.exportButton")}
+                            </Button>
+                        </div>
+
+                        <Separator />
+
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <p className="font-semibold">{t("settings.privacy.cookieResetTitle")}</p>
+                                <p className="text-sm text-muted-foreground">{t("settings.privacy.cookieResetDesc")}</p>
+                            </div>
+                            <Button variant="outline" onClick={handleResetCookiePreferences}>
+                                <RefreshCcw className="mr-2 h-4 w-4" />
+                                {t("settings.privacy.cookieResetButton")}
+                            </Button>
+                        </div>
                     </CardContent>
                 </Card>
 

@@ -55,8 +55,19 @@ describe("User Deletion API", () => {
             lastName: "Me"
         });
 
-        // 2. Create a report for this user
-        const report = await storage.createReport({
+        // 2. Create a business for this user
+        await storage.addBusiness({
+            userId: user.id,
+            name: "Test Business",
+            type: "restaurant",
+            address: "123 Test St",
+            latitude: 40.7128,
+            longitude: -74.0060,
+            locationStatus: "validated",
+        });
+
+        // 3. Create a report for this user
+        await storage.createReport({
             userId: user.id,
             businessName: "Test Business",
             competitors: [],
@@ -64,7 +75,7 @@ describe("User Deletion API", () => {
             html: "<html></html>"
         });
 
-        // 3. Create a search for this user
+        // 4. Create a search for this user
         await storage.trackSearch!({
             userId: user.id,
             address: "Test Address",
@@ -72,20 +83,44 @@ describe("User Deletion API", () => {
             radius: 1000
         });
 
-        // 4. Verify data exists
-        expect(await storage.getUser(user.id)).toBeDefined();
-        expect((await storage.getReportsByUserId(user.id)).length).toBe(1);
+        // 5. Create API usage for this user
+        await storage.trackApiUsage({
+            service: "openai",
+            endpoint: "analyze",
+            userId: user.id,
+            tokens: 10,
+            costUnits: 2
+        });
 
-        // 5. Call DELETE /api/user
+        // 6. Create password reset token
+        await storage.createPasswordResetToken({
+            userId: user.id,
+            token: "token-123",
+            expiresAt: new Date(Date.now() + 60 * 60 * 1000)
+        });
+
+        // 7. Verify data exists
+        expect(await storage.getUser(user.id)).toBeDefined();
+        expect((await storage.listBusinesses(user.id)).length).toBe(1);
+        expect((await storage.getReportsByUserId(user.id)).length).toBe(1);
+        expect((await storage.listSearchesByUserId(user.id)).length).toBe(1);
+        expect((await storage.listApiUsageByUserId(user.id)).length).toBe(1);
+        expect(await storage.getPasswordResetToken("token-123")).toBeDefined();
+
+        // 8. Call DELETE /api/user
         mockUser = user; // Set logged in user
         const res = await request(app).delete("/api/user");
 
         expect(res.status).toBe(200);
         expect(res.body.message).toBe("Account deleted successfully");
 
-        // 6. Verify data is gone
+        // 9. Verify data is gone
         expect(await storage.getUser(user.id)).toBeUndefined();
+        expect((await storage.listBusinesses(user.id)).length).toBe(0);
         expect((await storage.getReportsByUserId(user.id)).length).toBe(0);
+        expect((await storage.listSearchesByUserId(user.id)).length).toBe(0);
+        expect((await storage.listApiUsageByUserId(user.id)).length).toBe(0);
+        expect(await storage.getPasswordResetToken("token-123")).toBeUndefined();
     });
 
     it("should return 401 if not authenticated", async () => {
