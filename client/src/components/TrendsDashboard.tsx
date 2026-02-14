@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { ComposedChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Line } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Lock, TrendingUp, Users } from "lucide-react";
+import { Lock, TrendingUp, Users, History as HistoryIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { usePricingModal } from "@/context/PricingModalContext";
 import type { Business } from "@shared/schema";
@@ -208,6 +208,105 @@ export function TrendsDashboard({ business }: TrendsDashboardProps) {
                     </CardContent>
                 </Card>
             </div>
+
+            {trends.length >= 2 && (
+                <div className="space-y-4">
+                    <h3 className="text-lg font-semibold flex items-center gap-2">
+                        <HistoryIcon className="h-5 w-5 text-primary" />
+                        {t("trends.performanceSnapshot", "Performance Snapshot")}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                        {t("trends.snapshotDesc", "Comparing your first report ({{firstDate}}) with your latest report ({{lastDate}})", {
+                            firstDate: new Date(trends[0].date).toLocaleDateString(),
+                            lastDate: new Date(trends[trends.length - 1].date).toLocaleDateString()
+                        })}
+                    </p>
+
+                    <div className="grid gap-4 md:grid-cols-3">
+                        <ComparisonCard
+                            title={t("trends.marketDensity", "Market Density")}
+                            value={trends[trends.length - 1].competitorCount}
+                            previousValue={trends[0].competitorCount}
+                            inverse={true} // More competitors might be "bad" (more competition), or "good" (growing market). Let's assume more competition is challenging, so inverse color logic.
+                            unit={t("trends.competitors", "Competitors")}
+                        />
+                        <ComparisonCard
+                            title={t("trends.competitorQuality", "Competitor Quality")}
+                            value={trends[trends.length - 1].avgRating}
+                            previousValue={trends[0].avgRating}
+                            inverse={true} // Higher competitor rating is "bad" for us
+                            unit="★"
+                        />
+                        <ComparisonCard
+                            title={t("trends.myRating", "My Rating")}
+                            value={trends[trends.length - 1].businessRating || 0}
+                            previousValue={trends[0].businessRating || 0}
+                            inverse={false} // Higher is good
+                            unit="★"
+                            showIfZero={false} // Don't show if we don't have our own rating
+                        />
+                    </div>
+                </div>
+            )}
         </div>
+    );
+}
+
+function ComparisonCard({
+    title,
+    value,
+    previousValue,
+    inverse = false,
+    unit,
+    showIfZero = true
+}: {
+    title: string;
+    value: number;
+    previousValue: number;
+    inverse?: boolean;
+    unit: string;
+    showIfZero?: boolean;
+}) {
+    if (!showIfZero && !value && !previousValue) return null;
+
+    const diff = value - previousValue;
+    const isPositive = diff > 0;
+    const isNeutral = diff === 0;
+
+    // Color logic
+    // Normal: Increase = Green, Decrease = Red
+    // Inverse: Increase = Red, Decrease = Green
+    let colorClass = "text-muted-foreground";
+    if (!isNeutral) {
+        if (inverse) {
+            colorClass = isPositive ? "text-red-500" : "text-emerald-500";
+        } else {
+            colorClass = isPositive ? "text-emerald-500" : "text-red-500";
+        }
+    }
+
+    return (
+        <Card>
+            <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                    {title}
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="text-2xl font-bold flex items-center gap-2">
+                    {value} <span className="text-sm font-normal text-muted-foreground">{unit}</span>
+                </div>
+                <div className={`text-xs flex items-center mt-1 ${colorClass}`}>
+                    {isNeutral ? (
+                        <span className="flex items-center">Unable to determine trend</span>
+                    ) : (
+                        <span className="flex items-center font-medium">
+                            {diff > 0 ? "+" : ""}{Number(diff.toFixed(2))} {unit === "★" ? "" : unit}
+                        </span>
+                    )}
+                    <span className="ml-1 text-muted-foreground">since start</span>
+                </div>
+            </CardContent>
+        </Card>
     );
 }

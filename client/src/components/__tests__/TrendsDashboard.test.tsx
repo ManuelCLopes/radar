@@ -145,6 +145,55 @@ describe("TrendsDashboard", () => {
             // Both chart types should render
             expect(screen.getByTestId("composed-chart")).toBeInTheDocument();
             expect(screen.getByTestId("bar-chart")).toBeInTheDocument();
+
+            // Performance snapshot should NOT render (less than 2 data points)
+            expect(screen.queryByText("Performance Snapshot")).not.toBeInTheDocument();
+        });
+
+        it("should display Performance Snapshot when 2 or more reports exist", () => {
+            const mockTrends = [
+                { id: "1", date: "2025-01-01", avgRating: 4.0, businessRating: 4.5, competitorCount: 10, minRating: 3.5, maxRating: 4.8 },
+                { id: "2", date: "2025-01-15", avgRating: 4.2, businessRating: 4.8, competitorCount: 12, minRating: 3.6, maxRating: 4.9 }
+            ];
+            (useQuery as any).mockReturnValue({ data: mockTrends, isLoading: false, error: null });
+
+            render(<TrendsDashboard business={mockBusiness} />);
+
+            expect(screen.getByText("Performance Snapshot")).toBeInTheDocument();
+
+            // Market Density: 10 -> 12 (+2)
+            expect(screen.getByText("Market Density")).toBeInTheDocument();
+            expect(screen.getByText(/12/)).toBeInTheDocument();
+            expect(screen.getByText(/\+2/)).toBeInTheDocument();
+
+            // Competitor Quality: 4.0 -> 4.2 (+0.2)
+            expect(screen.getByText("Competitor Quality")).toBeInTheDocument();
+            expect(screen.getByText(/4\.2/)).toBeInTheDocument();
+            expect(screen.getByText(/\+0\.2/)).toBeInTheDocument();
+
+            // My Rating: 4.5 -> 4.8 (+0.3)
+            expect(screen.getByText("My Rating")).toBeInTheDocument();
+            expect(screen.getByText(/4\.8/)).toBeInTheDocument();
+            expect(screen.getByText(/\+0\.3/)).toBeInTheDocument();
+        });
+
+        it("should handle negative trends correctly in Performance Snapshot", () => {
+            const mockTrends = [
+                { id: "1", date: "2025-01-01", avgRating: 4.5, businessRating: 4.8, competitorCount: 10, minRating: 3.5, maxRating: 4.8 },
+                { id: "2", date: "2025-01-15", avgRating: 4.0, businessRating: 4.5, competitorCount: 8, minRating: 3.6, maxRating: 4.9 }
+            ];
+            (useQuery as any).mockReturnValue({ data: mockTrends, isLoading: false, error: null });
+
+            render(<TrendsDashboard business={mockBusiness} />);
+
+            // Market Density: 10 -> 8 (-2)
+            expect(screen.getByText(/-2/)).toBeInTheDocument();
+
+            // Competitor Quality: 4.5 -> 4.0 (-0.5)
+            expect(screen.getByText(/-0\.5/)).toBeInTheDocument();
+
+            // My Rating: 4.8 -> 4.5 (-0.3)
+            expect(screen.getByText(/-0\.3/)).toBeInTheDocument();
         });
     });
 });
