@@ -325,7 +325,7 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                             </CardHeader>
                             <CardContent>
                                 <ul className="list-disc leading-relaxed pl-4 space-y-1 text-sm text-muted-foreground">
-                                    {targetAudience.painPoints?.map((point: string, i: number) => (
+                                    {Array.isArray(targetAudience.painPoints) && targetAudience.painPoints.map((point: string, i: number) => (
                                         <li key={i}>{point}</li>
                                     ))}
                                 </ul>
@@ -340,16 +340,16 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                 <section className="space-y-3 print:break-inside-avoid">
                     <div className="flex items-center gap-2 text-primary">
                         <Megaphone className="h-5 w-5" />
-                        <h3 className="font-semibold text-lg">Marketing Strategy</h3>
+                        <h3 className="font-semibold text-lg">{t("report.sections.marketingStrategy")}</h3>
                     </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Card className="bg-blue-50/50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-800">
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">Channels</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="flex flex-wrap gap-2">
-                                    {marketingStrategy.channels?.map((channel: string, i: number) => (
+                                    {Array.isArray(marketingStrategy.channels) && marketingStrategy.channels.map((channel: string, i: number) => (
                                         <Badge key={i} variant="secondary" className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 hover:bg-blue-200">
                                             {channel}
                                         </Badge>
@@ -363,7 +363,7 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                             </CardHeader>
                             <CardContent>
                                 <ul className="list-disc pl-4 space-y-1 text-sm text-muted-foreground">
-                                    {marketingStrategy.tactics?.map((tactic: string, i: number) => (
+                                    {Array.isArray(marketingStrategy.tactics) && marketingStrategy.tactics.map((tactic: string, i: number) => (
                                         <li key={i}>{tactic}</li>
                                     ))}
                                 </ul>
