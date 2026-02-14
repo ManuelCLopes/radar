@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AlertTriangle, Send } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 export function VerificationBanner() {
     const { user } = useAuth();
     const { toast } = useToast();
+    const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
 
     // If user is not logged in or is already verified, don't show banner
@@ -24,21 +26,21 @@ export function VerificationBanner() {
 
             if (res.ok) {
                 toast({
-                    title: "Email enviado!",
-                    description: "Verifique sua caixa de entrada (e spam) para encontrar o link.",
+                    title: t("common.emailSentTitle"),
+                    description: t("common.emailSentDesc"),
                 });
             } else {
                 const data = await res.json();
                 toast({
-                    title: "Erro ao enviar email",
-                    description: data.error || "Tente novamente mais tarde.",
+                    title: t("common.errorSendingEmail"),
+                    description: data.error || t("common.connectionErrorDesc"),
                     variant: "destructive",
                 });
             }
         } catch (error) {
             toast({
-                title: "Erro de conexão",
-                description: "Não foi possível conectar ao servidor.",
+                title: t("common.connectionError"),
+                description: t("common.connectionErrorDesc"),
                 variant: "destructive",
             });
         } finally {
@@ -52,7 +54,7 @@ export function VerificationBanner() {
                 <div className="flex items-center gap-3">
                     <AlertTriangle className="h-5 w-5 text-yellow-600" />
                     <div className="text-sm text-yellow-800">
-                        <span className="font-semibold">Verifique seu email!</span> Algumas funcionalidades estão limitadas até que você confirme seu endereço de email.
+                        <span className="font-semibold">{t("common.verifyYourEmail")}</span> {t("common.featuresLimited")}
                     </div>
                 </div>
                 <Button
@@ -62,9 +64,9 @@ export function VerificationBanner() {
                     disabled={isLoading}
                     className="bg-white border-yellow-300 text-yellow-800 hover:bg-yellow-100 hover:text-yellow-900 whitespace-nowrap"
                 >
-                    {isLoading ? "Enviando..." : (
+                    {isLoading ? t("common.sending") : (
                         <>
-                            <Send className="mr-2 h-3 w-3" /> Reenviar Email
+                            <Send className="mr-2 h-3 w-3" /> {t("common.resendEmail")}
                         </>
                     )}
                 </Button>

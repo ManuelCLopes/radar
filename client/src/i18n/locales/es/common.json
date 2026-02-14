@@ -206,7 +206,7 @@
       "fetchBusinesses": "Falha ao carregar negócios",
       "registerBusiness": "Falha ao registar negócio",
       "deleteBusiness": "Falha ao eliminar negócio",
-      "generateReport": "Falha ao gerar o relatório",
+      "generateReport": "Error al generar el informe. Por favor, inténtelo de nuevo más tarde.",
       "fetchReports": "Falha ao carregar relatórios",
       "login": "Falha ao iniciar sessão",
       "logout": "Falha ao terminar sessão",
@@ -215,6 +215,11 @@
     "linkCopied": {
       "title": "Link copiado!",
       "description": "O link para a página inicial foi copiado para a área de transferência."
+    },
+    "planLimit": {
+      "title": "Límite del Plan Alcanzado",
+      "reportDescription": "Su plan actual permite {{limit}} informes al mes. Por favor, actualice su plan para crear más informes.",
+      "radiusDescription": "Su plan actual permite un radio máximo de {{limit}} km. Por favor, actualice su plan para analizar áreas más grandes."
     }
   },
   "language": {
@@ -236,7 +241,18 @@
     "cancel": "Cancelar",
     "refresh": "Atualizar",
     "loading": "A carregar...",
-    "change": "Alterar"
+    "change": "Cambiar",
+    "verificationRequired": "Verificación Requerida",
+    "pleaseVerifyEmail": "Por favor, verifique su dirección de correo electrónico para continuar.",
+    "verificationRequiredForBusiness": "Debe verificar su correo electrónico para agregar un negocio.",
+    "verifyYourEmail": "¡Verifique su correo electrónico!",
+    "featuresLimited": "Algunas funciones están limitadas hasta que verifique su dirección de correo electrónico.",
+    "resendEmail": "Reenviar correo electrónico",
+    "emailSentTitle": "¡Correo enviado!",
+    "emailSentDesc": "Revise su bandeja de entrada (y spam) para encontrar el enlace.",
+    "errorSendingEmail": "Error al enviar correo",
+    "connectionError": "Error de conexión",
+    "connectionErrorDesc": "No se pudo conectar al servidor."
   },
   "addressSearch": {
     "enterAddress": "Por favor, introduza uma morada para pesquisar",
@@ -773,5 +789,38 @@
     "competitorCount": "Competidores",
     "noData": "Sin datos de tendencias",
     "noDataDesc": "Genere más informes a lo largo del tiempo para ver aparecer tendencias aquí."
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "¡Bienvenido a Competitor Watcher!",
+      "description": "Esta herramienta te ayuda a analizar tu competencia local, descubrir oportunidades de mercado y seguir el rendimiento de los competidores a lo largo del tiempo."
+    },
+    "addBusiness": {
+      "title": "Registra Tu Negocio",
+      "description": "Empieza añadiendo tu negocio aquí. Usaremos su ubicación para encontrar competidores cercanos y generar informes detallados."
+    },
+    "newAnalysis": {
+      "title": "Análisis Rápido por Dirección",
+      "description": "¿No tienes un negocio registrado? Usa el Análisis Rápido para explorar cualquier dirección y descubrir competidores en la zona al instante."
+    },
+    "history": {
+      "title": "Historial de Informes",
+      "description": "Todos tus informes generados se guardan aquí. Revisa análisis anteriores, sigue los cambios y exporta informes en cualquier momento."
+    },
+    "settings": {
+      "title": "Tu Configuración",
+      "description": "Gestiona tu cuenta, cambia el idioma y configura las preferencias de notificación desde la página de Configuración."
+    },
+    "skip": "Saltar",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "finish": "¡Empezar!"
+  },
+  "reportNotification": {
+    "title": "¡Informe Listo!",
+    "viewReport": "Ver Informe",
+    "emailSent": "Se ha enviado una copia a tu correo",
+    "generationStarted": "Generación de Informe Iniciada",
+    "generationStartedDesc": "Estamos generando su informe en segundo plano. Se le notificará cuando esté listo."
   }
 }

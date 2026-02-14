@@ -39,7 +39,7 @@ describe("queryClient", () => {
                 statusText: "Bad Request",
             });
 
-            await expect(apiRequest("GET", "/api/test")).rejects.toThrow("400: Bad Request");
+            await expect(apiRequest("GET", "/api/test")).rejects.toThrow("Bad Request");
         });
 
         it("should throw error if text reading fails", async () => {

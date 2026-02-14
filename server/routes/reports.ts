@@ -2,9 +2,10 @@ import type { Express } from "express";
 import { storage } from "../storage";
 import { runReportForBusiness } from "../reports";
 import { isAuthenticated } from "../auth";
-import { type User as AppUser } from "@shared/schema";
+import { type User as AppUser, type InsertReport } from "@shared/schema";
 import { searchPlacesByAddress, hasGoogleApiKey } from "../googlePlaces";
 import { getPlanLimits } from "../limits";
+import { log } from "../log";
 
 export function registerReportRoutes(app: Express) {
     app.post("/api/reports/save-existing", isAuthenticated, async (req, res) => {
@@ -60,15 +61,59 @@ export function registerReportRoutes(app: Express) {
             if (limits.maxMonthlyReports !== Infinity && currentUsage >= limits.maxMonthlyReports) {
                 return res.status(403).json({
                     error: "Report limit reached",
-                    message: `Your current plan allows for ${limits.maxMonthlyReports} reports per month. Please upgrade to create more reports.`
+                    code: "REPORT_LIMIT_REACHED",
+                    limit: limits.maxMonthlyReports
                 });
             }
 
-            const report = await runReportForBusiness(businessId, language, undefined, (req.user as AppUser).id);
-            res.json(report);
+            // Check rate limit
+            // const rateLimitResult = await storage.checkRateLimit(req.ip);
+            // if (!rateLimitResult.allowed) {
+            //   return res.status(429).json({ error: "Rate limit exceeded. Please try again later." });
+            // }
+
+            // Create a pending report immediately
+            const pendingReportData: InsertReport = {
+                businessId: business.id,
+                businessName: business.name,
+                competitors: [],
+                aiAnalysis: "Generating...", // Flag for frontend polling
+                executiveSummary: undefined,
+                swotAnalysis: undefined,
+                marketTrends: undefined,
+                targetAudience: undefined,
+                marketingStrategy: undefined,
+                customerSentiment: undefined,
+                html: undefined,
+                userId: (req.user as AppUser).id,
+                generatedAt: new Date(),
+            };
+
+            const pendingReport = await storage.createReport(pendingReportData);
+
+            // Run report generation in background
+            runReportForBusiness(businessId, reportLanguage, undefined, (req.user as AppUser).id, 1500, pendingReport.id)
+                .then(async (completedReport) => {
+                })
+                .catch(async (err) => {
+                    console.error("Error generating report in background:", err);
+                    // Optionally update report to indicate failure
+                    try {
+                        // If we had a specific error status, we'd set it here.
+                        // For now, let's set aiAnalysis to an error message so polling stops and UI shows error
+                        await storage.updateReport(pendingReport.id, {
+                            aiAnalysis: "Error: Failed to generate report. Please try again."
+                        });
+                    } catch (updateErr) {
+                        console.error("Failed to update report with error status:", updateErr);
+                    }
+                });
+
+            // Return the pending report immediately
+            res.json(pendingReport);
         } catch (error) {
-            console.error("Error generating report:", error);
-            res.status(500).json({ error: "Failed to generate report" });
+            console.error("Error initiating report generation:", error);
+            res.status(500).json({ error: "Failed to initiate report generation" });
         }
     });
 
@@ -202,7 +247,8 @@ export function registerReportRoutes(app: Express) {
         if (limits.maxMonthlyReports !== Infinity && currentUsage >= limits.maxMonthlyReports) {
             return res.status(403).json({
                 error: "Report limit reached",
-                message: `Your current plan allows for ${limits.maxMonthlyReports} reports per month. Please upgrade to create more reports.`
+                code: "REPORT_LIMIT_REACHED",
+                limit: limits.maxMonthlyReports
             });
         }
 
@@ -218,7 +264,8 @@ export function registerReportRoutes(app: Express) {
             if (radius > limits.maxRadius) {
                 return res.status(403).json({
                     error: "Radius limit reached",
-                    message: `Your current plan allows for a maximum radius of ${limits.maxRadius / 1000}km. Please upgrade to analyze larger areas.`
+                    code: "RADIUS_LIMIT_REACHED",
+                    limit: limits.maxRadius
                 });
             }
 
@@ -241,7 +288,33 @@ export function registerReportRoutes(app: Express) {
                 return res.status(400).json({ error: "Location not found" });
             }
 
-            // Create temp business object
+            // Create pending report immediately
+            const savedReport = await storage.createReport({
+                businessId: null, // Explicitly set to null for ad-hoc analysis
+                businessName: address.split(',')[0],
+                competitors: [],
+                aiAnalysis: "Generating...",
+                userId: (req.user as AppUser).id,
+                radius,
+                generatedAt: new Date(),
+                // Initialize optional fields
+                executiveSummary: undefined,
+                swotAnalysis: undefined,
+                marketTrends: undefined,
+                targetAudience: undefined,
+                marketingStrategy: undefined,
+                customerSentiment: undefined,
+                html: undefined,
+            });
+
+            // Return the pending report immediately
+            res.json({
+                ...savedReport,
+                latitude: coordinates.latitude,
+                longitude: coordinates.longitude
+            });
+
+            // Create temp business object for the background process
             const tempBusiness = {
                 id: 'analysis-' + Date.now(),
                 name: address.split(',')[0],
@@ -252,36 +325,22 @@ export function registerReportRoutes(app: Express) {
                 locationStatus: 'validated' as const,
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                userId: null, // Temp business has no user
+                userId: null,
                 rating: null,
                 userRatingsTotal: null
             };
 
-            // Generate report
-            const report = await runReportForBusiness(tempBusiness.id, language, tempBusiness, (req.user as AppUser).id, radius);
+            // Run analysis in background
+            runReportForBusiness(tempBusiness.id, language, tempBusiness, (req.user as AppUser).id, radius, savedReport.id)
+                .then(async (report) => {
+                })
+                .catch(async (err) => {
+                    console.error("Error generating ad-hoc report in background:", err);
+                    await storage.updateReport(savedReport.id, {
+                        aiAnalysis: "Error: Failed to generate report."
+                    });
+                });
 
-            // Save report with userId
-            const { id: _tempId, generatedAt: _tempGenAt, ...reportData } = report;
-
-            const savedReport = await storage.createReport({
-                ...reportData,
-                executiveSummary: reportData.executiveSummary || undefined,
-                swotAnalysis: reportData.swotAnalysis as any || undefined,
-                marketTrends: reportData.marketTrends as any || undefined,
-                targetAudience: reportData.targetAudience as any || undefined,
-                marketingStrategy: reportData.marketingStrategy as any || undefined,
-                customerSentiment: reportData.customerSentiment as any || undefined,
-                html: reportData.html || undefined,
-                userId: (req.user as AppUser).id,
-                businessId: null, // Explicitly set to null for ad-hoc analysis
-                radius: reportData.radius || undefined
-            });
-
-            res.json({
-                ...savedReport,
-                latitude: tempBusiness.latitude,
-                longitude: tempBusiness.longitude
-            });
         } catch (error) {
             console.error("Analysis error details:", error);
             res.status(500).json({ error: "Failed to run analysis" });

@@ -206,7 +206,7 @@
       "fetchBusinesses": "Falha ao carregar negócios",
       "registerBusiness": "Falha ao registar negócio",
       "deleteBusiness": "Falha ao eliminar negócio",
-      "generateReport": "Falha ao gerar o relatório",
+      "generateReport": "Falha ao gerar o relatório. Por favor, tente novamente mais tarde.",
       "fetchReports": "Falha ao carregar relatórios",
       "login": "Falha ao iniciar sessão",
       "logout": "Falha ao terminar sessão",
@@ -215,6 +215,11 @@
     "linkCopied": {
       "title": "Link copiado!",
       "description": "O link para a página inicial foi copiado para a área de transferência."
+    },
+    "planLimit": {
+      "title": "Limite do Plano Atingido",
+      "reportDescription": "O seu plano atual permite {{limit}} relatórios por mês. Por favor, atualize o seu plano para criar mais relatórios.",
+      "radiusDescription": "O seu plano atual permite um raio máximo de {{limit}} km. Por favor, atualize o seu plano para analisar áreas maiores."
     }
   },
   "language": {
@@ -236,7 +241,18 @@
     "cancel": "Cancelar",
     "refresh": "Atualizar",
     "loading": "A carregar...",
-    "change": "Alterar"
+    "change": "Alterar",
+    "verificationRequired": "Verificação Necessária",
+    "pleaseVerifyEmail": "Por favor, verifique o seu endereço de email para continuar.",
+    "verificationRequiredForBusiness": "Tem de verificar o seu email para adicionar um negócio.",
+    "verifyYourEmail": "Verifique seu email!",
+    "featuresLimited": "Algumas funcionalidades estão limitadas até que você confirme seu endereço de email.",
+    "resendEmail": "Reenviar Email",
+    "emailSentTitle": "Email enviado!",
+    "emailSentDesc": "Verifique sua caixa de entrada (e spam) para encontrar o link.",
+    "errorSendingEmail": "Erro ao enviar email",
+    "connectionError": "Erro de conexão",
+    "connectionErrorDesc": "Não foi possível conectar ao servidor."
   },
   "addressSearch": {
     "enterAddress": "Por favor, introduza uma morada para pesquisar",
@@ -772,5 +788,38 @@
     "competitorCount": "Concorrentes",
     "noData": "Sem dados de tendências",
     "noDataDesc": "Gere mais relatórios ao longo do tempo para ver as tendências aparecerem aqui."
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "Bem-vindo ao Competitor Watcher!",
+      "description": "Esta ferramenta ajuda-o a analisar a concorrência local, descobrir oportunidades de mercado e acompanhar o desempenho dos concorrentes ao longo do tempo."
+    },
+    "addBusiness": {
+      "title": "Registe o Seu Negócio",
+      "description": "Comece por adicionar o seu negócio aqui. Usaremos a sua localização para encontrar concorrentes próximos e gerar relatórios detalhados."
+    },
+    "newAnalysis": {
+      "title": "Análise Rápida por Morada",
+      "description": "Não tem um negócio registado? Use a Análise Rápida para explorar qualquer morada e descobrir concorrentes na área instantaneamente."
+    },
+    "history": {
+      "title": "Histórico de Relatórios",
+      "description": "Todos os seus relatórios gerados são guardados aqui. Reveja análises anteriores, acompanhe mudanças e exporte relatórios a qualquer momento."
+    },
+    "settings": {
+      "title": "As Suas Definições",
+      "description": "Gerencie a sua conta, altere o idioma e configure as preferências de notificação na página de Definições."
+    },
+    "skip": "Saltar",
+    "next": "Seguinte",
+    "previous": "Anterior",
+    "finish": "Começar!"
+  },
+  "reportNotification": {
+    "title": "Relatório Pronto!",
+    "viewReport": "Ver Relatório",
+    "emailSent": "Uma cópia foi enviada para o seu email",
+    "generationStarted": "Geração de Relatório Iniciada",
+    "generationStartedDesc": "Estamos a gerar o seu relatório em segundo plano. Será notificado quando estiver pronto."
   }
 }

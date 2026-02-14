@@ -206,7 +206,7 @@
       "fetchBusinesses": "Falha ao carregar negócios",
       "registerBusiness": "Falha ao registar negócio",
       "deleteBusiness": "Falha ao eliminar negócio",
-      "generateReport": "Falha ao gerar o relatório",
+      "generateReport": "Bericht konnte nicht erstellt werden. Bitte versuchen Sie es später erneut.",
       "fetchReports": "Falha ao carregar relatórios",
       "login": "Falha ao iniciar sessão",
       "logout": "Falha ao terminar sessão",
@@ -215,6 +215,11 @@
     "linkCopied": {
       "title": "Link copiado!",
       "description": "O link para a página inicial foi copiado para a área de transferência."
+    },
+    "planLimit": {
+      "title": "Planlimit erreicht",
+      "reportDescription": "Ihr aktueller Plan erlaubt {{limit}} Berichte pro Monat. Bitte upgraden Sie, um mehr Berichte zu erstellen.",
+      "radiusDescription": "Ihr aktueller Plan erlaubt einen maximalen Radius von {{limit}} km. Bitte upgraden Sie, um größere Bereiche zu analysieren."
     }
   },
   "language": {
@@ -236,7 +241,18 @@
     "cancel": "Cancelar",
     "refresh": "Atualizar",
     "loading": "A carregar...",
-    "change": "Alterar"
+    "change": "Ändern",
+    "verificationRequired": "Verifizierung Erforderlich",
+    "pleaseVerifyEmail": "Bitte bestätigen Sie Ihre E-Mail-Adresse, um fortzufahren.",
+    "verificationRequiredForBusiness": "Sie müssen Ihre E-Mail bestätigen, um ein Unternehmen hinzuzufügen.",
+    "verifyYourEmail": "Überprüfen Sie Ihre E-Mail!",
+    "featuresLimited": "Einige Funktionen sind eingeschränkt, bis Sie Ihre E-Mail-Adresse bestätigen.",
+    "resendEmail": "E-Mail erneut senden",
+    "emailSentTitle": "E-Mail gesendet!",
+    "emailSentDesc": "Prüfen Sie Ihren Posteingang (und Spam), um den Link zu finden.",
+    "errorSendingEmail": "Fehler beim Senden der E-Mail",
+    "connectionError": "Verbindungsfehler",
+    "connectionErrorDesc": "Verbindung zum Server fehlgeschlagen."
   },
   "addressSearch": {
     "enterAddress": "Por favor, introduza uma morada para pesquisar",
@@ -772,5 +788,38 @@
     "competitorCount": "Wettbewerber",
     "noData": "Noch keine Trenddaten",
     "noDataDesc": "Generieren Sie im Laufe der Zeit mehr Berichte, um hier Trends zu sehen."
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "Willkommen bei Competitor Watcher!",
+      "description": "Dieses Tool hilft Ihnen, Ihre lokale Konkurrenz zu analysieren, Marktchancen zu entdecken und die Leistung der Wettbewerber im Zeitverlauf zu verfolgen."
+    },
+    "addBusiness": {
+      "title": "Registrieren Sie Ihr Unternehmen",
+      "description": "Beginnen Sie, indem Sie hier Ihr Unternehmen hinzufügen. Wir verwenden den Standort, um nahegelegene Wettbewerber zu finden und detaillierte Berichte zu erstellen."
+    },
+    "newAnalysis": {
+      "title": "Schnellanalyse nach Adresse",
+      "description": "Haben Sie kein registriertes Unternehmen? Nutzen Sie die Schnellanalyse, um jede Adresse zu erkunden und sofort Wettbewerber in der Umgebung zu entdecken."
+    },
+    "history": {
+      "title": "Berichtsverlauf",
+      "description": "Alle Ihre generierten Berichte werden hier gespeichert. Überprüfen Sie frühere Analysen, verfolgen Sie Änderungen und exportieren Sie Berichte jederzeit."
+    },
+    "settings": {
+      "title": "Ihre Einstellungen",
+      "description": "Verwalten Sie Ihr Konto, ändern Sie die Sprache und konfigurieren Sie Benachrichtigungseinstellungen auf der Einstellungsseite."
+    },
+    "skip": "Überspringen",
+    "next": "Weiter",
+    "previous": "Zurück",
+    "finish": "Los geht's!"
+  },
+  "reportNotification": {
+    "title": "Bericht fertig!",
+    "viewReport": "Bericht anzeigen",
+    "emailSent": "Eine Kopie wurde an Ihre E-Mail gesendet",
+    "generationStarted": "Berichterstellung gestartet",
+    "generationStartedDesc": "Wir erstellen Ihren Bericht im Hintergrund. Sie werden benachrichtigt, sobald er fertig ist."
   }
 }

@@ -130,6 +130,7 @@ describe("Report Routes", () => {
             mockStorage.getBusiness.mockResolvedValue({ id: "biz-1", userId: "user-1" });
             mockStorage.countReportsCurrentMonth.mockResolvedValue(5);
             mockReports.runReportForBusiness.mockResolvedValue({ id: "rep-1", status: "completed" });
+            mockStorage.createReport.mockResolvedValue({ id: "rep-1", status: "pending" });
 
             const res = await request(app)
                 .post("/api/run-report/biz-1")

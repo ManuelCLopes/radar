@@ -205,7 +205,7 @@
       "fetchBusinesses": "Échec du chargement des entreprises",
       "registerBusiness": "Échec de l'enregistrement de l'entreprise",
       "deleteBusiness": "Échec de la suppression de l'entreprise",
-      "generateReport": "Échec de la génération du rapport",
+      "generateReport": "Échec de la génération du rapport. Veuillez réessayer plus tard.",
       "fetchReports": "Échec du chargement des rapports",
       "login": "Échec de la connexion",
       "logout": "Échec de la déconnexion",
@@ -214,6 +214,11 @@
     "linkCopied": {
       "title": "Lien copié !",
       "description": "Le lien de la page d'accueil a été copié dans votre presse-papiers."
+    },
+    "planLimit": {
+      "title": "Limite du Plan Atteinte",
+      "reportDescription": "Votre plan actuel permet {{limit}} rapports par mois. Veuillez mettre à niveau pour créer plus de rapports.",
+      "radiusDescription": "Votre plan actuel permet un rayon maximum de {{limit}} km. Veuillez mettre à niveau pour analyser de plus grandes zones."
     }
   },
   "language": {
@@ -235,7 +240,18 @@
     "cancel": "Annuler",
     "refresh": "Actualiser",
     "loading": "Chargement...",
-    "change": "Modifier"
+    "change": "Modifier",
+    "verificationRequired": "Vérification Requise",
+    "pleaseVerifyEmail": "Veuillez vérifier votre adresse e-mail pour continuer.",
+    "verificationRequiredForBusiness": "Vous devez vérifier votre e-mail pour ajouter une entreprise.",
+    "verifyYourEmail": "Vérifiez votre e-mail !",
+    "featuresLimited": "Certaines fonctionnalités sont limitées jusqu'à ce que vous vérifiiez votre adresse e-mail.",
+    "resendEmail": "Renvoyer l'e-mail",
+    "emailSentTitle": "E-mail envoyé !",
+    "emailSentDesc": "Vérifiez votre boîte de réception (et spams) pour trouver le lien.",
+    "errorSendingEmail": "Erreur lors de l'envoi de l'e-mail",
+    "connectionError": "Erreur de connexion",
+    "connectionErrorDesc": "Impossible de se connecter au serveur."
   },
   "addressSearch": {
     "enterAddress": "Veuillez saisir une adresse à rechercher",
@@ -771,5 +787,38 @@
     "competitorCount": "Concurrents",
     "noData": "Pas encore de données",
     "noDataDesc": "Générez plus de rapports au fil du temps pour voir apparaître des tendances."
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "Bienvenue sur Competitor Watcher !",
+      "description": "Cet outil vous aide à analyser la concurrence locale, découvrir des opportunités de marché et suivre la performance des concurrents au fil du temps."
+    },
+    "addBusiness": {
+      "title": "Enregistrez Votre Entreprise",
+      "description": "Commencez par ajouter votre entreprise ici. Nous utiliserons son emplacement pour trouver des concurrents proches et générer des rapports détaillés."
+    },
+    "newAnalysis": {
+      "title": "Analyse Rapide par Adresse",
+      "description": "Vous n'avez pas d'entreprise enregistrée ? Utilisez l'Analyse Rapide pour explorer n'importe quelle adresse et découvrir les concurrents dans la zone instantanément."
+    },
+    "history": {
+      "title": "Historique des Rapports",
+      "description": "Tous vos rapports générés sont sauvegardés ici. Consultez les analyses passées, suivez les changements et exportez des rapports à tout moment."
+    },
+    "settings": {
+      "title": "Vos Paramètres",
+      "description": "Gérez votre compte, changez la langue et configurez les préférences de notification depuis la page Paramètres."
+    },
+    "skip": "Passer",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "finish": "Commencer !"
+  },
+  "reportNotification": {
+    "title": "Rapport Prêt !",
+    "viewReport": "Voir le Rapport",
+    "emailSent": "Une copie a été envoyée à votre email",
+    "generationStarted": "Génération de rapport lancée",
+    "generationStartedDesc": "Nous générons votre rapport en arrière-plan. Vous serez notifié lorsqu'il sera prêt."
   }
 }

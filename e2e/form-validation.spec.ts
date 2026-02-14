@@ -23,7 +23,7 @@ test.describe('Authentication Form Validation', () => {
 
     test('Login shows error on failed authentication', async ({ page }) => {
         // Mock 401 response for login
-        await page.route('/api/auth/login', async route => {
+        await page.route('/api/login', async route => {
             await route.fulfill({
                 status: 401,
                 json: { message: 'Invalid credentials' }

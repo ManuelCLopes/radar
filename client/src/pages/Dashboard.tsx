@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -11,6 +11,8 @@ import { ReportView } from "@/components/ReportView";
 import { ReportHistory } from "@/components/ReportHistory";
 import { CompetitorMap } from "@/components/CompetitorMap";
 import { TrendsDashboard } from "@/components/TrendsDashboard";
+import { OnboardingTour } from "@/components/OnboardingTour";
+import { ReportNotification } from "@/components/ReportNotification";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useToast } from "@/hooks/use-toast";
@@ -85,6 +87,47 @@ export default function Dashboard() {
   const [reportViewOpen, setReportViewOpen] = useState(false);
   const [editingBusiness, setEditingBusiness] = useState<Business | null>(null);
   const [selectedMapBusinessId, setSelectedMapBusinessId] = useState<string>("all");
+  const [notificationReport, setNotificationReport] = useState<Report | null>(null);
+  const [pollingReportId, setPollingReportId] = useState<string | null>(null);
+
+  // Polling for report generation
+  const { data: pollingReport } = useQuery<Report>({
+    queryKey: [`/api/reports/${pollingReportId}`],
+    enabled: !!pollingReportId,
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      if (data?.aiAnalysis && data.aiAnalysis !== "Generating..." && !data.aiAnalysis.startsWith("Error:")) return false;
+      return 2000;
+    },
+  });
+
+  // Handle polling completion
+  useEffect(() => {
+    console.log('Dashboard: Polling effect', { pollingReport, pollingReportId });
+    if (pollingReport && pollingReportId) {
+      if (pollingReport.aiAnalysis !== "Generating...") {
+        console.log('Dashboard: Report generation finished', pollingReport.aiAnalysis);
+        // Stop polling
+        setPollingReportId(null);
+        setGeneratingReportId(null);
+
+        if (pollingReport.aiAnalysis.startsWith("Error:")) {
+          toast({
+            title: t("toast.error.title"),
+            description: t("toast.error.generateReport"),
+            variant: "destructive",
+          });
+        } else {
+          // Success
+          console.log('Dashboard: Setting notification report', pollingReport);
+          setNotificationReport(pollingReport);
+          queryClient.invalidateQueries({ queryKey: ["/api/reports/history"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/reports/business"] });
+          // We don't need to invalidate polling query as we just fetched it
+        }
+      }
+    }
+  }, [pollingReport, pollingReportId, t, toast]);
 
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(() => {
@@ -220,23 +263,33 @@ export default function Dashboard() {
       return response.json();
     },
     onSuccess: (report: Report) => {
-      setCurrentReport(report);
-      setReportDialogOpen(true);
+      setPollingReportId(report.id);
       queryClient.invalidateQueries({ queryKey: ["/api/reports/business"] });
       queryClient.invalidateQueries({ queryKey: ["/api/reports/history"] });
       toast({
-        title: t("toast.reportGenerated.title"),
-        description: t("toast.reportGenerated.description"),
+        title: t("reportNotification.generationStarted", "Report Generation Started"),
+        description: t("reportNotification.generationStartedDesc", "We are generating your report in the background. You will be notified when it is ready."),
       });
     },
     onError: (error: Error) => {
+      setGeneratingReportId(null);
       toast({
         title: t("toast.error.title"),
         description: error.message || t("toast.error.generateReport"),
         variant: "destructive",
       });
     },
+    // Remove onSettled to keep the loading state until polling completes if desired? 
+    // Actually, we want to clear generatingReportId when appropriate. 
+    // If we clear it here, the button spinner stops. 
+    // If we want the button to show "Generating...", we should keep it.
+    // But the user might want to do other things.
+    // Let's clear it here, as we have a global toaster now.
     onSettled: () => {
+      // We keep it true if we want to block the button? 
+      // No, let's allow them to click again if they really want (though likely disabled by logic).
+      // Actually user wants "Non-blocking". So button should revert to normal or show "Generating" state but allow navigation.
+      // For now, let's clear it so it doesn't look stuck.
       setGeneratingReportId(null);
     },
   });
@@ -247,19 +300,28 @@ export default function Dashboard() {
       return response.json();
     },
     onSuccess: (report: Report) => {
-      setCurrentReport(report);
-      setReportDialogOpen(true);
-      setIsAnalysisOpen(false);
+      setPollingReportId(report.id);
+      queryClient.invalidateQueries({ queryKey: ["/api/reports/business"] });
       queryClient.invalidateQueries({ queryKey: ["/api/reports/history"] });
-      toast({
-        title: t("toast.reportGenerated.title"),
-        description: t("toast.reportGenerated.description"),
-      });
+      setPollingReportId(report.id);
+      queryClient.invalidateQueries({ queryKey: ["/api/reports/business"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/reports/history"] });
     },
-    onError: (error: Error) => {
+    onError: (error: Error & { code?: string; limit?: number }) => {
+      let title = t("toast.error.title");
+      let description = error.message || t("toast.error.generateReport");
+
+      if (error.code === "REPORT_LIMIT_REACHED") {
+        title = t("toast.planLimit.title");
+        description = t("toast.planLimit.reportDescription", { limit: error.limit || 2 });
+      } else if (error.code === "RADIUS_LIMIT_REACHED") {
+        title = t("toast.planLimit.title");
+        description = t("toast.planLimit.radiusDescription", { limit: (error.limit || 5000) / 1000 });
+      }
+
       toast({
-        title: t("toast.error.title"),
-        description: error.message || t("toast.error.generateReport"),
+        title,
+        description,
         variant: "destructive",
       });
     },
@@ -405,6 +467,7 @@ export default function Dashboard() {
                 variant="ghost"
                 size="icon"
                 title="Definições"
+                data-tour="settings"
               >
                 <Settings className="h-5 w-5" />
                 <span className="sr-only">Definições</span>
@@ -440,13 +503,13 @@ export default function Dashboard() {
             >
               <div className="flex items-center justify-between mb-6">
                 <TabsList className="flex w-auto">
-                  <TabsTrigger value="businesses" className="group flex items-center" data-testid="tab-businesses">
+                  <TabsTrigger value="businesses" className="group flex items-center" data-testid="tab-businesses" data-tour="welcome">
                     <Building2 className="h-4 w-4" />
                     <span className="max-w-0 overflow-hidden opacity-0 whitespace-nowrap transition-all duration-300 ease-in-out group-data-[state=active]:max-w-[150px] group-data-[state=active]:opacity-100 group-data-[state=active]:ml-2 sm:max-w-none sm:opacity-100 sm:ml-2 sm:inline">
                       {t("dashboard.tabs.businesses")}
                     </span>
                   </TabsTrigger>
-                  <TabsTrigger value="history" className="group flex items-center" data-testid="tab-history">
+                  <TabsTrigger value="history" className="group flex items-center" data-testid="tab-history" data-tour="history-tab">
                     <History className="h-4 w-4" />
                     <span className="max-w-0 overflow-hidden opacity-0 whitespace-nowrap transition-all duration-300 ease-in-out group-data-[state=active]:max-w-[150px] group-data-[state=active]:opacity-100 group-data-[state=active]:ml-2 sm:max-w-none sm:opacity-100 sm:ml-2 sm:inline">
                       {t("dashboard.tabs.history")}
@@ -461,13 +524,19 @@ export default function Dashboard() {
                 </TabsList>
 
                 <div className="flex gap-2">
-                  <Button onClick={() => setIsAddOpen(true)} className="gap-2" data-testid="btn-add-business">
+                  <Button onClick={() => setIsAddOpen(true)} className="gap-2" data-testid="btn-add-business" data-tour="add-business">
                     <Plus className="h-4 w-4" />
                     <span className="hidden sm:inline">{t("dashboard.addBusiness")}</span>
                   </Button>
-                  <Dialog open={isAnalysisOpen} onOpenChange={setIsAnalysisOpen}>
+                  <Dialog open={isAnalysisOpen} onOpenChange={(open) => {
+                    setIsAnalysisOpen(open);
+                    if (!open) {
+                      runAnalysisMutation.reset();
+                      analysisForm.reset();
+                    }
+                  }}>
                     <DialogTrigger asChild>
-                      <Button variant="outline" className="gap-2" data-testid="btn-new-analysis">
+                      <Button variant="outline" className="gap-2" data-testid="btn-new-analysis" data-tour="new-analysis">
                         <Search className="h-4 w-4" />
                         <span className="hidden sm:inline">{t("dashboard.tabs.newAnalysis")}</span>
                       </Button>
@@ -568,16 +637,28 @@ export default function Dashboard() {
                               )}
                             />
 
-                            <Button type="submit" className="w-full" disabled={runAnalysisMutation.isPending}>
-                              {runAnalysisMutation.isPending ? (
-                                <>
-                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                  {t("business.list.generating")}
-                                </>
-                              ) : (
-                                t("quickSearch.analyzeButton")
-                              )}
-                            </Button>
+                            {!runAnalysisMutation.isSuccess && (
+                              <Button type="submit" className="w-full" disabled={runAnalysisMutation.isPending}>
+                                {runAnalysisMutation.isPending ? (
+                                  <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    {t("business.list.generating")}
+                                  </>
+                                ) : (
+                                  t("quickSearch.analyzeButton")
+                                )}
+                              </Button>
+                            )}
+                            {runAnalysisMutation.isSuccess && (
+                              <div className="mt-4 p-4 bg-secondary/50 rounded-lg text-center animate-in fade-in zoom-in-95">
+                                <p className="font-medium text-foreground">
+                                  {t("reportNotification.generationStarted", "Report Generation Started")}
+                                </p>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                  {t("reportNotification.generationStartedDesc", "We are generating your report in the background. You will be notified when it is ready.")}
+                                </p>
+                              </div>
+                            )}
                           </form>
                         </Form>
                       </div>
@@ -793,32 +874,45 @@ export default function Dashboard() {
                                 </div>
                               </div>
                               <div className="flex gap-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => {
-                                    setCurrentReport(report);
-                                    setReportDialogOpen(true);
-                                  }}
-                                >
-                                  <FileText className="h-4 w-4 mr-2" />
-                                  {t("report.history.view")}
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  size="icon"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setReportToDelete(report);
-                                  }}
-                                  disabled={deletingReportId === report.id}
-                                >
-                                  {deletingReportId === report.id ? (
-                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                  ) : (
-                                    <Trash2 className="h-4 w-4" />
-                                  )}
-                                </Button>
+                                {report.aiAnalysis === "Generating..." ? (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    disabled
+                                  >
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    {t("business.list.generating")}
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      setCurrentReport(report);
+                                      setReportDialogOpen(true);
+                                    }}
+                                  >
+                                    <FileText className="h-4 w-4 mr-2" />
+                                    {t("report.history.view")}
+                                  </Button>
+                                )}
+                                {report.aiAnalysis !== "Generating..." && (
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setReportToDelete(report);
+                                    }}
+                                    disabled={deletingReportId === report.id}
+                                  >
+                                    {deletingReportId === report.id ? (
+                                      <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                      <Trash2 className="h-4 w-4" />
+                                    )}
+                                  </Button>
+                                )}
                               </div>
                             </CardContent>
                           </Card>
@@ -968,6 +1062,22 @@ export default function Dashboard() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Onboarding Tour */}
+      <OnboardingTour isNewUser={businesses.length === 0 && reportHistory.length === 0} />
+
+      {/* Report Notification FAB */}
+      <ReportNotification
+        report={notificationReport}
+        onViewReport={(report) => {
+          setCurrentReport(report);
+          setReportDialogOpen(true);
+        }}
+        onDismiss={() => {
+          console.log('Dashboard: onDismiss called');
+          setNotificationReport(null);
+        }}
+      />
     </div>
   );
 }

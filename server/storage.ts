@@ -1,6 +1,6 @@
 import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type Search, type PasswordResetToken, type InsertApiUsage, type ApiUsage, businesses, reports, users, searches, passwordResetTokens, rateLimits, apiUsage } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, sql, isNotNull, lt, and, gte, inArray } from "drizzle-orm";
+import { eq, desc, sql, isNotNull, lt, and, gte, inArray, not, like, or } from "drizzle-orm";
 
 export interface IStorage {
   // User operations (IMPORTANT: mandatory for Replit Auth)
@@ -22,6 +22,7 @@ export interface IStorage {
   createReport(report: InsertReport): Promise<Report>;
   getReportsByUserId(userId: string): Promise<Report[]>;
   saveReport(report: InsertReport): Promise<Report>;
+  updateReport(id: string, report: Partial<InsertReport>): Promise<Report>;
   getReport(id: string): Promise<Report | undefined>;
   getReportsByBusinessId(businessId: string): Promise<Report[]>;
   listAllReports(): Promise<Report[]>;
@@ -206,24 +207,59 @@ export class DatabaseStorage implements IStorage {
     return report;
   }
 
+  async updateReport(id: string, report: Partial<InsertReport>): Promise<Report> {
+    const reportToUpdate = { ...report };
+    if (reportToUpdate.generatedAt) {
+      reportToUpdate.generatedAt = new Date(reportToUpdate.generatedAt);
+    }
+
+    const [updatedReport] = await db!
+      .update(reports)
+      .set(reportToUpdate as any)
+      .where(eq(reports.id, id))
+      .returning();
+
+    if (!updatedReport) {
+      throw new Error("Report not found");
+    }
+
+    return updatedReport;
+  }
+
   async getReport(id: string): Promise<Report | undefined> {
     const [report] = await db!.select().from(reports).where(eq(reports.id, id));
     return report || undefined;
   }
 
   async getReportsByBusinessId(businessId: string): Promise<Report[]> {
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
     return await db!
       .select()
       .from(reports)
-      .where(eq(reports.businessId, businessId))
+      .where(and(
+        eq(reports.businessId, businessId),
+        not(like(reports.aiAnalysis, "Error:%")),
+        or(
+          not(eq(reports.aiAnalysis, "Generating...")),
+          gte(reports.generatedAt, fiveMinutesAgo)
+        )
+      ))
       .orderBy(desc(reports.generatedAt));
   }
 
   async getReportsByUserId(userId: string): Promise<Report[]> {
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
     return await db!
       .select()
       .from(reports)
-      .where(eq(reports.userId, userId))
+      .where(and(
+        eq(reports.userId, userId),
+        not(like(reports.aiAnalysis, "Error:%")),
+        or(
+          not(eq(reports.aiAnalysis, "Generating...")),
+          gte(reports.generatedAt, fiveMinutesAgo)
+        )
+      ))
       .orderBy(desc(reports.generatedAt));
   }
 
@@ -594,6 +630,28 @@ export class MemStorage implements IStorage {
     };
     this.reports.set(id, report);
     return report;
+  }
+
+  async updateReport(id: string, report: Partial<InsertReport>): Promise<Report> {
+    const existingReport = this.reports.get(id);
+    if (!existingReport) {
+      throw new Error("Report not found");
+    }
+
+    const updatedFields = { ...report };
+    if (updatedFields.generatedAt) {
+      updatedFields.generatedAt = new Date(updatedFields.generatedAt);
+    }
+
+    const updatedReport: Report = {
+      ...existingReport,
+      ...updatedFields,
+      // Ensure generatedAt is always a Date
+      generatedAt: updatedFields.generatedAt ? new Date(updatedFields.generatedAt) : existingReport.generatedAt,
+    };
+
+    this.reports.set(id, updatedReport);
+    return updatedReport;
   }
 
   async getReport(id: string): Promise<Report | undefined> {
