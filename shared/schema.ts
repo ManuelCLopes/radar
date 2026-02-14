@@ -131,6 +131,8 @@ export const reports = pgTable("reports", {
   businessRating: real("business_rating"),
   businessUserRatingsTotal: integer("business_user_ratings_total"),
   radius: integer("radius"), // Added radius field
+  shareToken: varchar("share_token").unique(), // Unique token for public access
+  isShared: boolean("is_shared").default(false).notNull(), // Toggle for sharing
 });
 
 export const reviewSchema = z.object({
@@ -170,6 +172,8 @@ export const insertReportSchema = z.object({
   businessRating: z.number().optional().nullable(),
   businessUserRatingsTotal: z.number().optional().nullable(),
   radius: z.number().optional(),
+  shareToken: z.string().optional().nullable(),
+  isShared: z.boolean().optional(),
   generatedAt: z.union([z.string(), z.date()]).optional(), // Allow backdating for seed
 });
 

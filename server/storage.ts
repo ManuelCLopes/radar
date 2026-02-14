@@ -28,6 +28,7 @@ export interface IStorage {
   listAllReports(): Promise<Report[]>;
   countReportsCurrentMonth(userId: string): Promise<number>;
   deleteReport(id: string): Promise<boolean>;
+  getReportByShareToken(token: string): Promise<Report | undefined>;
 
   // Password reset
   createPasswordResetToken(data: { userId: string; token: string; expiresAt: Date }): Promise<void>;
@@ -287,6 +288,11 @@ export class DatabaseStorage implements IStorage {
   async deleteReport(id: string): Promise<boolean> {
     const [deleted] = await db!.delete(reports).where(eq(reports.id, id)).returning();
     return !!deleted;
+  }
+
+  async getReportByShareToken(token: string): Promise<Report | undefined> {
+    const [report] = await db!.select().from(reports).where(eq(reports.shareToken, token));
+    return report || undefined;
   }
 
   async trackSearch(search: InsertSearch): Promise<void> {
@@ -648,6 +654,8 @@ export class MemStorage implements IStorage {
       customerSentiment: insertReport.customerSentiment || null,
       businessRating: insertReport.businessRating ?? null,
       businessUserRatingsTotal: insertReport.businessUserRatingsTotal ?? null,
+      shareToken: insertReport.shareToken || null,
+      isShared: insertReport.isShared ?? false,
     };
     this.reports.set(id, report);
     return report;
@@ -706,6 +714,10 @@ export class MemStorage implements IStorage {
 
   async deleteReport(id: string): Promise<boolean> {
     return this.reports.delete(id);
+  }
+
+  async getReportByShareToken(token: string): Promise<Report | undefined> {
+    return Array.from(this.reports.values()).find(r => r.shareToken === token);
   }
 
   async trackSearch(search: InsertSearch): Promise<void> {

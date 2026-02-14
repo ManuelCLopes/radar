@@ -69,14 +69,17 @@ describe("ReportView", () => {
             },
             marketTrends: ["Trend 1: Impact", "Trend 2: Impact"],
             targetAudience: {
-                demographics: "Demographic narrative.",
+                demographics: {
+                    ageRange: "25-34",
+                    gender: "All",
+                    incomeLevel: "Medium"
+                },
                 psychographics: "Psychographic narrative.",
-                painPoints: "Pain points narrative."
+                painPoints: ["Pain points narrative."]
             },
             marketingStrategy: {
-                primaryChannels: "Channel narrative.",
-                contentIdeas: "Content ideas narrative.",
-                promotionalTactics: "Tactics narrative."
+                channels: ["Channel 1"],
+                tactics: ["Tactic 1"]
             },
             customerSentiment: {
                 commonPraises: ["Common Praise 1"],
@@ -98,9 +101,10 @@ describe("ReportView", () => {
         expect(screen.getByText("Strength 1")).toBeInTheDocument();
         expect(screen.getByText("Trend 1: Impact")).toBeInTheDocument();
 
-        // Assert narrative text
-        expect(screen.getByText("Demographic narrative.")).toBeInTheDocument();
-        expect(screen.getByText("Channel narrative.")).toBeInTheDocument();
+        // Assert narrative text (updated keys)
+        expect(screen.getByText("25-34")).toBeInTheDocument();
+        expect(screen.getByText("Channel 1")).toBeInTheDocument();
+        expect(screen.getByText("Tactic 1")).toBeInTheDocument();
 
         expect(screen.getByText("Common Praise 1")).toBeInTheDocument();
     });
