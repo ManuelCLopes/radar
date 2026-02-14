@@ -88,6 +88,41 @@
   .landing-header-title {
     display: none;
   }
+
+  .landing-container {
+    padding: 0 1rem;
+  }
+
+  .hero {
+    padding: 4rem 0;
+  }
+
+  .hero-headline {
+    font-size: 2.1rem;
+  }
+
+  .hero-subheadline {
+    font-size: 1rem;
+  }
+
+  .hero-feature {
+    width: 100%;
+    max-width: 360px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .landing-section {
+    padding: 3rem 0;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+  }
 }
 
 .landing-page * {

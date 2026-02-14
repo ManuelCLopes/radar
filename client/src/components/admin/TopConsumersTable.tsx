@@ -29,7 +29,8 @@ export function TopConsumersTable({ data }: { data: ConsumerStats[] }) {
                 <User className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-                <Table>
+                <div className="w-full overflow-x-auto">
+                    <Table className="min-w-[480px]">
                     <TableHeader>
                         <TableRow>
                             <TableHead>User</TableHead>
@@ -63,7 +64,8 @@ export function TopConsumersTable({ data }: { data: ConsumerStats[] }) {
                             ))
                         )}
                     </TableBody>
-                </Table>
+                    </Table>
+                </div>
             </CardContent>
         </Card>
     );

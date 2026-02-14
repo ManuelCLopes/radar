@@ -444,13 +444,13 @@ export default function Dashboard() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        <div className="container mx-auto px-4 flex flex-col items-start gap-3 py-3 sm:h-16 sm:flex-row sm:items-center sm:justify-between sm:py-0">
           <Link href="/" className="flex items-center cursor-pointer transition-opacity hover:opacity-80">
             <img src="/logo-dark.png" alt="Competitor Watcher" className="h-10 w-auto dark:hidden" />
             <img src="/logo.png" alt="Competitor Watcher" className="h-10 w-auto hidden dark:block" />
           </Link>
 
-          <div className="flex items-center gap-2">
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
             <LanguageSelector />
             <ThemeToggle />
             <Button
@@ -501,7 +501,7 @@ export default function Dashboard() {
               }}
               className="w-full"
             >
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
                 <TabsList className="flex w-auto">
                   <TabsTrigger value="businesses" className="group flex items-center" data-testid="tab-businesses" data-tour="welcome">
                     <Building2 className="h-4 w-4" />
@@ -523,8 +523,8 @@ export default function Dashboard() {
                   </TabsTrigger>
                 </TabsList>
 
-                <div className="flex gap-2">
-                  <Button onClick={() => setIsAddOpen(true)} className="gap-2" data-testid="btn-add-business" data-tour="add-business">
+                <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+                  <Button onClick={() => setIsAddOpen(true)} className="w-full sm:w-auto gap-2" data-testid="btn-add-business" data-tour="add-business">
                     <Plus className="h-4 w-4" />
                     <span className="hidden sm:inline">{t("dashboard.addBusiness")}</span>
                   </Button>
@@ -536,7 +536,7 @@ export default function Dashboard() {
                     }
                   }}>
                     <DialogTrigger asChild>
-                      <Button variant="outline" className="gap-2" data-testid="btn-new-analysis" data-tour="new-analysis">
+                      <Button variant="outline" className="w-full sm:w-auto gap-2" data-testid="btn-new-analysis" data-tour="new-analysis">
                         <Search className="h-4 w-4" />
                         <span className="hidden sm:inline">{t("dashboard.tabs.newAnalysis")}</span>
                       </Button>
@@ -738,12 +738,12 @@ export default function Dashboard() {
 
                 {/* Map Section */}
                 <Card className="h-full">
-                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pb-2">
                     <div>
                       <CardTitle>{t("dashboard.map.title")}</CardTitle>
                       <CardDescription>{t("dashboard.map.description")}</CardDescription>
                     </div>
-                    <div className="w-[200px]">
+                    <div className="w-full sm:w-[200px]">
                       <Select
                         value={selectedMapBusinessId}
                         onValueChange={setSelectedMapBusinessId}

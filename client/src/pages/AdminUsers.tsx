@@ -100,9 +100,9 @@ export default function AdminUsers() {
 
                 <Card>
                     <CardHeader>
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <CardTitle>Users</CardTitle>
-                            <div className="relative w-64">
+                            <div className="relative w-full sm:w-64">
                                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     placeholder="Search users..."
@@ -114,86 +114,88 @@ export default function AdminUsers() {
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>User</TableHead>
-                                    <TableHead>Email</TableHead>
-                                    <TableHead>Role</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Joined</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {filteredUsers?.map((user) => (
-                                    <TableRow key={user.id}>
-                                        <TableCell className="font-medium">
-                                            {user.firstName} {user.lastName}
-                                        </TableCell>
-                                        <TableCell>{user.email}</TableCell>
-                                        <TableCell>
-                                            <Badge variant={user.role === "admin" ? "default" : "secondary"}>
-                                                {user.role}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant={user.isVerified ? "outline" : "destructive"} className={user.isVerified ? "border-green-500 text-green-700 bg-green-50" : ""}>
-                                                {user.isVerified ? "Verified" : "Pending"}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell>
-                                            {user.createdAt && new Date(user.createdAt).toLocaleDateString()}
-                                        </TableCell>
-                                        <TableCell className="text-right flex justify-end gap-2">
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() =>
-                                                    updateRoleMutation.mutate({
-                                                        userId: user.id,
-                                                        role: user.role === "admin" ? "user" : "admin",
-                                                    })
-                                                }
-                                                disabled={updateRoleMutation.isPending}
-                                            >
-                                                {user.role === "admin" ? (
-                                                    <ShieldOff className="h-4 w-4" />
-                                                ) : (
-                                                    <Shield className="h-4 w-4" />
-                                                )}
-                                            </Button>
-
-                                            <AlertDialog>
-                                                <AlertDialogTrigger asChild>
-                                                    <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50">
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </AlertDialogTrigger>
-                                                <AlertDialogContent>
-                                                    <AlertDialogHeader>
-                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                        <AlertDialogDescription>
-                                                            This action cannot be undone. This will permanently delete the user
-                                                            account and remove their data from our servers.
-                                                        </AlertDialogDescription>
-                                                    </AlertDialogHeader>
-                                                    <AlertDialogFooter>
-                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                        <AlertDialogAction
-                                                            className="bg-red-600 hover:bg-red-700"
-                                                            onClick={() => deleteUserMutation.mutate(user.id)}
-                                                        >
-                                                            Delete
-                                                        </AlertDialogAction>
-                                                    </AlertDialogFooter>
-                                                </AlertDialogContent>
-                                            </AlertDialog>
-                                        </TableCell>
+                        <div className="w-full overflow-x-auto">
+                            <Table className="min-w-[720px]">
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>User</TableHead>
+                                        <TableHead>Email</TableHead>
+                                        <TableHead>Role</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Joined</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {filteredUsers?.map((user) => (
+                                        <TableRow key={user.id}>
+                                            <TableCell className="font-medium">
+                                                {user.firstName} {user.lastName}
+                                            </TableCell>
+                                            <TableCell>{user.email}</TableCell>
+                                            <TableCell>
+                                                <Badge variant={user.role === "admin" ? "default" : "secondary"}>
+                                                    {user.role}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge variant={user.isVerified ? "outline" : "destructive"} className={user.isVerified ? "border-green-500 text-green-700 bg-green-50" : ""}>
+                                                    {user.isVerified ? "Verified" : "Pending"}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell>
+                                                {user.createdAt && new Date(user.createdAt).toLocaleDateString()}
+                                            </TableCell>
+                                            <TableCell className="text-right flex justify-end gap-2">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        updateRoleMutation.mutate({
+                                                            userId: user.id,
+                                                            role: user.role === "admin" ? "user" : "admin",
+                                                        })
+                                                    }
+                                                    disabled={updateRoleMutation.isPending}
+                                                >
+                                                    {user.role === "admin" ? (
+                                                        <ShieldOff className="h-4 w-4" />
+                                                    ) : (
+                                                        <Shield className="h-4 w-4" />
+                                                    )}
+                                                </Button>
+
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                This action cannot be undone. This will permanently delete the user
+                                                                account and remove their data from our servers.
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                            <AlertDialogAction
+                                                                className="bg-red-600 hover:bg-red-700"
+                                                                onClick={() => deleteUserMutation.mutate(user.id)}
+                                                            >
+                                                                Delete
+                                                            </AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
                     </CardContent>
                 </Card>
             </div>
