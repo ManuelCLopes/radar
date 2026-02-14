@@ -138,7 +138,7 @@ export default function RegisterPage() {
 
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <FormField
                                     control={form.control}
                                     name="firstName"

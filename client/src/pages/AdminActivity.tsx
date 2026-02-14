@@ -36,18 +36,18 @@ export default function AdminActivity() {
                     <CardContent>
                         <div className="space-y-4">
                             {searches?.map((search: any) => (
-                                <div key={search.id} className="flex items-center justify-between p-4 border rounded-lg bg-gray-50/50">
-                                    <div className="flex items-center gap-4">
-                                        <div className="bg-white p-2 rounded-full border shadow-sm">
+                                <div key={search.id} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 border rounded-lg bg-gray-50/50">
+                                    <div className="flex items-start sm:items-center gap-4 min-w-0">
+                                        <div className="bg-white p-2 rounded-full border shadow-sm shrink-0">
                                             <SearchIcon className="w-4 h-4 text-primary" />
                                         </div>
-                                        <div>
-                                            <p className="font-medium flex items-center gap-2">
+                                        <div className="min-w-0">
+                                            <p className="font-medium flex flex-wrap items-center gap-2">
                                                 {search.type}
                                                 <span className="text-muted-foreground font-normal">near</span>
-                                                {search.address}
+                                                <span className="break-words">{search.address}</span>
                                             </p>
-                                            <div className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+                                            <div className="text-sm text-muted-foreground flex flex-wrap items-center gap-2 mt-1">
                                                 <MapPin className="w-3 h-3" />
                                                 <span>Radius: {search.radius}m</span>
                                                 <span>•</span>
@@ -55,7 +55,10 @@ export default function AdminActivity() {
                                             </div>
                                         </div>
                                     </div>
-                                    <Badge variant={search.competitorsFound > 0 ? "default" : "secondary"}>
+                                    <Badge
+                                        variant={search.competitorsFound > 0 ? "default" : "secondary"}
+                                        className="self-start sm:self-auto"
+                                    >
                                         {search.competitorsFound} found
                                     </Badge>
                                 </div>
