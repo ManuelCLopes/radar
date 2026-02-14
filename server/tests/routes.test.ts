@@ -178,7 +178,8 @@ describe("API Routes Integration", () => {
                     address: "Test Address"
                 }),
                 "test-user-id", // Verify userId is passed
-                1000 // Verify radius is passed
+                1000, // Verify radius is passed
+                undefined // existingReportId
             );
         });
     });
