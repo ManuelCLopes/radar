@@ -288,7 +288,7 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                           <PDFDownloadLink
-                            document={<PDFReport report={report} business={business} />}
+                            document={<PDFReport report={report} business={business} t={t} />}
                             fileName={`${business?.name || 'report'}-${new Date().toISOString().split('T')[0]}.pdf`}
                           >
                             {({ loading }) => (

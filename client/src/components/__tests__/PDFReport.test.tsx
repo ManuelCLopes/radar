@@ -56,6 +56,8 @@ This is the market overview.
         html: '',
         userId: 'user1',
         radius: null,
+        shareToken: null,
+        isShared: false,
         executiveSummary: "Summary",
         swotAnalysis: { strengths: [], weaknesses: [], opportunities: [], threats: [] },
         marketTrends: [],

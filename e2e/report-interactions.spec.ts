@@ -16,6 +16,14 @@ test.describe('Report Interactions', () => {
             });
         });
 
+        // Mock specific business details
+        await page.route('**/api/businesses/bus-1', async route => {
+            await route.fulfill({
+                status: 200,
+                json: { id: 'bus-1', name: 'Test Business', type: 'restaurant', address: '123 Test St', latitude: 38.7, longitude: -9.1, locationStatus: 'validated' }
+            });
+        });
+
         // Mock report history for the business
         await page.route('**/api/reports/business/*', async route => {
             await route.fulfill({
@@ -36,8 +44,8 @@ test.describe('Report Interactions', () => {
                         threats: []
                     },
                     marketTrends: ['E2E Trend'],
-                    targetAudience: { demographics: "E2E Demographics", psychographics: "", painPoints: "" },
-                    marketingStrategy: { primaryChannels: "E2E Channels", contentIdeas: "", promotionalTactics: "" },
+                    targetAudience: { demographics: { ageRange: "E2E Demographics", gender: "All", incomeLevel: "Medium" }, psychographics: "", painPoints: ["E2E Pain Point"] },
+                    marketingStrategy: { channels: ["E2E Channel"], tactics: ["E2E Tactic"] },
                     customerSentiment: { commonPraises: [], recurringComplaints: [], unmetNeeds: [] }
                 }]
             });
@@ -54,6 +62,9 @@ test.describe('Report Interactions', () => {
 
         // Click view history button on the business card
         await page.getByTestId('button-view-history-bus-1').click();
+
+        // Wait for history dialog title
+        await expect(page.getByRole('heading', { name: /Report History|Histórico de Relatórios/i }).first()).toBeVisible();
 
         // Click view report button in history dialog
         await page.getByTestId('button-view-report-rep-1').click();
