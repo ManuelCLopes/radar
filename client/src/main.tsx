@@ -5,6 +5,7 @@ import "./index.css";
 import { HelmetProvider } from "react-helmet-async";
 import * as Sentry from "@sentry/react";
 import { COOKIE_CONSENT_EVENT, getCookieConsent } from "@/lib/consent";
+import type { Integration } from "@sentry/core";
 
 const shouldInitSentry = () => {
     if (!import.meta.env.VITE_SENTRY_DSN) return false;
@@ -24,7 +25,7 @@ const initSentry = () => {
     const replaysSessionSampleRate = Number(import.meta.env.VITE_SENTRY_REPLAY_SAMPLE_RATE ?? "0");
     const replaysOnErrorSampleRate = Number(import.meta.env.VITE_SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE ?? "0");
 
-    const integrations = [Sentry.browserTracingIntegration()];
+    const integrations: Integration[] = [Sentry.browserTracingIntegration()];
     if (replaysSessionSampleRate > 0 || replaysOnErrorSampleRate > 0) {
         integrations.push(
             Sentry.replayIntegration({
