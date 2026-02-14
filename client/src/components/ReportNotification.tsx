@@ -16,9 +16,13 @@ export function ReportNotification({ report, onViewReport, onDismiss }: ReportNo
     const [isExiting, setIsExiting] = useState(false);
 
     useEffect(() => {
+        console.log('ReportNotification: Received report', report);
         if (report) {
             // Animate in
-            const enterTimer = setTimeout(() => setIsVisible(true), 50);
+            const enterTimer = setTimeout(() => {
+                console.log('ReportNotification: Setting visible true');
+                setIsVisible(true);
+            }, 50);
             // Auto-dismiss after 10s (reduced from 15s)
             const dismissTimer = setTimeout(() => handleDismiss(), 10000);
             return () => {
@@ -71,6 +75,7 @@ export function ReportNotification({ report, onViewReport, onDismiss }: ReportNo
 
                 <div className="flex items-center gap-2 shrink-0">
                     <Button
+                        data-testid="view-report-fab"
                         onClick={handleView}
                         size="sm"
                         variant="secondary"

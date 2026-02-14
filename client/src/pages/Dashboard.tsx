@@ -103,8 +103,10 @@ export default function Dashboard() {
 
   // Handle polling completion
   useEffect(() => {
+    console.log('Dashboard: Polling effect', { pollingReport, pollingReportId });
     if (pollingReport && pollingReportId) {
       if (pollingReport.aiAnalysis !== "Generating...") {
+        console.log('Dashboard: Report generation finished', pollingReport.aiAnalysis);
         // Stop polling
         setPollingReportId(null);
         setGeneratingReportId(null);
@@ -117,6 +119,7 @@ export default function Dashboard() {
           });
         } else {
           // Success
+          console.log('Dashboard: Setting notification report', pollingReport);
           setNotificationReport(pollingReport);
           queryClient.invalidateQueries({ queryKey: ["/api/reports/history"] });
           queryClient.invalidateQueries({ queryKey: ["/api/reports/business"] });
@@ -1070,7 +1073,10 @@ export default function Dashboard() {
           setCurrentReport(report);
           setReportDialogOpen(true);
         }}
-        onDismiss={() => setNotificationReport(null)}
+        onDismiss={() => {
+          console.log('Dashboard: onDismiss called');
+          setNotificationReport(null);
+        }}
       />
     </div>
   );

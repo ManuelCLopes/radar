@@ -91,6 +91,17 @@ test.describe('Dashboard Business Management Flow', () => {
                     contentType: 'application/json',
                     body: JSON.stringify({ success: true })
                 });
+            } else if (method === 'GET') {
+                const business = currentBusinesses.find(b => b.id === id);
+                if (business) {
+                    await route.fulfill({
+                        status: 200,
+                        contentType: 'application/json',
+                        body: JSON.stringify(business)
+                    });
+                } else {
+                    await route.fulfill({ status: 404 });
+                }
             } else {
                 await route.continue();
             }
@@ -270,8 +281,45 @@ test.describe('Dashboard Business Management Flow', () => {
             await route.fulfill({ status: 200, json: [] });
         });
 
-        // Mock POST run-report
+        // Mock initial poll response (Generating)
         await page.route('**/api/run-report/bus-1', async (route) => {
+            console.log('MOCK HIT: POST /api/run-report/bus-1');
+            await route.fulfill({
+                status: 200,
+                // Return query-compatible structure if needed, or just the report
+                // The mutation expects a Report object.
+                body: JSON.stringify({
+                    id: 'rep-1',
+                    businessId: 'bus-1',
+                    businessName: 'Existing Cafe',
+                    aiAnalysis: 'Generating...',
+                    competitors: [],
+                    html: '',
+                    generatedAt: new Date().toISOString()
+                })
+            });
+        });
+
+        // Mock GET report (for polling/refetching)
+        await page.route('**/api/reports/rep-1', async (route) => {
+            console.log('MOCK HIT: GET /api/reports/rep-1');
+            await route.fulfill({
+                status: 200,
+                contentType: 'application/json',
+                body: JSON.stringify({
+                    id: 'rep-1',
+                    businessId: 'bus-1',
+                    businessName: 'Existing Cafe',
+                    aiAnalysis: 'Great place', // Complete
+                    competitors: [],
+                    html: '<div>Report Content</div>',
+                    generatedAt: new Date().toISOString()
+                })
+            });
+        });
+
+        // Mock GET report (for polling/refetching)
+        await page.route('**/api/reports/rep-1', async (route) => {
             await route.fulfill({
                 status: 200,
                 contentType: 'application/json',
@@ -297,8 +345,14 @@ test.describe('Dashboard Business Management Flow', () => {
         // Action
         await page.getByTestId('button-generate-report-bus-1').click();
 
-        // Verify success (Dialog opened)
-        await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10000 });
+        // Verify success (Notification FAB appeared)
+        const viewReportBtn = page.getByTestId('view-report-fab');
+        await expect(viewReportBtn).toBeVisible({ timeout: 10000 });
+
+        // Click to open dialog
+        await viewReportBtn.click();
+
+        await expect(page.getByRole('dialog')).toBeVisible();
         await expect(page.getByTestId('report-title')).toBeVisible();
     });
 
@@ -313,7 +367,8 @@ test.describe('Dashboard Business Management Flow', () => {
                         businessId: 'bus-1',
                         businessName: 'Historic Cafe',
                         aiAnalysis: 'Old analysis',
-                        generatedAt: new Date().toISOString()
+                        generatedAt: new Date().toISOString(),
+                        competitors: []
                     }
                 ]
             });

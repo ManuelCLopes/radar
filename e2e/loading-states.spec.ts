@@ -61,6 +61,22 @@ test.describe('Loading States', () => {
             });
         });
 
+        // Mock GET report (for polling/refetching)
+        await page.route('**/api/reports/rep-new', async (route) => {
+            await route.fulfill({
+                status: 200,
+                json: {
+                    id: 'rep-new',
+                    businessId: 'bus-1',
+                    businessName: 'Test Business',
+                    aiAnalysis: 'Analysis complete',
+                    generatedAt: new Date().toISOString(),
+                    competitors: [],
+                    html: '<div>Complete</div>'
+                }
+            });
+        });
+
         // Click generate report
         const genBtn = page.getByTestId('button-generate-report-bus-1');
         await genBtn.click();
@@ -69,7 +85,11 @@ test.describe('Loading States', () => {
         await expect(genBtn).toBeDisabled();
         await expect(genBtn.locator('.animate-spin')).toBeVisible();
 
-        // Wait for report dialog to open
-        await expect(page.getByTestId('report-title')).toBeVisible({ timeout: 10000 });
+        // Wait for report notification and open dialog
+        const viewReportBtn = page.getByTestId('view-report-fab');
+        await expect(viewReportBtn).toBeVisible({ timeout: 10000 });
+        await viewReportBtn.click();
+
+        await expect(page.getByTestId('report-title')).toBeVisible();
     });
 });
