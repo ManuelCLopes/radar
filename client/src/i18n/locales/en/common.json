@@ -14,6 +14,10 @@
       "guest": "Guest",
       "logout": "Log out"
     },
+    "menu": {
+      "theme": "Theme",
+      "language": "Language"
+    },
     "registerBusiness": "Register Business",
     "registerBusinessDesc": "Add a new business to track",
     "tabs": {

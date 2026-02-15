@@ -444,7 +444,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 flex flex-col items-start gap-3 py-3 sm:h-16 sm:flex-row sm:items-center sm:justify-between sm:py-0">
+        <div className="container mx-auto px-4 flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center cursor-pointer transition-opacity hover:opacity-80">
             <img src="/logo-dark.png" alt="Competitor Watcher" className="h-10 w-auto dark:hidden" />
             <img src="/logo.png" alt="Competitor Watcher" className="h-10 w-auto hidden dark:block" />
@@ -496,9 +496,15 @@ export default function Dashboard() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <div className="flex items-center justify-between px-2 py-2">
-                  <ThemeToggle />
-                  <LanguageSelector />
+                <div className="px-2 py-2 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">{t("dashboard.menu.theme")}</span>
+                    <ThemeToggle />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">{t("dashboard.menu.language")}</span>
+                    <LanguageSelector />
+                  </div>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={openPricing}>

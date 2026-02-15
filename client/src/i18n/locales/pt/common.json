@@ -14,6 +14,10 @@
       "guest": "Visitante",
       "logout": "Terminar sessão"
     },
+    "menu": {
+      "theme": "Tema",
+      "language": "Idioma"
+    },
     "registerBusiness": "Registar Negócio",
     "registerBusinessDesc": "Adicione um novo negócio para acompanhar",
     "tabs": {
