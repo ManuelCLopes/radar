@@ -40,8 +40,12 @@ test.describe('Responsive Design', () => {
         const businessesTab = page.getByRole('tab', { name: /Businesses|Negócios/i });
         await expect(businessesTab).toBeVisible();
 
-        // Check logout button in header
-        const logoutBtn = page.getByRole('button', { name: /Log out|Sair/i }).first();
+        // Check logout button in header (inside hamburger menu on mobile)
+        const menuTrigger = page.getByTestId('mobile-menu-trigger');
+        await expect(menuTrigger).toBeVisible();
+        await menuTrigger.click();
+
+        const logoutBtn = page.getByTestId('mobile-logout-btn');
         await expect(logoutBtn).toBeVisible();
     });
 });
