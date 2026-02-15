@@ -523,7 +523,7 @@ export default function Dashboard() {
                   </TabsTrigger>
                 </TabsList>
 
-                <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+                <div className="grid grid-cols-2 w-full gap-2 sm:flex sm:w-auto sm:flex-row">
                   <Button onClick={() => setIsAddOpen(true)} className="w-full sm:w-auto gap-2" data-testid="btn-add-business" data-tour="add-business">
                     <Plus className="h-4 w-4" />
                     <span className="hidden sm:inline">{t("dashboard.addBusiness")}</span>

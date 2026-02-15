@@ -1,5 +1,5 @@
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
-import type { Report } from "@shared/schema";
+import type { Report, Business } from "@shared/schema";
 
 // Register fonts - using standard Helvetica
 
@@ -199,10 +199,11 @@ const styles = StyleSheet.create({
 
 interface PDFReportProps {
     report: Report;
+    business?: Business;
     t: (key: string, options?: any) => string;
 }
 
-export const PDFReport = ({ report, t }: PDFReportProps) => {
+export const PDFReport = ({ report, business, t }: PDFReportProps) => {
     const competitors = report.competitors || [];
     const avgRating = competitors.length > 0
         ? competitors.filter(c => c.rating).reduce((sum, c) => sum + (c.rating || 0), 0) / (competitors.filter(c => c.rating).length || 1)

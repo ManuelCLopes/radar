@@ -126,6 +126,7 @@ export function AIAnalysisContent({ html }: AIAnalysisContentProps) {
                  [&>em]:text-foreground/70 [&>em]:italic
                  [&>hr]:my-6 [&>hr]:border-muted"
             dangerouslySetInnerHTML={{ __html: cleanHtml }}
+            data-testid="text-ai-analysis"
         />
     );
 }

@@ -210,6 +210,56 @@ export function registerReportRoutes(app: Express) {
         }
     });
 
+    app.post("/api/reports/:id/share", isAuthenticated, async (req, res) => {
+        try {
+            const reportId = req.params.id;
+            const { isShared } = req.body;
+            const report = await storage.getReport(reportId);
+
+            if (!report) {
+                return res.status(404).json({ error: "Report not found" });
+            }
+
+            if (report.userId && report.userId !== (req.user as AppUser).id) {
+                return res.status(403).json({ error: "Unauthorized access to this report" });
+            }
+
+            // If enabling sharing and no token exists, generate one
+            let shareToken = report.shareToken;
+            if (isShared && !shareToken) {
+                const { nanoid } = await import("nanoid");
+                shareToken = nanoid(10);
+            }
+
+            const updatedReport = await storage.updateReport(reportId, {
+                isShared,
+                shareToken
+            });
+
+            res.json(updatedReport);
+        } catch (error) {
+            console.error("Error updating share status:", error);
+            res.status(500).json({ error: "Failed to update share status" });
+        }
+    });
+
+    app.get("/api/reports/public/:token", async (req, res) => {
+        try {
+            const report = await storage.getReportByShareToken(req.params.token);
+
+            if (!report || !report.isShared) {
+                return res.status(404).json({ error: "Report not found" });
+            }
+
+            // Exclude sensitive user info
+            const { userId, ...publicReport } = report;
+            res.json(publicReport);
+        } catch (error) {
+            console.error("Error retrieving shared report:", error);
+            res.status(500).json({ error: "Failed to retrieve report" });
+        }
+    });
+
     app.delete("/api/reports/:id", isAuthenticated, async (req, res) => {
         try {
             const report = await storage.getReport(req.params.id);
