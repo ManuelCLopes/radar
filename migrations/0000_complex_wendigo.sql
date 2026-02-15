@@ -1,4 +1,4 @@
-CREATE TABLE "api_usage" (
+CREATE TABLE IF NOT EXISTS "api_usage" (
 	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"service" varchar NOT NULL,
 	"endpoint" varchar NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE "api_usage" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "businesses" (
+CREATE TABLE IF NOT EXISTS "businesses" (
 	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" varchar,
 	"name" text NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE "businesses" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "password_reset_tokens" (
+CREATE TABLE IF NOT EXISTS "password_reset_tokens" (
 	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" varchar NOT NULL,
 	"token" text NOT NULL,
@@ -33,13 +33,13 @@ CREATE TABLE "password_reset_tokens" (
 	CONSTRAINT "password_reset_tokens_token_unique" UNIQUE("token")
 );
 --> statement-breakpoint
-CREATE TABLE "rate_limits" (
+CREATE TABLE IF NOT EXISTS "rate_limits" (
 	"ip" varchar PRIMARY KEY NOT NULL,
 	"hits" integer DEFAULT 0 NOT NULL,
 	"reset_at" timestamp NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "reports" (
+CREATE TABLE IF NOT EXISTS "reports" (
 	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" varchar,
 	"business_id" varchar,
@@ -62,7 +62,7 @@ CREATE TABLE "reports" (
 	CONSTRAINT "reports_share_token_unique" UNIQUE("share_token")
 );
 --> statement-breakpoint
-CREATE TABLE "searches" (
+CREATE TABLE IF NOT EXISTS "searches" (
 	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" varchar,
 	"address" varchar NOT NULL,
@@ -76,13 +76,13 @@ CREATE TABLE "searches" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "sessions" (
+CREATE TABLE IF NOT EXISTS "sessions" (
 	"sid" varchar PRIMARY KEY NOT NULL,
 	"sess" jsonb NOT NULL,
 	"expire" timestamp NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "users" (
+CREATE TABLE IF NOT EXISTS "users" (
 	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"email" text NOT NULL,
 	"password_hash" text,
@@ -105,9 +105,45 @@ CREATE TABLE "users" (
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
-ALTER TABLE "api_usage" ADD CONSTRAINT "api_usage_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "businesses" ADD CONSTRAINT "businesses_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "password_reset_tokens" ADD CONSTRAINT "password_reset_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "reports" ADD CONSTRAINT "reports_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "searches" ADD CONSTRAINT "searches_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "IDX_session_expire" ON "sessions" USING btree ("expire");
+DO $$ BEGIN
+ ALTER TABLE "api_usage" ADD CONSTRAINT "api_usage_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "businesses" ADD CONSTRAINT "businesses_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "password_reset_tokens" ADD CONSTRAINT "password_reset_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "reports" ADD CONSTRAINT "reports_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "searches" ADD CONSTRAINT "searches_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "sessions" USING btree ("expire");
+--> statement-breakpoint
+-- Backfill missing columns for reports table if it already existed
+ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "share_token" varchar;
+--> statement-breakpoint
+ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "is_shared" boolean DEFAULT false NOT NULL;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "reports" ADD CONSTRAINT "reports_share_token_unique" UNIQUE("share_token");
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;

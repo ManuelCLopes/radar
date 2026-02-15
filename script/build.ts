@@ -59,6 +59,10 @@ async function buildAll() {
     external: externals,
     logLevel: "info",
   });
+
+  // Copy migrations folder to dist
+  const { cp } = await import("fs/promises");
+  await cp("migrations", "dist/migrations", { recursive: true });
 }
 
 buildAll().catch((err) => {

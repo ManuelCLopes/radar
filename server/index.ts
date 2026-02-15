@@ -81,6 +81,20 @@ import { seed } from "./seed";
     await seed();
   }
 
+  // Run migrations in production (and dev if needed, but dev usually uses db:push)
+  // However, relying on migrations is safer for all envs if we have them.
+  // For now, let's run them if we have them.
+  // Note: We need to handle the case where migrations folder might be different in dev/prod if we run source vs dist.
+  // The build script copies to dist/migrations. 
+  // In dev (tsx), we might point to "migrations".
+  // But our migrate.ts points to "dist/migrations". 
+  // Let's adjust migrate.ts to be smarter or just run in prod for now as requested.
+
+  if (process.env.NODE_ENV === "production") {
+    const { runMigrations } = await import("./migrate");
+    await runMigrations();
+  }
+
   await registerRoutes(httpServer, app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
