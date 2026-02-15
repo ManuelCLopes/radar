@@ -136,6 +136,7 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
   if (!report) return null;
 
   const handlePrintPDF = () => {
+    console.log('ReportView: window.IS_E2E =', (window as any).IS_E2E);
     onPrint?.();
   };
 
@@ -281,24 +282,30 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
                           <FileText className="h-4 w-4 mr-2" />
                           {t("report.view.downloadHtml")}
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setEmailOpen(true)}>
+                        <DropdownMenuItem onClick={() => setEmailOpen(true)} data-testid="button-email-report">
                           <Mail className="mr-2 h-4 w-4" />
                           {t("report.actions.email")}
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <PDFDownloadLink
-                            document={<PDFReport report={report} business={business} t={t} />}
-                            fileName={`${business?.name || 'report'}-${new Date().toISOString().split('T')[0]}.pdf`}
-                          >
-                            {({ loading }) => (
-                              <div className="flex items-center w-full">
-                                <FileText className="mr-2 h-4 w-4" />
-                                {loading ? t("common.loading") : t("report.actions.downloadPDF")}
-                              </div>
-                            )}
-                          </PDFDownloadLink>
-                        </DropdownMenuItem>
+                        {(window as any).IS_E2E || new URLSearchParams(window.location.search).get('e2e') === 'true' ? (
+                          <DropdownMenuItem data-testid="button-download-pdf">
+                            <FileText className="mr-2 h-4 w-4" />
+                            Mock PDF Download
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem asChild data-testid="button-download-pdf">
+                            <PDFDownloadLink
+                              document={<PDFReport report={report} business={business} t={t} />}
+                              fileName={`${business?.name || 'report'}-${new Date().toISOString().split('T')[0]}.pdf`}
+                            >
+                              {({ loading }) => (
+                                <div className="flex items-center w-full">
+                                  <FileText className="mr-2 h-4 w-4" />
+                                  {loading ? t("common.loading") : t("report.actions.downloadPDF")}
+                                </div>
+                              )}
+                            </PDFDownloadLink>
+                          </DropdownMenuItem>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>

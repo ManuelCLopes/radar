@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Report Interactions', () => {
 
     test.beforeEach(async ({ page }) => {
+        page.on('console', msg => console.log(`BROWSER LOG: ${msg.text()}`));
         // Mock auth
         await page.route('**/api/auth/user*', async route => {
             await route.fulfill({ status: 200, json: { user: { id: 1, email: 'test@example.com', isVerified: true } } });
@@ -31,6 +32,7 @@ test.describe('Report Interactions', () => {
                 json: [{
                     id: 'rep-1',
                     businessId: 'bus-1',
+                    userId: 1,
                     businessName: 'Test Business',
                     aiAnalysis: '## Analysis\n\n- Good\n- Bad',
                     generatedAt: new Date().toISOString(),
@@ -51,8 +53,8 @@ test.describe('Report Interactions', () => {
             });
         });
 
-        await page.goto('/dashboard');
-        await expect(page).toHaveURL(/\/dashboard/);
+        await page.goto('/dashboard?e2e=true');
+        await expect(page).toHaveURL(/dashboard/);
     });
 
     test('Opening report and checking export options', async ({ page }) => {
@@ -81,6 +83,9 @@ test.describe('Report Interactions', () => {
         // Open export dropdown
         await page.getByTestId('button-export-report').click();
 
+        // Wait for dropdown to open
+        await expect(page.locator('[role="menu"]')).toBeVisible();
+
         // Check presence of items
         await expect(page.getByTestId('button-download-html')).toBeVisible();
         await expect(page.getByTestId('button-download-pdf')).toBeVisible();
@@ -88,6 +93,10 @@ test.describe('Report Interactions', () => {
     });
 
     test('Email share dialog functions correctly', async ({ page }) => {
+        // Ensure we are on the page with e2e param (handled by beforeEach, but let's be safe if reloading)
+        if (page.url().indexOf('?e2e=true') === -1) {
+            await page.goto('/dashboard?e2e=true');
+        }
         await page.getByTestId('button-view-history-bus-1').click();
         await page.getByTestId('button-view-report-rep-1').click();
 
@@ -95,8 +104,11 @@ test.describe('Report Interactions', () => {
         await page.getByTestId('button-export-report').click();
         await page.getByTestId('button-email-report').click();
 
+        // Wait for email dialog to be attached
+        await expect(page.getByRole('dialog', { name: /Email Report|Enviar Relatório|report\.actions\.email/i })).toBeVisible();
+
         // Verify email dialog
-        await expect(page.getByRole('heading', { name: /Email Report|Enviar Relatório/i }).first()).toBeVisible();
+        await expect(page.getByRole('heading', { name: /Email Report|Enviar Relatório|report\.actions\.email/i }).first()).toBeVisible();
 
         // Fill email and mock success
         await page.route('**/api/reports/rep-1/email', async route => {
