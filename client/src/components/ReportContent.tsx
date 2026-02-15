@@ -77,6 +77,7 @@ function CompetitorCard({ competitor, index, t }: { competitor: Competitor; inde
 }
 
 function ReviewItem({ review }: { review: any }) {
+    const { t } = useTranslation();
     const [showOriginal, setShowOriginal] = useState(false);
     const hasOriginal = review.originalText && review.originalText !== review.text;
 
@@ -108,7 +109,7 @@ function ReviewItem({ review }: { review: any }) {
                     className="text-[10px] text-primary hover:underline font-medium flex items-center gap-1"
                 >
                     <Globe className="h-2.5 w-2.5" />
-                    {showOriginal ? "Show Translated" : "Show Original"}
+                    {showOriginal ? t("report.competitor.showTranslated") : t("report.competitor.showOriginal")}
                 </button>
             )}
         </div>
@@ -251,7 +252,7 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                             <CompetitorCard key={i} competitor={competitor} index={i} t={t} />
                         ))
                     ) : (
-                        <p className="text-muted-foreground text-sm col-span-full italic">No competitors found in this area.</p>
+                        <p className="text-muted-foreground text-sm col-span-full italic">{t("report.sections.noCompetitors")}</p>
                     )}
                 </div>
             </section>
@@ -345,7 +346,7 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Card className="bg-blue-50/50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-800">
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">Channels</CardTitle>
+                                <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">{t("report.marketingStrategy.channels")}</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="flex flex-wrap gap-2">
@@ -359,7 +360,7 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                         </Card>
                         <Card className="bg-green-50/50 dark:bg-green-900/10 border-green-100 dark:border-green-800">
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium text-green-700 dark:text-green-300">Tactics</CardTitle>
+                                <CardTitle className="text-sm font-medium text-green-700 dark:text-green-300">{t("report.marketingStrategy.tactics")}</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <ul className="list-disc pl-4 space-y-1 text-sm text-muted-foreground">

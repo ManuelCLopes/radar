@@ -17,24 +17,23 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-// Custom icon for the main business (blue)
-const businessIcon = new L.Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
+// Custom DivIcon for main business (Blue)
+const businessIcon = L.divIcon({
+    className: 'custom-div-icon',
+    html: `<div style="background-color: #2563eb; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); position: relative; top: -8px; left: -8px;"></div>
+           <div style="background-color: #2563eb; width: 2px; height: 10px; position: absolute; top: 8px; left: -1px; margin: 0 auto; opacity: 0.5;"></div>`,
+    iconSize: [0, 0],
+    iconAnchor: [0, 0],
+    popupAnchor: [0, -16]
 });
 
-// Custom icon for competitors (red)
-const competitorIcon = new L.Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
+// Custom DivIcon for competitors (Red)
+const competitorIcon = L.divIcon({
+    className: 'custom-div-icon',
+    html: `<div style="background-color: #dc2626; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); position: relative; top: -7px; left: -7px;"></div>`,
+    iconSize: [0, 0],
+    iconAnchor: [0, 0],
+    popupAnchor: [0, -14]
 });
 
 interface Competitor {
@@ -77,24 +76,22 @@ export function CompetitorMap({ center, businessName, competitors, radius = 1000
     );
 
     return (
-        <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-sm z-0 relative">
+        <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-sm z-0 relative isolate">
             <MapContainer
                 center={center}
                 zoom={14}
                 scrollWheelZoom={false}
-                style={{ height: '100%', width: '100%' }}
+                style={{ height: '100%', width: '100%', zIndex: 0 }}
             >
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
                 <MapUpdater center={center} />
 
-
-
                 {/* Main Business Marker */}
-                <Marker position={center} icon={businessIcon}>
+                <Marker position={center} icon={businessIcon} zIndexOffset={1000}>
                     <Popup>
                         <div className="font-bold">{businessName}</div>
                         <div className="text-xs text-muted-foreground">{t('dashboard.analysis.businessReport')}</div>

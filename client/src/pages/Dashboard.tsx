@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { MapPin, Star, Plus, Edit, Trash2, LogOut, FileText, History, AlertCircle, Settings, Building2, Search, Loader2, TrendingUp, Navigation } from "lucide-react";
+import { MapPin, Star, Plus, Edit, Trash2, LogOut, FileText, History, AlertCircle, Settings, Building2, Search, Loader2, TrendingUp, Navigation, Menu } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { BusinessForm } from "@/components/BusinessForm";
 import { BusinessList } from "@/components/BusinessList";
@@ -450,7 +450,8 @@ export default function Dashboard() {
             <img src="/logo.png" alt="Competitor Watcher" className="h-10 w-auto hidden dark:block" />
           </Link>
 
-          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center gap-2">
             <LanguageSelector />
             <ThemeToggle />
             <Button
@@ -484,6 +485,39 @@ export default function Dashboard() {
               <span aria-hidden="true">{t("dashboard.user.logout")}</span>
               <span className="sr-only">{t("dashboard.user.logout")}</span>
             </Button>
+          </div>
+
+          {/* Mobile Actions (Hamburger) */}
+          <div className="md:hidden flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <div className="flex items-center justify-between px-2 py-2">
+                  <ThemeToggle />
+                  <LanguageSelector />
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={openPricing}>
+                  <Star className="mr-2 h-4 w-4 text-amber-500" />
+                  <span>Subscrição</span>
+                </DropdownMenuItem>
+                <Link href="/settings">
+                  <DropdownMenuItem>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Definições</span>
+                  </DropdownMenuItem>
+                </Link>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>{t("dashboard.user.logout")}</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
@@ -526,7 +560,7 @@ export default function Dashboard() {
                 <div className="grid grid-cols-2 w-full gap-2 sm:flex sm:w-auto sm:flex-row">
                   <Button onClick={() => setIsAddOpen(true)} className="w-full sm:w-auto gap-2" data-testid="btn-add-business" data-tour="add-business">
                     <Plus className="h-4 w-4" />
-                    <span className="hidden sm:inline">{t("dashboard.addBusiness")}</span>
+                    <span>{t("dashboard.addBusiness")}</span>
                   </Button>
                   <Dialog open={isAnalysisOpen} onOpenChange={(open) => {
                     setIsAnalysisOpen(open);
@@ -538,7 +572,7 @@ export default function Dashboard() {
                     <DialogTrigger asChild>
                       <Button variant="outline" className="w-full sm:w-auto gap-2" data-testid="btn-new-analysis" data-tour="new-analysis">
                         <Search className="h-4 w-4" />
-                        <span className="hidden sm:inline">{t("dashboard.tabs.newAnalysis")}</span>
+                        <span>{t("dashboard.tabs.newAnalysis")}</span>
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[600px]">
