@@ -5,7 +5,10 @@
       "analysisStatus": "Estado da Análise",
       "uniqueLocations": "Localizações Únicas",
       "businessTypes": "Tipos de Negócio",
-      "active": "Ativo"
+      "active": "Ativo",
+      "analyzed": "Concorrentes Analisados",
+      "avgRating": "Classificação Média",
+      "marketActivity": "Atividade do Mercado"
     },
     "user": {
       "guest": "Visitante",
@@ -107,12 +110,16 @@
       "printPdf": "Imprimir PDF",
       "emailReport": "Enviar Email",
       "businessLabel": "Negócio:",
-      "dateLabel": "Data:"
+      "dateLabel": "Data:",
+      "public": "Público",
+      "generatedBy": "Gerado por Competitor Watcher AI",
+      "comprehensiveAnalysis": "Análise Abrangente de IA"
     },
     "stats": {
       "competitorsFound": "Concorrentes Encontrados",
       "avgRating": "Classificação Média",
-      "totalReviews": "Total de Avaliações"
+      "totalReviews": "Total de Avaliações",
+      "reviewsAnalyzed": "Avaliações Analisadas"
     },
     "sections": {
       "radius": "Raio",
@@ -143,11 +150,36 @@
       "customerSentiment": "Sentimento do Cliente e Insights de Avaliação",
       "commonPraises": "Elogios Comuns",
       "recurringComplaints": "Reclamações Recorrentes",
+      "unmetNeeds": "Necessidades Não Atendidas",
+      "executiveSummary": "Sumário Executivo",
+      "competitorLook": "Panorama da Concorrência"
+    },
+    "marketingStrategy": {
+      "channels": "Canais",
+      "tactics": "Táticas"
+    },
+    "sentiment": {
+      "praises": "Elogios Comuns",
+      "complaints": "Reclamações Recorrentes",
       "unmetNeeds": "Necessidades Não Atendidas"
+    },
+    "share": {
+      "title": "Partilhar Relatório",
+      "description": "Partilhe este relatório com a sua equipa ou clientes.",
+      "publicAccess": "Acesso Público",
+      "anyoneLink": "Qualquer pessoa com o link pode ver",
+      "button": "Partilhar",
+      "enabled": "Partilha Ativada",
+      "disabled": "Partilha Desativada",
+      "enabledDesc": "Este relatório está agora acessível através do link público.",
+      "disabledDesc": "Este relatório já não está acessível publicamente.",
+      "linkCopied": "Link copiado para a área de transferência"
     },
     "competitor": {
       "reviews": "{{count}} avaliações",
-      "recentReviews": "Avaliações Recentes"
+      "recentReviews": "Avaliações Recentes",
+      "showOriginal": "Mostrar Original",
+      "showTranslated": "Mostrar Traduzido"
     },
     "history": {
       "title": "Histórico de Relatórios",

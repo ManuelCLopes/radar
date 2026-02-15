@@ -8,6 +8,7 @@ vi.mock("leaflet", () => {
     return {
         default: {
             icon: vi.fn(() => mockIcon),
+            divIcon: vi.fn(() => mockIcon),
             Icon: class MockIcon {
                 constructor() {
                     return mockIcon;
