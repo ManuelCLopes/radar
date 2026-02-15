@@ -491,7 +491,7 @@ export default function Dashboard() {
           <div className="md:hidden flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" data-testid="mobile-menu-trigger">
                   <Menu className="h-6 w-6" />
                 </Button>
               </DropdownMenuTrigger>
@@ -512,7 +512,7 @@ export default function Dashboard() {
                   </DropdownMenuItem>
                 </Link>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                <DropdownMenuItem onClick={handleLogout} className="text-red-600" data-testid="mobile-logout-btn">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>{t("dashboard.user.logout")}</span>
                 </DropdownMenuItem>

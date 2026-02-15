@@ -376,11 +376,14 @@ test.describe('Dashboard Business Management Flow', () => {
 
         await page.goto('/dashboard');
 
-        // Navigate to History tab (assuming tabs exist, or just check content if listed on main)
+        // Navigate to History tab
         const historyTab = page.getByTestId('tab-history');
-        if (await historyTab.isVisible()) {
-            await historyTab.click();
-        }
+        await expect(historyTab).toBeVisible();
+        await historyTab.click();
+
+        // Verify we are on history tab by checking the title
+        // "Analysis History" is the default English text for dashboard.analysis.historyTitle
+        await expect(page.getByText('Analysis History')).toBeVisible({ timeout: 5000 });
 
         // Verify report item exists
         await expect(page.getByText('Historic Cafe')).toBeVisible({ timeout: 10000 });
