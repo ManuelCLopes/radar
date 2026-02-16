@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { MapPin, Star, Plus, Edit, Trash2, LogOut, FileText, History, AlertCircle, Settings, Building2, Search, Loader2, TrendingUp, Navigation, Menu } from "lucide-react";
+import { MapPin, Star, Plus, Edit, Trash2, LogOut, FileText, History, AlertCircle, Settings, Building2, Search, Loader2, TrendingUp, Navigation, Menu, Sun, Moon, Globe } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { BusinessForm } from "@/components/BusinessForm";
 import { BusinessList } from "@/components/BusinessList";
@@ -30,7 +30,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -496,16 +500,52 @@ export default function Dashboard() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <div className="px-2 py-2 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">{t("dashboard.menu.theme")}</span>
-                    <ThemeToggle />
+                <DropdownMenuItem onClick={() => {
+                  const root = document.documentElement;
+                  const newTheme = root.classList.contains("dark") ? "light" : "dark";
+                  if (newTheme === "dark") {
+                    root.classList.add("dark");
+                  } else {
+                    root.classList.remove("dark");
+                  }
+                  localStorage.setItem("theme", newTheme);
+                  // Force re-render of toggle components if needed, though they usually listen to storage or class
+                  window.dispatchEvent(new Event("storage"));
+                }}>
+                  <div className="flex w-full items-center justify-between">
+                    <div className="flex items-center">
+                      <Sun className="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                      <Moon className="absolute mr-2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                      <span>{t("dashboard.menu.theme")}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">{t("dashboard.menu.language")}</span>
-                    <LanguageSelector />
-                  </div>
-                </div>
+                </DropdownMenuItem>
+
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <Globe className="mr-2 h-4 w-4" />
+                    <span>{t("dashboard.menu.language")}</span>
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={() => i18n.changeLanguage("en")}>
+                        <span>English</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => i18n.changeLanguage("pt")}>
+                        <span>Português</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => i18n.changeLanguage("es")}>
+                        <span>Español</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => i18n.changeLanguage("fr")}>
+                        <span>Français</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => i18n.changeLanguage("de")}>
+                        <span>Deutsch</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={openPricing}>
                   <Star className="mr-2 h-4 w-4 text-amber-500" />
