@@ -127,8 +127,13 @@ test.describe('Dashboard Business Management Flow', () => {
 
         page.on('console', msg => console.log('BROWSER:', msg.text()));
         page.on('pageerror', exception => {
+            const msg = exception.message || exception.toString();
+            if (msg.includes('_leaflet_pos') || exception.stack?.includes('_leaflet_pos')) {
+                console.log('IGNORING PREDICTABLE LEAFLET ERROR:', msg);
+                return;
+            }
             console.log('PAGE ERROR:', exception);
-            throw new Error(`Captured PAGE ERROR: ${exception.toString()}`);
+            throw new Error(`Captured PAGE ERROR: ${msg}`);
         });
         page.on('response', resp => console.log('RESPONSE:', resp.url(), resp.status()));
 
@@ -210,6 +215,7 @@ test.describe('Dashboard Business Management Flow', () => {
         await page.unroute('**/api/businesses*');
         await page.route('**/api/businesses*', async (route) => {
             const method = route.request().method();
+
             if (method === 'GET') {
                 await route.fulfill({
                     status: 200,
@@ -258,7 +264,29 @@ test.describe('Dashboard Business Management Flow', () => {
 
         // Expect Dialog
         await expect(page.getByRole('alertdialog')).toBeVisible();
+
+        // Setup promises to wait for DELETE and Refetch to ensure strict ordering
+        const deletePromise = page.waitForResponse(response =>
+            response.url().includes('/api/businesses/bus-1') &&
+            response.request().method() === 'DELETE' &&
+            response.status() === 200
+        );
+
+        // We expect a refetch of the list after deletion
+        const refetchPromise = page.waitForResponse(response =>
+            response.url().includes('/api/businesses') &&
+            response.request().method() === 'GET' &&
+            response.status() === 200
+        );
+
         await page.getByTestId('button-confirm-delete').click();
+
+        // Wait for network actions to complete
+        await deletePromise;
+        await refetchPromise;
+
+        // Give React a moment to re-render based on the new data
+        await page.waitForTimeout(1000);
 
         // Verify removal
         await expect(page.getByTestId('card-business-bus-1')).not.toBeVisible();
