@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+// leaflet.css is now imported in main.tsx
 import { useTranslation } from 'react-i18next';
+import { AlertCircle } from 'lucide-react';
 
 // Fix for default marker icon
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -58,19 +59,39 @@ interface CompetitorMapProps {
     radius?: number;
 }
 
-export function CompetitorMap({ center, businessName, competitors, radius = 1000 }: CompetitorMapProps) {
+export function CompetitorMap({ center, businessName, competitors }: CompetitorMapProps) {
     const { t } = useTranslation();
 
-    // Filter competitors with valid location data
-    const validCompetitors = competitors.filter(c =>
+    // Memoize valid competitors to prevent re-calculations
+    const validCompetitors = useMemo(() => competitors.filter(c =>
         (c.latitude && c.longitude) ||
         (c.geometry?.location?.lat && c.geometry?.location?.lng)
-    );
+    ), [competitors]);
+
+    const isValidCenter = center && typeof center.lat === 'number' && typeof center.lng === 'number' && center.lat !== 0 && center.lng !== 0;
+    const hasCompetitors = validCompetitors.length > 0;
+
+    // Fallback UI if no data
+    if (!isValidCenter && !hasCompetitors) {
+        return (
+            <div className="h-[400px] w-full rounded-lg border shadow-sm bg-muted/30 flex flex-col items-center justify-center text-muted-foreground p-6 text-center">
+                <AlertCircle className="h-10 w-10 mb-3 opacity-50" />
+                <p className="font-medium">{t('map.unavailable') || "Map data unavailable"}</p>
+                <p className="text-sm mt-1 max-w-xs">{t('map.unavailableDesc') || "Location coordinates for this business could not be determined."}</p>
+            </div>
+        );
+    }
+
+    // Default to center if valid, otherwise first competitor
+    const mapCenter = isValidCenter ? center : {
+        lat: validCompetitors[0].latitude || validCompetitors[0].geometry!.location.lat,
+        lng: validCompetitors[0].longitude || validCompetitors[0].geometry!.location.lng
+    };
 
     return (
         <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-sm z-0 relative isolate">
             <MapContainer
-                center={center}
+                center={mapCenter}
                 zoom={14}
                 scrollWheelZoom={false}
                 style={{ height: '100%', width: '100%', zIndex: 0 }}
@@ -80,15 +101,20 @@ export function CompetitorMap({ center, businessName, competitors, radius = 1000
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
-                <MapUpdater center={center} />
+                <MapBoundsFitter
+                    center={isValidCenter ? center : undefined}
+                    competitors={validCompetitors}
+                />
 
                 {/* Main Business Marker */}
-                <Marker position={center} icon={businessIcon} zIndexOffset={1000}>
-                    <Popup>
-                        <div className="font-bold">{businessName}</div>
-                        <div className="text-xs text-muted-foreground">{t('dashboard.analysis.businessReport')}</div>
-                    </Popup>
-                </Marker>
+                {isValidCenter && (
+                    <Marker position={center} icon={businessIcon} zIndexOffset={1000}>
+                        <Popup>
+                            <div className="font-bold">{businessName}</div>
+                            <div className="text-xs text-muted-foreground">{t('dashboard.analysis.businessReport')}</div>
+                        </Popup>
+                    </Marker>
+                )}
 
                 {/* Competitor Markers */}
                 {validCompetitors.map((competitor, index) => {
@@ -120,16 +146,54 @@ export function CompetitorMap({ center, businessName, competitors, radius = 1000
     );
 }
 
-function MapUpdater({ center }: { center: { lat: number; lng: number } }) {
+// Component to handle bounds fitting and resizing
+function MapBoundsFitter({ center, competitors }: { center?: { lat: number; lng: number }, competitors: Competitor[] }) {
     const map = useMap();
 
     useEffect(() => {
-        map.setView(center, 14);
-        // Force a resize calculation after mount to ensure tiles load
-        setTimeout(() => {
+        // 1. Invalidate size to fix "gray box" issues
+        const resizeObserver = new ResizeObserver(() => {
             map.invalidateSize();
-        }, 100);
-    }, [center.lat, center.lng, map]);
+        });
+
+        const container = map.getContainer();
+        if (container.parentElement) {
+            resizeObserver.observe(container.parentElement);
+        }
+
+        // Safety triggers
+        const timeouts = [100, 300, 500, 1000].map(ms =>
+            setTimeout(() => map.invalidateSize(), ms)
+        );
+
+        // 2. Fit Bounds logic
+        const points: L.LatLngExpression[] = [];
+
+        if (center) {
+            points.push([center.lat, center.lng]);
+        }
+
+        competitors.forEach(c => {
+            const lat = c.latitude || c.geometry?.location.lat;
+            const lng = c.longitude || c.geometry?.location.lng;
+            if (lat && lng) points.push([lat, lng]);
+        });
+
+        if (points.length > 0) {
+            // Add a small delay to ensure map is ready
+            setTimeout(() => {
+                const bounds = L.latLngBounds(points);
+                map.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 });
+            }, 200);
+        } else if (center) {
+            map.setView(center, 14);
+        }
+
+        return () => {
+            resizeObserver.disconnect();
+            timeouts.forEach(clearTimeout);
+        };
+    }, [center, competitors, map]);
 
     return null;
 }

@@ -19,15 +19,30 @@ vi.mock("leaflet", () => {
     };
 });
 
+// Mock ResizeObserver
+global.ResizeObserver = class ResizeObserver {
+    observe() { }
+    unobserve() { }
+    disconnect() { }
+};
+
 // Mock react-leaflet
 vi.mock("react-leaflet", () => ({
     MapContainer: ({ children }: any) => <div data-testid="map-container">{children}</div>,
     TileLayer: () => <div data-testid="tile-layer" />,
     Marker: ({ children, position }: any) => (
-        <div data-testid="marker" data-lat={position.lat} data-lng={position.lng}>{children}</div>
+        <div data-testid="marker" data-lat={position.lat} data-lng={position.lng}>
+            {children}
+            {/* Render children (Popup) immediately for testing purposes */}
+        </div>
     ),
     Popup: ({ children }: any) => <div data-testid="popup">{children}</div>,
-    useMap: () => ({ setView: vi.fn() })
+    useMap: () => ({
+        setView: vi.fn(),
+        invalidateSize: vi.fn(),
+        fitBounds: vi.fn(),
+        getContainer: () => document.createElement('div')
+    })
 }));
 
 vi.mock("react-i18next", () => ({

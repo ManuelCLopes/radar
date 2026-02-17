@@ -197,9 +197,9 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
     marketTrends: ["Digital Adoption: Growing preference for online interaction."],
     targetAudience: {
       demographics: {
-        ageRange: "25-45",
-        gender: "All",
-        incomeLevel: "Medium"
+        "ageRange": "25-45",
+        "gender": "All",
+        "incomeLevel": "Medium"
       },
       psychographics: "Value-conscious consumers who appreciate good service.",
       painPoints: ["Finding reliable options", "Quality assurance", "Convenience"]
