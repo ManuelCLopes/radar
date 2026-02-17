@@ -30,14 +30,18 @@ export interface StructuredAnalysis {
   };
   marketTrends: string[];
   targetAudience: {
-    demographics: string;
+    demographics: {
+      ageRange: string;
+      gender: string;
+      incomeLevel: string;
+    };
     psychographics: string;
-    painPoints: string;
+    painPoints: string[];
   };
   marketingStrategy: {
-    primaryChannels: string;
+    channels: string[];
     contentIdeas: string;
-    promotionalTactics: string;
+    tactics: string[];
   };
   customerSentiment: {
     commonPraises: string[];
@@ -104,14 +108,18 @@ export async function analyzeCompetitors(
     },
     "marketTrends": ["Trend: Impact on business", ...],
     "targetAudience": {
-      "demographics": "Detailed paragraph describing the demographic profile...",
+      "demographics": {
+        "ageRange": "e.g., 25-45",
+        "gender": "e.g., All genders",
+        "incomeLevel": "e.g., Medium-High"
+      },
       "psychographics": "Detailed paragraph describing consumer behavior and values...",
-      "painPoints": "Detailed paragraph describing customer needs and problems..."
+      "painPoints": ["Point 1", "Point 2", "Point 3"]
     },
     "marketingStrategy": {
-      "primaryChannels": "Detailed paragraph describing best channels...",
+      "channels": ["Channel 1", "Channel 2"],
       "contentIdeas": "Detailed paragraph describing content themes...",
-      "promotionalTactics": "Detailed paragraph describing tactical offers..."
+      "tactics": ["Tactic 1", "Tactic 2"]
     },
     "customerSentiment": {
       "commonPraises": ["string", "string", ...],
@@ -121,7 +129,9 @@ export async function analyzeCompetitors(
   }
   
   IMPORTANT:
-  - 'targetAudience' and 'marketingStrategy' fields must be rich NARRATIVE PARAGRAPHS, not lists.
+  - 'targetAudience.demographics' must be an OBJECT with specific fields.
+  - 'targetAudience.painPoints' must be an ARRAY of strings.
+  - 'marketingStrategy.channels' and 'marketingStrategy.tactics' must be ARRAYS of strings.
   - 'executiveSummary' should specificially cover the Market Overview.
   - 'swot' and 'marketTrends' items should follow "Title: Description" format for better readability.
   `;
@@ -186,14 +196,18 @@ function generateFallbackAnalysis(business: Business, competitors: Competitor[],
     },
     marketTrends: ["Digital Adoption: Growing preference for online interaction."],
     targetAudience: {
-      demographics: "Local residents looking for convenience and quality.",
+      demographics: {
+        ageRange: "25-45",
+        gender: "All",
+        incomeLevel: "Medium"
+      },
       psychographics: "Value-conscious consumers who appreciate good service.",
-      painPoints: "Finding reliable and high-quality options nearby."
+      painPoints: ["Finding reliable options", "Quality assurance", "Convenience"]
     },
     marketingStrategy: {
-      primaryChannels: "Social media platforms like Instagram and Facebook to reach local community.",
+      channels: ["Social Media", "Local Search", "Community Partnerships"],
       contentIdeas: "Behind-the-scenes content and customer testimonials.",
-      promotionalTactics: "Grand opening discounts and loyalty programs."
+      tactics: ["Grand opening discounts", "Loyalty programs"]
     },
     customerSentiment: {
       commonPraises: ["Friendly service"],

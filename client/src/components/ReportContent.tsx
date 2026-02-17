@@ -229,31 +229,18 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                 </section>
             )}
 
-            {/* Competitor Analysis */}
+            {/* Competitor Map Section */}
             <section className="space-y-3">
                 <div className="flex items-center gap-2 text-primary">
                     <MapPin className="h-5 w-5" />
-                    <h3 className="font-semibold text-lg">{t("report.sections.competitorLook")}</h3>
+                    <h3 className="font-semibold text-lg">{t("report.sections.competitorMap")}</h3>
                 </div>
-
-                {/* Competitor Map */}
                 <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-sm">
                     <CompetitorMap
                         center={{ lat: business?.latitude || 0, lng: business?.longitude || 0 }}
                         competitors={report.competitors}
                         businessName={business?.name || report.businessName}
                     />
-                </div>
-
-                {/* Competitor Cards Grid */}
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {report.competitors.length > 0 ? (
-                        report.competitors.map((competitor, i) => (
-                            <CompetitorCard key={i} competitor={competitor} index={i} t={t} />
-                        ))
-                    ) : (
-                        <p className="text-muted-foreground text-sm col-span-full italic">{t("report.sections.noCompetitors")}</p>
-                    )}
                 </div>
             </section>
 
@@ -421,6 +408,23 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                     </div>
                 </section>
             )}
+
+            {/* Competitor Listing (Reviews) */}
+            <section className="space-y-3">
+                <div className="flex items-center gap-2 text-primary">
+                    <MapPin className="h-5 w-5" />
+                    <h3 className="font-semibold text-lg">{t("report.sections.competitorReviews")}</h3>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {report.competitors.length > 0 ? (
+                        report.competitors.map((competitor, i) => (
+                            <CompetitorCard key={i} competitor={competitor} index={i} t={t} />
+                        ))
+                    ) : (
+                        <p className="text-muted-foreground text-sm col-span-full italic">{t("report.sections.noCompetitors")}</p>
+                    )}
+                </div>
+            </section>
 
             {/* Detailed AI Analysis */}
             <section className="space-y-3 print:break-inside-avoid">
