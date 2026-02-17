@@ -40,7 +40,8 @@ test.describe('Dashboard Business Management Flow', () => {
 
 
         // 2. Dynamic Business Mock Store (Global for this test run)
-        let currentBusinesses = [...mockBusinesses];
+        // Use deep copy to prevent state pollution between tests
+        let currentBusinesses = JSON.parse(JSON.stringify(mockBusinesses));
 
         await page.route('**/api/businesses*', async (route) => {
             const method = route.request().method();
@@ -202,7 +203,8 @@ test.describe('Dashboard Business Management Flow', () => {
 
     test('can delete a business', async ({ page }) => {
         // 2. Dynamic Business Mock Store
-        let currentBusinesses = [...mockBusinesses]; // Start with initial
+        // Use deep copy to prevent state pollution
+        let currentBusinesses = JSON.parse(JSON.stringify(mockBusinesses)); // Start with initial
 
         await page.route('**/api/businesses*', async (route) => {
             const method = route.request().method();
