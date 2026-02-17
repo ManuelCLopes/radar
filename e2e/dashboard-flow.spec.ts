@@ -258,10 +258,13 @@ test.describe('Dashboard Business Management Flow', () => {
             }
         });
 
-        await page.getByTestId('button-delete-bus-1').click();
+        // Ensure button is visible before clicking
+        const deleteBtn = page.getByTestId('button-delete-bus-1');
+        await expect(deleteBtn).toBeVisible();
+        await deleteBtn.click();
 
         // Expect Dialog
-        await expect(page.getByText('Are you sure')).toBeVisible();
+        await expect(page.getByRole('alertdialog')).toBeVisible();
         await page.getByTestId('button-confirm-delete').click();
 
         // Verify removal
