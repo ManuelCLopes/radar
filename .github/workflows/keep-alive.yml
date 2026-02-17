@@ -2,8 +2,8 @@ name: Keep Alive
 
 on:
   schedule:
-    # Run every 14 minutes to avoid Render's 15-minute inactivity timeout
-    - cron: '*/14 * * * *'
+    # Run every 5 minutes to keep Render awake (free tier sleeps after 15m)
+    - cron: '*/5 * * * *'
   workflow_dispatch: # Allows manual triggering
 
 jobs:
