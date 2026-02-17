@@ -202,13 +202,14 @@ test.describe('Dashboard Business Management Flow', () => {
     });
 
     test('can delete a business', async ({ page }) => {
-        // 2. Dynamic Business Mock Store
-        // Use deep copy to prevent state pollution
-        let currentBusinesses = JSON.parse(JSON.stringify(mockBusinesses)); // Start with initial
+        // 2. Dynamic Business Mock Store (Local to this test to ensure isolation)
+        // Use deep copy of the original constant to ensure fresh state
+        let currentBusinesses = JSON.parse(JSON.stringify(mockBusinesses));
 
+        // Override the global route for this specific test to ensure we control the state
+        await page.unroute('**/api/businesses*');
         await page.route('**/api/businesses*', async (route) => {
             const method = route.request().method();
-
             if (method === 'GET') {
                 await route.fulfill({
                     status: 200,
@@ -219,36 +220,20 @@ test.describe('Dashboard Business Management Flow', () => {
                 const newBus = route.request().postDataJSON();
                 const created = { ...newBus, id: `bus-new-${Date.now()}`, userId: mockUser.id };
                 currentBusinesses.push(created);
-                await route.fulfill({
-                    status: 200,
-                    contentType: 'application/json',
-                    body: JSON.stringify(created)
-                });
+                await route.fulfill({ status: 200, body: JSON.stringify(created) });
             } else {
                 await route.continue();
             }
         });
 
         // Handle specific ID routes (PUT, DELETE)
+        await page.unroute('**/api/businesses/*');
         await page.route('**/api/businesses/*', async (route) => {
             const method = route.request().method();
             const url = route.request().url();
             const id = url.split('/').pop();
 
-            if (method === 'PUT') {
-                const updateData = route.request().postDataJSON();
-                const index = currentBusinesses.findIndex(b => b.id === id);
-                if (index !== -1) {
-                    currentBusinesses[index] = { ...currentBusinesses[index], ...updateData };
-                    await route.fulfill({
-                        status: 200,
-                        contentType: 'application/json',
-                        body: JSON.stringify(currentBusinesses[index])
-                    });
-                } else {
-                    await route.fulfill({ status: 404 });
-                }
-            } else if (method === 'DELETE') {
+            if (method === 'DELETE') {
                 currentBusinesses = currentBusinesses.filter(b => b.id !== id);
                 await route.fulfill({
                     status: 200,
@@ -259,6 +244,12 @@ test.describe('Dashboard Business Management Flow', () => {
                 await route.continue();
             }
         });
+
+        // Explicitly reload to ensure we have the fresh state from our new route handler
+        await page.reload();
+
+        // Wait for list to load
+        await expect(page.getByTestId('text-business-name-bus-1')).toBeVisible({ timeout: 10000 });
 
         // Ensure button is visible before clicking
         const deleteBtn = page.getByTestId('button-delete-bus-1');
