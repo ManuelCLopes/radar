@@ -237,7 +237,7 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                 </div>
 
                 {/* Competitor Map */}
-                <div className="h-[300px] w-full rounded-lg overflow-hidden border shadow-sm">
+                <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-sm">
                     <CompetitorMap
                         center={{ lat: business?.latitude || 0, lng: business?.longitude || 0 }}
                         competitors={report.competitors}
@@ -256,42 +256,6 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                     )}
                 </div>
             </section>
-
-            {/* SWOT Analysis */}
-            {swot && (
-                <section className="space-y-3 print:break-inside-avoid">
-                    <div className="flex items-center gap-2 text-primary">
-                        <Target className="h-5 w-5" />
-                        <h3 className="font-semibold text-lg">{t("report.sections.swot")}</h3>
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <SwotSection
-                            title={t("report.swot.strengths")}
-                            items={swot.strengths || []}
-                            icon={CheckCircle2}
-                            color="green"
-                        />
-                        <SwotSection
-                            title={t("report.swot.weaknesses")}
-                            items={swot.weaknesses || []}
-                            icon={XCircle}
-                            color="red"
-                        />
-                        <SwotSection
-                            title={t("report.swot.opportunities")}
-                            items={swot.opportunities || []}
-                            icon={Lightbulb}
-                            color="blue"
-                        />
-                        <SwotSection
-                            title={t("report.swot.threats")}
-                            items={swot.threats || []}
-                            icon={AlertTriangle}
-                            color="orange"
-                        />
-                    </div>
-                </section>
-            )}
 
             {/* Market Trends */}
             {trends.length > 0 && (
@@ -314,9 +278,9 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                             </CardHeader>
                             <CardContent>
                                 <div className="text-sm text-muted-foreground">
-                                    <p><span className="font-medium text-foreground">Age:</span> {targetAudience.demographics?.ageRange}</p>
-                                    <p><span className="font-medium text-foreground">Gender:</span> {targetAudience.demographics?.gender}</p>
-                                    <p><span className="font-medium text-foreground">Income:</span> {targetAudience.demographics?.incomeLevel}</p>
+                                    <p><span className="font-medium text-foreground">{t("report.audience.age")}:</span> {targetAudience.demographics?.ageRange}</p>
+                                    <p><span className="font-medium text-foreground">{t("report.audience.gender")}:</span> {targetAudience.demographics?.gender}</p>
+                                    <p><span className="font-medium text-foreground">{t("report.audience.income")}:</span> {targetAudience.demographics?.incomeLevel}</p>
                                 </div>
                             </CardContent>
                         </Card>
@@ -370,6 +334,42 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                                 </ul>
                             </CardContent>
                         </Card>
+                    </div>
+                </section>
+            )}
+
+            {/* SWOT Analysis */}
+            {swot && (
+                <section className="space-y-3 print:break-inside-avoid">
+                    <div className="flex items-center gap-2 text-primary">
+                        <Target className="h-5 w-5" />
+                        <h3 className="font-semibold text-lg">{t("report.sections.swotAnalysis")}</h3>
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <SwotSection
+                            title={t("report.swot.strengths")}
+                            items={swot.strengths || []}
+                            icon={CheckCircle2}
+                            color="green"
+                        />
+                        <SwotSection
+                            title={t("report.swot.weaknesses")}
+                            items={swot.weaknesses || []}
+                            icon={XCircle}
+                            color="red"
+                        />
+                        <SwotSection
+                            title={t("report.swot.opportunities")}
+                            items={swot.opportunities || []}
+                            icon={Lightbulb}
+                            color="blue"
+                        />
+                        <SwotSection
+                            title={t("report.swot.threats")}
+                            items={swot.threats || []}
+                            icon={AlertTriangle}
+                            color="orange"
+                        />
                     </div>
                 </section>
             )}

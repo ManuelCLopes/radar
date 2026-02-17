@@ -156,11 +156,26 @@
       "recurringComplaints": "Reclamações Recorrentes",
       "unmetNeeds": "Necessidades Não Atendidas",
       "executiveSummary": "Sumário Executivo",
-      "competitorLook": "Panorama da Concorrência"
+      "competitorLook": "Panorama da Concorrência",
+      "competitorMap": "Mapa da Concorrência",
+      "competitorReviews": "Avaliações dos Concorrentes"
+    },
+    "audience": {
+      "demographics": "Demografia",
+      "age": "Idade",
+      "gender": "Género",
+      "income": "Rendimento",
+      "painPoints": "Dores e Desafios"
     },
     "marketingStrategy": {
-      "channels": "Canais",
+      "channels": "Canais de Marketing",
       "tactics": "Táticas"
+    },
+    "swot": {
+      "strengths": "Forças",
+      "weaknesses": "Fraquezas",
+      "opportunities": "Oportunidades",
+      "threats": "Ameaças"
     },
     "sentiment": {
       "praises": "Elogios Comuns",

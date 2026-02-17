@@ -150,16 +150,31 @@
       "primaryChannels": "Primary Channels",
       "contentIdeas": "Content Ideas",
       "promotionalTactics": "Promotional Tactics",
-      "customerSentiment": "Customer Sentiment & Review Insights",
+      "customerSentiment": "Customer Sentiment",
       "commonPraises": "Common Praises",
       "recurringComplaints": "Recurring Complaints",
       "unmetNeeds": "Unmet Needs",
       "executiveSummary": "Executive Summary",
-      "competitorLook": "Competitor Landscape"
+      "competitorLook": "Competitor Landscape",
+      "competitorMap": "Competitor Map",
+      "competitorReviews": "Competitor Reviews"
+    },
+    "audience": {
+      "demographics": "Demographics",
+      "age": "Age",
+      "gender": "Gender",
+      "income": "Income",
+      "painPoints": "Pain Points"
     },
     "marketingStrategy": {
-      "channels": "Channels",
+      "channels": "Marketing Channels",
       "tactics": "Tactics"
+    },
+    "swot": {
+      "strengths": "Strengths",
+      "weaknesses": "Weaknesses",
+      "opportunities": "Opportunities",
+      "threats": "Threats"
     },
     "sentiment": {
       "praises": "Common Praises",
