@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { MapPin, Star, Plus, Edit, Trash2, LogOut, FileText, History, AlertCircle, Settings, Building2, Search, Loader2, TrendingUp, Navigation, Menu, Sun, Moon, Globe } from "lucide-react";
+import { MapPin, Star, Plus, Edit, Trash2, LogOut, FileText, History, AlertCircle, Settings, Building2, Search, Loader2, TrendingUp, Navigation, Menu, X, Sun, Moon, Globe } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { BusinessForm } from "@/components/BusinessForm";
 import { BusinessList } from "@/components/BusinessList";
@@ -93,6 +93,7 @@ export default function Dashboard() {
   const [selectedMapBusinessId, setSelectedMapBusinessId] = useState<string>("all");
   const [notificationReport, setNotificationReport] = useState<Report | null>(null);
   const [pollingReportId, setPollingReportId] = useState<string | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Polling for report generation
   const { data: pollingReport } = useQuery<Report>({
@@ -493,10 +494,12 @@ export default function Dashboard() {
 
           {/* Mobile Actions (Hamburger) */}
           <div className="md:hidden flex items-center gap-2">
-            <DropdownMenu>
+            <DropdownMenu onOpenChange={setIsMobileMenuOpen}>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" data-testid="mobile-menu-trigger">
-                  <Menu className="h-6 w-6" />
+                <Button variant="ghost" size="icon" data-testid="mobile-menu-trigger" className="relative w-10 h-10">
+                  <Menu className={`h-6 w-6 transition-all duration-300 absolute ${isMobileMenuOpen ? "opacity-0 rotate-90 scale-0" : "opacity-100 rotate-0 scale-100"}`} />
+                  <X className={`h-6 w-6 transition-all duration-300 absolute ${isMobileMenuOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-0"}`} />
+                  <span className="sr-only">Menu</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
@@ -511,7 +514,7 @@ export default function Dashboard() {
                   localStorage.setItem("theme", newTheme);
                   // Force re-render of toggle components if needed, though they usually listen to storage or class
                   window.dispatchEvent(new Event("storage"));
-                }}>
+                }} className="h-10 cursor-pointer">
                   <div className="flex w-full items-center justify-between">
                     <div className="flex items-center">
                       <Sun className="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
@@ -522,43 +525,43 @@ export default function Dashboard() {
                 </DropdownMenuItem>
 
                 <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
+                  <DropdownMenuSubTrigger className="h-10 cursor-pointer">
                     <Globe className="mr-2 h-4 w-4" />
                     <span>{t("dashboard.menu.language")}</span>
                   </DropdownMenuSubTrigger>
                   <DropdownMenuPortal>
                     <DropdownMenuSubContent>
-                      <DropdownMenuItem onClick={() => i18n.changeLanguage("en")}>
+                      <DropdownMenuItem onClick={() => i18n.changeLanguage("en")} className="h-10 cursor-pointer">
                         <span>English</span>
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => i18n.changeLanguage("pt")}>
+                      <DropdownMenuItem onClick={() => i18n.changeLanguage("pt")} className="h-10 cursor-pointer">
                         <span>Português</span>
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => i18n.changeLanguage("es")}>
+                      <DropdownMenuItem onClick={() => i18n.changeLanguage("es")} className="h-10 cursor-pointer">
                         <span>Español</span>
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => i18n.changeLanguage("fr")}>
+                      <DropdownMenuItem onClick={() => i18n.changeLanguage("fr")} className="h-10 cursor-pointer">
                         <span>Français</span>
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => i18n.changeLanguage("de")}>
+                      <DropdownMenuItem onClick={() => i18n.changeLanguage("de")} className="h-10 cursor-pointer">
                         <span>Deutsch</span>
                       </DropdownMenuItem>
                     </DropdownMenuSubContent>
                   </DropdownMenuPortal>
                 </DropdownMenuSub>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={openPricing}>
+                <DropdownMenuItem onClick={openPricing} className="h-10 cursor-pointer">
                   <Star className="mr-2 h-4 w-4 text-amber-500" />
                   <span>Subscrição</span>
                 </DropdownMenuItem>
                 <Link href="/settings">
-                  <DropdownMenuItem>
+                  <DropdownMenuItem className="h-10 cursor-pointer">
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Definições</span>
                   </DropdownMenuItem>
                 </Link>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-red-600" data-testid="mobile-logout-btn">
+                <DropdownMenuItem onClick={handleLogout} className="text-red-600 h-10 cursor-pointer" data-testid="mobile-logout-btn">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>{t("dashboard.user.logout")}</span>
                 </DropdownMenuItem>
