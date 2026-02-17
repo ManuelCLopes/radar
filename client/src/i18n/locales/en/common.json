@@ -136,30 +136,47 @@
       "marketGaps": "Market Gaps",
       "recommendations": "Recommendations",
       "differentiation": "Differentiation Strategies",
-      "swotAnalysis": "SWOT Analysis",
       "strengths": "Strengths",
       "weaknesses": "Weaknesses",
       "opportunities": "Opportunities",
       "threats": "Threats",
-      "marketTrends": "Market Trends",
-      "targetAudience": "Target Audience",
-      "marketingStrategy": "Marketing Strategy",
       "demographics": "Demographics",
       "psychographics": "Psychographics",
       "painPoints": "Pain Points & Needs",
       "primaryChannels": "Primary Channels",
       "contentIdeas": "Content Ideas",
       "promotionalTactics": "Promotional Tactics",
-      "customerSentiment": "Customer Sentiment & Review Insights",
       "commonPraises": "Common Praises",
       "recurringComplaints": "Recurring Complaints",
       "unmetNeeds": "Unmet Needs",
       "executiveSummary": "Executive Summary",
-      "competitorLook": "Competitor Landscape"
+      "detailedAnalysis": "Detailed Analysis",
+      "competitorMap": "Competitor Map",
+      "competitorReviews": "Competitor Reviews"
+    },
+    "sort": {
+      "label": "Sort by",
+      "distance": "Distance",
+      "rating": "Rating",
+      "reviews": "Reviews",
+      "price": "Price"
+    },
+    "audience": {
+      "demographics": "Demographics",
+      "age": "Age",
+      "gender": "Gender",
+      "income": "Income",
+      "painPoints": "Pain Points"
     },
     "marketingStrategy": {
-      "channels": "Channels",
+      "channels": "Marketing Channels",
       "tactics": "Tactics"
+    },
+    "swot": {
+      "strengths": "Strengths",
+      "weaknesses": "Weaknesses",
+      "opportunities": "Opportunities",
+      "threats": "Threats"
     },
     "sentiment": {
       "praises": "Common Praises",

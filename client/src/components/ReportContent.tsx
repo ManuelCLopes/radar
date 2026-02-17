@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Star, MapPin, Users, Lightbulb, TrendingUp, TrendingDown, Target, Megaphone, MessageSquare, Globe, ArrowUpRight, CheckCircle2, XCircle, AlertTriangle, Building2, DollarSign, Brain } from "lucide-react";
+import { Star, MapPin, Users, Lightbulb, TrendingUp, TrendingDown, Target, Megaphone, MessageSquare, Globe, ArrowUpRight, CheckCircle2, XCircle, AlertTriangle, Building2, DollarSign, Brain, Calendar, Wallet, ChevronDown, ChevronUp } from "lucide-react";
 import { AIAnalysisContent } from "@/components/AIAnalysisContent";
 import { CompetitorMap } from "./CompetitorMap";
 import type { Report, Competitor, Business } from "@shared/schema";
@@ -18,8 +18,11 @@ interface ReportContentProps {
 
 // Sub-components (copied from ReportView)
 function CompetitorCard({ competitor, index, t }: { competitor: Competitor; index: number; t: (key: string, options?: Record<string, unknown>) => string }) {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const hasReviews = competitor.reviews && competitor.reviews.length > 0;
+
     return (
-        <Card className="hover-elevate" data-testid={`card-competitor-${index}`}>
+        <Card className="hover-elevate transition-all" data-testid={`card-competitor-${index}`}>
             <CardContent className="p-4">
                 <div className="space-y-3 min-w-0">
                     <div className="space-y-2">
@@ -57,17 +60,26 @@ function CompetitorCard({ competitor, index, t }: { competitor: Competitor; inde
                         </div>
                     </div>
 
-                    {competitor.reviews && competitor.reviews.length > 0 && (
+                    {hasReviews && (
                         <div className="pt-2 border-t">
-                            <p className="text-xs font-medium mb-2 flex items-center gap-1 text-muted-foreground">
-                                <MessageSquare className="h-3 w-3" />
-                                {t("report.competitor.recentReviews")}
-                            </p>
-                            <div className="space-y-3">
-                                {competitor.reviews.map((review, i) => (
-                                    <ReviewItem key={i} review={review} />
-                                ))}
-                            </div>
+                            <button
+                                onClick={() => setIsExpanded(!isExpanded)}
+                                className="w-full text-xs font-medium mb-1 flex items-center justify-between gap-1 text-muted-foreground hover:text-primary transition-colors p-1 rounded hover:bg-muted/50"
+                            >
+                                <span className="flex items-center gap-1">
+                                    <MessageSquare className="h-3 w-3" />
+                                    {t("report.competitor.recentReviews")}
+                                </span>
+                                {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                            </button>
+
+                            {isExpanded && (
+                                <div className="space-y-3 mt-2 animate-in fade-in slide-in-from-top-1 duration-200">
+                                    {competitor.reviews?.map((review, i) => (
+                                        <ReviewItem key={i} review={review} />
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
@@ -202,8 +214,14 @@ function MarketTrends({ trends }: { trends: string[] }) {
     );
 }
 
+// Sort options
+type SortOption = 'distance' | 'rating' | 'reviews' | 'price';
+type SortOrder = 'asc' | 'desc';
+
 export function ReportContent({ report, business, isGuest = false }: ReportContentProps) {
     const { t } = useTranslation();
+    const [sortBy, setSortBy] = useState<SortOption>('distance');
+    const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
     // Parse fields
     const swot = report.swotAnalysis as any;
@@ -212,14 +230,56 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
     const marketingStrategy = report.marketingStrategy as any;
     const sentiment = report.customerSentiment as any;
 
+    // Handle sort click
+    const handleSortClick = (option: SortOption) => {
+        if (sortBy === option) {
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortBy(option);
+            setSortOrder('asc'); // Default to asc for new option, or maybe desc for rating/reviews?
+            // tailored defaults
+            if (option === 'rating' || option === 'reviews') {
+                setSortOrder('desc');
+            } else {
+                setSortOrder('asc');
+            }
+        }
+    };
+
+    // Sorting logic
+    const sortedCompetitors = [...report.competitors].sort((a, b) => {
+        let diff = 0;
+        switch (sortBy) {
+            case 'distance':
+                // Parse "0.5 km" -> 0.5
+                const distA = parseFloat(a.distance?.replace(/[^0-9.]/g, '') || '999');
+                const distB = parseFloat(b.distance?.replace(/[^0-9.]/g, '') || '999');
+                diff = distA - distB;
+                break;
+            case 'rating':
+                diff = (a.rating || 0) - (b.rating || 0);
+                break;
+            case 'reviews':
+                diff = (a.userRatingsTotal || 0) - (b.userRatingsTotal || 0);
+                break;
+            case 'price':
+                // Length of price string (e.g. "$$" = 2) or custom logic
+                diff = (a.priceLevel?.length || 0) - (b.priceLevel?.length || 0);
+                break;
+            default:
+                diff = 0;
+        }
+        return sortOrder === 'asc' ? diff : -diff;
+    });
+
     return (
         <div className="space-y-8 print:space-y-4">
-            {/* Executive Summary */}
+            {/* 1. Detailed Analysis (Executive Summary) */}
             {report.executiveSummary && (
                 <section className="space-y-3">
                     <div className="flex items-center gap-2 text-primary">
-                        <Lightbulb className="h-5 w-5" />
-                        <h3 className="font-semibold text-lg">{t("report.sections.executiveSummary")}</h3>
+                        <Brain className="h-5 w-5" />
+                        <h3 className="font-semibold text-lg">{t("report.sections.detailedAnalysis")}</h3>
                     </div>
                     <Card className="bg-primary/5 dark:bg-primary/10 border-primary/20">
                         <CardContent className="p-4 text-sm leading-relaxed text-muted-foreground font-medium">
@@ -229,114 +289,74 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                 </section>
             )}
 
-            {/* Competitor Analysis */}
-            <section className="space-y-3">
-                <div className="flex items-center gap-2 text-primary">
-                    <MapPin className="h-5 w-5" />
-                    <h3 className="font-semibold text-lg">{t("report.sections.competitorLook")}</h3>
-                </div>
-
-                {/* Competitor Map */}
-                <div className="h-[300px] w-full rounded-lg overflow-hidden border shadow-sm">
-                    <CompetitorMap
-                        center={{ lat: business?.latitude || 0, lng: business?.longitude || 0 }}
-                        competitors={report.competitors}
-                        businessName={business?.name || report.businessName}
-                    />
-                </div>
-
-                {/* Competitor Cards Grid */}
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {report.competitors.length > 0 ? (
-                        report.competitors.map((competitor, i) => (
-                            <CompetitorCard key={i} competitor={competitor} index={i} t={t} />
-                        ))
-                    ) : (
-                        <p className="text-muted-foreground text-sm col-span-full italic">{t("report.sections.noCompetitors")}</p>
-                    )}
-                </div>
-            </section>
-
-            {/* SWOT Analysis */}
-            {swot && (
-                <section className="space-y-3 print:break-inside-avoid">
-                    <div className="flex items-center gap-2 text-primary">
-                        <Target className="h-5 w-5" />
-                        <h3 className="font-semibold text-lg">{t("report.sections.swot")}</h3>
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <SwotSection
-                            title={t("report.swot.strengths")}
-                            items={swot.strengths || []}
-                            icon={CheckCircle2}
-                            color="green"
-                        />
-                        <SwotSection
-                            title={t("report.swot.weaknesses")}
-                            items={swot.weaknesses || []}
-                            icon={XCircle}
-                            color="red"
-                        />
-                        <SwotSection
-                            title={t("report.swot.opportunities")}
-                            items={swot.opportunities || []}
-                            icon={Lightbulb}
-                            color="blue"
-                        />
-                        <SwotSection
-                            title={t("report.swot.threats")}
-                            items={swot.threats || []}
-                            icon={AlertTriangle}
-                            color="orange"
-                        />
-                    </div>
-                </section>
-            )}
-
-            {/* Market Trends */}
+            {/* 2. Market Trends */}
             {trends.length > 0 && (
                 <section className="space-y-3 print:break-inside-avoid">
                     <MarketTrends trends={trends} />
                 </section>
             )}
 
-            {/* Target Audience */}
+            {/* 3. Target Audience */}
             {targetAudience && (
                 <section className="space-y-3 print:break-inside-avoid">
                     <div className="flex items-center gap-2 text-primary">
                         <Users className="h-5 w-5" />
                         <h3 className="font-semibold text-lg">{t("report.sections.targetAudience")}</h3>
                     </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium">{t("report.audience.demographics")}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-sm text-muted-foreground">
-                                    <p><span className="font-medium text-foreground">Age:</span> {targetAudience.demographics?.ageRange}</p>
-                                    <p><span className="font-medium text-foreground">Gender:</span> {targetAudience.demographics?.gender}</p>
-                                    <p><span className="font-medium text-foreground">Income:</span> {targetAudience.demographics?.incomeLevel}</p>
+
+                    {/* Demographics Grid - Polished UI */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <Card className="bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                            <CardContent className="p-4 flex items-center gap-3">
+                                <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center shrink-0">
+                                    <Calendar className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("report.audience.age")}</p>
+                                    <p className="text-sm font-semibold truncate">{targetAudience.demographics?.ageRange || "N/A"}</p>
                                 </div>
                             </CardContent>
                         </Card>
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium">{t("report.audience.painPoints")}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <ul className="list-disc leading-relaxed pl-4 space-y-1 text-sm text-muted-foreground">
-                                    {Array.isArray(targetAudience.painPoints) && targetAudience.painPoints.map((point: string, i: number) => (
-                                        <li key={i}>{point}</li>
-                                    ))}
-                                </ul>
+                        <Card className="bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                            <CardContent className="p-4 flex items-center gap-3">
+                                <div className="h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center shrink-0">
+                                    <Users className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("report.audience.gender")}</p>
+                                    <p className="text-sm font-semibold truncate">{targetAudience.demographics?.gender || "N/A"}</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card className="bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                            <CardContent className="p-4 flex items-center gap-3">
+                                <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center shrink-0">
+                                    <Wallet className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("report.audience.income")}</p>
+                                    <p className="text-sm font-semibold truncate">{targetAudience.demographics?.incomeLevel || "N/A"}</p>
+                                </div>
                             </CardContent>
                         </Card>
                     </div>
+
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-sm font-medium">{t("report.audience.painPoints")}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <ul className="list-disc leading-relaxed pl-4 space-y-1 text-sm text-muted-foreground">
+                                {Array.isArray(targetAudience.painPoints) && targetAudience.painPoints.map((point: string, i: number) => (
+                                    <li key={i}>{point}</li>
+                                ))}
+                            </ul>
+                        </CardContent>
+                    </Card>
                 </section>
             )}
 
-            {/* Marketing Strategy */}
+            {/* 4. Marketing Strategy */}
             {marketingStrategy && (
                 <section className="space-y-3 print:break-inside-avoid">
                     <div className="flex items-center gap-2 text-primary">
@@ -374,7 +394,43 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                 </section>
             )}
 
-            {/* Customer Sentiment */}
+            {/* 5. SWOT Analysis */}
+            {swot && (
+                <section className="space-y-3 print:break-inside-avoid">
+                    <div className="flex items-center gap-2 text-primary">
+                        <Target className="h-5 w-5" />
+                        <h3 className="font-semibold text-lg">{t("report.sections.swotAnalysis")}</h3>
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <SwotSection
+                            title={t("report.swot.strengths")}
+                            items={swot.strengths || []}
+                            icon={CheckCircle2}
+                            color="green"
+                        />
+                        <SwotSection
+                            title={t("report.swot.weaknesses")}
+                            items={swot.weaknesses || []}
+                            icon={XCircle}
+                            color="red"
+                        />
+                        <SwotSection
+                            title={t("report.swot.opportunities")}
+                            items={swot.opportunities || []}
+                            icon={Lightbulb}
+                            color="blue"
+                        />
+                        <SwotSection
+                            title={t("report.swot.threats")}
+                            items={swot.threats || []}
+                            icon={AlertTriangle}
+                            color="orange"
+                        />
+                    </div>
+                </section>
+            )}
+
+            {/* 6. Customer Sentiment */}
             {sentiment && (
                 <section className="space-y-3 print:break-inside-avoid">
                     <div className="flex items-center gap-2 text-primary">
@@ -422,17 +478,63 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                 </section>
             )}
 
-            {/* Detailed AI Analysis */}
-            <section className="space-y-3 print:break-inside-avoid">
+            {/* 7. Competitor Map Section (Moved to bottom) */}
+            <section className="space-y-3">
                 <div className="flex items-center gap-2 text-primary">
-                    <Brain className="h-5 w-5" />
-                    <h3 className="font-semibold text-lg">{t("report.sections.detailedAnalysis")}</h3>
+                    <MapPin className="h-5 w-5" />
+                    <h3 className="font-semibold text-lg">{t("report.sections.competitorMap")}</h3>
                 </div>
-                <Card>
-                    <CardContent className="p-6">
-                        <AIAnalysisContent html={report.html || report.aiAnalysis} />
-                    </CardContent>
-                </Card>
+                {/* Map container with forced height for leaflet */}
+                <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-sm relative z-0">
+                    <CompetitorMap
+                        center={{ lat: business?.latitude || 0, lng: business?.longitude || 0 }}
+                        competitors={report.competitors}
+                        businessName={business?.name || report.businessName}
+                    />
+                </div>
+            </section>
+
+            {/* 8. Competitor Reviews (Moved to bottom + Sorting) */}
+            <section className="space-y-3">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-center gap-2 text-primary">
+                        <MessageSquare className="h-5 w-5" />
+                        <h3 className="font-semibold text-lg">{t("report.sections.competitorReviews")}</h3>
+                    </div>
+                    {/* Sorting Controls */}
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground font-medium hidden sm:inline">{t("report.sort.label")}:</span>
+                        <div className="flex bg-muted rounded-lg p-0.5">
+                            {(['distance', 'rating', 'reviews', 'price'] as const).map((option) => (
+                                <button
+                                    key={option}
+                                    onClick={() => handleSortClick(option)}
+                                    className={`
+                                        px-2.5 py-1 text-xs font-medium rounded-md transition-all flex items-center gap-1
+                                        ${sortBy === option
+                                            ? 'bg-background text-foreground shadow-sm'
+                                            : 'text-muted-foreground hover:bg-background/50 hover:text-foreground'}
+                                    `}
+                                >
+                                    {t(`report.sort.${option}`)}
+                                    {sortBy === option && (
+                                        sortOrder === 'asc' ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {sortedCompetitors.length > 0 ? (
+                        sortedCompetitors.map((competitor, i) => (
+                            <CompetitorCard key={i} competitor={competitor} index={i} t={t} />
+                        ))
+                    ) : (
+                        <p className="text-muted-foreground text-sm col-span-full italic">{t("report.sections.noCompetitors")}</p>
+                    )}
+                </div>
             </section>
         </div>
     );

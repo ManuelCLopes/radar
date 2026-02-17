@@ -109,34 +109,7 @@ describe("ReportView", () => {
         expect(screen.getByText("Common Praise 1")).toBeInTheDocument();
     });
 
-    it("renders legacy content correctly using regex fallback", () => {
-        const legacyReport = {
-            ...mockReportBase,
-            swotAnalysis: null,
-            marketTrends: null,
-            // Simulate HTML content that matches the regex patterns in ReportView
-            aiAnalysis: `
-                <h2>SWOT Analysis</h2>
-                <h3>Strengths</h3>
-                <ul><li>Legacy Strength 1</li></ul>
-                <h2>Market Trends</h2>
-                <ul><li>Legacy Trend 1</li></ul>
-            `
-        };
-
-        render(
-            <Wrapper>
-                <ReportView
-                    report={legacyReport as any}
-                    open={true}
-                    onOpenChange={() => { }}
-                />
-            </Wrapper>
-        );
-
-        expect(screen.getByText("Legacy Strength 1")).toBeInTheDocument();
-        expect(screen.getByText("Legacy Trend 1")).toBeInTheDocument();
-    });
+    // Legacy content test removed as we no longer support the regex fallback for raw HTML/JSON dumps
 
     it("handles empty data gracefully", () => {
         const emptyReport = {
@@ -156,8 +129,8 @@ describe("ReportView", () => {
             </Wrapper>
         );
 
-        // Should render the main analysis section but not the specific sections if they are empty
-        expect(screen.getByTestId("text-ai-analysis")).toBeInTheDocument();
+        // Should NOT render the main analysis section if executiveSummary is missing
+        expect(screen.queryByText("report.sections.detailedAnalysis")).not.toBeInTheDocument();
         // Ensure specific sections are NOT present (searching by text often used in headers)
         expect(screen.queryByText("Strength 1")).not.toBeInTheDocument();
     });
