@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Star, MapPin, Users, Lightbulb, TrendingUp, TrendingDown, Target, Megaphone, MessageSquare, Globe, ArrowUpRight, CheckCircle2, XCircle, AlertTriangle, Building2, DollarSign, Brain } from "lucide-react";
+import { Star, MapPin, Users, Lightbulb, TrendingUp, TrendingDown, Target, Megaphone, MessageSquare, Globe, ArrowUpRight, CheckCircle2, XCircle, AlertTriangle, Building2, DollarSign, Brain, Calendar, Wallet } from "lucide-react";
 import { AIAnalysisContent } from "@/components/AIAnalysisContent";
 import { CompetitorMap } from "./CompetitorMap";
 import type { Report, Competitor, Business } from "@shared/schema";
@@ -258,32 +258,56 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                         <Users className="h-5 w-5" />
                         <h3 className="font-semibold text-lg">{t("report.sections.targetAudience")}</h3>
                     </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium">{t("report.audience.demographics")}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-sm text-muted-foreground">
-                                    <p><span className="font-medium text-foreground">{t("report.audience.age")}:</span> {targetAudience.demographics?.ageRange}</p>
-                                    <p><span className="font-medium text-foreground">{t("report.audience.gender")}:</span> {targetAudience.demographics?.gender}</p>
-                                    <p><span className="font-medium text-foreground">{t("report.audience.income")}:</span> {targetAudience.demographics?.incomeLevel}</p>
+
+                    {/* Demographics Grid - Polished UI */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <Card className="bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                            <CardContent className="p-4 flex items-center gap-3">
+                                <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center shrink-0">
+                                    <Calendar className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("report.audience.age")}</p>
+                                    <p className="text-sm font-semibold truncate">{targetAudience.demographics?.ageRange || "N/A"}</p>
                                 </div>
                             </CardContent>
                         </Card>
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium">{t("report.audience.painPoints")}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <ul className="list-disc leading-relaxed pl-4 space-y-1 text-sm text-muted-foreground">
-                                    {Array.isArray(targetAudience.painPoints) && targetAudience.painPoints.map((point: string, i: number) => (
-                                        <li key={i}>{point}</li>
-                                    ))}
-                                </ul>
+                        <Card className="bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                            <CardContent className="p-4 flex items-center gap-3">
+                                <div className="h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center shrink-0">
+                                    <Users className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("report.audience.gender")}</p>
+                                    <p className="text-sm font-semibold truncate">{targetAudience.demographics?.gender || "N/A"}</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card className="bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                            <CardContent className="p-4 flex items-center gap-3">
+                                <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center shrink-0">
+                                    <Wallet className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("report.audience.income")}</p>
+                                    <p className="text-sm font-semibold truncate">{targetAudience.demographics?.incomeLevel || "N/A"}</p>
+                                </div>
                             </CardContent>
                         </Card>
                     </div>
+
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-sm font-medium">{t("report.audience.painPoints")}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <ul className="list-disc leading-relaxed pl-4 space-y-1 text-sm text-muted-foreground">
+                                {Array.isArray(targetAudience.painPoints) && targetAudience.painPoints.map((point: string, i: number) => (
+                                    <li key={i}>{point}</li>
+                                ))}
+                            </ul>
+                        </CardContent>
+                    </Card>
                 </section>
             )}
 

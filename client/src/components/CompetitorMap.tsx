@@ -58,14 +58,6 @@ interface CompetitorMapProps {
     radius?: number;
 }
 
-function MapUpdater({ center }: { center: { lat: number; lng: number } }) {
-    const map = useMap();
-    useEffect(() => {
-        map.setView(center, 14);
-    }, [center.lat, center.lng, map]);
-    return null;
-}
-
 export function CompetitorMap({ center, businessName, competitors, radius = 1000 }: CompetitorMapProps) {
     const { t } = useTranslation();
 
@@ -126,4 +118,18 @@ export function CompetitorMap({ center, businessName, competitors, radius = 1000
             </MapContainer>
         </div>
     );
+}
+
+function MapUpdater({ center }: { center: { lat: number; lng: number } }) {
+    const map = useMap();
+
+    useEffect(() => {
+        map.setView(center, 14);
+        // Force a resize calculation after mount to ensure tiles load
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 100);
+    }, [center.lat, center.lng, map]);
+
+    return null;
 }
