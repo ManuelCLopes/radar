@@ -151,6 +151,11 @@
       "unmetNeeds": "Unmet Needs",
       "executiveSummary": "Executive Summary",
       "detailedAnalysis": "Detailed Analysis",
+      "marketTrends": "Market Trends",
+      "targetAudience": "Target Audience",
+      "marketingStrategy": "Marketing Strategy",
+      "swotAnalysis": "SWOT Analysis",
+      "customerSentiment": "Customer Sentiment & Review Insights",
       "competitorMap": "Competitor Map",
       "competitorReviews": "Competitor Reviews"
     },

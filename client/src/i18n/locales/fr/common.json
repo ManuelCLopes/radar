@@ -106,12 +106,16 @@
       "printPdf": "Imprimer PDF",
       "emailReport": "Envoyer le Rapport",
       "businessLabel": "Entreprise :",
-      "dateLabel": "Date :"
+      "dateLabel": "Date :",
+      "public": "Public",
+      "generatedBy": "Généré par Competitor Watcher AI",
+      "comprehensiveAnalysis": "Analyse IA complète"
     },
     "stats": {
       "competitorsFound": "Concurrents trouvés",
       "avgRating": "Note moyenne",
-      "totalReviews": "Total des avis"
+      "totalReviews": "Total des avis",
+      "reviewsAnalyzed": "Avis analysés"
     },
     "sections": {
       "radius": "Rayon",
@@ -142,11 +146,58 @@
       "customerSentiment": "Sentiment des clients et analyse des avis",
       "commonPraises": "Éloges récurrents",
       "recurringComplaints": "Plaintes récurrentes",
+      "unmetNeeds": "Besoins non satisfaits",
+      "executiveSummary": "Résumé exécutif",
+      "detailedAnalysis": "Analyse détaillée",
+      "competitorMap": "Carte des concurrents",
+      "competitorReviews": "Avis des concurrents"
+    },
+    "sort": {
+      "label": "Trier par",
+      "distance": "Distance",
+      "rating": "Évaluation",
+      "reviews": "Avis",
+      "price": "Prix"
+    },
+    "audience": {
+      "demographics": "Démographie",
+      "age": "Âge",
+      "gender": "Genre",
+      "income": "Revenus",
+      "painPoints": "Points de douleur"
+    },
+    "marketingStrategy": {
+      "channels": "Canaux marketing",
+      "tactics": "Tactiques"
+    },
+    "swot": {
+      "strengths": "Forces",
+      "weaknesses": "Faiblesses",
+      "opportunities": "Opportunités",
+      "threats": "Menaces"
+    },
+    "sentiment": {
+      "praises": "Éloges récurrents",
+      "complaints": "Plaintes récurrentes",
       "unmetNeeds": "Besoins non satisfaits"
+    },
+    "share": {
+      "title": "Partager le rapport",
+      "description": "Partagez ce rapport avec votre équipe ou vos clients.",
+      "publicAccess": "Accès public",
+      "anyoneLink": "Toute personne ayant le lien peut consulter",
+      "button": "Partager",
+      "enabled": "Partage activé",
+      "disabled": "Partage désactivé",
+      "enabledDesc": "Ce rapport est maintenant accessible via le lien public.",
+      "disabledDesc": "Ce rapport n'est plus accessible publiquement.",
+      "linkCopied": "Lien copié dans le presse-papiers"
     },
     "competitor": {
       "reviews": "{{count}} avis",
-      "recentReviews": "Avis récents"
+      "recentReviews": "Avis récents",
+      "showOriginal": "Afficher l'original",
+      "showTranslated": "Afficher la traduction"
     },
     "history": {
       "title": "Historique des rapports",

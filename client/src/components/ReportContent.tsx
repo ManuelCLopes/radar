@@ -191,13 +191,14 @@ function SwotSection({ title, items, icon: Icon, color }: { title: string, items
 }
 
 function MarketTrends({ trends }: { trends: string[] }) {
+    const { t } = useTranslation();
     if (!trends.length) return null;
     return (
         <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/20 dark:to-purple-950/20 border-indigo-100 dark:border-indigo-900">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-indigo-700 dark:text-indigo-300">
                     <TrendingUp className="h-5 w-5" />
-                    Market Trends
+                    {t("report.sections.marketTrends")}
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -364,7 +365,7 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                         <h3 className="font-semibold text-lg">{t("report.sections.marketingStrategy")}</h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Card className="bg-blue-50/50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-800">
+                        <Card className="bg-blue-50/50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-800 overflow-hidden">
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">{t("report.marketingStrategy.channels")}</CardTitle>
                             </CardHeader>

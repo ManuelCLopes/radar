@@ -101,65 +101,116 @@
   },
   "report": {
     "view": {
-      "title": "Relatório de Análise de Concorrência",
+      "title": "Informe de Análisis de Competencia",
       "export": "Exportar",
-      "downloadHtml": "Transferir HTML",
+      "downloadHtml": "Descargar HTML",
       "printPdf": "Imprimir PDF",
-      "emailReport": "Enviar Email",
-      "businessLabel": "Negócio:",
-      "dateLabel": "Data:"
+      "emailReport": "Enviar Informe",
+      "businessLabel": "Negocio:",
+      "dateLabel": "Fecha:",
+      "public": "Público",
+      "generatedBy": "Generado por Competitor Watcher AI",
+      "comprehensiveAnalysis": "Análisis Completo de IA"
     },
     "stats": {
-      "competitorsFound": "Concorrentes Encontrados",
-      "avgRating": "Classificação Média",
-      "totalReviews": "Total de Avaliações"
+      "competitorsFound": "Competidores Encontrados",
+      "avgRating": "Puntuación Media",
+      "totalReviews": "Total de Reseñas",
+      "reviewsAnalyzed": "Reseñas Analizadas"
     },
     "sections": {
-      "radius": "Raio",
-      "aiAnalysis": "Análise IA",
-      "aiPoweredInsights": "Insights Gerados por IA",
-      "marketOverview": "Visão Geral do Mercado",
-      "nearbyCompetitors": "Concorrentes Próximos",
-      "noCompetitors": "Não foram encontrados concorrentes na área próxima.",
-      "keyCompetitors": "Principais Concorrentes",
-      "reviewAnalysis": "Análise de Temas de Avaliação",
-      "marketGaps": "Lacunas de Mercado",
-      "recommendations": "Recomendações Práticas",
-      "differentiation": "Estratégias de Diferenciação",
-      "swotAnalysis": "Análise SWOT",
-      "strengths": "Pontos Fortes",
-      "weaknesses": "Pontos Fracos",
+      "radius": "Radio",
+      "aiAnalysis": "Análisis IA",
+      "aiPoweredInsights": "Información Generada por IA",
+      "marketOverview": "Visión General del Mercado",
+      "nearbyCompetitors": "Competidores Cercanos",
+      "noCompetitors": "No se encontraron competidores en el área cercana.",
+      "keyCompetitors": "Competidores Clave",
+      "reviewAnalysis": "Análisis de Reseñas",
+      "marketGaps": "Brechas del Mercado",
+      "recommendations": "Recomendaciones Prácticas",
+      "differentiation": "Estrategias de Diferenciación",
+      "swotAnalysis": "Análisis DAFO",
+      "strengths": "Fortalezas",
+      "weaknesses": "Debilidades",
       "opportunities": "Oportunidades",
       "threats": "Amenazas",
-      "marketTrends": "Tendencias de Mercado",
-      "targetAudience": "Público-Alvo",
-      "marketingStrategy": "Estratégia de Marketing",
-      "demographics": "Demografia",
-      "psychographics": "Psicografia",
-      "painPoints": "Dores e Necessidades",
-      "primaryChannels": "Canais Principais",
-      "contentIdeas": "Ideias de Conteúdo",
-      "promotionalTactics": "Táticas Promocionais",
-      "customerSentiment": "Sentimento do Cliente e Insights de Avaliação",
-      "commonPraises": "Elogios Comuns",
-      "recurringComplaints": "Reclamações Recorrentes",
-      "unmetNeeds": "Necessidades Não Atendidas"
+      "marketTrends": "Tendencias del Mercado",
+      "targetAudience": "Público Objetivo",
+      "marketingStrategy": "Estrategia de Marketing",
+      "demographics": "Demografía",
+      "psychographics": "Psicografía",
+      "painPoints": "Puntos de Dolor y Necesidades",
+      "primaryChannels": "Canales Principales",
+      "contentIdeas": "Ideas de Contenido",
+      "promotionalTactics": "Tácticas Promocionales",
+      "customerSentiment": "Sentimiento del Cliente e Insights de Reseñas",
+      "commonPraises": "Elogios Comunes",
+      "recurringComplaints": "Quejas Recurrentes",
+      "unmetNeeds": "Necesidades No Satisfechas",
+      "executiveSummary": "Resumen Ejecutivo",
+      "detailedAnalysis": "Análisis Detallado",
+      "competitorMap": "Mapa de Competidores",
+      "competitorReviews": "Reseñas de Competidores"
+    },
+    "sort": {
+      "label": "Ordenar por",
+      "distance": "Distancia",
+      "rating": "Puntuación",
+      "reviews": "Reseñas",
+      "price": "Precio"
+    },
+    "audience": {
+      "demographics": "Demografía",
+      "age": "Edad",
+      "gender": "Género",
+      "income": "Ingresos",
+      "painPoints": "Puntos de Dolor"
+    },
+    "marketingStrategy": {
+      "channels": "Canales de Marketing",
+      "tactics": "Tácticas"
+    },
+    "swot": {
+      "strengths": "Fortalezas",
+      "weaknesses": "Debilidades",
+      "opportunities": "Oportunidades",
+      "threats": "Amenazas"
+    },
+    "sentiment": {
+      "praises": "Elogios Comunes",
+      "complaints": "Quejas Recurrentes",
+      "unmetNeeds": "Necesidades No Satisfechas"
+    },
+    "share": {
+      "title": "Compartir Informe",
+      "description": "Comparta este informe con su equipo o clientes.",
+      "publicAccess": "Acceso Público",
+      "anyoneLink": "Cualquier persona con el enlace puede ver",
+      "button": "Compartir",
+      "enabled": "Compartir Activado",
+      "disabled": "Compartir Desactivado",
+      "enabledDesc": "Este informe es ahora accesible a través del enlace público.",
+      "disabledDesc": "Este informe ya no es accesible públicamente.",
+      "linkCopied": "Enlace copiado al portapapeles"
     },
     "competitor": {
-      "reviews": "{{count}} avaliações",
-      "recentReviews": "Avaliações Recentes"
+      "reviews": "{{count}} reseñas",
+      "recentReviews": "Reseñas Recientes",
+      "showOriginal": "Mostrar Original",
+      "showTranslated": "Mostrar Traducido"
     },
     "history": {
-      "title": "Histórico de Relatórios",
-      "description": "Relatórios de análise de concorrência anteriores para {{name}}",
-      "empty": "Ainda não foram gerados relatórios para este negócio.",
-      "competitorsAnalyzed": "{{count}} concorrentes analisados",
+      "title": "Historial de Informes",
+      "description": "Informes de análisis de competencia anteriores para {{name}}",
+      "empty": "Aún no se han generado informes para este negocio.",
+      "competitorsAnalyzed": "{{count}} competidores analizados",
       "view": "Ver",
-      "download": "Transferir"
+      "download": "Descargar"
     },
     "email": {
-      "enterAddress": "Insira o endereço de email do destinatário abaixo.",
-      "send": "Enviar Email"
+      "enterAddress": "Introduzca la dirección de correo del destinatario.",
+      "send": "Enviar Correo"
     },
     "deleteDialog": {
       "title": "Eliminar Informe",

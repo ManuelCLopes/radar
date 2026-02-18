@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Fix Leaflet map tiles broken by Tailwind's preflight (max-width: 100% on imgs) */
+.leaflet-container img {
+  max-width: none !important;
+  max-height: none !important;
+}
+.leaflet-container .leaflet-tile-pane {
+  z-index: 1;
+}
+
 /* LIGHT MODE */
 :root {
   --button-outline: rgba(0, 0, 0, .10);

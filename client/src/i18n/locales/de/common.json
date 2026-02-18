@@ -101,65 +101,116 @@
   },
   "report": {
     "view": {
-      "title": "Relatório de Análise de Concorrência",
-      "export": "Exportar",
-      "downloadHtml": "Transferir HTML",
-      "printPdf": "Imprimir PDF",
-      "emailReport": "Enviar Email",
-      "businessLabel": "Negócio:",
-      "dateLabel": "Data:"
+      "title": "Wettbewerbsanalysebericht",
+      "export": "Exportieren",
+      "downloadHtml": "HTML herunterladen",
+      "printPdf": "PDF drucken",
+      "emailReport": "Bericht per E-Mail senden",
+      "businessLabel": "Unternehmen:",
+      "dateLabel": "Datum:",
+      "public": "Öffentlich",
+      "generatedBy": "Erstellt von Competitor Watcher AI",
+      "comprehensiveAnalysis": "Umfassende KI-Analyse"
     },
     "stats": {
-      "competitorsFound": "Concorrentes Encontrados",
-      "avgRating": "Classificação Média",
-      "totalReviews": "Total de Avaliações"
+      "competitorsFound": "Wettbewerber gefunden",
+      "avgRating": "Durchschn. Bewertung",
+      "totalReviews": "Bewertungen gesamt",
+      "reviewsAnalyzed": "Bewertungen analysiert"
     },
     "sections": {
-      "radius": "Raio",
-      "aiAnalysis": "Análise IA",
-      "aiPoweredInsights": "Insights Gerados por IA",
-      "marketOverview": "Visão Geral do Mercado",
-      "nearbyCompetitors": "Concorrentes Próximos",
-      "noCompetitors": "Não foram encontrados concorrentes na área próxima.",
-      "keyCompetitors": "Principais Concorrentes",
-      "reviewAnalysis": "Análise de Temas de Avaliação",
-      "marketGaps": "Lacunas de Mercado",
-      "recommendations": "Recomendações Práticas",
-      "differentiation": "Estratégias de Diferenciação",
-      "swotAnalysis": "Análise SWOT",
-      "strengths": "Pontos Fortes",
-      "weaknesses": "Pontos Fracos",
-      "opportunities": "Oportunidades",
-      "threats": "Ameaças",
-      "marketTrends": "Tendências de Mercado",
-      "targetAudience": "Público-Alvo",
-      "marketingStrategy": "Estratégia de Marketing",
-      "demographics": "Demografia",
-      "psychographics": "Psicografia",
-      "painPoints": "Dores e Necessidades",
-      "primaryChannels": "Canais Principais",
-      "contentIdeas": "Ideias de Conteúdo",
-      "promotionalTactics": "Táticas Promocionais",
-      "customerSentiment": "Sentimento do Cliente e Insights de Avaliação",
-      "commonPraises": "Elogios Comuns",
-      "recurringComplaints": "Reclamações Recorrentes",
-      "unmetNeeds": "Necessidades Não Atendidas"
+      "radius": "Radius",
+      "aiAnalysis": "KI-Analyse",
+      "aiPoweredInsights": "KI-gestützte Erkenntnisse",
+      "marketOverview": "Marktübersicht",
+      "nearbyCompetitors": "Wettbewerber in der Nähe",
+      "noCompetitors": "Keine Wettbewerber in der näheren Umgebung gefunden.",
+      "keyCompetitors": "Wichtige Wettbewerber",
+      "reviewAnalysis": "Bewertungsanalyse",
+      "marketGaps": "Marktlücken",
+      "recommendations": "Praktische Empfehlungen",
+      "differentiation": "Differenzierungsstrategien",
+      "swotAnalysis": "SWOT-Analyse",
+      "strengths": "Stärken",
+      "weaknesses": "Schwächen",
+      "opportunities": "Chancen",
+      "threats": "Risiken",
+      "marketTrends": "Markttrends",
+      "targetAudience": "Zielgruppe",
+      "marketingStrategy": "Marketingstrategie",
+      "demographics": "Demografie",
+      "psychographics": "Psychografie",
+      "painPoints": "Schmerzpunkte & Bedürfnisse",
+      "primaryChannels": "Hauptkanäle",
+      "contentIdeas": "Content-Ideen",
+      "promotionalTactics": "Werbetaktiken",
+      "customerSentiment": "Kundenstimmung & Bewertungseinblicke",
+      "commonPraises": "Häufiges Lob",
+      "recurringComplaints": "Wiederkehrende Beschwerden",
+      "unmetNeeds": "Unerfüllte Bedürfnisse",
+      "executiveSummary": "Zusammenfassung",
+      "detailedAnalysis": "Detaillierte Analyse",
+      "competitorMap": "Wettbewerberkarte",
+      "competitorReviews": "Wettbewerberbewertungen"
+    },
+    "sort": {
+      "label": "Sortieren nach",
+      "distance": "Entfernung",
+      "rating": "Bewertung",
+      "reviews": "Bewertungen",
+      "price": "Preis"
+    },
+    "audience": {
+      "demographics": "Demografie",
+      "age": "Alter",
+      "gender": "Geschlecht",
+      "income": "Einkommen",
+      "painPoints": "Schmerzpunkte"
+    },
+    "marketingStrategy": {
+      "channels": "Marketingkanäle",
+      "tactics": "Taktiken"
+    },
+    "swot": {
+      "strengths": "Stärken",
+      "weaknesses": "Schwächen",
+      "opportunities": "Chancen",
+      "threats": "Risiken"
+    },
+    "sentiment": {
+      "praises": "Häufiges Lob",
+      "complaints": "Wiederkehrende Beschwerden",
+      "unmetNeeds": "Unerfüllte Bedürfnisse"
+    },
+    "share": {
+      "title": "Bericht teilen",
+      "description": "Teilen Sie diesen Bericht mit Ihrem Team oder Kunden.",
+      "publicAccess": "Öffentlicher Zugang",
+      "anyoneLink": "Jeder mit dem Link kann den Bericht ansehen",
+      "button": "Teilen",
+      "enabled": "Teilen aktiviert",
+      "disabled": "Teilen deaktiviert",
+      "enabledDesc": "Dieser Bericht ist jetzt über den öffentlichen Link zugänglich.",
+      "disabledDesc": "Dieser Bericht ist nicht mehr öffentlich zugänglich.",
+      "linkCopied": "Link in die Zwischenablage kopiert"
     },
     "competitor": {
-      "reviews": "{{count}} avaliações",
-      "recentReviews": "Avaliações Recentes"
+      "reviews": "{{count}} Bewertungen",
+      "recentReviews": "Neueste Bewertungen",
+      "showOriginal": "Original anzeigen",
+      "showTranslated": "Übersetzung anzeigen"
     },
     "history": {
-      "title": "Histórico de Relatórios",
-      "description": "Relatórios de análise de concorrência anteriores para {{name}}",
-      "empty": "Ainda não foram gerados relatórios para este negócio.",
-      "competitorsAnalyzed": "{{count}} concorrentes analisados",
-      "view": "Ver",
-      "download": "Transferir"
+      "title": "Berichtsverlauf",
+      "description": "Frühere Wettbewerbsanalyseberichte für {{name}}",
+      "empty": "Für dieses Unternehmen wurden noch keine Berichte erstellt.",
+      "competitorsAnalyzed": "{{count}} Wettbewerber analysiert",
+      "view": "Ansehen",
+      "download": "Herunterladen"
     },
     "email": {
-      "enterAddress": "Insira o endereço de email do destinatário abaixo.",
-      "send": "Enviar Email"
+      "enterAddress": "Geben Sie die E-Mail-Adresse des Empfängers ein.",
+      "send": "E-Mail senden"
     },
     "deleteDialog": {
       "title": "Bericht löschen",
