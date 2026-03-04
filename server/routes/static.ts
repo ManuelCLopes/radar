@@ -1,4 +1,22 @@
-import type { Express } from "express";
+import type { Express, Request } from "express";
+
+function getBaseUrl(req: Request): string {
+    const configuredUrl = process.env.PUBLIC_APP_URL;
+    if (configuredUrl) {
+        return configuredUrl.replace(/\/+$/, "");
+    }
+
+    const forwardedProto = req.headers["x-forwarded-proto"];
+    const protocol =
+        typeof forwardedProto === "string" ? forwardedProto.split(",")[0] : req.protocol;
+    const host = req.get("host");
+
+    if (!host) {
+        return "https://localhost";
+    }
+
+    return `${protocol}://${host}`;
+}
 
 export function registerStaticRoutes(app: Express) {
     // Proxy for Google Static Maps to avoid exposing API key
@@ -101,6 +119,7 @@ export function registerStaticRoutes(app: Express) {
 
     // SEO Endpoints
     app.get("/robots.txt", (req, res) => {
+        const baseUrl = getBaseUrl(req);
         res.type("text/plain");
         res.send(`User-agent: *
 Allow: /
@@ -110,30 +129,30 @@ Allow: /register
 Disallow: /dashboard
 Disallow: /api/
 
-Sitemap: https://competitorwatcher.pt/sitemap.xml
+Sitemap: ${baseUrl}/sitemap.xml
     `);
     });
 
     app.get("/sitemap.xml", (req, res) => {
+        const baseUrl = getBaseUrl(req);
         res.type("application/xml");
-        res.send(`<? xml version = "1.0" encoding = "UTF-8" ?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" >
-      <url>
-      <loc>https://competitorwatcher.pt/</loc>
-  <changefreq>weekly </changefreq>
-    < priority > 1.0 </priority>
-    </url>
-    < url >
-    <loc>https://competitorwatcher.pt/login</loc>
-  <changefreq>monthly </changefreq>
-    < priority > 0.8 </priority>
-    </url>
-    < url >
-    <loc>https://competitorwatcher.pt/register</loc>
-  <changefreq>monthly </changefreq>
-    < priority > 0.8 </priority>
-    </url>
-    </urlset>
-      `);
+        res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${baseUrl}/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/login</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/register</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>`);
     });
 }

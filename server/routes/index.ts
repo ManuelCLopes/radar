@@ -15,9 +15,14 @@ import { registerStaticRoutes } from "./static";
 import { registerPaymentRoutes } from "./payments";
 import { registerTrendRoutes } from "./trends";
 
+interface RegisterRoutesOptions {
+    startScheduler?: boolean;
+}
+
 export async function registerRoutes(
     httpServer: Server,
-    app: Express
+    app: Express,
+    options: RegisterRoutesOptions = {}
 ): Promise<Server> {
     log("Registering routes...", "express");
 
@@ -36,8 +41,9 @@ export async function registerRoutes(
     registerTrendRoutes(app);
     registerStaticRoutes(app);
 
-    // Start background scheduler
-    startScheduler();
+    if (options.startScheduler ?? true) {
+        startScheduler();
+    }
 
     return httpServer;
 }

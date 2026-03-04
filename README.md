@@ -88,7 +88,7 @@ For real competitor data, configure Google Places API:
 
 ```bash
 # .env
-GOOGLE_PLACES_API_KEY=your_api_key_here
+GOOGLE_API_KEY=your_api_key_here
 ```
 
 See [SETUP_GUIDE.md](./SETUP_GUIDE.md) for detailed setup instructions.
@@ -97,7 +97,7 @@ See [SETUP_GUIDE.md](./SETUP_GUIDE.md) for detailed setup instructions.
 
 ```bash
 # Google Places API (for real competitor data)
-GOOGLE_PLACES_API_KEY=
+GOOGLE_API_KEY=
 
 # OpenAI API (for AI-powered analysis)
 OPENAI_API_KEY=
@@ -116,10 +116,69 @@ SESSION_SECRET=
 
 ---
 
+## ▲ Deploying On Vercel
+
+This repository is now wired for Vercel with:
+
+- `vercel.json` (SPA rewrite + cron jobs + Vite output directory)
+- `api/[...path].ts` (Express API as a Vercel Function)
+- `build:client` script for static frontend output
+
+### 1. Import the repo in Vercel
+
+1. Open Vercel and import this GitHub repository.
+2. Keep the default Node.js runtime.
+3. No extra build settings are required (they come from `vercel.json`).
+
+### 2. Add environment variables in Vercel
+
+At minimum, set these in Project Settings > Environment Variables:
+
+- `DATABASE_URL`
+- `SESSION_SECRET`
+- `ALLOWED_ORIGINS` (your production domain(s), comma-separated)
+- `GOOGLE_API_KEY`
+- `OPENAI_API_KEY` (if AI reports enabled)
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `GOOGLE_CALLBACK_URL` (must be `https://<your-domain>/api/auth/google/callback`)
+- `CRON_SECRET`
+- `PUBLIC_APP_URL` (for sitemap/robots canonical URLs)
+- Stripe vars if billing is enabled:
+  - `STRIPE_SECRET_KEY`
+  - `STRIPE_PUBLISHABLE_KEY`
+  - `STRIPE_PRICE_ID`
+  - `STRIPE_WEBHOOK_SECRET`
+
+### 3. Update third-party callbacks/webhooks
+
+- Google OAuth redirect URI:
+  - `https://<your-domain>/api/auth/google/callback`
+- Stripe webhook endpoint:
+  - `https://<your-domain>/api/webhook`
+
+### 4. Cron behavior after migration
+
+- Vercel Cron is configured in `vercel.json` for:
+  - weekly report trigger (`/api/cron/trigger-reports`)
+  - daily cleanup (`/api/cron/cleanup-users`)
+- Legacy GitHub scheduler workflows were kept as manual fallback only.
+
+### 5. Cutover checklist
+
+1. Deploy to Vercel.
+2. Point your custom domain to Vercel.
+3. Update OAuth/webhook URLs to the new domain.
+4. Verify login, report generation, Stripe webhook, and cron execution.
+
+---
+
 ## 📁 Project Structure
 
 ```
 competitor-watcher/
+├── api/                    # Vercel serverless entrypoint
+│   └── [...path].ts
 ├── client/                 # React frontend
 │   ├── src/
 │   │   ├── components/    # Reusable UI components
@@ -129,7 +188,8 @@ competitor-watcher/
 │   │   └── i18n/          # Internationalization
 ├── server/                # Express backend
 │   ├── auth.ts           # Authentication logic
-│   ├── routes.ts         # API endpoints
+│   ├── bootstrap.ts      # Shared app bootstrap (standalone + serverless)
+│   ├── routes/           # API route modules
 │   ├── storage.ts        # Data persistence layer
 │   ├── ai.ts             # AI analysis engine
 │   └── index.ts          # Server entry point

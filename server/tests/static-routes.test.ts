@@ -37,7 +37,7 @@ describe("Static Routes", () => {
             expect(res.status).toBe(200);
             expect(res.type).toBe("application/xml");
             expect(res.text).toContain("urlset");
-            expect(res.text).toContain("competitorwatcher.pt");
+            expect(res.text).toMatch(/<loc>https?:\/\/127\.0\.0\.1:\d+\/<\/loc>/);
             expect(res.text).toContain("<loc>");
         });
     });

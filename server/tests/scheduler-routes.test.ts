@@ -133,6 +133,17 @@ describe("Scheduler Routes", () => {
             expect(res.status).toBe(202);
             expect(res.body.message).toContain("triggered successfully");
         });
+
+        it("should accept Vercel bearer auth header", async () => {
+            process.env.CRON_SECRET = "valid-secret";
+
+            const res = await request(app)
+                .post("/api/cron/trigger-reports")
+                .set("Authorization", "Bearer valid-secret");
+
+            expect(res.status).toBe(202);
+            expect(res.body.message).toContain("triggered successfully");
+        });
     });
 
     describe("POST /api/cron/cleanup-users", () => {
@@ -155,6 +166,17 @@ describe("Scheduler Routes", () => {
             const res = await request(app)
                 .post("/api/cron/cleanup-users")
                 .set("x-cron-secret", "valid-secret");
+
+            expect(res.status).toBe(200);
+            expect(res.body.message).toContain("Cleanup completed");
+            expect(res.body.deletedCount).toBe(5);
+        });
+
+        it("should accept Vercel bearer auth header", async () => {
+            process.env.CRON_SECRET = "valid-secret";
+            const res = await request(app)
+                .post("/api/cron/cleanup-users")
+                .set("Authorization", "Bearer valid-secret");
 
             expect(res.status).toBe(200);
             expect(res.body.message).toContain("Cleanup completed");

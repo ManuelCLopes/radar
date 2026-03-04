@@ -1,10 +1,7 @@
 name: User Cleanup Scheduler
 
 on:
-  schedule:
-    # Runs at 04:00 daily
-    - cron: '0 4 * * *'
-  workflow_dispatch: # Allows manual triggering
+  workflow_dispatch: # Manual fallback (Vercel Cron handles scheduled runs)
 
 jobs:
   cleanup-users:
