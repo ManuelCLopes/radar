@@ -27,6 +27,7 @@ import { useTranslation } from "react-i18next";
 import VerifyEmail from "@/pages/VerifyEmail";
 import { VerificationBanner } from "@/components/VerificationBanner";
 import { PricingModalProvider } from "@/context/PricingModalContext";
+import { Analytics } from "@vercel/analytics/react";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -101,6 +102,7 @@ function App() {
           <ScrollToTop />
           <Router />
           <CookieConsent />
+          <Analytics />
         </PricingModalProvider>
       </TooltipProvider>
     </QueryClientProvider>
