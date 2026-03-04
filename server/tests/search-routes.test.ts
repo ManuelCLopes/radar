@@ -180,7 +180,7 @@ describe("Search Routes", () => {
                 .send({ latitude: 40.7, longitude: -74.0 });
 
             expect(res.status).toBe(200);
-            expect(res.body.address).toContain("Current Location");
+            expect(res.body.address).toBe("40.700000, -74.000000");
         });
 
         it("should return 404 if address not found", async () => {

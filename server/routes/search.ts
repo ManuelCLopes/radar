@@ -5,6 +5,9 @@ import { runReportForBusiness } from "../reports";
 import { isAuthenticated } from "../auth";
 import { searchRateLimiter } from "../middleware/rate-limit";
 
+const formatCoordinateAddress = (latitude: number, longitude: number) =>
+    `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+
 export function registerSearchRoutes(app: Express) {
     app.post("/api/quick-search", searchRateLimiter, async (req, res) => {
         try {
@@ -123,20 +126,19 @@ export function registerSearchRoutes(app: Express) {
     app.post("/api/places/reverse-geocode", async (req, res) => {
         try {
             const { latitude, longitude } = req.body;
+            const lat = Number(latitude);
+            const lng = Number(longitude);
 
-            if (!latitude || !longitude) {
+            if (Number.isNaN(lat) || Number.isNaN(lng)) {
                 return res.status(400).json({ error: "Latitude and Longitude are required" });
             }
 
             if (!hasGoogleApiKey()) {
-                // Determine if browser has geolocation API
-                // If no API key, we just return null and the client keeps "Current Location" (or coordinates)
-                return res.json({ address: "Current Location (Approx)" });
-                // Actually, better to return null so client handles it, or return "Lat, Lng"
+                return res.json({ address: formatCoordinateAddress(lat, lng) });
             }
 
             const { reverseGeocode } = await import("../googlePlaces");
-            const address = await reverseGeocode(latitude, longitude);
+            const address = await reverseGeocode(lat, lng);
 
             if (!address) {
                 return res.status(404).json({ error: "Could not determine address" });
