@@ -1,7 +1,22 @@
-import type { Express } from "express";
+import type { Express, Request } from "express";
 import { getSchedulerStatus, runScheduledReports } from "../scheduler";
 import { isAuthenticated } from "../auth";
 import { storage } from "../storage";
+
+function isValidCronRequest(req: Request): boolean {
+    const cronSecret = process.env.CRON_SECRET;
+    if (!cronSecret) {
+        return false;
+    }
+
+    const headerSecret = req.headers["x-cron-secret"];
+    if (typeof headerSecret === "string" && headerSecret === cronSecret) {
+        return true;
+    }
+
+    const authHeader = req.headers.authorization;
+    return authHeader === `Bearer ${cronSecret}`;
+}
 
 export function registerSchedulerRoutes(app: Express) {
     app.get("/api/scheduler/status", isAuthenticated, async (req, res) => {
@@ -27,16 +42,24 @@ export function registerSchedulerRoutes(app: Express) {
     // External Cron Trigger Endpoint
     app.post("/api/cron/trigger-reports", async (req, res) => {
         try {
-            const authHeader = req.headers["x-cron-secret"];
-            const cronSecret = process.env.CRON_SECRET;
-
-            if (!cronSecret || authHeader !== cronSecret) {
+            if (!isValidCronRequest(req)) {
                 return res.status(401).json({ error: "Unauthorized" });
             }
 
             console.log("[Cron] Triggered report generation via API");
 
-            // Run in background without awaiting to prevent timeout
+            // In serverless runtimes we should not return before the task finishes,
+            // because work scheduled after the response can be dropped.
+            const shouldRunInline = process.env.VERCEL === "1";
+            if (shouldRunInline) {
+                const results = await runScheduledReports();
+                return res.status(200).json({
+                    message: "Scheduled reports completed",
+                    ...results,
+                });
+            }
+
+            // Long-running server mode (non-serverless): allow async background execution.
             runScheduledReports().catch(err => {
                 console.error("[Cron] Background report generation failed:", err);
             });
@@ -53,10 +76,7 @@ export function registerSchedulerRoutes(app: Express) {
     // Cleanup Unverified Users Endpoint
     app.post("/api/cron/cleanup-users", async (req, res) => {
         try {
-            const authHeader = req.headers["x-cron-secret"];
-            const cronSecret = process.env.CRON_SECRET;
-
-            if (!cronSecret || authHeader !== cronSecret) {
+            if (!isValidCronRequest(req)) {
                 return res.status(401).json({ error: "Unauthorized" });
             }
 

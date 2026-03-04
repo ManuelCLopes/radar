@@ -1,10 +1,7 @@
 name: Weekly Report Scheduler
 
 on:
-  schedule:
-    # Runs at 06:00 every Monday
-    - cron: '0 6 * * 1'
-  workflow_dispatch: # Allows manual triggering
+  workflow_dispatch: # Manual fallback (Vercel Cron handles scheduled runs)
 
 jobs:
   trigger-reports:
