@@ -46,6 +46,7 @@ describe("LandingPage", () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        localStorage.clear();
 
         // Default mocks
         mockUseAuth.mockReturnValue({
@@ -181,6 +182,54 @@ describe("LandingPage", () => {
         });
     });
 
+    it("includes coordinates in search payload when using current location", async () => {
+        const mockGeolocation = {
+            getCurrentPosition: vi.fn().mockImplementation((success) => success({
+                coords: { latitude: 38.7, longitude: -9.1 }
+            }))
+        };
+        Object.defineProperty(global.navigator, 'geolocation', {
+            value: mockGeolocation,
+            writable: true
+        });
+
+        (global.fetch as ReturnType<typeof vi.fn>)
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => ({ address: "Detected Address, Lisbon" }),
+            })
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => ({ report: { id: "123", businessName: "Test Business" } }),
+            });
+
+        renderWithProviders(<LandingPage />);
+
+        fireEvent.click(screen.getByTitle("addressSearch.useCurrentLocation"));
+        await waitFor(() => {
+            expect(global.fetch).toHaveBeenCalledWith("/api/places/reverse-geocode", expect.any(Object));
+        });
+
+        fireEvent.click(screen.getByRole("button", { name: /quickSearch.analyzeButton/i }));
+
+        await waitFor(() => {
+            expect(global.fetch).toHaveBeenCalledWith("/api/quick-search", expect.objectContaining({
+                method: "POST",
+                body: expect.stringContaining('"latitude":38.7'),
+            }));
+        });
+
+        const quickSearchCall = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.find(
+            ([url]) => url === "/api/quick-search"
+        );
+
+        expect(quickSearchCall).toBeDefined();
+        const requestInit = quickSearchCall?.[1] as RequestInit;
+        const payload = JSON.parse(requestInit.body as string);
+        expect(payload.latitude).toBe(38.7);
+        expect(payload.longitude).toBe(-9.1);
+    });
+
     it("handles geolocation error", async () => {
         const mockGeolocation = {
             getCurrentPosition: vi.fn().mockImplementation((_, error) => error({
@@ -226,7 +275,7 @@ describe("LandingPage", () => {
         await waitFor(() => {
             const addressInput = screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa") as HTMLInputElement;
             // Fallback expected
-            expect(addressInput.value).toBe("Current Location");
+            expect(addressInput.value).toBe("38.700000, -9.100000");
         });
     });
 
@@ -254,7 +303,7 @@ describe("LandingPage", () => {
         await waitFor(() => {
             const addressInput = screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa") as HTMLInputElement;
             // Fallback expected
-            expect(addressInput.value).toBe("Current Location");
+            expect(addressInput.value).toBe("0.000000, 0.000000");
         });
     });
 });
