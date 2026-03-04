@@ -123,6 +123,7 @@ This repository is now wired for Vercel with:
 - `vercel.json` (SPA rewrite + cron jobs + Vite output directory)
 - `api/[...path].ts` (Express API as a Vercel Function)
 - `build:client` script for static frontend output
+- `build:vercel` guard that blocks production deploys from branches other than `main`
 
 ### 1. Import the repo in Vercel
 
