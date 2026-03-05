@@ -42,12 +42,12 @@ interface Competitor {
     address: string;
     rating?: number;
     userRatingsTotal?: number;
-    latitude?: number;
-    longitude?: number;
+    latitude?: number | string | null;
+    longitude?: number | string | null;
     geometry?: {
         location: {
-            lat: number;
-            lng: number;
+            lat: number | string;
+            lng: number | string;
         }
     };
 }
@@ -59,20 +59,83 @@ interface CompetitorMapProps {
     radius?: number;
 }
 
+const toFiniteNumber = (value: unknown): number | null => {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+        return value;
+    }
+
+    if (typeof value === 'string') {
+        const parsed = Number(value);
+        if (Number.isFinite(parsed)) {
+            return parsed;
+        }
+    }
+
+    return null;
+};
+
+const toLatLng = (latValue: unknown, lngValue: unknown): { lat: number; lng: number } | null => {
+    const lat = toFiniteNumber(latValue);
+    const lng = toFiniteNumber(lngValue);
+
+    if (lat === null || lng === null) {
+        return null;
+    }
+
+    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+        return null;
+    }
+
+    // Keep previous behavior: treat (0,0) as invalid for this app's business data.
+    if (lat === 0 && lng === 0) {
+        return null;
+    }
+
+    return { lat, lng };
+};
+
+const getCompetitorCoordinates = (competitor: Competitor): { lat: number; lng: number } | null => {
+    if (competitor.geometry?.location) {
+        const geometryCoords = toLatLng(
+            competitor.geometry.location.lat,
+            competitor.geometry.location.lng
+        );
+        if (geometryCoords) {
+            return geometryCoords;
+        }
+    }
+
+    return toLatLng(competitor.latitude, competitor.longitude);
+};
+
 export function CompetitorMap({ center, businessName, competitors }: CompetitorMapProps) {
     const { t } = useTranslation();
 
-    // Memoize valid competitors to prevent re-calculations
-    const validCompetitors = useMemo(() => competitors.filter(c =>
-        (c.latitude && c.longitude) ||
-        (c.geometry?.location?.lat && c.geometry?.location?.lng)
-    ), [competitors]);
+    const normalizedCenter = useMemo(
+        () => toLatLng(center?.lat, center?.lng),
+        [center?.lat, center?.lng]
+    );
 
-    const isValidCenter = center && typeof center.lat === 'number' && typeof center.lng === 'number' && center.lat !== 0 && center.lng !== 0;
+    const validCompetitors = useMemo(
+        () =>
+            competitors
+                .map((competitor) => ({
+                    competitor,
+                    coordinates: getCompetitorCoordinates(competitor),
+                }))
+                .filter(
+                    (
+                        item
+                    ): item is { competitor: Competitor; coordinates: { lat: number; lng: number } } =>
+                        item.coordinates !== null
+                ),
+        [competitors]
+    );
+
     const hasCompetitors = validCompetitors.length > 0;
 
     // Fallback UI if no data
-    if (!isValidCenter && !hasCompetitors) {
+    if (!normalizedCenter && !hasCompetitors) {
         return (
             <div className="h-[400px] w-full rounded-lg border shadow-sm bg-muted/30 flex flex-col items-center justify-center text-muted-foreground p-6 text-center">
                 <AlertCircle className="h-10 w-10 mb-3 opacity-50" />
@@ -83,10 +146,7 @@ export function CompetitorMap({ center, businessName, competitors }: CompetitorM
     }
 
     // Default to center if valid, otherwise first competitor
-    const mapCenter = isValidCenter ? center : {
-        lat: validCompetitors[0].latitude || validCompetitors[0].geometry!.location.lat,
-        lng: validCompetitors[0].longitude || validCompetitors[0].geometry!.location.lng
-    };
+    const mapCenter = normalizedCenter || validCompetitors[0].coordinates;
 
     return (
         <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-sm z-0 relative isolate">
@@ -102,13 +162,13 @@ export function CompetitorMap({ center, businessName, competitors }: CompetitorM
                 />
 
                 <MapBoundsFitter
-                    center={isValidCenter ? center : undefined}
-                    competitors={validCompetitors}
+                    center={normalizedCenter || undefined}
+                    competitorCoordinates={validCompetitors.map((item) => item.coordinates)}
                 />
 
                 {/* Main Business Marker */}
-                {isValidCenter && (
-                    <Marker position={center} icon={businessIcon} zIndexOffset={1000}>
+                {normalizedCenter && (
+                    <Marker position={normalizedCenter} icon={businessIcon} zIndexOffset={1000}>
                         <Popup>
                             <div className="font-bold">{businessName}</div>
                             <div className="text-xs text-muted-foreground">{t('dashboard.analysis.businessReport')}</div>
@@ -117,16 +177,11 @@ export function CompetitorMap({ center, businessName, competitors }: CompetitorM
                 )}
 
                 {/* Competitor Markers */}
-                {validCompetitors.map((competitor, index) => {
-                    const lat = competitor.latitude || competitor.geometry?.location.lat;
-                    const lng = competitor.longitude || competitor.geometry?.location.lng;
-
-                    if (!lat || !lng) return null;
-
+                {validCompetitors.map(({ competitor, coordinates }, index) => {
                     return (
                         <Marker
                             key={index}
-                            position={{ lat, lng }}
+                            position={coordinates}
                             icon={competitorIcon}
                         >
                             <Popup>
@@ -147,7 +202,13 @@ export function CompetitorMap({ center, businessName, competitors }: CompetitorM
 }
 
 // Component to handle bounds fitting and resizing
-function MapBoundsFitter({ center, competitors }: { center?: { lat: number; lng: number }, competitors: Competitor[] }) {
+function MapBoundsFitter({
+    center,
+    competitorCoordinates
+}: {
+    center?: { lat: number; lng: number };
+    competitorCoordinates: Array<{ lat: number; lng: number }>;
+}) {
     const map = useMap();
 
     useEffect(() => {
@@ -173,10 +234,8 @@ function MapBoundsFitter({ center, competitors }: { center?: { lat: number; lng:
             points.push([center.lat, center.lng]);
         }
 
-        competitors.forEach(c => {
-            const lat = c.latitude || c.geometry?.location.lat;
-            const lng = c.longitude || c.geometry?.location.lng;
-            if (lat && lng) points.push([lat, lng]);
+        competitorCoordinates.forEach((coords) => {
+            points.push([coords.lat, coords.lng]);
         });
 
         if (points.length > 0) {
@@ -193,7 +252,7 @@ function MapBoundsFitter({ center, competitors }: { center?: { lat: number; lng:
             resizeObserver.disconnect();
             timeouts.forEach(clearTimeout);
         };
-    }, [center, competitors, map]);
+    }, [center, competitorCoordinates, map]);
 
     return null;
 }
