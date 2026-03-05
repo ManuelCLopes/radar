@@ -1,0 +1,21 @@
+# Competitor Watcher
+> Competitor Watcher is a free competitor analysis platform for local businesses.
+
+## Summary
+- Product: AI-powered competitor analysis and competitive intelligence software.
+- Primary users: Local businesses, agencies, and operators who need fast market visibility.
+- Core use cases: competitor research, local market analysis, review intelligence, and tactical recommendations.
+
+## Public pages
+- Homepage: https://competitorwatcher.pt/
+- Support: https://competitorwatcher.pt/support
+- Privacy policy: https://competitorwatcher.pt/privacy-policy
+- Cookie policy: https://competitorwatcher.pt/cookie-policy
+- Sitemap: https://competitorwatcher.pt/sitemap.xml
+
+## Access notes
+- Main product workflows require authentication in /dashboard.
+- Public API routes live under /api/* and are rate-limited.
+
+## Keywords
+competitor analysis, competitive analysis tool, competitor analysis software, competitive intelligence, local market analysis, competitor tracking

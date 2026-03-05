@@ -26,8 +26,24 @@ import { usePricingModal } from "@/context/PricingModalContext";
 
 export default function LandingPage() {
   const { isAuthenticated, isLoading } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { openPricing } = usePricingModal();
+  const language = i18n?.language ?? "en";
+  const siteUrl = "https://competitorwatcher.pt";
+  const canonicalUrl = `${siteUrl}/`;
+  const seoTitle = "Competitor Analysis Tool for Local Businesses | Competitor Watcher";
+  const seoDescription = "Competitor Watcher is a free competitor analysis platform for local businesses. Discover competitors, benchmark your market, and get actionable AI insights.";
+  const seoKeywords = "competitor analysis, competitive analysis tool, competitor analysis software, competitive intelligence, local market analysis, competitor tracking, market intelligence software";
+  const ogLocale =
+    language === "pt"
+      ? "pt_PT"
+      : language === "es"
+        ? "es_ES"
+        : language === "fr"
+          ? "fr_FR"
+          : language === "de"
+            ? "de_DE"
+            : "en_US";
 
   // Quick search state
   const [isSearching, setIsSearching] = useState(false);
@@ -212,23 +228,27 @@ export default function LandingPage() {
   return (
     <div className="landing-page">
       <Helmet>
-        <title>Competitor Watcher - Análise de Concorrência Local com IA</title>
-        <meta name="description" content="Analise a concorrência do seu negócio local com inteligência artificial. Descubra concorrentes, obtenha insights estratégicos e tome decisões baseadas em dados." />
-        <meta name="keywords" content="análise de concorrência, inteligência artificial, negócios locais, estratégia de mercado, competidores" />
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content={seoKeywords} />
+        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <link rel="canonical" href={canonicalUrl} />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://competitorwatcher.pt/" />
-        <meta property="og:title" content="Competitor Watcher - Análise de Concorrência Local" />
-        <meta property="og:description" content="Descubra e analise os seus concorrentes locais com o poder da IA." />
-        <meta property="og:image" content="https://competitorwatcher.pt/og-image.png" />
+        <meta property="og:site_name" content="Competitor Watcher" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:image" content={`${siteUrl}/og-image.png`} />
+        <meta property="og:locale" content={ogLocale} />
 
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://competitorwatcher.pt/" />
-        <meta property="twitter:title" content="Competitor Watcher - Análise de Concorrência Local" />
-        <meta property="twitter:description" content="Descubra e analise os seus concorrentes locais com o poder da IA." />
-        <meta property="twitter:image" content="https://competitorwatcher.pt/og-image.png" />
+        <meta property="twitter:url" content={canonicalUrl} />
+        <meta property="twitter:title" content={seoTitle} />
+        <meta property="twitter:description" content={seoDescription} />
+        <meta property="twitter:image" content={`${siteUrl}/og-image.png`} />
 
         {/* Structured Data */}
         <script type="application/ld+json">
@@ -238,12 +258,31 @@ export default function LandingPage() {
             "name": "Competitor Watcher",
             "applicationCategory": "BusinessApplication",
             "operatingSystem": "Web",
+            "url": canonicalUrl,
+            "keywords": seoKeywords,
+            "featureList": [
+              "Competitor analysis for local businesses",
+              "Competitive intelligence dashboard",
+              "Local market trend detection",
+              "Review and sentiment analysis",
+              "AI-generated action recommendations"
+            ],
             "offers": {
               "@type": "Offer",
               "price": "0",
               "priceCurrency": "EUR"
             },
-            "description": "AI-powered local business competition analysis tool."
+            "description": seoDescription
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Competitor Watcher",
+            "url": canonicalUrl,
+            "description": seoDescription,
+            "inLanguage": ["en", "pt", "es", "fr", "de"]
           })}
         </script>
       </Helmet>
@@ -289,6 +328,12 @@ export default function LandingPage() {
           </h1>
           <p className="hero-subheadline" data-testid="hero-subheadline">
             {t('quickSearch.subtitle')}
+          </p>
+          <p className="hero-intent-text" data-testid="hero-intent-text">
+            {t("quickSearch.seoIntent", {
+              defaultValue:
+                "Competitor Watcher is a free competitor analysis tool and competitive intelligence platform for local businesses. Compare nearby competitors, track market shifts, and get actionable recommendations.",
+            })}
           </p>
 
           {/* Quick Search Form */}

@@ -170,7 +170,10 @@ test.describe('Dashboard Business Management Flow', () => {
 
         // Now address is "verified" (pending status), select type
         await page.getByTestId('select-business-type').click();
-        await page.getByTestId('option-type-restaurant').click();
+        const restaurantOption = page.getByTestId('option-type-restaurant').first();
+        await expect(restaurantOption).toBeVisible({ timeout: 10000 });
+        await restaurantOption.click({ force: true });
+        await expect(page.getByTestId('select-business-type')).toContainText(/Restaurant|Restaurante/i);
 
         // Submit
         // We need to update the GET mock to include the new business for the UI to update optimistically or on refetch?
@@ -178,10 +181,23 @@ test.describe('Dashboard Business Management Flow', () => {
         // Let's update the GET mock dynamically for the next fetch.
 
 
+        const createPromise = page.waitForResponse((response) =>
+            response.url().includes('/api/businesses') &&
+            response.request().method() === 'POST' &&
+            response.status() === 200
+        );
+        const refetchPromise = page.waitForResponse((response) =>
+            /\/api\/businesses(\?|$)/.test(response.url()) &&
+            response.request().method() === 'GET' &&
+            response.status() === 200
+        );
+
         await page.getByTestId('button-submit-business').click({ force: true });
+        await createPromise;
+        await refetchPromise;
 
         // Verify it appears in the list
-        await expect(page.getByText('New Pizza Place')).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'New Pizza Place' })).toBeVisible({ timeout: 10000 });
     });
 
     test('can edit an existing business', async ({ page }) => {
