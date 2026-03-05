@@ -40,6 +40,11 @@ export default function LandingPage() {
   // Geolocation state
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [manualCoordinates, setManualCoordinates] = useState<{ lat: number; lng: number } | null>(null);
+  const [isUsingCurrentLocation, setIsUsingCurrentLocation] = useState(false);
+
+  const formatCoordinateFallback = useCallback((latitude: number, longitude: number) => {
+    return `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -88,6 +93,7 @@ export default function LandingPage() {
           lat: latitude,
           lng: longitude
         });
+        setIsUsingCurrentLocation(true);
 
         try {
           // Attempt to reverse geocode
@@ -99,26 +105,31 @@ export default function LandingPage() {
 
           if (response.ok) {
             const data = await response.json();
-            if (data.address) {
-              form.setValue('address', data.address);
+            const detectedAddress = typeof data.address === "string" ? data.address.trim() : "";
+            const isPlaceholderAddress = /^current location/i.test(detectedAddress);
+
+            if (detectedAddress && !isPlaceholderAddress) {
+              form.setValue('address', detectedAddress);
               return;
             }
           }
-          // Fallback if failed
-          form.setValue('address', "Current Location");
+          // Fallback if reverse geocoding is unavailable
+          form.setValue('address', formatCoordinateFallback(latitude, longitude));
         } catch (e) {
-          // Fallback
-          form.setValue('address', "Current Location");
+          // Fallback if network request fails
+          form.setValue('address', formatCoordinateFallback(latitude, longitude));
         }
       },
       (error) => {
         setIsGettingLocation(false);
+        setIsUsingCurrentLocation(false);
+        setManualCoordinates(null);
         let errorMessage = "Could not get your location";
         if (error.code === 1) errorMessage = "Location permission denied";
         setSearchError(errorMessage);
       }
     );
-  }, [form]);
+  }, [form, formatCoordinateFallback]);
 
   const onSearchSubmit = async (data: SearchFormValues) => {
     // Check if user has already generated a free report (only for guests)
@@ -142,8 +153,8 @@ export default function LandingPage() {
         language: t('common.language', { defaultValue: 'en' })
       };
 
-      // If using manual coordinates (Current Location), inject them
-      if (manualCoordinates && data.address === "Current Location") {
+      // If the user selected the location icon, always prefer exact coordinates.
+      if (manualCoordinates && isUsingCurrentLocation) {
         payload.latitude = manualCoordinates.lat;
         payload.longitude = manualCoordinates.lng;
       }
@@ -303,6 +314,15 @@ export default function LandingPage() {
                                 placeholder="Rua de Belém 84-92, 1300-085 Lisboa"
                                 className={`w-full h-12 rounded-xl border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm focus:ring-2 focus:ring-indigo-500 transition-all pl-4 text-base ${isGettingLocation ? 'pr-12' : 'pr-12'}`}
                                 data-testid="input-quick-search-address"
+                                onChange={(event) => {
+                                  field.onChange(event);
+                                  if (manualCoordinates) {
+                                    setManualCoordinates(null);
+                                  }
+                                  if (isUsingCurrentLocation) {
+                                    setIsUsingCurrentLocation(false);
+                                  }
+                                }}
                               />
                             </FormControl>
                             <button
