@@ -46,6 +46,10 @@ describe("Search Routes", () => {
         vi.clearAllMocks();
     });
 
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
     describe("POST /api/quick-search", () => {
         it("should return 400 if required fields missing", async () => {
             const res = await request(app)
@@ -174,6 +178,44 @@ describe("Search Routes", () => {
         it("should return fallback when API key missing", async () => {
             const { hasGoogleApiKey } = await import("../googlePlaces");
             (hasGoogleApiKey as any).mockReturnValue(false);
+            vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+                ok: true,
+                json: async () => ({ display_name: "Rua Augusta, Lisboa, Portugal" }),
+            }));
+
+            const res = await request(app)
+                .post("/api/places/reverse-geocode")
+                .send({ latitude: 40.7, longitude: -74.0 });
+
+            expect(res.status).toBe(200);
+            expect(res.body.address).toBe("Rua Augusta, Lisboa, Portugal");
+        });
+
+        it("should fall back to OSM when Google reverse geocode does not return an address", async () => {
+            const { hasGoogleApiKey, reverseGeocode } = await import("../googlePlaces");
+            (hasGoogleApiKey as any).mockReturnValue(true);
+            (reverseGeocode as any).mockResolvedValue(null);
+            vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+                ok: true,
+                json: async () => ({ display_name: "Porto, Portugal" }),
+            }));
+
+            const res = await request(app)
+                .post("/api/places/reverse-geocode")
+                .send({ latitude: 40.7, longitude: -74.0 });
+
+            expect(res.status).toBe(200);
+            expect(res.body.address).toBe("Porto, Portugal");
+        });
+
+        it("should return coordinate text when no reverse geocoder returns an address", async () => {
+            const { hasGoogleApiKey, reverseGeocode } = await import("../googlePlaces");
+            (hasGoogleApiKey as any).mockReturnValue(true);
+            (reverseGeocode as any).mockResolvedValue(null);
+            vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+                ok: true,
+                json: async () => ({ display_name: "" }),
+            }));
 
             const res = await request(app)
                 .post("/api/places/reverse-geocode")
@@ -181,18 +223,6 @@ describe("Search Routes", () => {
 
             expect(res.status).toBe(200);
             expect(res.body.address).toBe("40.700000, -74.000000");
-        });
-
-        it("should return 404 if address not found", async () => {
-            const { hasGoogleApiKey, reverseGeocode } = await import("../googlePlaces");
-            (hasGoogleApiKey as any).mockReturnValue(true);
-            (reverseGeocode as any).mockResolvedValue(null);
-
-            const res = await request(app)
-                .post("/api/places/reverse-geocode")
-                .send({ latitude: 40.7, longitude: -74.0 });
-
-            expect(res.status).toBe(404);
         });
     });
 });

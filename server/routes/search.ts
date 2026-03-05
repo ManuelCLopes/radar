@@ -8,6 +8,36 @@ import { searchRateLimiter } from "../middleware/rate-limit";
 const formatCoordinateAddress = (latitude: number, longitude: number) =>
     `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
 
+const reverseGeocodeWithNominatim = async (latitude: number, longitude: number): Promise<string | null> => {
+    try {
+        const params = new URLSearchParams({
+            lat: latitude.toString(),
+            lon: longitude.toString(),
+            format: "jsonv2",
+            addressdetails: "1",
+        });
+
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?${params.toString()}`, {
+            headers: {
+                Accept: "application/json",
+                "User-Agent": "competitor-watcher/1.0 (+https://competitorwatcher.pt)",
+            },
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        const displayName = typeof data?.display_name === "string" ? data.display_name.trim() : "";
+
+        return displayName || null;
+    } catch (error) {
+        console.error("Nominatim reverse geocoding error:", error);
+        return null;
+    }
+};
+
 export function registerSearchRoutes(app: Express) {
     app.post("/api/quick-search", searchRateLimiter, async (req, res) => {
         try {
@@ -133,18 +163,18 @@ export function registerSearchRoutes(app: Express) {
                 return res.status(400).json({ error: "Latitude and Longitude are required" });
             }
 
-            if (!hasGoogleApiKey()) {
-                return res.json({ address: formatCoordinateAddress(lat, lng) });
-            }
+            let address: string | null = null;
 
-            const { reverseGeocode } = await import("../googlePlaces");
-            const address = await reverseGeocode(lat, lng);
+            if (hasGoogleApiKey()) {
+                const { reverseGeocode } = await import("../googlePlaces");
+                address = await reverseGeocode(lat, lng);
+            }
 
             if (!address) {
-                return res.status(404).json({ error: "Could not determine address" });
+                address = await reverseGeocodeWithNominatim(lat, lng);
             }
 
-            res.json({ address });
+            res.json({ address: address || formatCoordinateAddress(lat, lng) });
         } catch (error) {
             console.error("Reverse geocoding error:", error);
             res.status(500).json({ error: "Failed to reverse geocode" });

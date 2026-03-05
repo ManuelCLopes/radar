@@ -24,7 +24,9 @@ describe("Static Routes", () => {
             expect(res.type).toBe("text/plain");
             expect(res.text).toContain("User-agent: *");
             expect(res.text).toContain("Allow: /");
+            expect(res.text).toContain("Allow: /support");
             expect(res.text).toContain("Disallow: /dashboard");
+            expect(res.text).toContain("Disallow: /admin");
             expect(res.text).toContain("Disallow: /api/");
             expect(res.text).toContain("Sitemap:");
         });
@@ -38,7 +40,21 @@ describe("Static Routes", () => {
             expect(res.type).toBe("application/xml");
             expect(res.text).toContain("urlset");
             expect(res.text).toMatch(/<loc>https?:\/\/127\.0\.0\.1:\d+\/<\/loc>/);
-            expect(res.text).toContain("<loc>");
+            expect(res.text).toContain("/support</loc>");
+            expect(res.text).toContain("/privacy-policy</loc>");
+            expect(res.text).toContain("/llms.txt</loc>");
+        });
+    });
+
+    describe("GET /llms.txt", () => {
+        it("should return llms index content", async () => {
+            const res = await request(app).get("/llms.txt");
+
+            expect(res.status).toBe(200);
+            expect(res.type).toBe("text/plain");
+            expect(res.text).toContain("# Competitor Watcher");
+            expect(res.text).toContain("competitor analysis");
+            expect(res.text).toContain("Sitemap:");
         });
     });
 

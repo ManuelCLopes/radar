@@ -415,8 +415,8 @@
     "perMonth": "/month"
   },
   "quickSearch": {
-    "title": "Discover Your Local Competition",
-    "subtitle": "Analyze competitors in any location instantly",
+    "title": "Competitor Analysis for Local Businesses",
+    "subtitle": "Run instant competitor research and competitive analysis in any location",
     "addressPlaceholder": "Enter business address",
     "selectType": "Business type",
     "selectRadius": "Search radius",

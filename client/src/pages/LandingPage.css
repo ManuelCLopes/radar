@@ -202,6 +202,14 @@
   line-height: 1.6;
 }
 
+.hero-intent-text {
+  max-width: 860px;
+  margin: 0 auto 2rem;
+  font-size: 0.975rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.92);
+}
+
 .hero-features {
   display: flex;
   flex-direction: column;

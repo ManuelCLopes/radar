@@ -123,12 +123,16 @@ test.describe('Internationalization Thoroughness', () => {
         await langSelector.click();
         await page.getByTestId('button-lang-en').click();
 
-        await expect(page.getByRole('heading', { name: /Discover Your Local Competition/i })).toBeVisible();
+        await expect(
+            page.getByRole('heading', { name: /Competitor Analysis for Local Businesses|Discover Your Local Competition/i })
+        ).toBeVisible();
 
         // Switch to PT
         await langSelector.click();
         await page.getByTestId('button-lang-pt').click();
 
-        await expect(page.getByRole('heading', { name: /Descubra a sua Concorrência Local/i })).toBeVisible();
+        await expect(
+            page.getByRole('heading', { name: /Análise de Concorrência para Negócios Locais|Descubra a sua Concorrência Local/i })
+        ).toBeVisible();
     });
 });

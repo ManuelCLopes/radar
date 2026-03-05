@@ -1,4 +1,16 @@
 User-agent: *
 Allow: /
+Allow: /login
+Allow: /register
+Allow: /support
+Allow: /privacy-policy
+Allow: /cookie-policy
+Allow: /llms.txt
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+Disallow: /r/
 
 Sitemap: https://competitorwatcher.pt/sitemap.xml
