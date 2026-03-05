@@ -10,7 +10,11 @@ test.describe('SEO & Accessibility', () => {
 
         // Meta description
         const description = page.locator('meta[name="description"]').first();
-        await expect(description).toHaveAttribute('content', /Analyze|concorrência/i, { timeout: 10000 });
+        await expect(description).toHaveAttribute(
+            'content',
+            /competitor analysis|Analyze|concorr[eê]ncia/i,
+            { timeout: 10000 }
+        );
 
         // OpenGraph tags
         const ogTitle = page.locator('meta[property="og:title"]').first();
