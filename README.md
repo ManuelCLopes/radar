@@ -163,7 +163,7 @@ At minimum, set these in Project Settings > Environment Variables:
 - Vercel Cron is configured in `vercel.json` for:
   - weekly report trigger (`/api/cron/trigger-reports`)
   - daily cleanup (`/api/cron/cleanup-users`)
-- Legacy GitHub scheduler workflows were kept as manual fallback only.
+- GitHub fallback scheduler workflows were removed; scheduling is handled only by Vercel Cron.
 
 ### 5. Cutover checklist
 
