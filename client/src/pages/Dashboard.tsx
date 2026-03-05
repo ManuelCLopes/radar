@@ -69,6 +69,40 @@ const analysisSchema = z.object({
 
 type AnalysisFormValues = z.infer<typeof analysisSchema>;
 
+const toFiniteCoordinate = (value: unknown): number | null => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+  }
+
+  return null;
+};
+
+const getBusinessMapCenter = (business: Business): { lat: number; lng: number } | null => {
+  const lat = toFiniteCoordinate(business.latitude);
+  const lng = toFiniteCoordinate(business.longitude);
+
+  if (lat === null || lng === null) {
+    return null;
+  }
+
+  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+    return null;
+  }
+
+  if (lat === 0 && lng === 0) {
+    return null;
+  }
+
+  return { lat, lng };
+};
+
 export default function Dashboard() {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
@@ -859,14 +893,21 @@ export default function Dashboard() {
 
                           if (businessesToShow.length === 0) return null;
 
-                          const targetBusiness = selectedMapBusinessId === "all" ? businesses[0] : businesses.find(b => b.id === selectedMapBusinessId);
+                          const businessesWithCoordinates = businessesToShow.filter((business) =>
+                            getBusinessMapCenter(business) !== null
+                          );
+
+                          const targetBusiness = selectedMapBusinessId === "all"
+                            ? (businessesWithCoordinates[0] || businessesToShow[0])
+                            : businessesToShow[0];
 
                           if (!targetBusiness) return null;
 
                           // Find latest report for this business to get competitors
                           const latestReport = reportHistory.find(r => r.businessId === targetBusiness.id);
+                          const targetCenter = getBusinessMapCenter(targetBusiness);
 
-                          if (!targetBusiness.latitude || !targetBusiness.longitude) {
+                          if (!targetCenter) {
                             return (
                               <div className="text-center p-8 text-muted-foreground">
                                 {t("dashboard.map.noLocation")}
@@ -882,7 +923,7 @@ export default function Dashboard() {
                                 </p>
                               )}
                               <CompetitorMap
-                                center={{ lat: targetBusiness.latitude, lng: targetBusiness.longitude }}
+                                center={targetCenter}
                                 businessName={targetBusiness.name}
                                 competitors={latestReport?.competitors || []}
                                 radius={1500} // Default radius
