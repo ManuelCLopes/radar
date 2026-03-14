@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Search as SearchIcon, MapPin } from "lucide-react";
 import AdminLayout from "@/components/layouts/AdminLayout";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 
 export default function AdminActivity() {
+    const { t } = useTranslation();
     const { data: searches, isLoading } = useQuery<any[]>({
         queryKey: ["/api/admin/searches"],
     });
@@ -25,13 +27,13 @@ export default function AdminActivity() {
         <AdminLayout>
             <div className="p-8 space-y-8">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Live Activity</h1>
-                    <p className="text-muted-foreground">Real-time stream of what users are searching for.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">{t("admin.activity.title")}</h1>
+                    <p className="text-muted-foreground">{t("admin.activity.subtitle")}</p>
                 </div>
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Recent Searches</CardTitle>
+                        <CardTitle>{t("admin.activity.recentSearches")}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
@@ -44,12 +46,12 @@ export default function AdminActivity() {
                                         <div className="min-w-0">
                                             <p className="font-medium flex flex-wrap items-center gap-2">
                                                 {search.type}
-                                                <span className="text-muted-foreground font-normal">near</span>
+                                                <span className="text-muted-foreground font-normal">{t("admin.activity.near")}</span>
                                                 <span className="break-words">{search.address}</span>
                                             </p>
                                             <div className="text-sm text-muted-foreground flex flex-wrap items-center gap-2 mt-1">
                                                 <MapPin className="w-3 h-3" />
-                                                <span>Radius: {search.radius}m</span>
+                                                <span>{t("admin.activity.radius", { radius: search.radius })}</span>
                                                 <span>•</span>
                                                 <span>{new Date(search.createdAt).toLocaleString()}</span>
                                             </div>
@@ -59,13 +61,13 @@ export default function AdminActivity() {
                                         variant={search.competitorsFound > 0 ? "default" : "secondary"}
                                         className="self-start sm:self-auto"
                                     >
-                                        {search.competitorsFound} found
+                                        {t("admin.activity.found", { count: search.competitorsFound })}
                                     </Badge>
                                 </div>
                             ))}
                             {searches?.length === 0 && (
                                 <div className="text-center py-8 text-muted-foreground">
-                                    No recent activity recorded.
+                                    {t("admin.activity.empty")}
                                 </div>
                             )}
                         </div>

@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { isDisplayableAddress } from "@/lib/location";
 
 import { usePricingModal } from "@/context/PricingModalContext";
 
@@ -29,11 +30,11 @@ export default function LandingPage() {
   const { t, i18n } = useTranslation();
   const { openPricing } = usePricingModal();
   const language = i18n?.language ?? "en";
+  const siteName = t("landing.brandName");
   const siteUrl = "https://competitorwatcher.pt";
   const canonicalUrl = `${siteUrl}/`;
-  const seoTitle = "Competitor Analysis Tool for Local Businesses | Competitor Watcher";
-  const seoDescription = "Competitor Watcher is a free competitor analysis platform for local businesses. Discover competitors, benchmark your market, and get actionable AI insights.";
-  const seoKeywords = "competitor analysis, competitive analysis tool, competitor analysis software, competitive intelligence, local market analysis, competitor tracking, market intelligence software";
+  const seoTitle = `${siteName} - ${t("quickSearch.title")}`;
+  const seoDescription = t("quickSearch.subtitle");
   const ogLocale =
     language === "pt"
       ? "pt_PT"
@@ -57,10 +58,6 @@ export default function LandingPage() {
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [manualCoordinates, setManualCoordinates] = useState<{ lat: number; lng: number } | null>(null);
   const [isUsingCurrentLocation, setIsUsingCurrentLocation] = useState(false);
-
-  const formatCoordinateFallback = useCallback((latitude: number, longitude: number) => {
-    return `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -93,7 +90,7 @@ export default function LandingPage() {
 
   const handleUseCurrentLocation = useCallback(() => {
     if (!navigator.geolocation) {
-      setSearchError("Geolocation is not supported by your browser");
+      setSearchError(t("addressSearch.locationUnavailable"));
       return;
     }
 
@@ -122,30 +119,27 @@ export default function LandingPage() {
           if (response.ok) {
             const data = await response.json();
             const detectedAddress = typeof data.address === "string" ? data.address.trim() : "";
-            const isPlaceholderAddress = /^current location/i.test(detectedAddress);
 
-            if (detectedAddress && !isPlaceholderAddress) {
+            if (isDisplayableAddress(detectedAddress)) {
               form.setValue('address', detectedAddress);
               return;
             }
           }
-          // Fallback if reverse geocoding is unavailable
-          form.setValue('address', formatCoordinateFallback(latitude, longitude));
+          form.setValue('address', t("addressSearch.usingCurrentLocation"));
         } catch (e) {
-          // Fallback if network request fails
-          form.setValue('address', formatCoordinateFallback(latitude, longitude));
+          form.setValue('address', t("addressSearch.usingCurrentLocation"));
         }
       },
       (error) => {
         setIsGettingLocation(false);
         setIsUsingCurrentLocation(false);
         setManualCoordinates(null);
-        let errorMessage = "Could not get your location";
-        if (error.code === 1) errorMessage = "Location permission denied";
+        let errorMessage = t("addressSearch.locationFailed");
+        if (error.code === 1) errorMessage = t("addressSearch.locationDenied");
         setSearchError(errorMessage);
       }
     );
-  }, [form, formatCoordinateFallback]);
+  }, [form, t]);
 
   const onSearchSubmit = async (data: SearchFormValues) => {
     // Check if user has already generated a free report (only for guests)
@@ -166,7 +160,7 @@ export default function LandingPage() {
 
       const payload: any = {
         ...data,
-        language: t('common.language', { defaultValue: 'en' })
+        language: i18n.language
       };
 
       // If the user selected the location icon, always prefer exact coordinates.
@@ -230,13 +224,12 @@ export default function LandingPage() {
       <Helmet>
         <title>{seoTitle}</title>
         <meta name="description" content={seoDescription} />
-        <meta name="keywords" content={seoKeywords} />
         <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
         <link rel="canonical" href={canonicalUrl} />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Competitor Watcher" />
+        <meta property="og:site_name" content={siteName} />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={seoDescription} />
@@ -255,18 +248,10 @@ export default function LandingPage() {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            "name": "Competitor Watcher",
+            "name": siteName,
             "applicationCategory": "BusinessApplication",
             "operatingSystem": "Web",
             "url": canonicalUrl,
-            "keywords": seoKeywords,
-            "featureList": [
-              "Competitor analysis for local businesses",
-              "Competitive intelligence dashboard",
-              "Local market trend detection",
-              "Review and sentiment analysis",
-              "AI-generated action recommendations"
-            ],
             "offers": {
               "@type": "Offer",
               "price": "0",
@@ -279,7 +264,7 @@ export default function LandingPage() {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebSite",
-            "name": "Competitor Watcher",
+            "name": siteName,
             "url": canonicalUrl,
             "description": seoDescription,
             "inLanguage": ["en", "pt", "es", "fr", "de"]
@@ -291,7 +276,7 @@ export default function LandingPage() {
         <div className="landing-container">
           <div className="landing-header-brand">
             <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-              <img src="/logo.png" alt="Competitor Watcher" className="h-14 w-auto" />
+              <img src="/logo.png" alt={siteName} className="h-14 w-auto" />
             </Link>
           </div>
           <div className="landing-header-actions">
@@ -300,18 +285,18 @@ export default function LandingPage() {
             {!isLoading && (
               isAuthenticated ? (
                 <Link href="/dashboard">
-                  <Button variant="ghost" size="icon" title="Dashboard" className="expandable-btn">
+                  <Button variant="ghost" size="icon" title={t("footer.links.dashboard")} className="expandable-btn">
                     <LayoutDashboard className="h-5 w-5" />
-                    <span aria-hidden="true">Dashboard</span>
-                    <span className="sr-only">Dashboard</span>
+                    <span aria-hidden="true">{t("footer.links.dashboard")}</span>
+                    <span className="sr-only">{t("footer.links.dashboard")}</span>
                   </Button>
                 </Link>
               ) : (
                 <Link href="/login">
-                  <Button variant="ghost" size="icon" data-testid="button-login" title="Login" className="expandable-btn">
+                  <Button variant="ghost" size="icon" data-testid="button-login" title={t("auth.login")} className="expandable-btn">
                     <User className="h-5 w-5" />
-                    <span aria-hidden="true">Login</span>
-                    <span className="sr-only">Login</span>
+                    <span aria-hidden="true">{t("auth.login")}</span>
+                    <span className="sr-only">{t("auth.login")}</span>
                   </Button>
                 </Link>
               )
@@ -330,10 +315,7 @@ export default function LandingPage() {
             {t('quickSearch.subtitle')}
           </p>
           <p className="hero-intent-text" data-testid="hero-intent-text">
-            {t("quickSearch.seoIntent", {
-              defaultValue:
-                "Competitor Watcher is a free competitor analysis tool and competitive intelligence platform for local businesses. Compare nearby competitors, track market shifts, and get actionable recommendations.",
-            })}
+            {t("quickSearch.seoIntent")}
           </p>
 
           {/* Quick Search Form */}
@@ -356,7 +338,7 @@ export default function LandingPage() {
                               <Input
                                 {...field}
                                 type="text"
-                                placeholder="Rua de Belém 84-92, 1300-085 Lisboa"
+                                placeholder={t("quickSearch.addressPlaceholder")}
                                 className={`w-full h-12 rounded-xl border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm focus:ring-2 focus:ring-indigo-500 transition-all pl-4 text-base ${isGettingLocation ? 'pr-12' : 'pr-12'}`}
                                 data-testid="input-quick-search-address"
                                 onChange={(event) => {

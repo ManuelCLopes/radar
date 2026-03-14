@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
 import type { User } from "@shared/schema";
+import { getAppBaseUrl, getGoogleCallbackUrl } from "./urls";
 
 const SALT_ROUNDS = 10;
 
@@ -136,7 +137,7 @@ export async function setupAuth(app: Express) {
 
     // Google OAuth Strategy
     if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-        const callbackURL = process.env.GOOGLE_CALLBACK_URL || "/api/auth/google/callback";
+        const callbackURL = getGoogleCallbackUrl();
         console.log(`[Auth] Google OAuth configured with callback: ${callbackURL}`);
 
         if (process.env.NODE_ENV === "production") {
@@ -230,7 +231,7 @@ export async function setupAuth(app: Express) {
                     const userLang = user.language || "pt";
 
                     // Send Verification Email
-                    const verificationLink = `${req.protocol}://${req.get("host")}/verify-email?token=${verificationToken}`;
+                    const verificationLink = `${getAppBaseUrl(req)}/verify-email?token=${verificationToken}`;
                     await emailService.sendVerificationEmail(email, verificationLink, userLang);
 
                     // Send Welcome Email
@@ -314,7 +315,7 @@ export async function setupAuth(app: Express) {
 
             const { emailService } = await import("./email");
             const userLang = user.language || "pt";
-            const verificationLink = `${req.protocol}://${req.get("host")}/verify-email?token=${verificationToken}`;
+            const verificationLink = `${getAppBaseUrl(req)}/verify-email?token=${verificationToken}`;
 
             await emailService.sendVerificationEmail(user.email, verificationLink, userLang);
 
@@ -338,7 +339,11 @@ export async function setupAuth(app: Express) {
             }
             next();
         },
-        passport.authenticate("google", { scope: ["profile", "email"] })
+        (req, res, next) =>
+            passport.authenticate("google", {
+                scope: ["profile", "email"],
+                callbackURL: getGoogleCallbackUrl(req),
+            } as any)(req, res, next)
     );
 
     app.get(
@@ -349,7 +354,11 @@ export async function setupAuth(app: Express) {
             }
             next();
         },
-        passport.authenticate("google", { failureRedirect: "/login" }),
+        (req, res, next) =>
+            passport.authenticate("google", {
+                failureRedirect: "/login",
+                callbackURL: getGoogleCallbackUrl(req),
+            } as any)(req, res, next),
         (req, res) => {
             res.redirect("/dashboard");
         }

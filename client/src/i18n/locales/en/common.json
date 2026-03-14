@@ -309,7 +309,10 @@
     "emailSentDesc": "Check your inbox (and spam) to find the link.",
     "errorSendingEmail": "Error sending email",
     "connectionError": "Connection error",
-    "connectionErrorDesc": "Could not connect to the server."
+    "connectionErrorDesc": "Could not connect to the server.",
+    "close": "Close",
+    "menu": "Menu",
+    "edit": "Edit"
   },
   "addressSearch": {
     "enterAddress": "Please enter an address to search",
@@ -396,7 +399,8 @@
     "errors": {
       "invalidCredentials": "The email or password you entered is incorrect.",
       "useGoogle": "Please use Google login for this account",
-      "generic": "An error occurred. Please try again."
+      "generic": "An error occurred. Please try again.",
+      "googleUnavailable": "Google sign-in is not configured for this deployment."
     },
     "continue": "Continue",
     "back": "Back",
@@ -417,6 +421,7 @@
   "quickSearch": {
     "title": "Competitor Analysis for Local Businesses",
     "subtitle": "Run instant competitor research and competitive analysis in any location",
+    "seoIntent": "Competitor Watcher is a free competitor analysis tool and competitive intelligence platform for local businesses. Compare nearby competitors, track market shifts, and get actionable recommendations.",
     "addressPlaceholder": "Enter business address",
     "selectType": "Business type",
     "selectRadius": "Search radius",
@@ -763,7 +768,8 @@
       "error": {
         "title": "Error",
         "delete": "Could not remove account. Please try again.",
-        "language": "Failed to save language preference."
+        "language": "Failed to save language preference.",
+        "billingPortal": "Failed to open the billing portal."
       }
     }
   },
@@ -863,7 +869,9 @@
     "yourRating": "Your Rating",
     "competitorCount": "Competitors",
     "noData": "No trend data yet",
-    "noDataDesc": "Generate more reports over time to see trends appear here."
+    "noDataDesc": "Generate more reports over time to see trends appear here.",
+    "unavailable": "Unable to determine trend",
+    "sinceStart": "since start"
   },
   "onboarding": {
     "welcome": {
@@ -899,5 +907,109 @@
     "emailSent": "Email sent",
     "generationStarted": "Report Generation Started",
     "generationStartedDesc": "We are generating your report in the background. You will be notified when it is ready."
+  },
+  "verifyEmail": {
+    "title": "Email Verification",
+    "loadingDescription": "Please wait while we verify your email...",
+    "successDescription": "Your account has been verified!",
+    "errorDescription": "We could not verify your email.",
+    "verifyingMessage": "Verifying your email...",
+    "invalidToken": "Invalid or missing verification token.",
+    "successMessage": "Email verified successfully!",
+    "errorMessage": "Email verification failed.",
+    "connectionError": "Could not connect to the server.",
+    "dashboard": "Go to Dashboard",
+    "login": "Back to Login"
+  },
+  "notFound": {
+    "title": "404 Page Not Found",
+    "description": "The page you requested could not be found."
+  },
+  "admin": {
+    "layout": {
+      "brand": "Radar Admin",
+      "subtitle": "Mission Control",
+      "signOut": "Sign Out",
+      "navigation": {
+        "overview": "Overview",
+        "users": "Users",
+        "activity": "Activity"
+      }
+    },
+    "dashboard": {
+      "title": "Overview",
+      "welcomeBack": "Welcome back, {{name}}.",
+      "cards": {
+        "totalUsers": "Total Users",
+        "totalReports": "Total Reports",
+        "businesses": "Businesses",
+        "topActivity": "Top Activity",
+        "topActivityDesc": "Recent generated reports",
+        "conversionRate": "Conversion Rate",
+        "conversionRateDesc": "Searches to Reports",
+        "marketDensity": "Market Density",
+        "marketDensityDesc": "Avg. competitors found"
+      }
+    },
+    "users": {
+      "title": "User Management",
+      "subtitle": "Manage users, roles, and permissions.",
+      "table": {
+        "title": "Users",
+        "searchPlaceholder": "Search users...",
+        "columns": {
+          "user": "User",
+          "email": "Email",
+          "role": "Role",
+          "status": "Status",
+          "joined": "Joined",
+          "actions": "Actions"
+        },
+        "status": {
+          "verified": "Verified",
+          "pending": "Pending"
+        }
+      },
+      "deleteDialog": {
+        "title": "Are you absolutely sure?",
+        "description": "This action cannot be undone. This will permanently delete the user account and remove their data from our servers.",
+        "confirm": "Delete"
+      },
+      "toasts": {
+        "roleUpdated": "Role updated successfully",
+        "roleUpdateError": "Failed to update role",
+        "userDeleted": "User deleted successfully",
+        "userDeleteError": "Failed to delete user"
+      }
+    },
+    "activity": {
+      "title": "Live Activity",
+      "subtitle": "Real-time stream of what users are searching for.",
+      "recentSearches": "Recent Searches",
+      "near": "near",
+      "radius": "Radius: {{radius}}m",
+      "found": "{{count}} found",
+      "empty": "No recent activity recorded."
+    },
+    "charts": {
+      "apiUsage": "System API Usage & Costs (30 Days)",
+      "noUsage": "No usage data available.",
+      "apiUsageAxis": "Cost Units / Tokens",
+      "googlePlaces": "Google Places (Calls)",
+      "openAi": "OpenAI (Tokens)",
+      "userGrowth": "User Growth (30 Days)",
+      "reportsGenerated": "Reports Generated (30 Days)",
+      "searchTypeDistribution": "Search Type Distribution",
+      "topLocations": "Top Searched Locations"
+    },
+    "consumers": {
+      "title": "Top API Consumers",
+      "columns": {
+        "user": "User",
+        "requests": "Requests",
+        "cost": "Est. Cost Units"
+      },
+      "noData": "No consumer data available."
+    }
   }
 }

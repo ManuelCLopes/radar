@@ -21,7 +21,7 @@ test.describe('Forgot Password Flow', () => {
         await expect(page).toHaveURL(/.*\/forgot-password/);
 
         // Fill email
-        await page.getByPlaceholder('you@example.com').fill('test@example.com');
+        await page.getByLabel(/Email/i).fill('test@example.com');
 
         // Submit
         await page.getByRole('button', { name: /Send reset link|Enviar email de recuperação/i }).click();

@@ -303,7 +303,10 @@
     "emailSentDesc": "Revise su bandeja de entrada (y spam) para encontrar el enlace.",
     "errorSendingEmail": "Error al enviar correo",
     "connectionError": "Error de conexión",
-    "connectionErrorDesc": "No se pudo conectar al servidor."
+    "connectionErrorDesc": "No se pudo conectar al servidor.",
+    "close": "Cerrar",
+    "menu": "Menu",
+    "edit": "Editar"
   },
   "addressSearch": {
     "enterAddress": "Por favor, introduza uma morada para pesquisar",
@@ -390,7 +393,8 @@
     "errors": {
       "invalidCredentials": "O email ou a palavra-passe estão incorretos.",
       "useGoogle": "Por favor, usa o login com Google para esta conta",
-      "generic": "Ocorreu um erro. Por favor, tenta novamente."
+      "generic": "Ocorreu um erro. Por favor, tenta novamente.",
+      "googleUnavailable": "El inicio de sesion con Google no esta configurado en este despliegue."
     },
     "continue": "Continuar",
     "back": "Voltar",
@@ -411,6 +415,7 @@
   "quickSearch": {
     "title": "Descubra a Sua Concorrência Local",
     "subtitle": "Analise concorrentes em qualquer localização instantaneamente",
+    "seoIntent": "Competitor Watcher es una herramienta gratuita de análisis de la competencia y una plataforma de inteligencia competitiva para negocios locales. Compara competidores cercanos, sigue los cambios del mercado y obtén recomendaciones prácticas.",
     "addressPlaceholder": "Introduza a morada do negócio",
     "selectType": "Tipo de negócio",
     "selectRadius": "Raio de pesquisa",
@@ -758,7 +763,8 @@
       "error": {
         "title": "Error",
         "delete": "No fue posible eliminar la cuenta. Intente nuevamente.",
-        "language": "Fallo al guardar la preferencia de idioma."
+        "language": "Fallo al guardar la preferencia de idioma.",
+        "billingPortal": "No se pudo abrir el portal de facturacion."
       }
     }
   },
@@ -858,7 +864,9 @@
     "yourRating": "Tu Calificación",
     "competitorCount": "Competidores",
     "noData": "Sin datos de tendencias",
-    "noDataDesc": "Genere más informes a lo largo del tiempo para ver aparecer tendencias aquí."
+    "noDataDesc": "Genere más informes a lo largo del tiempo para ver aparecer tendencias aquí.",
+    "unavailable": "No se pudo determinar la tendencia",
+    "sinceStart": "desde el inicio"
   },
   "onboarding": {
     "welcome": {
@@ -892,5 +900,109 @@
     "emailSent": "Se ha enviado una copia a tu correo",
     "generationStarted": "Generación de Informe Iniciada",
     "generationStartedDesc": "Estamos generando su informe en segundo plano. Se le notificará cuando esté listo."
+  },
+  "verifyEmail": {
+    "title": "Verificacion de correo",
+    "loadingDescription": "Espera mientras verificamos tu correo...",
+    "successDescription": "Tu cuenta ha sido verificada!",
+    "errorDescription": "No hemos podido verificar tu correo.",
+    "verifyingMessage": "Verificando tu correo...",
+    "invalidToken": "Token de verificacion no valido o ausente.",
+    "successMessage": "Correo verificado correctamente!",
+    "errorMessage": "La verificacion del correo ha fallado.",
+    "connectionError": "No se pudo conectar con el servidor.",
+    "dashboard": "Ir al Dashboard",
+    "login": "Volver al Login"
+  },
+  "notFound": {
+    "title": "404 Pagina no encontrada",
+    "description": "No se ha encontrado la pagina solicitada."
+  },
+  "admin": {
+    "layout": {
+      "brand": "Radar Admin",
+      "subtitle": "Centro de control",
+      "signOut": "Cerrar sesion",
+      "navigation": {
+        "overview": "Resumen",
+        "users": "Usuarios",
+        "activity": "Actividad"
+      }
+    },
+    "dashboard": {
+      "title": "Resumen",
+      "welcomeBack": "Bienvenido de nuevo, {{name}}.",
+      "cards": {
+        "totalUsers": "Total de Usuarios",
+        "totalReports": "Total de Informes",
+        "businesses": "Negocios",
+        "topActivity": "Actividad Reciente",
+        "topActivityDesc": "Informes generados recientemente",
+        "conversionRate": "Tasa de Conversion",
+        "conversionRateDesc": "Busquedas a informes",
+        "marketDensity": "Densidad del Mercado",
+        "marketDensityDesc": "Promedio de competidores encontrados"
+      }
+    },
+    "users": {
+      "title": "Gestion de Usuarios",
+      "subtitle": "Gestiona usuarios, roles y permisos.",
+      "table": {
+        "title": "Usuarios",
+        "searchPlaceholder": "Buscar usuarios...",
+        "columns": {
+          "user": "Usuario",
+          "email": "Correo",
+          "role": "Rol",
+          "status": "Estado",
+          "joined": "Alta",
+          "actions": "Acciones"
+        },
+        "status": {
+          "verified": "Verificado",
+          "pending": "Pendiente"
+        }
+      },
+      "deleteDialog": {
+        "title": "Estas completamente seguro?",
+        "description": "Esta accion no se puede deshacer. Esto eliminara permanentemente la cuenta del usuario y borrara sus datos de nuestros servidores.",
+        "confirm": "Eliminar"
+      },
+      "toasts": {
+        "roleUpdated": "Rol actualizado correctamente",
+        "roleUpdateError": "No se pudo actualizar el rol",
+        "userDeleted": "Usuario eliminado correctamente",
+        "userDeleteError": "No se pudo eliminar el usuario"
+      }
+    },
+    "activity": {
+      "title": "Actividad en vivo",
+      "subtitle": "Flujo en tiempo real de lo que buscan los usuarios.",
+      "recentSearches": "Busquedas recientes",
+      "near": "cerca de",
+      "radius": "Radio: {{radius}}m",
+      "found": "{{count}} encontrados",
+      "empty": "No se ha registrado actividad reciente."
+    },
+    "charts": {
+      "apiUsage": "Uso y Costes de API del Sistema (30 dias)",
+      "noUsage": "No hay datos de uso disponibles.",
+      "apiUsageAxis": "Unidades de coste / tokens",
+      "googlePlaces": "Google Places (Llamadas)",
+      "openAi": "OpenAI (Tokens)",
+      "userGrowth": "Crecimiento de Usuarios (30 dias)",
+      "reportsGenerated": "Informes Generados (30 dias)",
+      "searchTypeDistribution": "Distribucion por Tipo de Busqueda",
+      "topLocations": "Ubicaciones Mas Buscadas"
+    },
+    "consumers": {
+      "title": "Principales Consumidores de la API",
+      "columns": {
+        "user": "Usuario",
+        "requests": "Solicitudes",
+        "cost": "Unid. de coste est."
+      },
+      "noData": "No hay datos de consumo disponibles."
+    }
   }
 }

@@ -8,7 +8,7 @@ test.describe('API Error Recovery', () => {
         });
 
         await page.goto('/');
-        await page.getByPlaceholder(/Rua de Belém/i).fill('Test St');
+        await page.getByTestId('input-quick-search-address').fill('Test St');
         await page.getByRole('button', { name: /Analyze|Analisar/i }).click();
 
         // Verify error message in UI (might be a toast or inline error)

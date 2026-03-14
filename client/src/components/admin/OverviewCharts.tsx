@@ -15,6 +15,7 @@ import {
     Legend
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTranslation } from "react-i18next";
 
 interface AnalyticsData {
     userGrowth: { date: string; count: number }[];
@@ -24,13 +25,14 @@ interface AnalyticsData {
 }
 
 export function OverviewCharts({ data }: { data: AnalyticsData }) {
+    const { t } = useTranslation();
     if (!data) return null;
 
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
             <Card className="col-span-1 shadow-sm">
                 <CardHeader>
-                    <CardTitle>User Growth (30 Days)</CardTitle>
+                    <CardTitle>{t("admin.charts.userGrowth")}</CardTitle>
                 </CardHeader>
                 <CardContent className="pl-2">
                     <ResponsiveContainer width="100%" height={350}>
@@ -74,7 +76,7 @@ export function OverviewCharts({ data }: { data: AnalyticsData }) {
 
             <Card className="col-span-1 shadow-sm">
                 <CardHeader>
-                    <CardTitle>Reports Generated (30 Days)</CardTitle>
+                    <CardTitle>{t("admin.charts.reportsGenerated")}</CardTitle>
                 </CardHeader>
                 <CardContent className="pl-2">
                     <ResponsiveContainer width="100%" height={350}>
@@ -109,7 +111,7 @@ export function OverviewCharts({ data }: { data: AnalyticsData }) {
             {data.typeDistribution && (
                 <Card className="col-span-1 shadow-sm">
                     <CardHeader>
-                        <CardTitle>Search Type Distribution</CardTitle>
+                        <CardTitle>{t("admin.charts.searchTypeDistribution")}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ResponsiveContainer width="100%" height={350}>
@@ -139,7 +141,7 @@ export function OverviewCharts({ data }: { data: AnalyticsData }) {
             {data.topLocations && (
                 <Card className="col-span-1 shadow-sm">
                     <CardHeader>
-                        <CardTitle>Top Searched Locations</CardTitle>
+                        <CardTitle>{t("admin.charts.topLocations")}</CardTitle>
                     </CardHeader>
                     <CardContent className="pl-2">
                         <ResponsiveContainer width="100%" height={350}>

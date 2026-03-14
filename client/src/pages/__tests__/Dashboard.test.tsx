@@ -45,7 +45,16 @@ import { apiRequest } from "@/lib/queryClient";
 
 // Mock components
 vi.mock("@/components/ThemeToggle", () => ({ ThemeToggle: () => <div>ThemeToggle</div> }));
-vi.mock("@/components/LanguageSelector", () => ({ LanguageSelector: () => <div>LanguageSelector</div> }));
+vi.mock("@/components/LanguageSelector", () => ({
+    LanguageSelector: () => <div>LanguageSelector</div>,
+    languages: [
+        { code: "en", abbr: "EN" },
+        { code: "pt", abbr: "PT" },
+        { code: "es", abbr: "ES" },
+        { code: "fr", abbr: "FR" },
+        { code: "de", abbr: "DE" },
+    ],
+}));
 vi.mock("@/components/BusinessList", () => ({
     BusinessList: ({ onDelete }: any) => (
         <div>
@@ -450,4 +459,3 @@ describe("Dashboard", () => {
         });
     });
 });
-

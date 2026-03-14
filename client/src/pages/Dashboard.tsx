@@ -14,7 +14,7 @@ import { TrendsDashboard } from "@/components/TrendsDashboard";
 import { OnboardingTour } from "@/components/OnboardingTour";
 import { ReportNotification } from "@/components/ReportNotification";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { LanguageSelector } from "@/components/LanguageSelector";
+import { LanguageSelector, languages } from "@/components/LanguageSelector";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -60,14 +60,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { usePricingModal } from "@/context/PricingModalContext";
+import { isDisplayableAddress } from "@/lib/location";
 
-const analysisSchema = z.object({
-  address: z.string().min(1, "Address is required"),
-  type: z.string().min(1, "Business type is required"),
-  radius: z.union([z.string(), z.number()]).transform((val) => typeof val === 'string' ? parseInt(val, 10) : val),
-});
-
-type AnalysisFormValues = z.infer<typeof analysisSchema>;
+type AnalysisFormValues = {
+  address: string;
+  type: string;
+  radius: string | number;
+};
 
 const toFiniteCoordinate = (value: unknown): number | null => {
   if (typeof value === "number" && Number.isFinite(value)) {
@@ -172,7 +171,13 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab");
-    return tab === "history" || tab === "businesses" ? tab : "businesses";
+    return tab === "history" || tab === "businesses" || tab === "trends" ? tab : "businesses";
+  });
+
+  const analysisSchema = z.object({
+    address: z.string().min(1, t("validation.required")),
+    type: z.string().min(1, t("validation.required")),
+    radius: z.union([z.string(), z.number()]).transform((val) => typeof val === 'string' ? parseInt(val, 10) : val),
   });
 
   // Analysis Form
@@ -409,26 +414,24 @@ export default function Dashboard() {
 
           if (response.ok) {
             const data = await response.json();
-            if (data.address) {
+            if (isDisplayableAddress(data.address)) {
               analysisForm.setValue("address", data.address);
-              toast({
-                title: t("addressSearch.locationObtained"),
-                description: t("addressSearch.locationObtainedDesc"),
-              });
             } else {
-              throw new Error("No address found");
+              analysisForm.setValue("address", t("addressSearch.usingCurrentLocation"));
             }
           } else {
-            throw new Error("Reverse geocoding failed");
+            analysisForm.setValue("address", t("addressSearch.usingCurrentLocation"));
           }
-        } catch (e) {
-          // Error - Clear form and show toast
-          analysisForm.setValue("address", "");
-          setManualCoordinates(null);
+
           toast({
-            title: t("toast.error.title"),
+            title: t("addressSearch.locationObtained"),
+            description: t("addressSearch.locationObtainedDesc"),
+          });
+        } catch (e) {
+          analysisForm.setValue("address", t("addressSearch.usingCurrentLocation"));
+          toast({
+            title: t("addressSearch.locationObtained"),
             description: t("addressSearch.locationUnavailable"),
-            variant: "destructive",
           });
         }
       },
@@ -496,21 +499,21 @@ export default function Dashboard() {
             <Button
               variant="ghost"
               size="icon"
-              title="Subscrição"
+              title={t("settings.subscription.title")}
               onClick={openPricing}
             >
               <Star className="h-5 w-5 text-amber-500" />
-              <span className="sr-only">Subscrição</span>
+              <span className="sr-only">{t("settings.subscription.title")}</span>
             </Button>
             <Link href="/settings">
               <Button
                 variant="ghost"
                 size="icon"
-                title="Definições"
+                title={t("settings.title")}
                 data-tour="settings"
               >
                 <Settings className="h-5 w-5" />
-                <span className="sr-only">Definições</span>
+                <span className="sr-only">{t("settings.title")}</span>
               </Button>
             </Link>
             <Button
@@ -533,7 +536,7 @@ export default function Dashboard() {
                 <Button variant="ghost" size="icon" data-testid="mobile-menu-trigger" className="relative w-10 h-10">
                   <Menu className={`h-6 w-6 transition-all duration-300 absolute ${isMobileMenuOpen ? "opacity-0 rotate-90 scale-0" : "opacity-100 rotate-0 scale-100"}`} />
                   <X className={`h-6 w-6 transition-all duration-300 absolute ${isMobileMenuOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-0"}`} />
-                  <span className="sr-only">Menu</span>
+                  <span className="sr-only">{t("common.menu")}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
@@ -565,33 +568,23 @@ export default function Dashboard() {
                   </DropdownMenuSubTrigger>
                   <DropdownMenuPortal>
                     <DropdownMenuSubContent>
-                      <DropdownMenuItem onClick={() => i18n.changeLanguage("en")} className="h-10 cursor-pointer">
-                        <span>English</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => i18n.changeLanguage("pt")} className="h-10 cursor-pointer">
-                        <span>Português</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => i18n.changeLanguage("es")} className="h-10 cursor-pointer">
-                        <span>Español</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => i18n.changeLanguage("fr")} className="h-10 cursor-pointer">
-                        <span>Français</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => i18n.changeLanguage("de")} className="h-10 cursor-pointer">
-                        <span>Deutsch</span>
-                      </DropdownMenuItem>
+                      {languages.map((lang) => (
+                        <DropdownMenuItem key={lang.code} onClick={() => i18n.changeLanguage(lang.code)} className="h-10 cursor-pointer">
+                          <span>{t(`language.${lang.code}`)}</span>
+                        </DropdownMenuItem>
+                      ))}
                     </DropdownMenuSubContent>
                   </DropdownMenuPortal>
                 </DropdownMenuSub>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={openPricing} className="h-10 cursor-pointer">
                   <Star className="mr-2 h-4 w-4 text-amber-500" />
-                  <span>Subscrição</span>
+                  <span>{t("settings.subscription.title")}</span>
                 </DropdownMenuItem>
                 <Link href="/settings">
                   <DropdownMenuItem className="h-10 cursor-pointer">
                     <Settings className="mr-2 h-4 w-4" />
-                    <span>Definições</span>
+                    <span>{t("settings.title")}</span>
                   </DropdownMenuItem>
                 </Link>
                 <DropdownMenuSeparator />

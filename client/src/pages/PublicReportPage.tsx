@@ -62,7 +62,7 @@ export default function PublicReportPage() {
                     <CardContent className="flex flex-col gap-4">
                         <Button asChild className="w-full">
                             <Link href="/">
-                                {t("common.backToHome")}
+                                {t("auth.backToHome")}
                             </Link>
                         </Button>
                     </CardContent>
@@ -77,10 +77,10 @@ export default function PublicReportPage() {
             <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container flex h-14 items-center justify-between">
                     <div className="flex items-center gap-2 font-bold text-xl">
-                        Competitor Watcher
+                        {t("landing.brandName")}
                     </div>
                     <Button size="sm" asChild>
-                        <Link href="/auth?mode=register">
+                        <Link href="/register">
                             {t("previewReport.benefits.signupToSave")} <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
                     </Button>
@@ -94,7 +94,7 @@ export default function PublicReportPage() {
                         <div>
                             <h1 className="text-3xl font-bold tracking-tight">{report.businessName}</h1>
                             <p className="text-muted-foreground">
-                                {t("report.view.generatedOn")} {new Date(report.generatedAt).toLocaleDateString()}
+                                {t("report.view.dateLabel")} {new Date(report.generatedAt).toLocaleDateString()}
                             </p>
                         </div>
                     </div>
@@ -140,7 +140,7 @@ export default function PublicReportPage() {
                         {t("report.public.ctaDesc")}
                     </p>
                     <Button size="lg" asChild className="mt-4">
-                        <Link href="/auth?mode=register">
+                        <Link href="/register">
                             {t("previewReport.benefits.signupToSave")}
                         </Link>
                     </Button>
@@ -151,7 +151,7 @@ export default function PublicReportPage() {
             <footer className="py-6 md:px-8 md:py-0">
                 <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
                     <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-                        Built by Competitor Watcher AI.
+                        {t("report.view.generatedBy")}
                     </p>
                 </div>
             </footer>

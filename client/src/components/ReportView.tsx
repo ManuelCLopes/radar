@@ -364,11 +364,11 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
           <form onSubmit={handleEmailSubmit}>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="email">{t("common.email")}</Label>
+                <Label htmlFor="email">{t("auth.email")}</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="colleague@example.com"
+                  placeholder={t("auth.email")}
                   value={emailTo}
                   onChange={(e) => setEmailTo(e.target.value)}
                 />

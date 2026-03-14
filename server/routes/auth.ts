@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { storage } from "../storage";
 import { log } from "../log";
+import { getAppBaseUrl } from "../urls";
 
 export function registerAuthRoutes(app: Express) {
     // Password reset routes
@@ -43,7 +44,7 @@ export function registerAuthRoutes(app: Express) {
             });
 
             // Generate reset link
-            const resetLink = `${req.protocol}://${req.get("host")}/reset-password/${token}`;
+            const resetLink = `${getAppBaseUrl(req)}/reset-password/${token}`;
 
             // Send email
             const { html, text } = generatePasswordResetEmail(resetLink, email, userLang);

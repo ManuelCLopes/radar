@@ -37,7 +37,6 @@ const reverseGeocodeWithNominatim = async (latitude: number, longitude: number):
         return null;
     }
 };
-
 export function registerSearchRoutes(app: Express) {
     app.post("/api/quick-search", searchRateLimiter, async (req, res) => {
         try {

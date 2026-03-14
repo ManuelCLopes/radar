@@ -35,10 +35,10 @@ test.describe('Authentication Flow', () => {
         await page.goto('/register');
 
         // Fill registration form
-        await page.getByPlaceholder('John').fill('Test');
-        await page.getByPlaceholder('Doe').fill('User');
-        await page.getByPlaceholder('you@example.com').fill('test@example.com');
-        await page.getByPlaceholder('••••••••').fill('password123');
+        await page.getByLabel(/First Name|Primeiro Nome|Prénom/i).fill('Test');
+        await page.getByLabel(/Last Name|Último Nome|Nom/i).fill('User');
+        await page.getByLabel(/Email/i).fill('test@example.com');
+        await page.getByLabel(/Password|Palavra-passe|Mot de passe/i).fill('password123');
 
         // Submit
         await page.click('button[type="submit"]');
@@ -71,8 +71,8 @@ test.describe('Authentication Flow', () => {
         await page.goto('/login');
 
         // Fill login form
-        await page.getByPlaceholder('you@example.com').fill('test@example.com');
-        await page.getByPlaceholder('••••••••').fill('password123');
+        await page.getByLabel(/Email/i).fill('test@example.com');
+        await page.getByLabel(/Password|Palavra-passe|Mot de passe/i).fill('password123');
 
         // Submit
         await page.click('button[type="submit"]');

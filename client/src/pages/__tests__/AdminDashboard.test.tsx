@@ -21,6 +21,18 @@ vi.mock("wouter", () => ({
 vi.mock("react-i18next", () => ({
     useTranslation: () => ({ t: (key: string) => key }),
 }));
+vi.mock("@/components/layouts/AdminLayout", () => ({
+    default: ({ children }: { children: React.ReactNode }) => <div data-testid="admin-layout">{children}</div>,
+}));
+vi.mock("@/components/admin/OverviewCharts", () => ({
+    OverviewCharts: () => <div data-testid="overview-charts" />,
+}));
+vi.mock("@/components/admin/ApiUsageChart", () => ({
+    ApiUsageChart: () => <div data-testid="api-usage-chart" />,
+}));
+vi.mock("@/components/admin/TopConsumersTable", () => ({
+    TopConsumersTable: () => <div data-testid="top-consumers-table" />,
+}));
 
 describe("AdminDashboard", () => {
     const mockSetLocation = vi.fn();
@@ -91,11 +103,14 @@ describe("AdminDashboard", () => {
 
         render(<AdminDashboard />);
 
-        expect(screen.getByRole("heading", { name: "Overview" })).toBeInTheDocument();
-        expect(screen.getByText("Total Users")).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "admin.dashboard.title" })).toBeInTheDocument();
+        expect(screen.getByText("admin.dashboard.cards.totalUsers")).toBeInTheDocument();
         expect(screen.getByText("100")).toBeInTheDocument();
         expect(screen.getByText("50")).toBeInTheDocument();
         expect(screen.getByText("20")).toBeInTheDocument();
+        expect(screen.getByTestId("overview-charts")).toBeInTheDocument();
+        expect(screen.getByTestId("api-usage-chart")).toBeInTheDocument();
+        expect(screen.getByTestId("top-consumers-table")).toBeInTheDocument();
     });
 
     it("should render recent reports table", () => {
@@ -124,12 +139,12 @@ describe("AdminDashboard", () => {
 
         render(<AdminDashboard />);
 
-        expect(screen.getByText("Top Activity")).toBeInTheDocument();
+        expect(screen.getByText("admin.dashboard.cards.topActivity")).toBeInTheDocument();
         // Check for count in Top Activity card
         expect(screen.getByText("1")).toBeInTheDocument();
 
         // Check for new metric cards
-        expect(screen.getByText("Conversion Rate")).toBeInTheDocument();
-        expect(screen.getByText("Market Density")).toBeInTheDocument();
+        expect(screen.getByText("admin.dashboard.cards.conversionRate")).toBeInTheDocument();
+        expect(screen.getByText("admin.dashboard.cards.marketDensity")).toBeInTheDocument();
     });
 });

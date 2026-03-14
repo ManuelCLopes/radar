@@ -1,6 +1,12 @@
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { TopConsumersTable } from "../TopConsumersTable";
+
+vi.mock("react-i18next", () => ({
+    useTranslation: () => ({
+        t: (key: string) => key,
+    }),
+}));
 
 describe("TopConsumersTable", () => {
     const mockData = [
@@ -24,15 +30,15 @@ describe("TopConsumersTable", () => {
 
     it("renders table headers", () => {
         render(<TopConsumersTable data={[]} />);
-        expect(screen.getByText("Top API Consumers")).toBeInTheDocument();
-        expect(screen.getByText("User")).toBeInTheDocument();
-        expect(screen.getByText("Requests")).toBeInTheDocument();
-        expect(screen.getByText("Est. Cost Units")).toBeInTheDocument();
+        expect(screen.getByText("admin.consumers.title")).toBeInTheDocument();
+        expect(screen.getByText("admin.consumers.columns.user")).toBeInTheDocument();
+        expect(screen.getByText("admin.consumers.columns.requests")).toBeInTheDocument();
+        expect(screen.getByText("admin.consumers.columns.cost")).toBeInTheDocument();
     });
 
     it("renders empty state when no data", () => {
         render(<TopConsumersTable data={[]} />);
-        expect(screen.getByText("No consumer data available.")).toBeInTheDocument();
+        expect(screen.getByText("admin.consumers.noData")).toBeInTheDocument();
     });
 
     it("renders user rows correctly", () => {
@@ -50,6 +56,6 @@ describe("TopConsumersTable", () => {
 
     it("handles null data gracefully", () => {
         render(<TopConsumersTable data={null as any} />);
-        expect(screen.getByText("No consumer data available.")).toBeInTheDocument();
+        expect(screen.getByText("admin.consumers.noData")).toBeInTheDocument();
     });
 });
