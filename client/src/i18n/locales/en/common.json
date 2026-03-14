@@ -419,8 +419,9 @@
     "perMonth": "/month"
   },
   "quickSearch": {
-    "title": "Discover Your Local Competition",
-    "subtitle": "Analyze competitors in any location instantly",
+    "title": "Competitor Analysis for Local Businesses",
+    "subtitle": "Run instant competitor research and competitive analysis in any location",
+    "seoIntent": "Competitor Watcher is a free competitor analysis tool and competitive intelligence platform for local businesses. Compare nearby competitors, track market shifts, and get actionable recommendations.",
     "addressPlaceholder": "Enter business address",
     "selectType": "Business type",
     "selectRadius": "Search radius",

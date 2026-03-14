@@ -420,8 +420,9 @@
     "perMonth": "/mês"
   },
   "quickSearch": {
-    "title": "Descubra a Sua Concorrência Local",
-    "subtitle": "Analise concorrentes em qualquer localização instantaneamente",
+    "title": "Análise de Concorrência para Negócios Locais",
+    "subtitle": "Faça análise competitiva em qualquer localização em segundos",
+    "seoIntent": "O Competitor Watcher é uma ferramenta gratuita de análise da concorrência e inteligência competitiva para negócios locais. Compare concorrentes próximos, acompanhe mudanças no mercado e obtenha recomendações acionáveis.",
     "addressPlaceholder": "Introduza a morada do negócio",
     "selectType": "Tipo de negócio",
     "selectRadius": "Raio de pesquisa",

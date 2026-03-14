@@ -128,6 +128,29 @@ describe("CompetitorMap", () => {
         expect(markers.length).toBe(2);
     });
 
+    it("should handle numeric string coordinates", () => {
+        const competitors = [
+            {
+                name: "String Coord Comp",
+                address: "Rua Teste",
+                latitude: "40.73",
+                longitude: "-74.03"
+            } as any
+        ];
+
+        render(
+            <CompetitorMap
+                {...defaultProps}
+                center={{ lat: 40.7 as any, lng: -74.0 as any }}
+                competitors={competitors}
+            />
+        );
+
+        expect(screen.getByText("String Coord Comp")).toBeInTheDocument();
+        const markers = screen.getAllByTestId("marker");
+        expect(markers.length).toBe(2);
+    });
+
     it("should display rating in competitor popup when available", () => {
         const competitors = [
             { name: "Rated Comp", address: "Test St", latitude: 40.71, longitude: -74.01, rating: 4.5, userRatingsTotal: 200 }

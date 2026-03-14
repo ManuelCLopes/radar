@@ -1,6 +1,92 @@
 import type { Express, Request } from "express";
 import { getAppBaseUrl } from "../urls";
 
+function buildRobotsTxt(baseUrl: string): string {
+    return `User-agent: *
+Allow: /
+Allow: /login
+Allow: /register
+Allow: /support
+Allow: /privacy-policy
+Allow: /cookie-policy
+Allow: /llms.txt
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+Disallow: /r/
+
+Sitemap: ${baseUrl}/sitemap.xml
+`;
+}
+
+function buildSitemapXml(baseUrl: string): string {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${baseUrl}/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/login</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/register</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/support</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/privacy-policy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/cookie-policy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/llms.txt</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>`;
+}
+
+function buildLlmsTxt(baseUrl: string): string {
+    return `# Competitor Watcher
+> Competitor Watcher is a free competitor analysis platform for local businesses.
+
+## Summary
+- Product: AI-powered competitor analysis and competitive intelligence software.
+- Primary users: Local businesses, agencies, and operators who need fast market visibility.
+- Core use cases: competitor research, local market analysis, review intelligence, and tactical recommendations.
+
+## Public pages
+- Homepage: ${baseUrl}/
+- Support: ${baseUrl}/support
+- Privacy policy: ${baseUrl}/privacy-policy
+- Cookie policy: ${baseUrl}/cookie-policy
+- Sitemap: ${baseUrl}/sitemap.xml
+
+## Access notes
+- Main product workflows require authentication in /dashboard.
+- Public API routes live under /api/* and are rate-limited.
+
+## Keywords
+competitor analysis, competitive analysis tool, competitor analysis software, competitive intelligence, local market analysis, competitor tracking
+`;
+}
+
 export function registerStaticRoutes(app: Express) {
     // Proxy for Google Static Maps to avoid exposing API key
     app.get("/api/static-map", async (req, res) => {
@@ -101,41 +187,21 @@ export function registerStaticRoutes(app: Express) {
     });
 
     // SEO Endpoints
+    app.get("/llms.txt", (req, res) => {
+        const baseUrl = getBaseUrl(req);
+        res.type("text/plain");
+        res.send(buildLlmsTxt(baseUrl));
+    });
+
     app.get("/robots.txt", (req, res) => {
         const baseUrl = getAppBaseUrl(req as Request);
         res.type("text/plain");
-        res.send(`User-agent: *
-Allow: /
-Allow: /auth
-Allow: /login
-Allow: /register
-Disallow: /dashboard
-Disallow: /api/
-
-Sitemap: ${baseUrl}/sitemap.xml
-    `);
+        res.send(buildRobotsTxt(baseUrl));
     });
 
     app.get("/sitemap.xml", (req, res) => {
         const baseUrl = getAppBaseUrl(req as Request);
         res.type("application/xml");
-        res.send(`<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${baseUrl}/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/login</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/register</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-</urlset>`);
+        res.send(buildSitemapXml(baseUrl));
     });
 }

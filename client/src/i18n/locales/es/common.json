@@ -415,6 +415,7 @@
   "quickSearch": {
     "title": "Descubra a Sua Concorrência Local",
     "subtitle": "Analise concorrentes em qualquer localização instantaneamente",
+    "seoIntent": "Competitor Watcher es una herramienta gratuita de análisis de la competencia y una plataforma de inteligencia competitiva para negocios locales. Compara competidores cercanos, sigue los cambios del mercado y obtén recomendaciones prácticas.",
     "addressPlaceholder": "Introduza a morada do negócio",
     "selectType": "Tipo de negócio",
     "selectRadius": "Raio de pesquisa",

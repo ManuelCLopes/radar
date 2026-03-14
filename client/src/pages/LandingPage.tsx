@@ -29,6 +29,22 @@ export default function LandingPage() {
   const { isAuthenticated, isLoading } = useAuth();
   const { t, i18n } = useTranslation();
   const { openPricing } = usePricingModal();
+  const language = i18n?.language ?? "en";
+  const siteName = t("landing.brandName");
+  const siteUrl = "https://competitorwatcher.pt";
+  const canonicalUrl = `${siteUrl}/`;
+  const seoTitle = `${siteName} - ${t("quickSearch.title")}`;
+  const seoDescription = t("quickSearch.subtitle");
+  const ogLocale =
+    language === "pt"
+      ? "pt_PT"
+      : language === "es"
+        ? "es_ES"
+        : language === "fr"
+          ? "fr_FR"
+          : language === "de"
+            ? "de_DE"
+            : "en_US";
 
   // Quick search state
   const [isSearching, setIsSearching] = useState(false);
@@ -206,37 +222,52 @@ export default function LandingPage() {
   return (
     <div className="landing-page">
       <Helmet>
-        <title>{`${t("landing.brandName")} - ${t("quickSearch.title")}`}</title>
-        <meta name="description" content={t("quickSearch.subtitle")} />
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <link rel="canonical" href={canonicalUrl} />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://competitorwatcher.pt/" />
-        <meta property="og:title" content={`${t("landing.brandName")} - ${t("quickSearch.title")}`} />
-        <meta property="og:description" content={t("quickSearch.subtitle")} />
-        <meta property="og:image" content="https://competitorwatcher.pt/og-image.png" />
+        <meta property="og:site_name" content={siteName} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:image" content={`${siteUrl}/og-image.png`} />
+        <meta property="og:locale" content={ogLocale} />
 
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://competitorwatcher.pt/" />
-        <meta property="twitter:title" content={`${t("landing.brandName")} - ${t("quickSearch.title")}`} />
-        <meta property="twitter:description" content={t("quickSearch.subtitle")} />
-        <meta property="twitter:image" content="https://competitorwatcher.pt/og-image.png" />
+        <meta property="twitter:url" content={canonicalUrl} />
+        <meta property="twitter:title" content={seoTitle} />
+        <meta property="twitter:description" content={seoDescription} />
+        <meta property="twitter:image" content={`${siteUrl}/og-image.png`} />
 
         {/* Structured Data */}
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            "name": "Competitor Watcher",
+            "name": siteName,
             "applicationCategory": "BusinessApplication",
             "operatingSystem": "Web",
+            "url": canonicalUrl,
             "offers": {
               "@type": "Offer",
               "price": "0",
               "priceCurrency": "EUR"
             },
-            "description": t("quickSearch.subtitle")
+            "description": seoDescription
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": siteName,
+            "url": canonicalUrl,
+            "description": seoDescription,
+            "inLanguage": ["en", "pt", "es", "fr", "de"]
           })}
         </script>
       </Helmet>
@@ -245,7 +276,7 @@ export default function LandingPage() {
         <div className="landing-container">
           <div className="landing-header-brand">
             <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-              <img src="/logo.png" alt="Competitor Watcher" className="h-14 w-auto" />
+              <img src="/logo.png" alt={siteName} className="h-14 w-auto" />
             </Link>
           </div>
           <div className="landing-header-actions">
@@ -282,6 +313,9 @@ export default function LandingPage() {
           </h1>
           <p className="hero-subheadline" data-testid="hero-subheadline">
             {t('quickSearch.subtitle')}
+          </p>
+          <p className="hero-intent-text" data-testid="hero-intent-text">
+            {t("quickSearch.seoIntent")}
           </p>
 
           {/* Quick Search Form */}
