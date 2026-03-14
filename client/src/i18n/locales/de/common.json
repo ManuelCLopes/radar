@@ -303,7 +303,10 @@
     "emailSentDesc": "Prüfen Sie Ihren Posteingang (und Spam), um den Link zu finden.",
     "errorSendingEmail": "Fehler beim Senden der E-Mail",
     "connectionError": "Verbindungsfehler",
-    "connectionErrorDesc": "Verbindung zum Server fehlgeschlagen."
+    "connectionErrorDesc": "Verbindung zum Server fehlgeschlagen.",
+    "close": "Schliessen",
+    "menu": "Menue",
+    "edit": "Bearbeiten"
   },
   "addressSearch": {
     "enterAddress": "Por favor, introduza uma morada para pesquisar",
@@ -390,7 +393,8 @@
     "errors": {
       "invalidCredentials": "O email ou a palavra-passe estão incorretos.",
       "useGoogle": "Por favor, usa o login com Google para esta conta",
-      "generic": "Ocorreu um erro. Por favor, tenta novamente."
+      "generic": "Ocorreu um erro. Por favor, tenta novamente.",
+      "googleUnavailable": "Die Google-Anmeldung ist fuer diese Bereitstellung nicht konfiguriert."
     },
     "continue": "Continuar",
     "back": "Voltar",
@@ -411,6 +415,7 @@
   "quickSearch": {
     "title": "Descubra a Sua Concorrência Local",
     "subtitle": "Analise concorrentes em qualquer localização instantaneamente",
+    "seoIntent": "Competitor Watcher ist ein kostenloses Tool zur Wettbewerbsanalyse und eine Competitive-Intelligence-Plattform für lokale Unternehmen. Vergleiche nahegelegene Wettbewerber, verfolge Marktveränderungen und erhalte praktische Empfehlungen.",
     "addressPlaceholder": "Introduza a morada do negócio",
     "selectType": "Tipo de negócio",
     "selectRadius": "Raio de pesquisa",
@@ -757,7 +762,8 @@
       "error": {
         "title": "Erro",
         "delete": "Não foi possível remover a conta. Tente novamente.",
-        "language": "Falha ao guardar a preferência de idioma."
+        "language": "Falha ao guardar a preferência de idioma.",
+        "billingPortal": "Das Abrechnungsportal konnte nicht geoeffnet werden."
       }
     }
   },
@@ -857,7 +863,9 @@
     "yourRating": "Ihre Bewertung",
     "competitorCount": "Wettbewerber",
     "noData": "Noch keine Trenddaten",
-    "noDataDesc": "Generieren Sie im Laufe der Zeit mehr Berichte, um hier Trends zu sehen."
+    "noDataDesc": "Generieren Sie im Laufe der Zeit mehr Berichte, um hier Trends zu sehen.",
+    "unavailable": "Trend konnte nicht bestimmt werden",
+    "sinceStart": "seit dem Start"
   },
   "onboarding": {
     "welcome": {
@@ -891,5 +899,109 @@
     "emailSent": "Eine Kopie wurde an Ihre E-Mail gesendet",
     "generationStarted": "Berichterstellung gestartet",
     "generationStartedDesc": "Wir erstellen Ihren Bericht im Hintergrund. Sie werden benachrichtigt, sobald er fertig ist."
+  },
+  "verifyEmail": {
+    "title": "E-Mail-Bestaetigung",
+    "loadingDescription": "Bitte warten Sie, waehrend wir Ihre E-Mail bestaetigen...",
+    "successDescription": "Ihr Konto wurde bestaetigt!",
+    "errorDescription": "Ihre E-Mail konnte nicht bestaetigt werden.",
+    "verifyingMessage": "Ihre E-Mail wird bestaetigt...",
+    "invalidToken": "Ungueltiger oder fehlender Bestaetigungs-Token.",
+    "successMessage": "E-Mail erfolgreich bestaetigt!",
+    "errorMessage": "Die E-Mail-Bestaetigung ist fehlgeschlagen.",
+    "connectionError": "Verbindung zum Server konnte nicht hergestellt werden.",
+    "dashboard": "Zum Dashboard",
+    "login": "Zurueck zum Login"
+  },
+  "notFound": {
+    "title": "404 Seite nicht gefunden",
+    "description": "Die angeforderte Seite wurde nicht gefunden."
+  },
+  "admin": {
+    "layout": {
+      "brand": "Radar Admin",
+      "subtitle": "Leitstand",
+      "signOut": "Abmelden",
+      "navigation": {
+        "overview": "Ueberblick",
+        "users": "Benutzer",
+        "activity": "Aktivitaet"
+      }
+    },
+    "dashboard": {
+      "title": "Ueberblick",
+      "welcomeBack": "Willkommen zurueck, {{name}}.",
+      "cards": {
+        "totalUsers": "Benutzer gesamt",
+        "totalReports": "Berichte gesamt",
+        "businesses": "Unternehmen",
+        "topActivity": "Neueste Aktivitaet",
+        "topActivityDesc": "Zuletzt generierte Berichte",
+        "conversionRate": "Konversionsrate",
+        "conversionRateDesc": "Suchen zu Berichten",
+        "marketDensity": "Marktdichte",
+        "marketDensityDesc": "Durchschnittlich gefundene Wettbewerber"
+      }
+    },
+    "users": {
+      "title": "Benutzerverwaltung",
+      "subtitle": "Verwalten Sie Benutzer, Rollen und Berechtigungen.",
+      "table": {
+        "title": "Benutzer",
+        "searchPlaceholder": "Benutzer suchen...",
+        "columns": {
+          "user": "Benutzer",
+          "email": "E-Mail",
+          "role": "Rolle",
+          "status": "Status",
+          "joined": "Beitritt",
+          "actions": "Aktionen"
+        },
+        "status": {
+          "verified": "Verifiziert",
+          "pending": "Ausstehend"
+        }
+      },
+      "deleteDialog": {
+        "title": "Sind Sie absolut sicher?",
+        "description": "Diese Aktion kann nicht rueckgaengig gemacht werden. Das Benutzerkonto wird dauerhaft geloescht und seine Daten werden von unseren Servern entfernt.",
+        "confirm": "Loeschen"
+      },
+      "toasts": {
+        "roleUpdated": "Rolle erfolgreich aktualisiert",
+        "roleUpdateError": "Rolle konnte nicht aktualisiert werden",
+        "userDeleted": "Benutzer erfolgreich geloescht",
+        "userDeleteError": "Benutzer konnte nicht geloescht werden"
+      }
+    },
+    "activity": {
+      "title": "Live-Aktivitaet",
+      "subtitle": "Echtzeit-Stream dessen, wonach Benutzer suchen.",
+      "recentSearches": "Letzte Suchen",
+      "near": "in der Naehe von",
+      "radius": "Radius: {{radius}}m",
+      "found": "{{count}} gefunden",
+      "empty": "Keine aktuellen Aktivitaeten aufgezeichnet."
+    },
+    "charts": {
+      "apiUsage": "System-API-Nutzung und Kosten (30 Tage)",
+      "noUsage": "Keine Nutzungsdaten verfuegbar.",
+      "apiUsageAxis": "Kosteneinheiten / Tokens",
+      "googlePlaces": "Google Places (Aufrufe)",
+      "openAi": "OpenAI (Tokens)",
+      "userGrowth": "Benutzerwachstum (30 Tage)",
+      "reportsGenerated": "Erstellte Berichte (30 Tage)",
+      "searchTypeDistribution": "Verteilung nach Suchtyp",
+      "topLocations": "Am haeufigsten gesuchte Orte"
+    },
+    "consumers": {
+      "title": "Top-API-Nutzer",
+      "columns": {
+        "user": "Benutzer",
+        "requests": "Anfragen",
+        "cost": "Gesch. Kosteneinheiten"
+      },
+      "noData": "Keine Verbrauchsdaten verfuegbar."
+    }
   }
 }

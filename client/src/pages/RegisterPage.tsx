@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -38,6 +39,13 @@ export default function RegisterPage() {
     });
 
     const { registerMutation } = useAuth();
+
+    useEffect(() => {
+        const errorParam = new URLSearchParams(window.location.search).get("error");
+        if (errorParam === "google_not_configured") {
+            setError(t("auth.errors.googleUnavailable"));
+        }
+    }, [t]);
 
     const handleSubmit = async (data: RegisterFormValues) => {
         setError("");
@@ -77,24 +85,14 @@ export default function RegisterPage() {
 
             setLocation("/dashboard");
         } catch (err: any) {
-            setError(err.message || "Registration failed");
+            setError(err.message || t("toast.error.register"));
         } finally {
             setLoading(false);
         }
     };
 
-    const handleGoogleSignup = async () => {
-        try {
-            const response = await fetch("/api/auth/google");
-            if (!response.ok) {
-                const data = await response.json();
-                setError(data.message || "Google sign up is not available");
-                return;
-            }
-            window.location.href = "/api/auth/google";
-        } catch (err) {
-            setError("Google sign up is not available. Please use email/password.");
-        }
+    const handleGoogleSignup = () => {
+        window.location.href = "/api/auth/google";
     };
 
     return (
@@ -150,7 +148,7 @@ export default function RegisterPage() {
                                                 <FormControl>
                                                     <Input
                                                         {...field}
-                                                        placeholder="John"
+                                                        placeholder={t("auth.firstName")}
                                                         className="pl-9 h-11"
                                                     />
                                                 </FormControl>
@@ -170,7 +168,7 @@ export default function RegisterPage() {
                                                 <FormControl>
                                                     <Input
                                                         {...field}
-                                                        placeholder="Doe"
+                                                        placeholder={t("auth.lastName")}
                                                         className="pl-9 h-11"
                                                     />
                                                 </FormControl>
@@ -193,7 +191,7 @@ export default function RegisterPage() {
                                                 <Input
                                                     {...field}
                                                     type="email"
-                                                    placeholder="you@example.com"
+                                                    placeholder={t("auth.email")}
                                                     className="pl-10 h-12"
                                                 />
                                             </FormControl>

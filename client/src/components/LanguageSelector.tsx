@@ -10,11 +10,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 export const languages = [
-  { code: 'en', name: 'English', abbr: 'EN' },
-  { code: 'pt', name: 'Português', abbr: 'PT' },
-  { code: 'es', name: 'Español', abbr: 'ES' },
-  { code: 'fr', name: 'Français', abbr: 'FR' },
-  { code: 'de', name: 'Deutsch', abbr: 'DE' },
+  { code: 'en', abbr: 'EN' },
+  { code: 'pt', abbr: 'PT' },
+  { code: 'es', abbr: 'ES' },
+  { code: 'fr', abbr: 'FR' },
+  { code: 'de', abbr: 'DE' },
 ];
 
 export function LanguageSelector() {
@@ -59,7 +59,7 @@ export function LanguageSelector() {
             data-testid={`button-lang-${lang.code}`}
           >
             <span className="w-6 text-xs font-medium text-muted-foreground">{lang.abbr}</span>
-            {lang.name}
+            {t(`language.${lang.code}`)}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

@@ -6,6 +6,6 @@ test.describe('Error Pages', () => {
 
         // Verify 404 content
         await expect(page.getByText(/404 Page Not Found/i)).toBeVisible();
-        await expect(page.getByText(/Did you forget to add the page to the router/i)).toBeVisible();
+        await expect(page.getByText(/The page you requested could not be found/i)).toBeVisible();
     });
 });

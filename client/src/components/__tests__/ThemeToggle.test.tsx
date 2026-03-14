@@ -2,6 +2,12 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { ThemeToggle } from "../ThemeToggle";
 
+vi.mock("react-i18next", () => ({
+    useTranslation: () => ({
+        t: (key: string) => key,
+    }),
+}));
+
 describe("ThemeToggle", () => {
     beforeEach(() => {
         // Clear localStorage and reset DOM
@@ -44,6 +50,6 @@ describe("ThemeToggle", () => {
 
     it("should have accessible label", () => {
         render(<ThemeToggle />);
-        expect(screen.getByText("Toggle theme")).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "dashboard.menu.theme" })).toBeInTheDocument();
     });
 });

@@ -1,22 +1,5 @@
 import type { Express, Request } from "express";
-
-function getBaseUrl(req: Request): string {
-    const configuredUrl = process.env.PUBLIC_APP_URL;
-    if (configuredUrl) {
-        return configuredUrl.replace(/\/+$/, "");
-    }
-
-    const forwardedProto = req.headers["x-forwarded-proto"];
-    const protocol =
-        typeof forwardedProto === "string" ? forwardedProto.split(",")[0] : req.protocol;
-    const host = req.get("host");
-
-    if (!host) {
-        return "https://localhost";
-    }
-
-    return `${protocol}://${host}`;
-}
+import { getAppBaseUrl } from "../urls";
 
 function buildRobotsTxt(baseUrl: string): string {
     return `User-agent: *
@@ -205,19 +188,19 @@ export function registerStaticRoutes(app: Express) {
 
     // SEO Endpoints
     app.get("/llms.txt", (req, res) => {
-        const baseUrl = getBaseUrl(req);
+        const baseUrl = getAppBaseUrl(req as Request);
         res.type("text/plain");
         res.send(buildLlmsTxt(baseUrl));
     });
 
     app.get("/robots.txt", (req, res) => {
-        const baseUrl = getBaseUrl(req);
+        const baseUrl = getAppBaseUrl(req as Request);
         res.type("text/plain");
         res.send(buildRobotsTxt(baseUrl));
     });
 
     app.get("/sitemap.xml", (req, res) => {
-        const baseUrl = getBaseUrl(req);
+        const baseUrl = getAppBaseUrl(req as Request);
         res.type("application/xml");
         res.send(buildSitemapXml(baseUrl));
     });

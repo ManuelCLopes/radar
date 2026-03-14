@@ -10,7 +10,7 @@ test.describe('Responsive Design', () => {
         await expect(page.getByTestId('hero-headline')).toBeVisible();
 
         // Check if search form is stacked or usable
-        const searchInput = page.getByPlaceholder(/Rua de Belém/i);
+        const searchInput = page.getByTestId('input-quick-search-address');
         await expect(searchInput).toBeVisible();
         await searchInput.fill('Test Address');
 

@@ -8,7 +8,7 @@ test('visitor can perform quick search', async ({ page }) => {
 
 
     // 2. Fill Address
-    await page.getByPlaceholder("Rua de Belém 84-92, 1300-085 Lisboa").fill('Rua Augusta, Lisboa');
+    await page.getByTestId('input-quick-search-address').fill('Rua Augusta, Lisboa');
 
     // 3. Select Type (assuming default is restaurant or select it)
     // Just verify it's there, or select if needed. Default is usually set in state.
@@ -49,4 +49,3 @@ test('visitor can perform quick search', async ({ page }) => {
     // Wait for the modal content to appear
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 30000 });
 });
-
