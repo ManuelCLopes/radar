@@ -56,6 +56,7 @@ describe("LandingPage", () => {
 
         mockUseTranslation.mockReturnValue({
             t: (key: string) => key,
+            i18n: { language: "en" },
         });
 
         // Mock fetch
@@ -82,7 +83,7 @@ describe("LandingPage", () => {
         });
         renderWithProviders(<LandingPage />);
         expect(screen.queryByTestId("button-login")).not.toBeInTheDocument();
-        expect(screen.getByTitle("Dashboard")).toBeInTheDocument();
+        expect(screen.getByTitle("footer.links.dashboard")).toBeInTheDocument();
     });
 
     it("calls /api/analyze-address for authenticated users", async () => {
@@ -99,7 +100,7 @@ describe("LandingPage", () => {
         renderWithProviders(<LandingPage />);
 
         // Fill form
-        const addressInput = screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa");
+        const addressInput = screen.getByPlaceholderText("quickSearch.addressPlaceholder");
         fireEvent.change(addressInput, { target: { value: "Test Address" } });
 
         // Submit
@@ -130,7 +131,7 @@ describe("LandingPage", () => {
         renderWithProviders(<LandingPage />);
 
         // Fill form
-        const addressInput = screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa");
+        const addressInput = screen.getByPlaceholderText("quickSearch.addressPlaceholder");
         fireEvent.change(addressInput, { target: { value: "Test Address" } });
 
         // Submit
@@ -177,7 +178,7 @@ describe("LandingPage", () => {
         });
 
         await waitFor(() => {
-            const addressInput = screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa") as HTMLInputElement;
+            const addressInput = screen.getByPlaceholderText("quickSearch.addressPlaceholder") as HTMLInputElement;
             expect(addressInput.value).toBe("Detected Address, Lisbon");
         });
     });
@@ -248,7 +249,7 @@ describe("LandingPage", () => {
         fireEvent.click(locationButton);
 
         await waitFor(() => {
-            expect(screen.getByText("Location permission denied")).toBeInTheDocument();
+            expect(screen.getByText("addressSearch.locationDenied")).toBeInTheDocument();
         });
     });
 
@@ -273,9 +274,8 @@ describe("LandingPage", () => {
         fireEvent.click(locationButton);
 
         await waitFor(() => {
-            const addressInput = screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa") as HTMLInputElement;
-            // Fallback expected
-            expect(addressInput.value).toBe("38.700000, -9.100000");
+            const addressInput = screen.getByPlaceholderText("quickSearch.addressPlaceholder") as HTMLInputElement;
+            expect(addressInput.value).toBe("addressSearch.usingCurrentLocation");
         });
     });
 
@@ -301,9 +301,8 @@ describe("LandingPage", () => {
         fireEvent.click(locationButton);
 
         await waitFor(() => {
-            const addressInput = screen.getByPlaceholderText("Rua de Belém 84-92, 1300-085 Lisboa") as HTMLInputElement;
-            // Fallback expected
-            expect(addressInput.value).toBe("0.000000, 0.000000");
+            const addressInput = screen.getByPlaceholderText("quickSearch.addressPlaceholder") as HTMLInputElement;
+            expect(addressInput.value).toBe("addressSearch.usingCurrentLocation");
         });
     });
 });

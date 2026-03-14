@@ -302,7 +302,10 @@
     "emailSentDesc": "Vérifiez votre boîte de réception (et spams) pour trouver le lien.",
     "errorSendingEmail": "Erreur lors de l'envoi de l'e-mail",
     "connectionError": "Erreur de connexion",
-    "connectionErrorDesc": "Impossible de se connecter au serveur."
+    "connectionErrorDesc": "Impossible de se connecter au serveur.",
+    "close": "Fermer",
+    "menu": "Menu",
+    "edit": "Modifier"
   },
   "addressSearch": {
     "enterAddress": "Veuillez saisir une adresse à rechercher",
@@ -389,7 +392,8 @@
     "errors": {
       "invalidCredentials": "L'adresse e-mail ou le mot de passe saisi est incorrect.",
       "useGoogle": "Veuillez utiliser la connexion Google pour ce compte",
-      "generic": "Une erreur est survenue. Veuillez réessayer."
+      "generic": "Une erreur est survenue. Veuillez réessayer.",
+      "googleUnavailable": "La connexion Google n'est pas configuree pour ce deploiement."
     },
     "continue": "Continuer",
     "back": "Retour",
@@ -756,7 +760,8 @@
       "error": {
         "title": "Erreur",
         "delete": "Impossible de supprimer le compte. Veuillez réessayer.",
-        "language": "Échec de l'enregistrement de la préférence linguistique."
+        "language": "Échec de l'enregistrement de la préférence linguistique.",
+        "billingPortal": "Impossible d'ouvrir le portail de facturation."
       }
     }
   },
@@ -856,7 +861,9 @@
     "yourRating": "Votre Note",
     "competitorCount": "Concurrents",
     "noData": "Pas encore de données",
-    "noDataDesc": "Générez plus de rapports au fil du temps pour voir apparaître des tendances."
+    "noDataDesc": "Générez plus de rapports au fil du temps pour voir apparaître des tendances.",
+    "unavailable": "Impossible de determiner la tendance",
+    "sinceStart": "depuis le debut"
   },
   "onboarding": {
     "welcome": {
@@ -890,5 +897,109 @@
     "emailSent": "Une copie a été envoyée à votre email",
     "generationStarted": "Génération de rapport lancée",
     "generationStartedDesc": "Nous générons votre rapport en arrière-plan. Vous serez notifié lorsqu'il sera prêt."
+  },
+  "verifyEmail": {
+    "title": "Verification de l'email",
+    "loadingDescription": "Veuillez patienter pendant que nous verifions votre email...",
+    "successDescription": "Votre compte a ete verifie !",
+    "errorDescription": "Nous n'avons pas pu verifier votre email.",
+    "verifyingMessage": "Verification de votre email...",
+    "invalidToken": "Jeton de verification invalide ou manquant.",
+    "successMessage": "Email verifie avec succes !",
+    "errorMessage": "La verification de l'email a echoue.",
+    "connectionError": "Impossible de se connecter au serveur.",
+    "dashboard": "Aller au tableau de bord",
+    "login": "Retour au login"
+  },
+  "notFound": {
+    "title": "404 Page introuvable",
+    "description": "La page demandee est introuvable."
+  },
+  "admin": {
+    "layout": {
+      "brand": "Radar Admin",
+      "subtitle": "Centre de controle",
+      "signOut": "Se deconnecter",
+      "navigation": {
+        "overview": "Vue d'ensemble",
+        "users": "Utilisateurs",
+        "activity": "Activite"
+      }
+    },
+    "dashboard": {
+      "title": "Vue d'ensemble",
+      "welcomeBack": "Bon retour, {{name}}.",
+      "cards": {
+        "totalUsers": "Total Utilisateurs",
+        "totalReports": "Total Rapports",
+        "businesses": "Entreprises",
+        "topActivity": "Activite Recente",
+        "topActivityDesc": "Rapports generes recemment",
+        "conversionRate": "Taux de Conversion",
+        "conversionRateDesc": "Recherches vers rapports",
+        "marketDensity": "Densite du Marche",
+        "marketDensityDesc": "Moyenne de concurrents trouves"
+      }
+    },
+    "users": {
+      "title": "Gestion des Utilisateurs",
+      "subtitle": "Gerez les utilisateurs, roles et permissions.",
+      "table": {
+        "title": "Utilisateurs",
+        "searchPlaceholder": "Rechercher des utilisateurs...",
+        "columns": {
+          "user": "Utilisateur",
+          "email": "Email",
+          "role": "Role",
+          "status": "Statut",
+          "joined": "Inscription",
+          "actions": "Actions"
+        },
+        "status": {
+          "verified": "Verifie",
+          "pending": "En attente"
+        }
+      },
+      "deleteDialog": {
+        "title": "Etes-vous absolument sur ?",
+        "description": "Cette action est irreversible. Elle supprimera definitivement le compte utilisateur et retirera ses donnees de nos serveurs.",
+        "confirm": "Supprimer"
+      },
+      "toasts": {
+        "roleUpdated": "Role mis a jour avec succes",
+        "roleUpdateError": "Echec de la mise a jour du role",
+        "userDeleted": "Utilisateur supprime avec succes",
+        "userDeleteError": "Echec de la suppression de l'utilisateur"
+      }
+    },
+    "activity": {
+      "title": "Activite en direct",
+      "subtitle": "Flux en temps reel de ce que recherchent les utilisateurs.",
+      "recentSearches": "Recherches recentes",
+      "near": "pres de",
+      "radius": "Rayon : {{radius}}m",
+      "found": "{{count}} trouves",
+      "empty": "Aucune activite recente enregistree."
+    },
+    "charts": {
+      "apiUsage": "Utilisation et Couts des API du Systeme (30 jours)",
+      "noUsage": "Aucune donnee d'utilisation disponible.",
+      "apiUsageAxis": "Unites de cout / tokens",
+      "googlePlaces": "Google Places (Appels)",
+      "openAi": "OpenAI (Tokens)",
+      "userGrowth": "Croissance des Utilisateurs (30 jours)",
+      "reportsGenerated": "Rapports Generes (30 jours)",
+      "searchTypeDistribution": "Repartition par Type de Recherche",
+      "topLocations": "Lieux les Plus Recherches"
+    },
+    "consumers": {
+      "title": "Principaux Consommateurs d'API",
+      "columns": {
+        "user": "Utilisateur",
+        "requests": "Requetes",
+        "cost": "Unites de cout est."
+      },
+      "noData": "Aucune donnee de consommation disponible."
+    }
   }
 }

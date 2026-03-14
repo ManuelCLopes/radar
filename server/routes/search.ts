@@ -5,9 +5,6 @@ import { runReportForBusiness } from "../reports";
 import { isAuthenticated } from "../auth";
 import { searchRateLimiter } from "../middleware/rate-limit";
 
-const formatCoordinateAddress = (latitude: number, longitude: number) =>
-    `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
-
 export function registerSearchRoutes(app: Express) {
     app.post("/api/quick-search", searchRateLimiter, async (req, res) => {
         try {
@@ -134,7 +131,7 @@ export function registerSearchRoutes(app: Express) {
             }
 
             if (!hasGoogleApiKey()) {
-                return res.json({ address: formatCoordinateAddress(lat, lng) });
+                return res.status(503).json({ error: "Reverse geocoding is unavailable" });
             }
 
             const { reverseGeocode } = await import("../googlePlaces");

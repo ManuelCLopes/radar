@@ -310,7 +310,10 @@
     "emailSentDesc": "Verifique sua caixa de entrada (e spam) para encontrar o link.",
     "errorSendingEmail": "Erro ao enviar email",
     "connectionError": "Erro de conexão",
-    "connectionErrorDesc": "Não foi possível conectar ao servidor."
+    "connectionErrorDesc": "Não foi possível conectar ao servidor.",
+    "close": "Fechar",
+    "menu": "Menu",
+    "edit": "Editar"
   },
   "addressSearch": {
     "enterAddress": "Por favor, introduza uma morada para pesquisar",
@@ -397,7 +400,8 @@
     "errors": {
       "invalidCredentials": "O email ou a palavra-passe estão incorretos.",
       "useGoogle": "Por favor, usa o login com Google para esta conta",
-      "generic": "Ocorreu um erro. Por favor, tenta novamente."
+      "generic": "Ocorreu um erro. Por favor, tenta novamente.",
+      "googleUnavailable": "O inicio de sessao com Google nao esta configurado nesta instalacao."
     },
     "continue": "Continuar",
     "back": "Voltar",
@@ -764,7 +768,8 @@
       "error": {
         "title": "Erro",
         "delete": "Não foi possível remover a conta. Tente novamente.",
-        "language": "Falha ao guardar a preferência de idioma."
+        "language": "Falha ao guardar a preferência de idioma.",
+        "billingPortal": "Nao foi possivel abrir o portal de faturacao."
       }
     }
   },
@@ -864,7 +869,9 @@
     "yourRating": "Sua Classificação",
     "competitorCount": "Concorrentes",
     "noData": "Sem dados de tendências",
-    "noDataDesc": "Gere mais relatórios ao longo do tempo para ver as tendências aparecerem aqui."
+    "noDataDesc": "Gere mais relatórios ao longo do tempo para ver as tendências aparecerem aqui.",
+    "unavailable": "Nao foi possivel determinar a tendencia",
+    "sinceStart": "desde o inicio"
   },
   "onboarding": {
     "welcome": {
@@ -898,5 +905,109 @@
     "emailSent": "Uma cópia foi enviada para o seu email",
     "generationStarted": "Geração de Relatório Iniciada",
     "generationStartedDesc": "Estamos a gerar o seu relatório em segundo plano. Será notificado quando estiver pronto."
+  },
+  "verifyEmail": {
+    "title": "Verificacao de Email",
+    "loadingDescription": "Aguarde enquanto verificamos o seu email...",
+    "successDescription": "A sua conta foi verificada!",
+    "errorDescription": "Nao foi possivel verificar o seu email.",
+    "verifyingMessage": "A verificar o seu email...",
+    "invalidToken": "Token de verificacao invalido ou em falta.",
+    "successMessage": "Email verificado com sucesso!",
+    "errorMessage": "Falha na verificacao do email.",
+    "connectionError": "Erro ao ligar ao servidor.",
+    "dashboard": "Ir para o Dashboard",
+    "login": "Voltar ao Login"
+  },
+  "notFound": {
+    "title": "404 Pagina Nao Encontrada",
+    "description": "A pagina que pediu nao foi encontrada."
+  },
+  "admin": {
+    "layout": {
+      "brand": "Radar Admin",
+      "subtitle": "Centro de controlo",
+      "signOut": "Terminar sessao",
+      "navigation": {
+        "overview": "Visao geral",
+        "users": "Utilizadores",
+        "activity": "Atividade"
+      }
+    },
+    "dashboard": {
+      "title": "Visao geral",
+      "welcomeBack": "Bem-vindo de volta, {{name}}.",
+      "cards": {
+        "totalUsers": "Total de Utilizadores",
+        "totalReports": "Total de Relatorios",
+        "businesses": "Negocios",
+        "topActivity": "Atividade Recente",
+        "topActivityDesc": "Relatorios gerados recentemente",
+        "conversionRate": "Taxa de Conversao",
+        "conversionRateDesc": "Pesquisas para relatorios",
+        "marketDensity": "Densidade do Mercado",
+        "marketDensityDesc": "Media de concorrentes encontrados"
+      }
+    },
+    "users": {
+      "title": "Gestao de Utilizadores",
+      "subtitle": "Gerir utilizadores, funcoes e permissoes.",
+      "table": {
+        "title": "Utilizadores",
+        "searchPlaceholder": "Pesquisar utilizadores...",
+        "columns": {
+          "user": "Utilizador",
+          "email": "Email",
+          "role": "Funcao",
+          "status": "Estado",
+          "joined": "Entrada",
+          "actions": "Acoes"
+        },
+        "status": {
+          "verified": "Verificado",
+          "pending": "Pendente"
+        }
+      },
+      "deleteDialog": {
+        "title": "Tem a certeza absoluta?",
+        "description": "Esta acao nao pode ser anulada. Isto eliminara permanentemente a conta do utilizador e removera os seus dados dos nossos servidores.",
+        "confirm": "Eliminar"
+      },
+      "toasts": {
+        "roleUpdated": "Funcao atualizada com sucesso",
+        "roleUpdateError": "Falha ao atualizar a funcao",
+        "userDeleted": "Utilizador eliminado com sucesso",
+        "userDeleteError": "Falha ao eliminar o utilizador"
+      }
+    },
+    "activity": {
+      "title": "Atividade em Tempo Real",
+      "subtitle": "Fluxo em tempo real do que os utilizadores estao a pesquisar.",
+      "recentSearches": "Pesquisas Recentes",
+      "near": "perto de",
+      "radius": "Raio: {{radius}}m",
+      "found": "{{count}} encontrados",
+      "empty": "Sem atividade recente registada."
+    },
+    "charts": {
+      "apiUsage": "Utilizacao e Custos das APIs do Sistema (30 dias)",
+      "noUsage": "Sem dados de utilizacao disponiveis.",
+      "apiUsageAxis": "Unidades de custo / tokens",
+      "googlePlaces": "Google Places (Chamadas)",
+      "openAi": "OpenAI (Tokens)",
+      "userGrowth": "Crescimento de Utilizadores (30 dias)",
+      "reportsGenerated": "Relatorios Gerados (30 dias)",
+      "searchTypeDistribution": "Distribuicao por Tipo de Pesquisa",
+      "topLocations": "Locais Mais Pesquisados"
+    },
+    "consumers": {
+      "title": "Principais Consumidores da API",
+      "columns": {
+        "user": "Utilizador",
+        "requests": "Pedidos",
+        "cost": "Unid. de custo est."
+      },
+      "noData": "Sem dados de consumo disponiveis."
+    }
   }
 }

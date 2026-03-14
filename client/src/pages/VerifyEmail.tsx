@@ -4,23 +4,23 @@ import { useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 export default function VerifyEmail() {
     const [_, setLocation] = useLocation();
     // Parse query params manually since wouter doesn't have a hook for it yet
     const getSearchParams = () => new URLSearchParams(window.location.search);
     const token = getSearchParams().get("token");
-    const { toast } = useToast();
+    const { t } = useTranslation();
     const queryClient = useQueryClient();
 
     const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
-    const [message, setMessage] = useState("Verificando seu email...");
+    const [message, setMessage] = useState(t("verifyEmail.verifyingMessage"));
 
     useEffect(() => {
         if (!token) {
             setStatus("error");
-            setMessage("Token de verificação inválido ou ausente.");
+            setMessage(t("verifyEmail.invalidToken"));
             return;
         }
 
@@ -36,21 +36,21 @@ export default function VerifyEmail() {
 
                 if (res.ok) {
                     setStatus("success");
-                    setMessage("Email verificado com sucesso!");
+                    setMessage(t("verifyEmail.successMessage"));
                     // Refresh user session if logged in
                     queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
                 } else {
                     setStatus("error");
-                    setMessage(data.error || "Falha na verificação do email.");
+                    setMessage(data.error || t("verifyEmail.errorMessage"));
                 }
             } catch (error) {
                 setStatus("error");
-                setMessage("Erro ao conectar com o servidor.");
+                setMessage(t("verifyEmail.connectionError"));
             }
         };
 
         verify();
-    }, [token, queryClient]);
+    }, [token, queryClient, t]);
 
     const handleLogin = () => setLocation("/login");
     const handleDashboard = () => setLocation("/dashboard");
@@ -64,11 +64,11 @@ export default function VerifyEmail() {
                         {status === "success" && <CheckCircle2 className="h-6 w-6 text-green-600" />}
                         {status === "error" && <XCircle className="h-6 w-6 text-red-600" />}
                     </div>
-                    <CardTitle>Verificação de Email</CardTitle>
+                    <CardTitle>{t("verifyEmail.title")}</CardTitle>
                     <CardDescription>
-                        {status === "loading" && "Aguarde enquanto verificamos seu email..."}
-                        {status === "success" && "Sua conta foi verificada!"}
-                        {status === "error" && "Não foi possível verificar seu email."}
+                        {status === "loading" && t("verifyEmail.loadingDescription")}
+                        {status === "success" && t("verifyEmail.successDescription")}
+                        {status === "error" && t("verifyEmail.errorDescription")}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="text-center">
@@ -76,9 +76,9 @@ export default function VerifyEmail() {
                 </CardContent>
                 <CardFooter className="flex justify-center">
                     {status === "success" ? (
-                        <Button onClick={handleDashboard} className="w-full">Ir para o Dashboard</Button>
+                        <Button onClick={handleDashboard} className="w-full">{t("verifyEmail.dashboard")}</Button>
                     ) : status === "error" ? (
-                        <Button variant="outline" onClick={handleLogin} className="w-full">Voltar ao Login</Button>
+                        <Button variant="outline" onClick={handleLogin} className="w-full">{t("verifyEmail.login")}</Button>
                     ) : null}
                 </CardFooter>
             </Card>

@@ -4,22 +4,24 @@ import { LayoutDashboard, Users, Activity, Settings, LogOut, Menu } from "lucide
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useTranslation } from "react-i18next";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const [location] = useLocation();
     const { logoutMutation } = useAuth();
+    const { t } = useTranslation();
 
     const menuItems = [
-        { href: "/admin", icon: LayoutDashboard, label: "Overview" },
-        { href: "/admin/users", icon: Users, label: "Users" },
-        { href: "/admin/activity", icon: Activity, label: "Activity" },
+        { href: "/admin", icon: LayoutDashboard, label: t("admin.layout.navigation.overview") },
+        { href: "/admin/users", icon: Users, label: t("admin.layout.navigation.users") },
+        { href: "/admin/activity", icon: Activity, label: t("admin.layout.navigation.activity") },
     ];
 
     return (
         <div className="min-h-screen bg-gray-50/50 flex flex-col md:flex-row">
             {/* Mobile Header */}
             <header className="bg-white border-b border-gray-200 p-4 flex items-center justify-between md:hidden">
-                <span className="font-bold text-lg">Radar Admin</span>
+                <span className="font-bold text-lg">{t("admin.layout.brand")}</span>
                 <Sheet>
                     <SheetTrigger asChild>
                         <Button variant="ghost" size="icon">
@@ -28,8 +30,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </SheetTrigger>
                     <SheetContent side="left" className="w-64 p-0">
                         <div className="p-6">
-                            <h2 className="text-xl font-bold tracking-tight text-gray-900">Radar Admin</h2>
-                            <p className="text-sm text-gray-500">Mission Control</p>
+                            <h2 className="text-xl font-bold tracking-tight text-gray-900">{t("admin.layout.brand")}</h2>
+                            <p className="text-sm text-gray-500">{t("admin.layout.subtitle")}</p>
                         </div>
                         <nav className="flex-1 px-4 space-y-1">
                             {menuItems.map((item) => {
@@ -54,7 +56,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 onClick={() => logoutMutation.mutate()}
                             >
                                 <LogOut className="w-4 h-4 mr-2" />
-                                Sign Out
+                                {t("admin.layout.signOut")}
                             </Button>
                         </div>
                     </SheetContent>
@@ -64,8 +66,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Desktop Sidebar */}
             <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col h-screen sticky top-0">
                 <div className="p-6">
-                    <h1 className="text-xl font-bold tracking-tight text-gray-900">Radar Admin</h1>
-                    <p className="text-sm text-gray-500">Mission Control</p>
+                    <h1 className="text-xl font-bold tracking-tight text-gray-900">{t("admin.layout.brand")}</h1>
+                    <p className="text-sm text-gray-500">{t("admin.layout.subtitle")}</p>
                 </div>
 
                 <nav className="flex-1 px-4 space-y-1">
@@ -92,7 +94,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         onClick={() => logoutMutation.mutate()}
                     >
                         <LogOut className="w-4 h-4 mr-2" />
-                        Sign Out
+                        {t("admin.layout.signOut")}
                     </Button>
                 </div>
             </aside>

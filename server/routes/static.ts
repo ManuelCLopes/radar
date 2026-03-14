@@ -1,22 +1,5 @@
 import type { Express, Request } from "express";
-
-function getBaseUrl(req: Request): string {
-    const configuredUrl = process.env.PUBLIC_APP_URL;
-    if (configuredUrl) {
-        return configuredUrl.replace(/\/+$/, "");
-    }
-
-    const forwardedProto = req.headers["x-forwarded-proto"];
-    const protocol =
-        typeof forwardedProto === "string" ? forwardedProto.split(",")[0] : req.protocol;
-    const host = req.get("host");
-
-    if (!host) {
-        return "https://localhost";
-    }
-
-    return `${protocol}://${host}`;
-}
+import { getAppBaseUrl } from "../urls";
 
 export function registerStaticRoutes(app: Express) {
     // Proxy for Google Static Maps to avoid exposing API key
@@ -119,7 +102,7 @@ export function registerStaticRoutes(app: Express) {
 
     // SEO Endpoints
     app.get("/robots.txt", (req, res) => {
-        const baseUrl = getBaseUrl(req);
+        const baseUrl = getAppBaseUrl(req as Request);
         res.type("text/plain");
         res.send(`User-agent: *
 Allow: /
@@ -134,7 +117,7 @@ Sitemap: ${baseUrl}/sitemap.xml
     });
 
     app.get("/sitemap.xml", (req, res) => {
-        const baseUrl = getBaseUrl(req);
+        const baseUrl = getAppBaseUrl(req as Request);
         res.type("application/xml");
         res.send(`<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

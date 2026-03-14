@@ -172,8 +172,8 @@ export default function SettingsPage() {
         } catch (error) {
             console.error(error);
             toast({
-                title: "Error",
-                description: "Failed to open billing portal",
+                title: t("toast.error.title"),
+                description: t("settings.toast.error.billingPortal"),
                 variant: "destructive"
             });
             setIsLoadingPortal(false);
@@ -243,10 +243,10 @@ export default function SettingsPage() {
                             size="icon"
                             onClick={() => logoutMutation.mutate()}
                             className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20"
-                            title="Logout"
+                            title={t("dashboard.user.logout")}
                         >
                             <LogOut className="h-5 w-5" />
-                            <span className="sr-only">Logout</span>
+                            <span className="sr-only">{t("dashboard.user.logout")}</span>
                         </Button>
                     </div>
                 </div>
@@ -301,18 +301,18 @@ export default function SettingsPage() {
                                     onValueChange={handleLanguageChange}
                                 >
                                     <SelectTrigger className="w-full sm:w-[280px]" data-testid="settings-language-select">
-                                        <SelectValue placeholder="Select a language" />
+                                        <SelectValue placeholder={t("language.select")} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {languages.map((lang) => (
                                             <SelectItem key={lang.code} value={lang.code} data-testid={`settings-lang-${lang.code}`}>
-                                                {lang.name}
+                                                {t(`language.${lang.code}`)}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
                                 <span className="text-sm text-muted-foreground">
-                                    {t('settings.account.languageHint') || "This language will be used for your emails."}
+                                    {t('settings.account.languageHint')}
                                 </span>
                             </div>
                         </div>
