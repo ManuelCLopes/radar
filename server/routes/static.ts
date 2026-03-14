@@ -188,7 +188,7 @@ export function registerStaticRoutes(app: Express) {
 
     // SEO Endpoints
     app.get("/llms.txt", (req, res) => {
-        const baseUrl = getBaseUrl(req);
+        const baseUrl = getAppBaseUrl(req as Request);
         res.type("text/plain");
         res.send(buildLlmsTxt(baseUrl));
     });
