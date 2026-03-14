@@ -8,19 +8,134 @@ import { searchRateLimiter } from "../middleware/rate-limit";
 const formatCoordinateAddress = (latitude: number, longitude: number) =>
     `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
 
-const reverseGeocodeWithNominatim = async (latitude: number, longitude: number): Promise<string | null> => {
+const reverseGeocodeUserAgent = "competitor-watcher/1.0 (+https://competitorwatcher.pt)";
+
+const normalizeAddressPart = (value: unknown): string | null => {
+    if (typeof value !== "string") {
+        return null;
+    }
+
+    const trimmed = value.trim().replace(/\s+/g, " ");
+    return trimmed || null;
+};
+
+const firstAddressPart = (...values: unknown[]): string | null => {
+    for (const value of values) {
+        const normalized = normalizeAddressPart(value);
+        if (normalized) {
+            return normalized;
+        }
+    }
+
+    return null;
+};
+
+const joinAddressParts = (...parts: Array<string | null>): string | null => {
+    const uniqueParts: string[] = [];
+
+    for (const part of parts) {
+        if (!part) {
+            continue;
+        }
+
+        if (!uniqueParts.some((existing) => existing.toLowerCase() === part.toLowerCase())) {
+            uniqueParts.push(part);
+        }
+    }
+
+    return uniqueParts.length > 0 ? uniqueParts.join(", ") : null;
+};
+
+const buildReadableNominatimAddress = (data: any): string | null => {
+    const address = typeof data?.address === "object" && data.address !== null
+        ? data.address as Record<string, unknown>
+        : null;
+
+    if (!address) {
+        return normalizeAddressPart(data?.display_name);
+    }
+
+    const streetName = firstAddressPart(
+        address.road,
+        address.pedestrian,
+        address.footway,
+        address.cycleway,
+        address.path,
+        address.residential,
+        address.house_name,
+    );
+    const houseNumber = firstAddressPart(address.house_number);
+    const streetLine = streetName && houseNumber
+        ? `${streetName} ${houseNumber}`
+        : streetName || houseNumber;
+
+    const locality = firstAddressPart(
+        address.city,
+        address.town,
+        address.village,
+        address.hamlet,
+        address.municipality,
+        address.city_district,
+        address.suburb,
+        address.neighbourhood,
+        address.county,
+    );
+    const region = firstAddressPart(
+        address.state_district,
+        address.state,
+        address.region,
+    );
+    const country = firstAddressPart(address.country);
+
+    return joinAddressParts(
+        streetLine,
+        locality,
+        region,
+        country,
+    ) || normalizeAddressPart(data?.display_name);
+};
+
+const buildReadableBigDataCloudAddress = (data: any): string | null => {
+    const locality = firstAddressPart(data?.locality);
+    const city = firstAddressPart(data?.city);
+    const region = firstAddressPart(data?.principalSubdivision);
+    const country = firstAddressPart(data?.countryName);
+
+    return joinAddressParts(locality, city, region, country);
+};
+
+const getPreferredLanguage = (value: unknown): string | null => {
+    if (typeof value !== "string") {
+        return null;
+    }
+
+    const language = value
+        .split(",")[0]
+        ?.trim()
+        .replace(/_/g, "-");
+
+    return language || null;
+};
+
+const reverseGeocodeWithNominatim = async (
+    latitude: number,
+    longitude: number,
+    language: string,
+): Promise<string | null> => {
     try {
         const params = new URLSearchParams({
             lat: latitude.toString(),
             lon: longitude.toString(),
             format: "jsonv2",
             addressdetails: "1",
+            zoom: "18",
+            "accept-language": language,
         });
 
         const response = await fetch(`https://nominatim.openstreetmap.org/reverse?${params.toString()}`, {
             headers: {
                 Accept: "application/json",
-                "User-Agent": "competitor-watcher/1.0 (+https://competitorwatcher.pt)",
+                "User-Agent": reverseGeocodeUserAgent,
             },
         });
 
@@ -29,15 +144,43 @@ const reverseGeocodeWithNominatim = async (latitude: number, longitude: number):
         }
 
         const data = await response.json();
-        const displayName = typeof data?.display_name === "string" ? data.display_name.trim() : "";
-
-        return displayName || null;
+        return buildReadableNominatimAddress(data);
     } catch (error) {
         console.error("Nominatim reverse geocoding error:", error);
         return null;
     }
 };
 
+const reverseGeocodeWithBigDataCloud = async (
+    latitude: number,
+    longitude: number,
+    language: string,
+): Promise<string | null> => {
+    try {
+        const params = new URLSearchParams({
+            latitude: latitude.toString(),
+            longitude: longitude.toString(),
+            localityLanguage: language.split("-")[0] || language,
+        });
+
+        const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?${params.toString()}`, {
+            headers: {
+                Accept: "application/json",
+                "User-Agent": reverseGeocodeUserAgent,
+            },
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        return buildReadableBigDataCloudAddress(data);
+    } catch (error) {
+        console.error("BigDataCloud reverse geocoding error:", error);
+        return null;
+    }
+};
 export function registerSearchRoutes(app: Express) {
     app.post("/api/quick-search", searchRateLimiter, async (req, res) => {
         try {
@@ -158,6 +301,10 @@ export function registerSearchRoutes(app: Express) {
             const { latitude, longitude } = req.body;
             const lat = Number(latitude);
             const lng = Number(longitude);
+            const preferredLanguage =
+                getPreferredLanguage(req.body?.language) ||
+                getPreferredLanguage(req.headers["accept-language"]) ||
+                "en";
 
             if (Number.isNaN(lat) || Number.isNaN(lng)) {
                 return res.status(400).json({ error: "Latitude and Longitude are required" });
@@ -171,7 +318,11 @@ export function registerSearchRoutes(app: Express) {
             }
 
             if (!address) {
-                address = await reverseGeocodeWithNominatim(lat, lng);
+                address = await reverseGeocodeWithNominatim(lat, lng, preferredLanguage);
+            }
+
+            if (!address) {
+                address = await reverseGeocodeWithBigDataCloud(lat, lng, preferredLanguage);
             }
 
             res.json({ address: address || formatCoordinateAddress(lat, lng) });
