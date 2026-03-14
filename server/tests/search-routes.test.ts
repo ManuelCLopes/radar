@@ -208,14 +208,69 @@ describe("Search Routes", () => {
             expect(res.body.address).toBe("Porto, Portugal");
         });
 
+        it("should build a readable address from Nominatim address parts when display_name is empty", async () => {
+            const { hasGoogleApiKey } = await import("../googlePlaces");
+            (hasGoogleApiKey as any).mockReturnValue(false);
+            vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+                ok: true,
+                json: async () => ({
+                    display_name: "",
+                    address: {
+                        road: "Rua Augusta",
+                        city: "Lisboa",
+                        country: "Portugal",
+                    },
+                }),
+            }));
+
+            const res = await request(app)
+                .post("/api/places/reverse-geocode")
+                .send({ latitude: 38.7, longitude: -9.1 });
+
+            expect(res.status).toBe(200);
+            expect(res.body.address).toBe("Rua Augusta, Lisboa, Portugal");
+        });
+
+        it("should fall back to BigDataCloud when Nominatim does not return a usable address", async () => {
+            const { hasGoogleApiKey, reverseGeocode } = await import("../googlePlaces");
+            (hasGoogleApiKey as any).mockReturnValue(true);
+            (reverseGeocode as any).mockResolvedValue(null);
+            vi.stubGlobal("fetch", vi.fn()
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ display_name: "", address: {} }),
+                })
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        locality: "Santo António",
+                        city: "Lisboa",
+                        principalSubdivision: "Lisboa",
+                        countryName: "Portugal",
+                    }),
+                }));
+
+            const res = await request(app)
+                .post("/api/places/reverse-geocode")
+                .send({ latitude: 40.7, longitude: -74.0 });
+
+            expect(res.status).toBe(200);
+            expect(res.body.address).toBe("Santo António, Lisboa, Portugal");
+        });
+
         it("should return coordinate text when no reverse geocoder returns an address", async () => {
             const { hasGoogleApiKey, reverseGeocode } = await import("../googlePlaces");
             (hasGoogleApiKey as any).mockReturnValue(true);
             (reverseGeocode as any).mockResolvedValue(null);
-            vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
-                ok: true,
-                json: async () => ({ display_name: "" }),
-            }));
+            vi.stubGlobal("fetch", vi.fn()
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ display_name: "" }),
+                })
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ locality: "", city: "", countryName: "" }),
+                }));
 
             const res = await request(app)
                 .post("/api/places/reverse-geocode")
