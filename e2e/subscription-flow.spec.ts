@@ -167,7 +167,7 @@ test.describe('Subscription Management', () => {
 
         // Test Portuguese
         await switchLang('button-lang-pt', /Plano Atual/i);
-        await expect(page.getByText(/Gerir Subscrição/i)).toBeVisible();
+        await expect(page.getByRole('button', { name: /Manage Subscription|Gerir Subscrição/i })).toBeVisible();
 
         // Test Spanish
         await switchLang('button-lang-es', /Plan Actual/i);
