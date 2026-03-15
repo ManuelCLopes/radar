@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,6 +36,13 @@ export default function LoginPage() {
     });
 
     const { loginMutation } = useAuth();
+
+    useEffect(() => {
+        const errorParam = new URLSearchParams(window.location.search).get("error");
+        if (errorParam === "google_not_configured") {
+            setError(t("auth.errors.googleUnavailable"));
+        }
+    }, [t]);
 
     const onSubmit = async (data: LoginFormValues) => {
         setError("");
@@ -67,7 +75,7 @@ export default function LoginPage() {
 
             setLocation("/dashboard");
         } catch (err: any) {
-            const message = err.message || "An error occurred";
+            const message = err.message || t("auth.errors.generic");
 
             if (message.includes("Invalid credentials") || message.includes("401")) {
                 setError(t("auth.errors.invalidCredentials"));
@@ -133,7 +141,7 @@ export default function LoginPage() {
                                                 <Input
                                                     {...field}
                                                     type="email"
-                                                    placeholder="you@example.com"
+                                                    placeholder={t("auth.email")}
                                                     className="pl-10 h-12 rounded-xl"
                                                 />
                                             </FormControl>

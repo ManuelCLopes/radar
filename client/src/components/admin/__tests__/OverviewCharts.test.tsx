@@ -2,6 +2,12 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { OverviewCharts } from "../OverviewCharts";
 
+vi.mock("react-i18next", () => ({
+    useTranslation: () => ({
+        t: (key: string) => key,
+    }),
+}));
+
 // Mock Recharts to avoid DOM issues and simplify testing
 vi.mock("recharts", () => ({
     ResponsiveContainer: ({ children }: any) => <div data-testid="responsive-container">{children}</div>,
@@ -35,10 +41,10 @@ describe("OverviewCharts", () => {
     it("renders all charts when data is provided", () => {
         render(<OverviewCharts data={mockData} />);
 
-        expect(screen.getByText("User Growth (30 Days)")).toBeInTheDocument();
-        expect(screen.getByText("Reports Generated (30 Days)")).toBeInTheDocument();
-        expect(screen.getByText("Search Type Distribution")).toBeInTheDocument();
-        expect(screen.getByText("Top Searched Locations")).toBeInTheDocument();
+        expect(screen.getByText("admin.charts.userGrowth")).toBeInTheDocument();
+        expect(screen.getByText("admin.charts.reportsGenerated")).toBeInTheDocument();
+        expect(screen.getByText("admin.charts.searchTypeDistribution")).toBeInTheDocument();
+        expect(screen.getByText("admin.charts.topLocations")).toBeInTheDocument();
 
         expect(screen.getByTestId("area-chart")).toBeInTheDocument();
         expect(screen.getAllByTestId("bar-chart")).toHaveLength(2);
@@ -53,8 +59,8 @@ describe("OverviewCharts", () => {
 
         render(<OverviewCharts data={partialData} />);
 
-        expect(screen.getByText("User Growth (30 Days)")).toBeInTheDocument();
-        expect(screen.queryByText("Search Type Distribution")).not.toBeInTheDocument();
-        expect(screen.queryByText("Top Searched Locations")).not.toBeInTheDocument();
+        expect(screen.getByText("admin.charts.userGrowth")).toBeInTheDocument();
+        expect(screen.queryByText("admin.charts.searchTypeDistribution")).not.toBeInTheDocument();
+        expect(screen.queryByText("admin.charts.topLocations")).not.toBeInTheDocument();
     });
 });

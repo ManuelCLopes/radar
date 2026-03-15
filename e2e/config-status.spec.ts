@@ -47,7 +47,7 @@ test.describe('Stripe Configuration Status', () => {
         await expect(page).toHaveURL(/.*dashboard/);
 
         // Click Subscription button (Star icon)
-        await page.getByRole('button', { name: 'Subscrição' }).click();
+        await page.getByRole('button', { name: /Subscription|Subscrição/i }).click();
 
         // Expect Coming Soon Modal
         await expect(page.getByRole('heading', { name: 'Coming Soon' })).toBeVisible();
@@ -67,7 +67,7 @@ test.describe('Stripe Configuration Status', () => {
         await expect(page).toHaveURL(/.*dashboard/);
 
         // Click Subscription button
-        await page.getByRole('button', { name: 'Subscrição' }).click();
+        await page.getByRole('button', { name: /Subscription|Subscrição/i }).click();
 
         // Expect Pricing Modal
         await expect(page.getByText(/Free/i)).toBeVisible();

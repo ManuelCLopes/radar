@@ -150,7 +150,6 @@ const reverseGeocodeWithNominatim = async (
         return null;
     }
 };
-
 const reverseGeocodeWithBigDataCloud = async (
     latitude: number,
     longitude: number,

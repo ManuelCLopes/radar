@@ -29,11 +29,13 @@ import { Loader2, Search, Trash2, Shield, ShieldOff } from "lucide-react";
 import AdminLayout from "@/components/layouts/AdminLayout";
 import { useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
+import { useTranslation } from "react-i18next";
 
 export default function AdminUsers() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [searchTerm, setSearchTerm] = useState("");
+    const { t } = useTranslation();
 
     const { data: users, isLoading } = useQuery<User[]>({
         queryKey: ["/api/admin/users"],
@@ -46,11 +48,11 @@ export default function AdminUsers() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
-            toast({ title: "Role updated successfully" });
+            toast({ title: t("admin.users.toasts.roleUpdated") });
         },
         onError: (error: any) => {
             toast({
-                title: "Failed to update role",
+                title: t("admin.users.toasts.roleUpdateError"),
                 description: error.message,
                 variant: "destructive",
             });
@@ -63,11 +65,11 @@ export default function AdminUsers() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
-            toast({ title: "User deleted successfully" });
+            toast({ title: t("admin.users.toasts.userDeleted") });
         },
         onError: (error: any) => {
             toast({
-                title: "Failed to delete user",
+                title: t("admin.users.toasts.userDeleteError"),
                 description: error.message,
                 variant: "destructive",
             });
@@ -94,18 +96,18 @@ export default function AdminUsers() {
         <AdminLayout>
             <div className="p-8 space-y-8">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-                    <p className="text-muted-foreground">Manage users, roles, and permissions.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">{t("admin.users.title")}</h1>
+                    <p className="text-muted-foreground">{t("admin.users.subtitle")}</p>
                 </div>
 
                 <Card>
                     <CardHeader>
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                            <CardTitle>Users</CardTitle>
+                            <CardTitle>{t("admin.users.table.title")}</CardTitle>
                             <div className="relative w-full sm:w-64">
                                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                                 <Input
-                                    placeholder="Search users..."
+                                    placeholder={t("admin.users.table.searchPlaceholder")}
                                     className="pl-8"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -118,12 +120,12 @@ export default function AdminUsers() {
                             <Table className="min-w-[720px]">
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>User</TableHead>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead>Role</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead>Joined</TableHead>
-                                        <TableHead className="text-right">Actions</TableHead>
+                                        <TableHead>{t("admin.users.table.columns.user")}</TableHead>
+                                        <TableHead>{t("admin.users.table.columns.email")}</TableHead>
+                                        <TableHead>{t("admin.users.table.columns.role")}</TableHead>
+                                        <TableHead>{t("admin.users.table.columns.status")}</TableHead>
+                                        <TableHead>{t("admin.users.table.columns.joined")}</TableHead>
+                                        <TableHead className="text-right">{t("admin.users.table.columns.actions")}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -140,7 +142,7 @@ export default function AdminUsers() {
                                             </TableCell>
                                             <TableCell>
                                                 <Badge variant={user.isVerified ? "outline" : "destructive"} className={user.isVerified ? "border-green-500 text-green-700 bg-green-50" : ""}>
-                                                    {user.isVerified ? "Verified" : "Pending"}
+                                                    {user.isVerified ? t("admin.users.table.status.verified") : t("admin.users.table.status.pending")}
                                                 </Badge>
                                             </TableCell>
                                             <TableCell>
@@ -173,19 +175,18 @@ export default function AdminUsers() {
                                                     </AlertDialogTrigger>
                                                     <AlertDialogContent>
                                                         <AlertDialogHeader>
-                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                            <AlertDialogTitle>{t("admin.users.deleteDialog.title")}</AlertDialogTitle>
                                                             <AlertDialogDescription>
-                                                                This action cannot be undone. This will permanently delete the user
-                                                                account and remove their data from our servers.
+                                                                {t("admin.users.deleteDialog.description")}
                                                             </AlertDialogDescription>
                                                         </AlertDialogHeader>
                                                         <AlertDialogFooter>
-                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
                                                             <AlertDialogAction
                                                                 className="bg-red-600 hover:bg-red-700"
                                                                 onClick={() => deleteUserMutation.mutate(user.id)}
                                                             >
-                                                                Delete
+                                                                {t("admin.users.deleteDialog.confirm")}
                                                             </AlertDialogAction>
                                                         </AlertDialogFooter>
                                                     </AlertDialogContent>

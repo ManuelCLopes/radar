@@ -52,11 +52,11 @@ describe("LanguageSelector", () => {
         const button = screen.getByTestId("button-language-selector");
         await user.click(button);
 
-        expect(screen.getByText("English")).toBeInTheDocument();
-        expect(screen.getByText("Português")).toBeInTheDocument();
-        expect(screen.getByText("Español")).toBeInTheDocument();
-        expect(screen.getByText("Français")).toBeInTheDocument();
-        expect(screen.getByText("Deutsch")).toBeInTheDocument();
+        expect(await screen.findByTestId("button-lang-en")).toBeInTheDocument();
+        expect(screen.getByTestId("button-lang-pt")).toBeInTheDocument();
+        expect(screen.getByTestId("button-lang-es")).toBeInTheDocument();
+        expect(screen.getByTestId("button-lang-fr")).toBeInTheDocument();
+        expect(screen.getByTestId("button-lang-de")).toBeInTheDocument();
     });
 
     it("should change language when option is selected", async () => {

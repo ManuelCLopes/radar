@@ -129,7 +129,7 @@ describe('SettingsPage', () => {
 
         it('should have a logout button', () => {
             renderSettingsPage();
-            const logoutButton = screen.getByTitle('Logout');
+            const logoutButton = screen.getByTitle('dashboard.user.logout');
             expect(logoutButton).toBeInTheDocument();
         });
     });
@@ -249,4 +249,3 @@ describe('SettingsPage', () => {
         });
     });
 });
-

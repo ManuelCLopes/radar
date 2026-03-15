@@ -3,6 +3,12 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { ApiUsageChart } from "../ApiUsageChart";
 
+vi.mock("react-i18next", () => ({
+    useTranslation: () => ({
+        t: (key: string) => key,
+    }),
+}));
+
 // Mock Recharts because it doesn't render well in JSDOM
 vi.mock("recharts", () => {
     const OriginalModule = vi.importActual("recharts");
@@ -26,20 +32,20 @@ describe("ApiUsageChart", () => {
             { date: "2023-01-02", google: 5, openAi: 15 },
         ];
         render(<ApiUsageChart data={data} />);
-        expect(screen.getByText("System API Usage & Costs (30 Days)")).toBeInTheDocument();
+        expect(screen.getByText("admin.charts.apiUsage")).toBeInTheDocument();
         // Check if chart container is rendered (mocked)
         expect(document.querySelector(".recharts-responsive-container")).toBeInTheDocument();
     });
 
     it("should render placeholder when data is empty", () => {
         render(<ApiUsageChart data={[]} />);
-        expect(screen.getByText("System API Usage & Costs (30 Days)")).toBeInTheDocument();
-        expect(screen.getByText("No usage data available.")).toBeInTheDocument();
+        expect(screen.getByText("admin.charts.apiUsage")).toBeInTheDocument();
+        expect(screen.getByText("admin.charts.noUsage")).toBeInTheDocument();
     });
 
     it("should render placeholder when data is undefined", () => {
         render(<ApiUsageChart data={undefined as any} />);
-        expect(screen.getByText("System API Usage & Costs (30 Days)")).toBeInTheDocument();
-        expect(screen.getByText("No usage data available.")).toBeInTheDocument();
+        expect(screen.getByText("admin.charts.apiUsage")).toBeInTheDocument();
+        expect(screen.getByText("admin.charts.noUsage")).toBeInTheDocument();
     });
 });

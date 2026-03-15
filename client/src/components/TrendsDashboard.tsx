@@ -267,6 +267,8 @@ function ComparisonCard({
     unit: string;
     showIfZero?: boolean;
 }) {
+    const { t } = useTranslation();
+
     if (!showIfZero && !value && !previousValue) return null;
 
     const diff = value - previousValue;
@@ -298,13 +300,13 @@ function ComparisonCard({
                 </div>
                 <div className={`text-xs flex items-center mt-1 ${colorClass}`}>
                     {isNeutral ? (
-                        <span className="flex items-center">Unable to determine trend</span>
+                        <span className="flex items-center">{t("trends.unavailable")}</span>
                     ) : (
                         <span className="flex items-center font-medium">
                             {diff > 0 ? "+" : ""}{Number(diff.toFixed(2))} {unit === "★" ? "" : unit}
                         </span>
                     )}
-                    <span className="ml-1 text-muted-foreground">since start</span>
+                    <span className="ml-1 text-muted-foreground">{t("trends.sinceStart")}</span>
                 </div>
             </CardContent>
         </Card>

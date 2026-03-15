@@ -17,6 +17,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
+import { isDisplayableAddress } from "@/lib/location";
 import { insertBusinessSchema, businessTypes, type InsertBusiness, type BusinessType, type PlaceResult } from "@shared/schema";
 import { z } from "zod";
 
@@ -306,16 +307,16 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
 
         if (response.ok) {
           const data = await response.json();
-          if (data.address) {
+          if (isDisplayableAddress(data.address)) {
             form.setValue("address", data.address);
           } else {
-            form.setValue("address", "Current Location");
+            form.setValue("address", t("addressSearch.usingCurrentLocation"));
           }
         } else {
-          form.setValue("address", "Current Location");
+          form.setValue("address", t("addressSearch.usingCurrentLocation"));
         }
       } catch (e) {
-        form.setValue("address", "Current Location");
+        form.setValue("address", t("addressSearch.usingCurrentLocation"));
       }
 
       setShowNoResultsDialog(false);
