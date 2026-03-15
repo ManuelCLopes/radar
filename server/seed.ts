@@ -1,4 +1,4 @@
-import { storage } from "./storage";
+import { storage } from "./storage.js";
 import bcrypt from "bcrypt";
 
 export async function seed() {

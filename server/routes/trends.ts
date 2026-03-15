@@ -1,6 +1,6 @@
 import type { Express } from "express";
-import { storage } from "../storage";
-import { isAuthenticated } from "../auth";
+import { storage } from "../storage.js";
+import { isAuthenticated } from "../auth.js";
 import { type User as AppUser } from "@shared/schema";
 
 export function registerTrendRoutes(app: Express) {

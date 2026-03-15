@@ -1,9 +1,9 @@
 import type { Express } from "express";
-import { storage } from "../storage";
-import { searchPlacesByAddress, hasGoogleApiKey } from "../googlePlaces";
-import { runReportForBusiness } from "../reports";
-import { isAuthenticated } from "../auth";
-import { searchRateLimiter } from "../middleware/rate-limit";
+import { storage } from "../storage.js";
+import { searchPlacesByAddress, hasGoogleApiKey } from "../googlePlaces.js";
+import { runReportForBusiness } from "../reports.js";
+import { isAuthenticated } from "../auth.js";
+import { searchRateLimiter } from "../middleware/rate-limit.js";
 
 const formatCoordinateAddress = (latitude: number, longitude: number) =>
     `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
@@ -312,7 +312,7 @@ export function registerSearchRoutes(app: Express) {
             let address: string | null = null;
 
             if (hasGoogleApiKey()) {
-                const { reverseGeocode } = await import("../googlePlaces");
+                const { reverseGeocode } = await import("../googlePlaces.js");
                 address = await reverseGeocode(lat, lng);
             }
 

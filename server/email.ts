@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import { Resend } from "resend";
 import { Report, User } from "@shared/schema";
-import { log } from "./log";
+import { log } from "./log.js";
 
 export interface EmailService {
   sendWeeklyReport(user: User, reports: Report[]): Promise<boolean>;

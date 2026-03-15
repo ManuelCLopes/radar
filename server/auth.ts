@@ -5,9 +5,9 @@ import session from "express-session";
 import type { Express, RequestHandler } from "express";
 import bcrypt from "bcrypt";
 import connectPg from "connect-pg-simple";
-import { storage } from "./storage";
+import { storage } from "./storage.js";
 import type { User } from "@shared/schema";
-import { getAppBaseUrl, getGoogleCallbackUrl } from "./urls";
+import { getAppBaseUrl, getGoogleCallbackUrl } from "./urls.js";
 
 const SALT_ROUNDS = 10;
 
@@ -227,7 +227,7 @@ export async function setupAuth(app: Express) {
             // Send welcome email and verification email
             (async () => {
                 try {
-                    const { emailService } = await import("./email");
+                    const { emailService } = await import("./email.js");
                     const userLang = user.language || "pt";
 
                     // Send Verification Email
@@ -313,7 +313,7 @@ export async function setupAuth(app: Express) {
                 verificationTokenExpiresAt
             });
 
-            const { emailService } = await import("./email");
+            const { emailService } = await import("./email.js");
             const userLang = user.language || "pt";
             const verificationLink = `${getAppBaseUrl(req)}/verify-email?token=${verificationToken}`;
 

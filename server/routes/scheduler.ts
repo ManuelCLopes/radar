@@ -1,7 +1,7 @@
 import type { Express, Request } from "express";
-import { getSchedulerStatus, runScheduledReports } from "../scheduler";
-import { isAuthenticated } from "../auth";
-import { storage } from "../storage";
+import { getSchedulerStatus, runScheduledReports } from "../scheduler.js";
+import { isAuthenticated } from "../auth.js";
+import { storage } from "../storage.js";
 
 function isValidCronRequest(req: Request): boolean {
     const cronSecret = process.env.CRON_SECRET;

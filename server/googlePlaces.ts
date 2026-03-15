@@ -1,5 +1,5 @@
 import type { Competitor, PlaceResult } from "@shared/schema";
-import { storage } from "./storage";
+import { storage } from "./storage.js";
 
 const API_KEY = process.env.GOOGLE_API_KEY;
 

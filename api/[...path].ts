@@ -1,4 +1,4 @@
-import { createConfiguredServer } from "../server/bootstrap";
+import { createConfiguredServer } from "../server/bootstrap.js";
 import type { Express } from "express";
 
 let appPromise: Promise<Express> | null = null;

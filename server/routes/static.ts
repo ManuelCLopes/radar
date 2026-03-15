@@ -1,5 +1,5 @@
 import type { Express, Request } from "express";
-import { getAppBaseUrl } from "../urls";
+import { getAppBaseUrl } from "../urls.js";
 
 function buildRobotsTxt(baseUrl: string): string {
     return `User-agent: *
