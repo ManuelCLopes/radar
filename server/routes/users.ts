@@ -1,8 +1,8 @@
 
 import type { Express } from "express";
-import { storage } from "../storage";
+import { storage } from "../storage.js";
 import { type User as AppUser } from "@shared/schema";
-import { isAuthenticated } from "../auth";
+import { isAuthenticated } from "../auth.js";
 import bcrypt from "bcrypt";
 
 export function registerUserRoutes(app: Express) {

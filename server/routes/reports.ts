@@ -1,11 +1,11 @@
 import type { Express } from "express";
-import { storage } from "../storage";
-import { runReportForBusiness } from "../reports";
-import { isAuthenticated } from "../auth";
+import { storage } from "../storage.js";
+import { runReportForBusiness } from "../reports.js";
+import { isAuthenticated } from "../auth.js";
 import { type User as AppUser, type InsertReport } from "@shared/schema";
-import { searchPlacesByAddress, hasGoogleApiKey } from "../googlePlaces";
-import { getPlanLimits } from "../limits";
-import { log } from "../log";
+import { searchPlacesByAddress, hasGoogleApiKey } from "../googlePlaces.js";
+import { getPlanLimits } from "../limits.js";
+import { log } from "../log.js";
 
 export function registerReportRoutes(app: Express) {
     app.post("/api/reports/save-existing", isAuthenticated, async (req, res) => {
@@ -136,7 +136,7 @@ export function registerReportRoutes(app: Express) {
                 return res.status(403).json({ error: "Unauthorized access to this report" });
             }
 
-            const { emailService } = await import("../email");
+            const { emailService } = await import("../email.js");
             // Use the provided language or user preference, normalized to 2 characters
             const requestedLang = language || (req.user as AppUser).language || "en";
             const normalizedLang = requestedLang.substring(0, 2).toLowerCase();

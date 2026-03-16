@@ -1,5 +1,5 @@
 import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type Search, type PasswordResetToken, type InsertApiUsage, type ApiUsage, businesses, reports, users, searches, passwordResetTokens, rateLimits, apiUsage } from "@shared/schema";
-import { db } from "./db";
+import { db } from "./db.js";
 import { eq, desc, sql, isNotNull, lt, and, gte, inArray, not, like, or } from "drizzle-orm";
 
 export interface IStorage {

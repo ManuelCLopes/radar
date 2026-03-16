@@ -3,10 +3,10 @@ import express, { type NextFunction, type Request, type Response } from "express
 import { createServer } from "http";
 import cors from "cors";
 import helmet from "helmet";
-import { registerRoutes } from "./routes";
-import { log } from "./log";
-import { seed } from "./seed";
-import { initSentry } from "./sentry";
+import { registerRoutes } from "./routes/index.js";
+import { log } from "./log.js";
+import { seed } from "./seed.js";
+import { initSentry } from "./sentry.js";
 
 declare module "http" {
   interface IncomingMessage {
@@ -102,7 +102,7 @@ export async function createConfiguredServer(options: BootstrapOptions = {}) {
       process.env.RUN_MIGRATIONS_ON_BOOT !== "false");
 
   if (shouldRunMigrations) {
-    const { runMigrations } = await import("./migrate");
+    const { runMigrations } = await import("./migrate.js");
     await runMigrations();
   }
 

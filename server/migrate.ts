@@ -1,5 +1,5 @@
 import { migrate } from "drizzle-orm/neon-serverless/migrator";
-import { db, pool } from "./db";
+import { db, pool } from "./db.js";
 
 export async function runMigrations() {
     if (!db || !pool) {

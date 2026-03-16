@@ -1,8 +1,8 @@
 import type { Express } from "express";
-import { storage } from "../storage";
+import { storage } from "../storage.js";
 import { insertBusinessSchema, type User as AppUser } from "@shared/schema";
-import { isAuthenticated } from "../auth";
-import { getPlanLimits } from "../limits";
+import { isAuthenticated } from "../auth.js";
+import { getPlanLimits } from "../limits.js";
 
 export function registerBusinessRoutes(app: Express) {
     // Protected API routes

@@ -1,5 +1,5 @@
 import { type Express } from "express";
-import { storage } from "../storage";
+import { storage } from "../storage.js";
 
 // Middleware to check if user is admin
 const isAdmin = (req: any, res: any, next: any) => {

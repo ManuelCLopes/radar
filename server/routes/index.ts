@@ -1,19 +1,19 @@
 import type { Express } from "express";
 import { type Server } from "http";
-import { setupAuth } from "../auth";
-import { log } from "../log";
-import { startScheduler } from "../scheduler";
+import { setupAuth } from "../auth.js";
+import { log } from "../log.js";
+import { startScheduler } from "../scheduler.js";
 
-import { registerAuthRoutes } from "./auth";
-import { registerBusinessRoutes } from "./businesses";
-import { registerReportRoutes } from "./reports";
-import { registerSearchRoutes } from "./search";
-import { registerSchedulerRoutes } from "./scheduler";
-import { registerUserRoutes } from "./users";
-import { registerAdminRoutes } from "./admin";
-import { registerStaticRoutes } from "./static";
-import { registerPaymentRoutes } from "./payments";
-import { registerTrendRoutes } from "./trends";
+import { registerAuthRoutes } from "./auth.js";
+import { registerBusinessRoutes } from "./businesses.js";
+import { registerReportRoutes } from "./reports.js";
+import { registerSearchRoutes } from "./search.js";
+import { registerSchedulerRoutes } from "./scheduler.js";
+import { registerUserRoutes } from "./users.js";
+import { registerAdminRoutes } from "./admin.js";
+import { registerStaticRoutes } from "./static.js";
+import { registerPaymentRoutes } from "./payments.js";
+import { registerTrendRoutes } from "./trends.js";
 
 interface RegisterRoutesOptions {
     startScheduler?: boolean;

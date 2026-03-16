@@ -1,6 +1,6 @@
 import type { Business, Competitor } from "@shared/schema";
 import OpenAI from "openai";
-import { storage } from "./storage";
+import { storage } from "./storage.js";
 
 const apiKey = process.env.OPENAI_API_KEY || process.env.AI_INTEGRATIONS_OPENAI_API_KEY || "dummy-key-for-local-dev";
 

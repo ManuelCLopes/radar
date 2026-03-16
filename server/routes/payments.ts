@@ -1,7 +1,7 @@
 import express, { type Express, type Request } from "express";
 import Stripe from "stripe";
-import { storage } from "../storage";
-import { log } from "../log";
+import { storage } from "../storage.js";
+import { log } from "../log.js";
 import { User } from "@shared/schema";
 
 if (!process.env.STRIPE_SECRET_KEY) {

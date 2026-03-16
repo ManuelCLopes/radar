@@ -1,9 +1,9 @@
 import { randomUUID } from "crypto";
-import { storage } from "./storage";
-import { searchNearby } from "./googlePlaces";
-import { analyzeCompetitors } from "./ai";
+import { storage } from "./storage.js";
+import { searchNearby } from "./googlePlaces.js";
+import { analyzeCompetitors } from "./ai.js";
 import type { Report, Business, InsertReport } from "@shared/schema";
-import { getPlanLimits } from "./limits";
+import { getPlanLimits } from "./limits.js";
 
 export async function runReportForBusiness(
   businessId: string,
@@ -34,7 +34,7 @@ export async function runReportForBusiness(
   const limits = getPlanLimits(userPlan);
 
   let competitors: import("@shared/schema").Competitor[] = [];
-  let aiAnalysis: import("./ai").StructuredAnalysis;
+  let aiAnalysis: import("./ai.js").StructuredAnalysis;
   let currentRating = business.rating || null;
   let currentReviews = business.userRatingsTotal || null;
 
@@ -62,7 +62,7 @@ export async function runReportForBusiness(
     if (!providedBusiness) {
       try {
         // Import searchPlacesByAddress dynamically or use top-level import
-        const { searchPlacesByAddress } = await import("./googlePlaces");
+        const { searchPlacesByAddress } = await import("./googlePlaces.js");
         const businessSearchResults = await searchPlacesByAddress(
           `${business.name}, ${business.address}`
         );
@@ -143,6 +143,5 @@ export async function runReportForBusiness(
     radius: radius || null,
   } as Report;
 }
-
 
 

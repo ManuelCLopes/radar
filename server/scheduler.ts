@@ -1,7 +1,7 @@
 import * as cron from "node-cron";
-import { storage } from "./storage";
-import { runReportForBusiness } from "./reports";
-import { emailService } from "./email";
+import { storage } from "./storage.js";
+import { runReportForBusiness } from "./reports.js";
+import { emailService } from "./email.js";
 
 let scheduledTask: ReturnType<typeof cron.schedule> | null = null;
 let cleanupTask: ReturnType<typeof cron.schedule> | null = null;

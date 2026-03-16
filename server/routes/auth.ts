@@ -1,7 +1,7 @@
 import type { Express } from "express";
-import { storage } from "../storage";
-import { log } from "../log";
-import { getAppBaseUrl } from "../urls";
+import { storage } from "../storage.js";
+import { log } from "../log.js";
+import { getAppBaseUrl } from "../urls.js";
 
 export function registerAuthRoutes(app: Express) {
     // Password reset routes
@@ -14,7 +14,7 @@ export function registerAuthRoutes(app: Express) {
                 return res.status(400).json({ error: "Email is required" });
             }
 
-            const { sendEmail, generatePasswordResetEmail } = await import("../email");
+            const { sendEmail, generatePasswordResetEmail } = await import("../email.js");
             const crypto = await import("crypto");
 
             log(`Password Reset Request received for: ${email}`, "auth");
