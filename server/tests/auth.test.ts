@@ -329,6 +329,11 @@ describe("Auth Coverage (Edge Cases)", () => {
             const res = await request(testApp).post("/api/logout");
             expect(res.status).toBe(200);
             expect(res.body.message).toBe("Logged out successfully");
+            expect(res.headers["set-cookie"]).toEqual(
+                expect.arrayContaining([
+                    expect.stringContaining("competitor_watcher.sid="),
+                ]),
+            );
         });
 
         it("should handle logout error", async () => {

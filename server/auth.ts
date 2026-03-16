@@ -117,6 +117,9 @@ export function getSession() {
     });
 }
 
+const getSessionCookieName = () =>
+    process.env.SESSION_COOKIE_NAME?.trim() || "competitor_watcher.sid";
+
 export async function setupAuth(app: Express) {
     const loginRateLimiter = createLoginRateLimiter();
     const registrationRateLimiter = createRegistrationRateLimiter();
@@ -401,7 +404,11 @@ export async function setupAuth(app: Express) {
                 }
                 console.log(`[Logout] Session destroyed successfully`);
 
-                res.clearCookie("connect.sid", { path: '/' });
+                const sessionCookieName = getSessionCookieName();
+                res.clearCookie(sessionCookieName, { path: '/' });
+                if (sessionCookieName !== "connect.sid") {
+                    res.clearCookie("connect.sid", { path: '/' });
+                }
                 res.json({ success: true, message: "Logged out successfully" });
             });
         });

@@ -24,10 +24,7 @@ export const getClientIdentifier = (req: Request) => {
         return `user:${user.id}`;
     }
 
-    const forwarded = req.headers["x-forwarded-for"];
-    const clientIp = typeof forwarded === "string"
-        ? forwarded.split(",")[0].trim()
-        : req.ip || req.socket?.remoteAddress || "unknown-ip";
+    const clientIp = req.ip || req.socket?.remoteAddress || "unknown-ip";
 
     return `ip:${clientIp}`;
 };

@@ -32,6 +32,7 @@ describe("Rate Limiting Logic", () => {
     it("should rate limit repeated login attempts", async () => {
         const app = express();
         app.use(express.json());
+        app.set("trust proxy", true);
         app.post("/api/login", createLoginRateLimiter(), (_req, res) => {
             res.status(401).json({ message: "Invalid email or password" });
         });
@@ -57,6 +58,7 @@ describe("Rate Limiting Logic", () => {
     it("should rate limit password reset requests", async () => {
         const app = express();
         app.use(express.json());
+        app.set("trust proxy", true);
         app.post("/api/auth/forgot-password", createPasswordResetRequestRateLimiter(), (_req, res) => {
             res.json({ message: "If that email exists, a reset link has been sent." });
         });
