@@ -325,6 +325,7 @@
     "useCurrentLocation": "Usar Localização Atual",
     "locationObtained": "Localização obtida",
     "locationObtainedDesc": "A sua localização atual foi capturada com sucesso.",
+    "locationAddressFailed": "Não foi possível determinar uma morada para a sua localização atual. Por favor, tente novamente ou introduza-a manualmente.",
     "locationUnavailable": "Não é possível obter a localização atual neste momento.",
     "locationFailed": "Não foi possível obter a sua localização. Por favor, verifique as definições do navegador e tente novamente.",
     "locationDenied": "O acesso à localização foi negado. Por favor, ative as permissões de localização nas definições do seu navegador.",

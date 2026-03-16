@@ -324,6 +324,7 @@
     "useCurrentLocation": "Use Current Location",
     "locationObtained": "Location obtained",
     "locationObtainedDesc": "Your current location has been captured successfully.",
+    "locationAddressFailed": "We couldn't determine an address for your current location. Please try again or enter it manually.",
     "locationUnavailable": "It is not possible to obtain the current location at this moment.",
     "locationFailed": "Could not get your location. Please check your browser settings and try again.",
     "locationDenied": "Location access was denied. Please enable location permissions in your browser settings to use this feature.",

@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { storage } from "../storage.js";
 import { runReportForBusiness } from "../reports.js";
 import { isAuthenticated } from "../auth.js";
-import { type User as AppUser, type InsertReport } from "@shared/schema";
+import { type User as AppUser, type InsertReport } from "../../shared/schema.js";
 import { searchPlacesByAddress, hasGoogleApiKey } from "../googlePlaces.js";
 import { getPlanLimits } from "../limits.js";
 import { log } from "../log.js";

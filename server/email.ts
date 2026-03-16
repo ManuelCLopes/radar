@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import { Resend } from "resend";
-import { Report, User } from "@shared/schema";
+import type { Report, User } from "../shared/schema.js";
 import { log } from "./log.js";
 
 export interface EmailService {

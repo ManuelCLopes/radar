@@ -60,7 +60,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { usePricingModal } from "@/context/PricingModalContext";
-import { isDisplayableAddress } from "@/lib/location";
+import { fetchDisplayableAddressFromCoordinates } from "@/lib/location";
 
 type AnalysisFormValues = {
   address: string;
@@ -400,40 +400,26 @@ export default function Dashboard() {
         setIsGettingLocation(false);
         const { latitude, longitude } = position.coords;
 
+        const detectedAddress = await fetchDisplayableAddressFromCoordinates(latitude, longitude);
+
+        if (!detectedAddress) {
+          toast({
+            title: t("toast.error.title"),
+            description: t("addressSearch.locationAddressFailed"),
+            variant: "destructive",
+          });
+          return;
+        }
+
         setManualCoordinates({
           lat: latitude,
           lng: longitude
         });
-
-        try {
-          const response = await fetch('/api/places/reverse-geocode', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ latitude, longitude })
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            if (isDisplayableAddress(data.address)) {
-              analysisForm.setValue("address", data.address);
-            } else {
-              analysisForm.setValue("address", t("addressSearch.usingCurrentLocation"));
-            }
-          } else {
-            analysisForm.setValue("address", t("addressSearch.usingCurrentLocation"));
-          }
-
-          toast({
-            title: t("addressSearch.locationObtained"),
-            description: t("addressSearch.locationObtainedDesc"),
-          });
-        } catch (e) {
-          analysisForm.setValue("address", t("addressSearch.usingCurrentLocation"));
-          toast({
-            title: t("addressSearch.locationObtained"),
-            description: t("addressSearch.locationUnavailable"),
-          });
-        }
+        analysisForm.setValue("address", detectedAddress);
+        toast({
+          title: t("addressSearch.locationObtained"),
+          description: t("addressSearch.locationObtainedDesc"),
+        });
       },
       (error) => {
         setIsGettingLocation(false);

@@ -11,6 +11,7 @@ import { RadiusSelector } from "@/components/RadiusSelector";
 import { ReportView } from "@/components/ReportView";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import Footer from "@/components/Footer";
 import "./LandingPage.css";
@@ -19,7 +20,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { isDisplayableAddress } from "@/lib/location";
+import { fetchDisplayableAddressFromCoordinates } from "@/lib/location";
 
 import { usePricingModal } from "@/context/PricingModalContext";
 
@@ -27,6 +28,7 @@ import { usePricingModal } from "@/context/PricingModalContext";
 
 export default function LandingPage() {
   const { isAuthenticated, isLoading } = useAuth();
+  const { toast } = useToast();
   const { t, i18n } = useTranslation();
   const { openPricing } = usePricingModal();
   const language = i18n?.language ?? "en";
@@ -90,7 +92,13 @@ export default function LandingPage() {
 
   const handleUseCurrentLocation = useCallback(() => {
     if (!navigator.geolocation) {
-      setSearchError(t("addressSearch.locationUnavailable"));
+      const errorMessage = t("addressSearch.locationUnavailable");
+      setSearchError(errorMessage);
+      toast({
+        title: t("toast.error.title"),
+        description: errorMessage,
+        variant: "destructive",
+      });
       return;
     }
 
@@ -102,33 +110,23 @@ export default function LandingPage() {
         setIsGettingLocation(false);
         const { latitude, longitude } = position.coords;
 
+        const detectedAddress = await fetchDisplayableAddressFromCoordinates(latitude, longitude);
+
+        if (!detectedAddress) {
+          toast({
+            title: t("toast.error.title"),
+            description: t("addressSearch.locationAddressFailed"),
+            variant: "destructive",
+          });
+          return;
+        }
+
         setManualCoordinates({
           lat: latitude,
           lng: longitude
         });
         setIsUsingCurrentLocation(true);
-
-        try {
-          // Attempt to reverse geocode
-          const response = await fetch('/api/places/reverse-geocode', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ latitude, longitude })
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            const detectedAddress = typeof data.address === "string" ? data.address.trim() : "";
-
-            if (isDisplayableAddress(detectedAddress)) {
-              form.setValue('address', detectedAddress);
-              return;
-            }
-          }
-          form.setValue('address', t("addressSearch.usingCurrentLocation"));
-        } catch (e) {
-          form.setValue('address', t("addressSearch.usingCurrentLocation"));
-        }
+        form.setValue('address', detectedAddress);
       },
       (error) => {
         setIsGettingLocation(false);
@@ -137,9 +135,14 @@ export default function LandingPage() {
         let errorMessage = t("addressSearch.locationFailed");
         if (error.code === 1) errorMessage = t("addressSearch.locationDenied");
         setSearchError(errorMessage);
+        toast({
+          title: t("toast.error.title"),
+          description: errorMessage,
+          variant: "destructive",
+        });
       }
     );
-  }, [form, t]);
+  }, [form, t, toast]);
 
   const onSearchSubmit = async (data: SearchFormValues) => {
     // Check if user has already generated a free report (only for guests)

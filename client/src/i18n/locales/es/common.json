@@ -318,6 +318,7 @@
     "useCurrentLocation": "Usar Localização Atual",
     "locationObtained": "Localização obtida",
     "locationObtainedDesc": "A sua localização atual foi capturada com sucesso.",
+    "locationAddressFailed": "No se pudo determinar una dirección para su ubicación actual. Inténtelo de nuevo o introdúzcala manualmente.",
     "locationUnavailable": "Não é possível obter a localização atual neste momento.",
     "locationFailed": "Não foi possível obter a sua localização. Por favor, verifique as definições do navegador e tente novamente.",
     "locationDenied": "O acesso à localização foi negado. Por favor, ative as permissões de localização nas definições do seu navegador.",

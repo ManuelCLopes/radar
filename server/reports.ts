@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 import { storage } from "./storage.js";
 import { searchNearby } from "./googlePlaces.js";
 import { analyzeCompetitors } from "./ai.js";
-import type { Report, Business, InsertReport } from "@shared/schema";
+import type { Report, Business, InsertReport } from "../shared/schema.js";
 import { getPlanLimits } from "./limits.js";
 
 export async function runReportForBusiness(
@@ -33,7 +33,7 @@ export async function runReportForBusiness(
 
   const limits = getPlanLimits(userPlan);
 
-  let competitors: import("@shared/schema").Competitor[] = [];
+  let competitors: import("../shared/schema.js").Competitor[] = [];
   let aiAnalysis: import("./ai.js").StructuredAnalysis;
   let currentRating = business.rating || null;
   let currentReviews = business.userRatingsTotal || null;
@@ -143,5 +143,4 @@ export async function runReportForBusiness(
     radius: radius || null,
   } as Report;
 }
-
 

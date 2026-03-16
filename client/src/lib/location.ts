@@ -17,3 +17,27 @@ export function isDisplayableAddress(value: unknown): value is string {
 
   return !coordinateAddressPattern.test(trimmed);
 }
+
+export async function fetchDisplayableAddressFromCoordinates(
+  latitude: number,
+  longitude: number,
+): Promise<string | null> {
+  try {
+    const response = await fetch("/api/places/reverse-geocode", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ latitude, longitude }),
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    const detectedAddress = typeof data.address === "string" ? data.address.trim() : "";
+
+    return isDisplayableAddress(detectedAddress) ? detectedAddress : null;
+  } catch {
+    return null;
+  }
+}

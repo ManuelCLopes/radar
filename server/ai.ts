@@ -1,4 +1,4 @@
-import type { Business, Competitor } from "@shared/schema";
+import type { Business, Competitor } from "../shared/schema.js";
 import OpenAI from "openai";
 import { storage } from "./storage.js";
 
