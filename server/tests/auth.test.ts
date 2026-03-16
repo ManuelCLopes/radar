@@ -329,6 +329,11 @@ describe("Auth Coverage (Edge Cases)", () => {
             const res = await request(testApp).post("/api/logout");
             expect(res.status).toBe(200);
             expect(res.body.message).toBe("Logged out successfully");
+            expect(res.headers["set-cookie"]).toEqual(
+                expect.arrayContaining([
+                    expect.stringContaining("competitor_watcher.sid="),
+                ]),
+            );
         });
 
         it("should handle logout error", async () => {
@@ -574,8 +579,27 @@ describe("Session Configuration", () => {
 
     it("should use production cookie settings in production", () => {
         process.env.NODE_ENV = "production";
+        process.env.DATABASE_URL = "postgres://localhost:5432/db";
         process.env.SESSION_SECRET = "test-production-secret";
         const sessionMiddleware = getSession();
         expect(sessionMiddleware).toBeDefined();
+    });
+
+    it("should require DATABASE_URL in production", () => {
+        process.env.NODE_ENV = "production";
+        delete process.env.DATABASE_URL;
+        process.env.SESSION_SECRET = "test-production-secret";
+
+        expect(() => getSession()).toThrow(
+            "DATABASE_URL must be set in production. MemoryStore is not allowed.",
+        );
+    });
+
+    it("should require SESSION_SECRET in production", () => {
+        process.env.NODE_ENV = "production";
+        process.env.DATABASE_URL = "postgres://localhost:5432/db";
+        delete process.env.SESSION_SECRET;
+
+        expect(() => getSession()).toThrow("SESSION_SECRET must be set in production");
     });
 });
