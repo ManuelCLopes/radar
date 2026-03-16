@@ -7,6 +7,12 @@ import { HelmetProvider } from "react-helmet-async";
 
 // Mock hooks
 vi.mock("@/hooks/useAuth");
+const mockToast = vi.fn();
+vi.mock("@/hooks/use-toast", () => ({
+    useToast: () => ({
+        toast: mockToast,
+    }),
+}));
 vi.mock("react-i18next");
 vi.mock("wouter", () => ({
     Link: ({ children, href }: { children: React.ReactNode; href: string }) => <a href={href}>{children}</a>,
@@ -275,7 +281,11 @@ describe("LandingPage", () => {
 
         await waitFor(() => {
             const addressInput = screen.getByPlaceholderText("quickSearch.addressPlaceholder") as HTMLInputElement;
-            expect(addressInput.value).toBe("addressSearch.usingCurrentLocation");
+            expect(addressInput.value).toBe("");
+            expect(mockToast).toHaveBeenCalledWith(expect.objectContaining({
+                description: "addressSearch.locationAddressFailed",
+                variant: "destructive",
+            }));
         });
     });
 
@@ -302,7 +312,11 @@ describe("LandingPage", () => {
 
         await waitFor(() => {
             const addressInput = screen.getByPlaceholderText("quickSearch.addressPlaceholder") as HTMLInputElement;
-            expect(addressInput.value).toBe("addressSearch.usingCurrentLocation");
+            expect(addressInput.value).toBe("");
+            expect(mockToast).toHaveBeenCalledWith(expect.objectContaining({
+                description: "addressSearch.locationAddressFailed",
+                variant: "destructive",
+            }));
         });
     });
 });

@@ -4,9 +4,15 @@ import Dashboard from "../Dashboard";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+const mockToast = vi.fn();
 
 // Mock hooks
 vi.mock("@/hooks/useAuth");
+vi.mock("@/hooks/use-toast", () => ({
+    useToast: () => ({
+        toast: mockToast,
+    }),
+}));
 vi.mock("@tanstack/react-query", async () => {
     const actual = await vi.importActual("@tanstack/react-query");
     return {
@@ -221,6 +227,41 @@ describe("Dashboard", () => {
         await waitFor(() => {
             const input = screen.getByPlaceholderText("dashboard.analysis.addressPlaceholder") as HTMLInputElement;
             expect(input.value).toBe("London, UK");
+        });
+    });
+
+    it("keeps analysis input clean when reverse geocoding fails", async () => {
+        const mockGeolocation = {
+            getCurrentPosition: vi.fn().mockImplementation((success) => success({
+                coords: { latitude: 51.5, longitude: -0.09 }
+            }))
+        };
+        Object.defineProperty(global.navigator, 'geolocation', {
+            value: mockGeolocation,
+            writable: true
+        });
+
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: false,
+        });
+
+        render(<Dashboard />);
+
+        fireEvent.click(screen.getByTestId("btn-new-analysis"));
+
+        await waitFor(() => {
+            expect(screen.getByText("dashboard.analysis.title")).toBeInTheDocument();
+        });
+
+        fireEvent.click(screen.getByTitle("addressSearch.useCurrentLocation"));
+
+        await waitFor(() => {
+            const input = screen.getByPlaceholderText("dashboard.analysis.addressPlaceholder") as HTMLInputElement;
+            expect(input.value).toBe("");
+            expect(mockToast).toHaveBeenCalledWith(expect.objectContaining({
+                description: "addressSearch.locationAddressFailed",
+                variant: "destructive",
+            }));
         });
     });
 

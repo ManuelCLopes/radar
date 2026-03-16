@@ -17,7 +17,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
-import { isDisplayableAddress } from "@/lib/location";
+import { fetchDisplayableAddressFromCoordinates } from "@/lib/location";
 import { insertBusinessSchema, businessTypes, type InsertBusiness, type BusinessType, type PlaceResult } from "@shared/schema";
 import { z } from "zod";
 
@@ -293,31 +293,22 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
   const handleUseCurrentLocation = async () => {
     try {
       const coords = await handleGetCurrentLocation();
+
+      const detectedAddress = await fetchDisplayableAddressFromCoordinates(coords.lat, coords.lng);
+
+      if (!detectedAddress) {
+        toast({
+          title: t("toast.error.title"),
+          description: t("addressSearch.locationAddressFailed"),
+          variant: "destructive",
+        });
+        return;
+      }
+
       setManualCoordinates(coords);
       setSelectedPlace(null);
       setPendingLocationAddress(null);
-
-      // Fetch explicit address
-      try {
-        const response = await fetch('/api/places/reverse-geocode', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ latitude: coords.lat, longitude: coords.lng })
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          if (isDisplayableAddress(data.address)) {
-            form.setValue("address", data.address);
-          } else {
-            form.setValue("address", t("addressSearch.usingCurrentLocation"));
-          }
-        } else {
-          form.setValue("address", t("addressSearch.usingCurrentLocation"));
-        }
-      } catch (e) {
-        form.setValue("address", t("addressSearch.usingCurrentLocation"));
-      }
+      form.setValue("address", detectedAddress);
 
       setShowNoResultsDialog(false);
       setShowApiKeyMissingDialog(false);

@@ -317,6 +317,7 @@
     "useCurrentLocation": "Utiliser l'emplacement actuel",
     "locationObtained": "Emplacement obtenu",
     "locationObtainedDesc": "Votre emplacement actuel a été capturé avec succès.",
+    "locationAddressFailed": "Impossible de déterminer une adresse pour votre position actuelle. Veuillez réessayer ou la saisir manuellement.",
     "locationUnavailable": "Il n'est pas possible d'obtenir l'emplacement actuel pour le moment.",
     "locationFailed": "Impossible d'obtenir votre emplacement. Veuillez vérifier les paramètres de votre navigateur et réessayer.",
     "locationDenied": "L'accès à l'emplacement a été refusé. Veuillez activer les autorisations de localisation dans les paramètres de votre navigateur pour utiliser cette fonctionnalité.",

@@ -439,5 +439,36 @@ describe("BusinessForm", () => {
                 }));
             });
         });
+
+        it("keeps address input clean when reverse geocoding fails", async () => {
+            const user = userEvent.setup();
+            const mockGeolocation = {
+                getCurrentPosition: vi.fn().mockImplementation((success) => success({
+                    coords: { latitude: 40.7, longitude: -74.0 }
+                }))
+            };
+            Object.defineProperty(global.navigator, 'geolocation', {
+                value: mockGeolocation,
+                writable: true
+            });
+
+            const mockFetch = vi.fn((..._args: any[]) => Promise.resolve({
+                ok: false,
+            }));
+            vi.stubGlobal('fetch', mockFetch);
+
+            render(<BusinessForm onSubmit={mockOnSubmit} />);
+
+            const locationButton = screen.getByTitle("addressSearch.useCurrentLocation");
+            await user.click(locationButton);
+
+            await waitFor(() => {
+                expect(screen.getByTestId("input-address")).toHaveValue("");
+                expect(mockToast).toHaveBeenCalledWith(expect.objectContaining({
+                    description: "addressSearch.locationAddressFailed",
+                    variant: "destructive",
+                }));
+            });
+        });
     });
 });
