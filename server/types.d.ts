@@ -1,4 +1,4 @@
-import { User } from "@shared/schema";
+import { User } from "../shared/schema.js";
 
 declare global {
     namespace Express {

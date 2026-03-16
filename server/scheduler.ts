@@ -47,8 +47,7 @@ export function stopScheduler() {
 }
 
 
-import type { Business, User } from "@shared/schema";
-import type { Report } from "@shared/schema";
+import type { Business, User, Report } from "../shared/schema.js";
 
 export async function runScheduledReports(): Promise<{
   success: number;

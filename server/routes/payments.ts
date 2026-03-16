@@ -2,7 +2,7 @@ import express, { type Express, type Request } from "express";
 import Stripe from "stripe";
 import { storage } from "../storage.js";
 import { log } from "../log.js";
-import { User } from "@shared/schema";
+import type { User } from "../../shared/schema.js";
 
 if (!process.env.STRIPE_SECRET_KEY) {
     log("STRIPE_SECRET_KEY is not set. Payment routes will not handle real requests.", "stripe");

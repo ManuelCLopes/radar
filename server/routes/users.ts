@@ -1,7 +1,7 @@
 
 import type { Express } from "express";
 import { storage } from "../storage.js";
-import { type User as AppUser } from "@shared/schema";
+import { type User as AppUser } from "../../shared/schema.js";
 import { isAuthenticated } from "../auth.js";
 import bcrypt from "bcrypt";
 

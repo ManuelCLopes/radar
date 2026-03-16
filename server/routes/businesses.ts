@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { storage } from "../storage.js";
-import { insertBusinessSchema, type User as AppUser } from "@shared/schema";
+import { insertBusinessSchema, type User as AppUser } from "../../shared/schema.js";
 import { isAuthenticated } from "../auth.js";
 import { getPlanLimits } from "../limits.js";
 

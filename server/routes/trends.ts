@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { storage } from "../storage.js";
 import { isAuthenticated } from "../auth.js";
-import { type User as AppUser } from "@shared/schema";
+import { type User as AppUser } from "../../shared/schema.js";
 
 export function registerTrendRoutes(app: Express) {
     app.get("/api/trends/:businessId", isAuthenticated, async (req, res) => {
