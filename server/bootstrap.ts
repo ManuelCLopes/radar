@@ -7,6 +7,7 @@ import { registerRoutes } from "./routes/index.js";
 import { log } from "./log.js";
 import { seed } from "./seed.js";
 import { initSentry } from "./sentry.js";
+import { assertSecureProductionRuntimeConfig, getAllowedOrigins } from "./runtime-config.js";
 
 declare module "http" {
   interface IncomingMessage {
@@ -25,6 +26,9 @@ export interface BootstrapOptions {
 
 export async function createConfiguredServer(options: BootstrapOptions = {}) {
   const runtime = options.runtime ?? "standalone";
+  const allowedOrigins = getAllowedOrigins();
+
+  assertSecureProductionRuntimeConfig();
 
   if (!sentryInitialized) {
     initSentry();
@@ -43,14 +47,9 @@ export async function createConfiguredServer(options: BootstrapOptions = {}) {
     }),
   );
 
-  // CORS configuration
-  if (process.env.NODE_ENV === "production" && !process.env.ALLOWED_ORIGINS) {
-    log("WARNING: ALLOWED_ORIGINS is not set in production. CORS is open to all origins.");
-  }
-
   app.use(
     cors({
-      origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(",") : true,
+      origin: allowedOrigins.length > 0 ? allowedOrigins : true,
       credentials: true,
     }),
   );

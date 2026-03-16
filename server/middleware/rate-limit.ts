@@ -18,21 +18,24 @@ export const getRateLimitMax = (req: Request | any) => {
     return 200;
 };
 
+export const getClientIdentifier = (req: Request) => {
+    const user = req.user as any;
+    if (user?.id) {
+        return `user:${user.id}`;
+    }
+
+    const forwarded = req.headers["x-forwarded-for"];
+    const clientIp = typeof forwarded === "string"
+        ? forwarded.split(",")[0].trim()
+        : req.ip || req.socket?.remoteAddress || "unknown-ip";
+
+    return `ip:${clientIp}`;
+};
+
 export const searchRateLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
     max: getRateLimitMax,
-    keyGenerator: (req: Request) => {
-        // Limit authenticated users by ID, guests by IP
-        const user = req.user as any;
-        if (user) return user.id;
-
-        // Use forwarded IP (behind reverse proxy), direct IP, or socket address
-        const forwarded = req.headers["x-forwarded-for"];
-        const clientIp = typeof forwarded === "string"
-            ? forwarded.split(",")[0].trim()
-            : req.ip || req.socket?.remoteAddress || "unknown-ip";
-        return clientIp;
-    },
+    keyGenerator: getClientIdentifier,
     message: {
         error: "Rate limit exceeded",
         message: "Too many searches. Please upgrade your plan for higher limits."
@@ -41,3 +44,32 @@ export const searchRateLimiter = rateLimit({
     legacyHeaders: false,
     validate: false
 });
+
+const createLimiter = (windowMs: number, max: number, message: string) =>
+    rateLimit({
+        windowMs,
+        max,
+        keyGenerator: getClientIdentifier,
+        message: {
+            error: "Rate limit exceeded",
+            message,
+        },
+        standardHeaders: true,
+        legacyHeaders: false,
+        validate: false,
+    });
+
+export const createLoginRateLimiter = () =>
+    createLimiter(15 * 60 * 1000, 10, "Too many login attempts. Please try again in 15 minutes.");
+
+export const createRegistrationRateLimiter = () =>
+    createLimiter(60 * 60 * 1000, 5, "Too many registration attempts. Please try again later.");
+
+export const createPasswordResetRequestRateLimiter = () =>
+    createLimiter(60 * 60 * 1000, 5, "Too many password reset requests. Please try again later.");
+
+export const createPasswordResetConfirmRateLimiter = () =>
+    createLimiter(30 * 60 * 1000, 10, "Too many password reset attempts. Please try again later.");
+
+export const createVerificationEmailRateLimiter = () =>
+    createLimiter(60 * 60 * 1000, 5, "Too many verification email requests. Please try again later.");

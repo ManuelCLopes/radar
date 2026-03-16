@@ -2,10 +2,17 @@ import type { Express } from "express";
 import { storage } from "../storage.js";
 import { log } from "../log.js";
 import { getAppBaseUrl } from "../urls.js";
+import {
+    createPasswordResetConfirmRateLimiter,
+    createPasswordResetRequestRateLimiter,
+} from "../middleware/rate-limit.js";
 
 export function registerAuthRoutes(app: Express) {
+    const passwordResetRequestRateLimiter = createPasswordResetRequestRateLimiter();
+    const passwordResetConfirmRateLimiter = createPasswordResetConfirmRateLimiter();
+
     // Password reset routes
-    app.post("/api/auth/forgot-password", async (req, res) => {
+    app.post("/api/auth/forgot-password", passwordResetRequestRateLimiter, async (req, res) => {
         try {
             const { email, language } = req.body;
             const normalizedEmail = email?.toLowerCase();
@@ -96,7 +103,7 @@ export function registerAuthRoutes(app: Express) {
         }
     });
 
-    app.post("/api/auth/reset-password", async (req, res) => {
+    app.post("/api/auth/reset-password", passwordResetConfirmRateLimiter, async (req, res) => {
         try {
             const { token, newPassword } = req.body;
 

@@ -12,6 +12,8 @@ Competitor Watcher helps businesses understand their competitive landscape by an
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 
+[Contributing](./CONTRIBUTING.md) · [Security](./SECURITY.md) · [Code of Conduct](./CODE_OF_CONDUCT.md)
+
 ---
 
 ## ✨ Features
@@ -80,7 +82,7 @@ The application will be available at `http://127.0.0.1:5000`
 
 ## 🛠️ Configuration
 
-All environment variables are **optional**. The application works out-of-the-box with sensible defaults.
+Environment variables are optional for local development, but production requires a secure minimum configuration.
 
 ### Essential Configuration
 
@@ -91,7 +93,7 @@ For real competitor data, configure Google Places API:
 GOOGLE_API_KEY=your_api_key_here
 ```
 
-See [SETUP_GUIDE.md](./SETUP_GUIDE.md) for detailed setup instructions.
+See [`.env.example`](./.env.example) for the full reference.
 
 ### Full Configuration
 
@@ -332,20 +334,17 @@ Language files are located in `client/src/i18n/locales/`.
 
 ## 📚 Documentation
 
-- **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Detailed setup instructions
-- **[.env.example](./.env.example)** - Environment variables reference
+- **[README.md](./README.md)** - project overview and deployment notes
+- **[.env.example](./.env.example)** - environment variable reference
+- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - contribution workflow and expectations
+- **[SECURITY.md](./SECURITY.md)** - vulnerability reporting policy
+- **[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)** - community participation standards
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Contributions are welcome. Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before opening a PR.
 
 ---
 
@@ -368,9 +367,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For issues, questions, or suggestions:
 
-- 📧 Open an issue on [GitHub](https://github.com/ManuelCLopes/radar/issues)
-- 📖 Check the [SETUP_GUIDE.md](./SETUP_GUIDE.md)
-- 🔍 Review existing issues and discussions
+- Open an issue on [GitHub](https://github.com/ManuelCLopes/radar/issues) using the repo templates
+- Read [CONTRIBUTING.md](./CONTRIBUTING.md) before submitting changes
+- Read [SECURITY.md](./SECURITY.md) for private vulnerability disclosure
 
 ---
 

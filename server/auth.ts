@@ -8,6 +8,12 @@ import connectPg from "connect-pg-simple";
 import { storage } from "./storage.js";
 import type { User } from "@shared/schema";
 import { getAppBaseUrl, getGoogleCallbackUrl } from "./urls.js";
+import {
+    createLoginRateLimiter,
+    createRegistrationRateLimiter,
+    createVerificationEmailRateLimiter,
+} from "./middleware/rate-limit.js";
+import { isProductionEnvironment } from "./runtime-config.js";
 
 const SALT_ROUNDS = 10;
 
@@ -71,34 +77,40 @@ export async function verifyGoogle(accessToken: string, refreshToken: string, pr
 
 export function getSession() {
     const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
+    const databaseUrl = process.env.DATABASE_URL?.trim();
 
     let store;
-    if (process.env.DATABASE_URL) {
+    if (databaseUrl) {
         const pgStore = connectPg(session);
         store = new pgStore({
-            conString: process.env.DATABASE_URL,
+            conString: databaseUrl,
             createTableIfMissing: false,
             ttl: sessionTtl,
             tableName: "sessions",
         });
     } else {
+        if (isProductionEnvironment()) {
+            throw new Error("DATABASE_URL must be set in production. MemoryStore is not allowed.");
+        }
         store = new session.MemoryStore();
     }
 
     return session({
         secret: (() => {
-            const secret = process.env.SESSION_SECRET;
-            if (!secret && process.env.NODE_ENV === "production") {
+            const secret = process.env.SESSION_SECRET?.trim();
+            if (!secret && isProductionEnvironment()) {
                 throw new Error("SESSION_SECRET must be set in production");
             }
             return secret || "local-dev-secret";
         })(),
         store: store,
+        proxy: isProductionEnvironment(),
         resave: false,
         saveUninitialized: false,
+        name: process.env.SESSION_COOKIE_NAME?.trim() || "competitor_watcher.sid",
         cookie: {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
+            secure: isProductionEnvironment(),
             sameSite: "lax",
             maxAge: sessionTtl,
         },
@@ -106,6 +118,10 @@ export function getSession() {
 }
 
 export async function setupAuth(app: Express) {
+    const loginRateLimiter = createLoginRateLimiter();
+    const registrationRateLimiter = createRegistrationRateLimiter();
+    const verificationEmailRateLimiter = createVerificationEmailRateLimiter();
+
     app.set("trust proxy", true);
     app.use(getSession());
     app.use(passport.initialize());
@@ -162,7 +178,7 @@ export async function setupAuth(app: Express) {
 
     // Routes
     // Local login
-    app.post("/api/login", (req, res, next) => {
+    app.post("/api/login", loginRateLimiter, (req, res, next) => {
         passport.authenticate("local", (err: any, user: any, info: any) => {
             if (err) {
                 return next(err);
@@ -183,7 +199,7 @@ export async function setupAuth(app: Express) {
     });
 
     // Local registration
-    app.post("/api/register", async (req, res) => {
+    app.post("/api/register", registrationRateLimiter, async (req, res) => {
         try {
             const { password, firstName, lastName, plan, language } = req.body;
             const email = req.body.email?.toLowerCase();
@@ -293,7 +309,7 @@ export async function setupAuth(app: Express) {
         }
     });
 
-    app.post("/api/auth/resend-verification", async (req, res) => {
+    app.post("/api/auth/resend-verification", verificationEmailRateLimiter, async (req, res) => {
         if (!req.isAuthenticated()) {
             return res.status(401).json({ error: "Not authenticated" });
         }

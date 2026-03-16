@@ -574,8 +574,27 @@ describe("Session Configuration", () => {
 
     it("should use production cookie settings in production", () => {
         process.env.NODE_ENV = "production";
+        process.env.DATABASE_URL = "postgres://localhost:5432/db";
         process.env.SESSION_SECRET = "test-production-secret";
         const sessionMiddleware = getSession();
         expect(sessionMiddleware).toBeDefined();
+    });
+
+    it("should require DATABASE_URL in production", () => {
+        process.env.NODE_ENV = "production";
+        delete process.env.DATABASE_URL;
+        process.env.SESSION_SECRET = "test-production-secret";
+
+        expect(() => getSession()).toThrow(
+            "DATABASE_URL must be set in production. MemoryStore is not allowed.",
+        );
+    });
+
+    it("should require SESSION_SECRET in production", () => {
+        process.env.NODE_ENV = "production";
+        process.env.DATABASE_URL = "postgres://localhost:5432/db";
+        delete process.env.SESSION_SECRET;
+
+        expect(() => getSession()).toThrow("SESSION_SECRET must be set in production");
     });
 });
