@@ -123,7 +123,7 @@ SESSION_SECRET=
 This repository is now wired for Vercel with:
 
 - `vercel.json` (SPA rewrite + cron jobs + Vite output directory)
-- `api/[...path].ts` (Express API as a Vercel Function)
+- `api/index.ts` (Express API as a Vercel Function with explicit `/api/*` rewrites)
 - `build:client` script for static frontend output
 - `build:vercel` guard that blocks production deploys from branches other than `main`
 
@@ -181,7 +181,7 @@ At minimum, set these in Project Settings > Environment Variables:
 ```
 competitor-watcher/
 ├── api/                    # Vercel serverless entrypoint
-│   └── [...path].ts
+│   └── index.ts
 ├── client/                 # React frontend
 │   ├── src/
 │   │   ├── components/    # Reusable UI components
