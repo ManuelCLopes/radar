@@ -25,4 +25,10 @@ describe("restoreApiPathFromRewrite", () => {
       "/api/cron/cleanup-users",
     );
   });
+
+  it("drops an empty rewrite path query and keeps remaining params", () => {
+    expect(restoreApiPathFromRewrite("/api?path=&source=cron")).toBe(
+      "/api?source=cron",
+    );
+  });
 });

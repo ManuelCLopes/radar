@@ -5,7 +5,7 @@ export function restoreApiPathFromRewrite(inputUrl: string | undefined): string 
   const parsedUrl = new URL(inputUrl || fallbackUrl, "http://localhost");
   const rewrittenPath = parsedUrl.searchParams.get("path");
 
-  if (!rewrittenPath) {
+  if (rewrittenPath === null) {
     return `${parsedUrl.pathname}${parsedUrl.search}`;
   }
 
