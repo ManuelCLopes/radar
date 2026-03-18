@@ -4,6 +4,7 @@ import { ReportView } from "../ReportView";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { useAuth } from "@/hooks/useAuth";
+import type { Business } from "@shared/schema";
 
 // Mock translation
 vi.mock("react-i18next", () => ({
@@ -36,18 +37,29 @@ vi.mock("@react-pdf/renderer", () => ({
     Image: () => null,
 }));
 
-// Setup QueryClient
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            retry: false,
-            queryFn: async () => null,
+const createQueryClient = (business: Business | null = null) =>
+    new QueryClient({
+        defaultOptions: {
+            queries: {
+                retry: false,
+                queryFn: async ({ queryKey }) => {
+                    if (queryKey[0] === `/api/businesses/${mockReportBase.businessId}`) {
+                        return business;
+                    }
+                    return null;
+                },
+            },
         },
-    },
-});
+    });
 
-const Wrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
+const Wrapper = ({
+    children,
+    business = null,
+}: {
+    children: React.ReactNode;
+    business?: Business | null;
+}) => (
+    <QueryClientProvider client={createQueryClient(business)}>
         <TooltipProvider>
             {children}
         </TooltipProvider>
@@ -81,8 +93,8 @@ describe("ReportView", () => {
             ...mockReportBase,
             businessId: null,
             businessName: "Praca das Palmeiras 115, 3500-392 Viseu, Portugal",
-            type: "restaurant",
-            address: "Praca das Palmeiras 115, 3500-392 Viseu, Portugal",
+            businessType: "restaurant",
+            businessAddress: "Praca das Palmeiras 115, 3500-392 Viseu, Portugal",
         };
 
         render(
@@ -99,6 +111,52 @@ describe("ReportView", () => {
         expect(screen.getByTestId("report-title")).toHaveTextContent("Restaurant Analysis");
         expect(screen.getByText("Praca das Palmeiras 115, 3500-392 Viseu, Portugal")).toBeInTheDocument();
         expect(screen.queryByText(new Date(mockReportBase.generatedAt).toLocaleDateString())).not.toBeInTheDocument();
+    });
+
+    it("prefers persisted report header context over live business data", () => {
+        vi.mocked(useAuth).mockReturnValue({
+            user: undefined,
+            isLoading: false,
+            isAuthenticated: false,
+            loginMutation: {} as any,
+            logoutMutation: {} as any,
+            registerMutation: {} as any,
+        });
+
+        const report = {
+            ...mockReportBase,
+            businessType: "restaurant",
+            businessAddress: "Historic Address, Viseu, Portugal",
+        };
+
+        const currentBusiness = {
+            id: "bus-1",
+            userId: "user-1",
+            name: "Renamed Business",
+            type: "cafe" as const,
+            address: "New Address, Porto, Portugal",
+            latitude: 0,
+            longitude: 0,
+            locationStatus: "validated" as const,
+            rating: null,
+            userRatingsTotal: null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+
+        render(
+            <Wrapper business={currentBusiness}>
+                <ReportView
+                    report={report as any}
+                    open={true}
+                    onOpenChange={() => { }}
+                />
+            </Wrapper>
+        );
+
+        expect(screen.getByTestId("report-title")).toHaveTextContent("Restaurant Analysis");
+        expect(screen.getByText("Historic Address, Viseu, Portugal")).toBeInTheDocument();
+        expect(screen.queryByText("New Address, Porto, Portugal")).not.toBeInTheDocument();
     });
 
     it("renders structured data sections correctly", () => {

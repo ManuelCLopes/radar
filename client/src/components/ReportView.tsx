@@ -31,7 +31,6 @@ interface ReportViewProps {
 }
 
 const emailSchema = z.string().email();
-type ReportWithContext = Report & { type?: Business["type"]; address?: string };
 
 function StatCard({ icon: Icon, label, value }: { icon: typeof Building2; label: string; value: string | number }) {
   return (
@@ -136,8 +135,7 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
 
   if (!report) return null;
 
-  const reportWithContext = report as ReportWithContext;
-  const businessType = business?.type ?? reportWithContext.type;
+  const businessType = report.businessType;
   const localizedBusinessType =
     businessType && businessTypes.includes(businessType)
       ? t(`businessTypes.${businessType}`)
@@ -145,7 +143,7 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
   const reportTitle = localizedBusinessType
     ? t("report.view.typeAnalysis", { type: localizedBusinessType })
     : t("report.view.title");
-  const reportLocation = business?.address || reportWithContext.address || report.businessName;
+  const reportLocation = report.businessAddress || report.businessName;
   const showHeaderMeta = !isGuest;
 
   const handlePrintPDF = () => {

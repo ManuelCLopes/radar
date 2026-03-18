@@ -118,6 +118,8 @@ export const reports = pgTable("reports", {
   userId: varchar("user_id").references(() => users.id),
   businessId: varchar("business_id"), // Made nullable to support address-only analysis if needed, or we create a temp business
   businessName: text("business_name").notNull(),
+  businessType: text("business_type").$type<BusinessType>(),
+  businessAddress: text("business_address"),
   competitors: jsonb("competitors").notNull().$type<Competitor[]>(),
   aiAnalysis: text("ai_analysis").notNull(),
   executiveSummary: text("executive_summary"), // Key summary like "Market Overview"
@@ -160,6 +162,8 @@ export const insertReportSchema = z.object({
   userId: z.string().optional().nullable(),
   businessId: z.string().optional().nullable(),
   businessName: z.string(),
+  businessType: z.enum(businessTypes).optional().nullable(),
+  businessAddress: z.string().optional().nullable(),
   competitors: z.array(competitorSchema),
   aiAnalysis: z.string(),
   executiveSummary: z.string().optional(),
@@ -254,6 +258,5 @@ export const apiUsage = pgTable("api_usage", {
 
 export type InsertApiUsage = typeof apiUsage.$inferInsert;
 export type ApiUsage = typeof apiUsage.$inferSelect;
-
 
 

@@ -250,8 +250,8 @@ export function registerSearchRoutes(app: Express) {
             // Inject business details so they can be saved later
             const reportWithBusiness = {
                 ...report,
-                type: tempBusiness.type,
-                address: tempBusiness.address,
+                businessType: tempBusiness.type,
+                businessAddress: tempBusiness.address,
                 latitude: tempBusiness.latitude,
                 longitude: tempBusiness.longitude
             };

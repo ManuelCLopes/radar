@@ -3,7 +3,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { runReportForBusiness } from "../reports";
 import { storage } from "../storage";
-import { searchNearby } from "../googlePlaces";
+import { searchNearby, searchPlacesByAddress } from "../googlePlaces";
 import { analyzeCompetitors } from "../ai";
 
 // Mock dependencies
@@ -17,6 +17,7 @@ vi.mock("../storage", () => ({
 
 vi.mock("../googlePlaces", () => ({
     searchNearby: vi.fn(),
+    searchPlacesByAddress: vi.fn(),
 }));
 
 vi.mock("../ai", () => ({
@@ -26,6 +27,7 @@ vi.mock("../ai", () => ({
 describe("Reports Logic", () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        (searchPlacesByAddress as any).mockResolvedValue([]);
     });
 
     it("should throw error if business not found", async () => {
@@ -51,6 +53,7 @@ describe("Reports Logic", () => {
             id: "1",
             name: "Test Business",
             type: "restaurant",
+            address: "123 Market St",
             latitude: 10,
             longitude: 20,
             locationStatus: "validated",
@@ -81,6 +84,8 @@ describe("Reports Logic", () => {
         expect(storage.saveReport).toHaveBeenCalledWith(expect.objectContaining({
             businessId: "1",
             userId: "user-1",
+            businessType: "restaurant",
+            businessAddress: "123 Market St",
             executiveSummary: "Mock Overview",
         }));
         expect(result.id).toBe("report-1");
@@ -91,6 +96,7 @@ describe("Reports Logic", () => {
             id: "temp-1",
             name: "Temp Business",
             type: "cafe",
+            address: "Rua das Flores 10, Porto",
             latitude: 30,
             longitude: 40,
             locationStatus: "validated",
@@ -113,6 +119,8 @@ describe("Reports Logic", () => {
         expect(storage.getBusiness).not.toHaveBeenCalled();
         expect(storage.saveReport).not.toHaveBeenCalled();
         expect(result.id).toContain("temp-");
+        expect(result.businessType).toBe("cafe");
+        expect(result.businessAddress).toBe("Rua das Flores 10, Porto");
         expect(result.executiveSummary).toBe("Temp Overview");
     });
 
@@ -121,6 +129,7 @@ describe("Reports Logic", () => {
             id: "1",
             name: "Test Business",
             type: "restaurant",
+            address: "123 Market St",
             latitude: 10,
             longitude: 20,
             locationStatus: "validated",
