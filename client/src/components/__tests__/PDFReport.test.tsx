@@ -18,6 +18,8 @@ describe('PDFReport', () => {
         id: '1',
         businessId: '1',
         businessName: 'Test Business',
+        businessType: 'restaurant',
+        businessAddress: '123 Main St',
         competitors: [
             {
 

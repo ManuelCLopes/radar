@@ -21,6 +21,8 @@ export function registerReportRoutes(app: Express) {
                 userId: (req.user as any).id,
                 businessId,
                 businessName: report.businessName,
+                businessType: report.businessType ?? report.type ?? null,
+                businessAddress: report.businessAddress ?? report.address ?? null,
                 competitors: report.competitors,
                 aiAnalysis: report.aiAnalysis,
                 html: report.html || "",
@@ -76,6 +78,8 @@ export function registerReportRoutes(app: Express) {
             const pendingReportData: InsertReport = {
                 businessId: business.id,
                 businessName: business.name,
+                businessType: business.type,
+                businessAddress: business.address || null,
                 competitors: [],
                 aiAnalysis: "Generating...", // Flag for frontend polling
                 executiveSummary: undefined,
@@ -342,6 +346,8 @@ export function registerReportRoutes(app: Express) {
             const savedReport = await storage.createReport({
                 businessId: null, // Explicitly set to null for ad-hoc analysis
                 businessName: address.split(',')[0],
+                businessType: type,
+                businessAddress: address,
                 competitors: [],
                 aiAnalysis: "Generating...",
                 userId: (req.user as AppUser).id,

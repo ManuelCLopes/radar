@@ -90,6 +90,8 @@ describe("Report Routes", () => {
         it("should save existing report successfully", async () => {
             const reportData = {
                 businessName: "Test Business",
+                businessType: "restaurant",
+                businessAddress: "123 Market St",
                 competitors: [],
                 aiAnalysis: "Analysis",
                 html: "<p>Report</p>"
@@ -102,7 +104,11 @@ describe("Report Routes", () => {
 
             expect(res.status).toBe(200);
             expect(res.body.id).toBe("rep-1");
-            expect(mockStorage.createReport).toHaveBeenCalled();
+            expect(mockStorage.createReport).toHaveBeenCalledWith(expect.objectContaining({
+                businessName: "Test Business",
+                businessType: "restaurant",
+                businessAddress: "123 Market St",
+            }));
         });
 
         it("should reject missing report data", async () => {
@@ -127,7 +133,13 @@ describe("Report Routes", () => {
 
     describe("POST /api/run-report/:id", () => {
         it("should run report successfully", async () => {
-            mockStorage.getBusiness.mockResolvedValue({ id: "biz-1", userId: "user-1" });
+            mockStorage.getBusiness.mockResolvedValue({
+                id: "biz-1",
+                userId: "user-1",
+                name: "Tracked Business",
+                type: "restaurant",
+                address: "456 Central Ave",
+            });
             mockStorage.countReportsCurrentMonth.mockResolvedValue(5);
             mockReports.runReportForBusiness.mockResolvedValue({ id: "rep-1", status: "completed" });
             mockStorage.createReport.mockResolvedValue({ id: "rep-1", status: "pending" });
@@ -138,6 +150,10 @@ describe("Report Routes", () => {
 
             expect(res.status).toBe(200);
             expect(res.body.id).toBe("rep-1");
+            expect(mockStorage.createReport).toHaveBeenCalledWith(expect.objectContaining({
+                businessType: "restaurant",
+                businessAddress: "456 Central Ave",
+            }));
         });
 
         it("should return 404 for non-existent business", async () => {
@@ -349,6 +365,10 @@ describe("Report Routes", () => {
 
             expect(res.status).toBe(200);
             expect(res.body.id).toBe("rep-1");
+            expect(mockStorage.createReport).toHaveBeenCalledWith(expect.objectContaining({
+                businessType: "restaurant",
+                businessAddress: "123 St",
+            }));
         });
 
         it("should reject if missing fields", async () => {

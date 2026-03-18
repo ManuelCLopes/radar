@@ -644,6 +644,8 @@ export class MemStorage implements IStorage {
       generatedAt: new Date(),
       userId: insertReport.userId || null,
       businessId: insertReport.businessId || null,
+      businessType: insertReport.businessType || null,
+      businessAddress: insertReport.businessAddress || null,
       html: insertReport.html || null,
       radius: insertReport.radius ?? null,
       executiveSummary: insertReport.executiveSummary || null,

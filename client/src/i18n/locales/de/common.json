@@ -110,7 +110,8 @@
       "dateLabel": "Datum:",
       "public": "Öffentlich",
       "generatedBy": "Erstellt von Competitor Watcher AI",
-      "comprehensiveAnalysis": "Umfassende KI-Analyse"
+      "comprehensiveAnalysis": "Umfassende KI-Analyse",
+      "typeAnalysis": "{{type}}-Analyse"
     },
     "stats": {
       "competitorsFound": "Wettbewerber gefunden",
