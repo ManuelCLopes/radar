@@ -117,7 +117,8 @@
       "dateLabel": "Data:",
       "public": "Público",
       "generatedBy": "Gerado por Competitor Watcher AI",
-      "comprehensiveAnalysis": "Análise Abrangente de IA"
+      "comprehensiveAnalysis": "Análise Abrangente de IA",
+      "typeAnalysis": "Análise de {{type}}"
     },
     "stats": {
       "competitorsFound": "Concorrentes Encontrados",

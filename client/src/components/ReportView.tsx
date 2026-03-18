@@ -15,7 +15,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import { PDFReport } from "./PDFReport";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import type { Report, Business } from "@shared/schema";
+import { businessTypes, type Report, type Business } from "@shared/schema";
 import { useAuth } from "@/hooks/useAuth";
 import { ReportContent } from "./ReportContent";
 
@@ -31,6 +31,7 @@ interface ReportViewProps {
 }
 
 const emailSchema = z.string().email();
+type ReportWithContext = Report & { type?: Business["type"]; address?: string };
 
 function StatCard({ icon: Icon, label, value }: { icon: typeof Building2; label: string; value: string | number }) {
   return (
@@ -135,6 +136,18 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
 
   if (!report) return null;
 
+  const reportWithContext = report as ReportWithContext;
+  const businessType = business?.type ?? reportWithContext.type;
+  const localizedBusinessType =
+    businessType && businessTypes.includes(businessType)
+      ? t(`businessTypes.${businessType}`)
+      : null;
+  const reportTitle = localizedBusinessType
+    ? t("report.view.typeAnalysis", { type: localizedBusinessType })
+    : t("report.view.title");
+  const reportLocation = business?.address || reportWithContext.address || report.businessName;
+  const showHeaderMeta = !isGuest;
+
   const handlePrintPDF = () => {
     console.log('ReportView: window.IS_E2E =', (window as any).IS_E2E);
     onPrint?.();
@@ -169,11 +182,13 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
             <div className="flex items-center justify-between">
               <div>
                 <DialogTitle className="text-xl font-bold flex items-center gap-2" data-testid="report-title">
-                  {report.businessName}
-                  <Badge variant="outline" className="ml-2 font-normal">
-                    {new Date(report.generatedAt).toLocaleDateString()}
-                  </Badge>
-                  {report.isShared && (
+                  {reportTitle}
+                  {showHeaderMeta && (
+                    <Badge variant="outline" className="ml-2 font-normal">
+                      {new Date(report.generatedAt).toLocaleDateString()}
+                    </Badge>
+                  )}
+                  {showHeaderMeta && report.isShared && (
                     <Badge variant="secondary" className="ml-2 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-800 flex items-center gap-1">
                       <Globe className="h-3 w-3" />
                       {t("report.view.public")}
@@ -181,7 +196,7 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
                   )}
                 </DialogTitle>
                 <DialogDescription className="mt-1">
-                  {t("report.view.comprehensiveAnalysis")}
+                  {reportLocation}
                 </DialogDescription>
               </div>
               <div className="flex items-center gap-2">

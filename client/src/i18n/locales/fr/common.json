@@ -109,7 +109,8 @@
       "dateLabel": "Date :",
       "public": "Public",
       "generatedBy": "Généré par Competitor Watcher AI",
-      "comprehensiveAnalysis": "Analyse IA complète"
+      "comprehensiveAnalysis": "Analyse IA complète",
+      "typeAnalysis": "Analyse de {{type}}"
     },
     "stats": {
       "competitorsFound": "Concurrents trouvés",
