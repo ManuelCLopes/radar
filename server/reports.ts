@@ -98,6 +98,8 @@ export async function runReportForBusiness(
       // If we are running for a temporary business (ad-hoc), do not update the businessId (keep it null)
       businessId: providedBusiness ? undefined : business.id,
       businessName: business.name,
+      businessType: business.type,
+      businessAddress: business.address || null,
       competitors,
       aiAnalysis: "Structured Analysis", // Placeholder text or summary
       executiveSummary: aiAnalysis.executiveSummary,
@@ -129,6 +131,8 @@ export async function runReportForBusiness(
     id: 'temp-' + Date.now(),
     businessId: business.id,
     businessName: business.name,
+    businessType: business.type,
+    businessAddress: business.address || null,
     competitors,
     aiAnalysis: "Structured Analysis",
     executiveSummary: aiAnalysis.executiveSummary,
@@ -143,4 +147,3 @@ export async function runReportForBusiness(
     radius: radius || null,
   } as Report;
 }
-

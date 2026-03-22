@@ -3,13 +3,23 @@ import { describe, it, expect, vi } from "vitest";
 import { ReportView } from "../ReportView";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
+import { useAuth } from "@/hooks/useAuth";
+import type { Business } from "@shared/schema";
 
 // Mock translation
 vi.mock("react-i18next", () => ({
     useTranslation: () => ({
-        t: (key: string) => key,
+        t: (key: string, options?: Record<string, unknown>) => {
+            if (key === "businessTypes.restaurant") return "Restaurant";
+            if (key === "report.view.typeAnalysis") return `${options?.type} Analysis`;
+            return key;
+        },
         i18n: { language: "en" },
     }),
+}));
+
+vi.mock("@/hooks/useAuth", () => ({
+    useAuth: vi.fn(),
 }));
 
 // Mock PDF components since they might cause issues in jsdom environment or require specific setup
@@ -27,17 +37,29 @@ vi.mock("@react-pdf/renderer", () => ({
     Image: () => null,
 }));
 
-// Setup QueryClient
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            retry: false,
+const createQueryClient = (business: Business | null = null) =>
+    new QueryClient({
+        defaultOptions: {
+            queries: {
+                retry: false,
+                queryFn: async ({ queryKey }) => {
+                    if (queryKey[0] === `/api/businesses/${mockReportBase.businessId}`) {
+                        return business;
+                    }
+                    return null;
+                },
+            },
         },
-    },
-});
+    });
 
-const Wrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
+const Wrapper = ({
+    children,
+    business = null,
+}: {
+    children: React.ReactNode;
+    business?: Business | null;
+}) => (
+    <QueryClientProvider client={createQueryClient(business)}>
         <TooltipProvider>
             {children}
         </TooltipProvider>
@@ -49,7 +71,7 @@ const mockReportBase = {
     businessId: "bus-1",
     businessName: "Test Business",
     competitors: [],
-    generatedAt: new Date().toISOString(),
+    generatedAt: "2026-03-18T00:00:00.000Z",
     aiAnalysis: "Raw AI Content",
     html: null,
     userId: "user-1",
@@ -57,7 +79,96 @@ const mockReportBase = {
 };
 
 describe("ReportView", () => {
+    it("shows type-based title and location subtitle for guest reports without header metadata", () => {
+        vi.mocked(useAuth).mockReturnValue({
+            user: undefined,
+            isLoading: false,
+            isAuthenticated: false,
+            loginMutation: {} as any,
+            logoutMutation: {} as any,
+            registerMutation: {} as any,
+        });
+
+        const guestReport = {
+            ...mockReportBase,
+            businessId: null,
+            businessName: "Praca das Palmeiras 115, 3500-392 Viseu, Portugal",
+            businessType: "restaurant",
+            businessAddress: "Praca das Palmeiras 115, 3500-392 Viseu, Portugal",
+        };
+
+        render(
+            <Wrapper>
+                <ReportView
+                    report={guestReport as any}
+                    open={true}
+                    onOpenChange={() => { }}
+                    isGuest={true}
+                />
+            </Wrapper>
+        );
+
+        expect(screen.getByTestId("report-title")).toHaveTextContent("Restaurant Analysis");
+        expect(screen.getByText("Praca das Palmeiras 115, 3500-392 Viseu, Portugal")).toBeInTheDocument();
+        expect(screen.queryByText(new Date(mockReportBase.generatedAt).toLocaleDateString())).not.toBeInTheDocument();
+    });
+
+    it("prefers persisted report header context over live business data", () => {
+        vi.mocked(useAuth).mockReturnValue({
+            user: undefined,
+            isLoading: false,
+            isAuthenticated: false,
+            loginMutation: {} as any,
+            logoutMutation: {} as any,
+            registerMutation: {} as any,
+        });
+
+        const report = {
+            ...mockReportBase,
+            businessType: "restaurant",
+            businessAddress: "Historic Address, Viseu, Portugal",
+        };
+
+        const currentBusiness = {
+            id: "bus-1",
+            userId: "user-1",
+            name: "Renamed Business",
+            type: "cafe" as const,
+            address: "New Address, Porto, Portugal",
+            latitude: 0,
+            longitude: 0,
+            locationStatus: "validated" as const,
+            rating: null,
+            userRatingsTotal: null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+
+        render(
+            <Wrapper business={currentBusiness}>
+                <ReportView
+                    report={report as any}
+                    open={true}
+                    onOpenChange={() => { }}
+                />
+            </Wrapper>
+        );
+
+        expect(screen.getByTestId("report-title")).toHaveTextContent("Restaurant Analysis");
+        expect(screen.getByText("Historic Address, Viseu, Portugal")).toBeInTheDocument();
+        expect(screen.queryByText("New Address, Porto, Portugal")).not.toBeInTheDocument();
+    });
+
     it("renders structured data sections correctly", () => {
+        vi.mocked(useAuth).mockReturnValue({
+            user: undefined,
+            isLoading: false,
+            isAuthenticated: false,
+            loginMutation: {} as any,
+            logoutMutation: {} as any,
+            registerMutation: {} as any,
+        });
+
         const structuredReport = {
             ...mockReportBase,
             executiveSummary: "This is the market overview.",
@@ -112,6 +223,15 @@ describe("ReportView", () => {
     // Legacy content test removed as we no longer support the regex fallback for raw HTML/JSON dumps
 
     it("handles empty data gracefully", () => {
+        vi.mocked(useAuth).mockReturnValue({
+            user: undefined,
+            isLoading: false,
+            isAuthenticated: false,
+            loginMutation: {} as any,
+            logoutMutation: {} as any,
+            registerMutation: {} as any,
+        });
+
         const emptyReport = {
             ...mockReportBase,
             swotAnalysis: { strengths: [], weaknesses: [], opportunities: [], threats: [] },

@@ -8,6 +8,13 @@
       "when": 1771155386941,
       "tag": "0000_complex_wendigo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773851122950,
+      "tag": "0001_narrow_onslaught",
+      "breakpoints": true
     }
   ]
 }
