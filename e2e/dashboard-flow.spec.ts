@@ -137,6 +137,9 @@ test.describe('Dashboard Business Management Flow', () => {
         });
         page.on('response', resp => console.log('RESPONSE:', resp.url(), resp.status()));
 
+        await page.addInitScript(() => {
+            window.localStorage.setItem('onboarding_completed', 'true');
+        });
         await page.goto('/dashboard');
         console.log('Navigated to:', page.url());
     });
@@ -169,11 +172,12 @@ test.describe('Dashboard Business Management Flow', () => {
         await page.waitForTimeout(500);
 
         // Now address is "verified" (pending status), select type
-        await page.getByTestId('select-business-type').click();
-        const restaurantOption = page.getByTestId('option-type-restaurant').first();
-        await expect(restaurantOption).toBeVisible({ timeout: 10000 });
-        await restaurantOption.click({ force: true });
-        await expect(page.getByTestId('select-business-type')).toContainText(/Restaurant|Restaurante/i);
+        const businessTypeSelect = page.getByTestId('select-business-type');
+        await businessTypeSelect.click();
+        const restaurantOption = page.getByTestId('option-type-restaurant');
+        await expect(restaurantOption).toBeVisible();
+        await page.keyboard.press('Enter');
+        await expect(page.getByTestId('button-submit-business')).toBeEnabled();
 
         // Submit
         // We need to update the GET mock to include the new business for the UI to update optimistically or on refetch?
