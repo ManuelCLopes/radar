@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import LoginPage from "../LoginPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Route, Switch } from "wouter";
+import { HelmetProvider } from "react-helmet-async";
 
 // Mock hooks
 vi.mock("@/hooks/useAuth", () => ({
@@ -39,9 +40,11 @@ const queryClient = new QueryClient({
 describe("LoginPage", () => {
     it("renders login form", () => {
         render(
-            <QueryClientProvider client={queryClient}>
-                <LoginPage />
-            </QueryClientProvider>
+            <HelmetProvider>
+                <QueryClientProvider client={queryClient}>
+                    <LoginPage />
+                </QueryClientProvider>
+            </HelmetProvider>
         );
 
         expect(screen.getAllByAltText("Competitor Watcher")[0]).toBeInTheDocument();
@@ -52,9 +55,11 @@ describe("LoginPage", () => {
 
     it("validates required fields", async () => {
         render(
-            <QueryClientProvider client={queryClient}>
-                <LoginPage />
-            </QueryClientProvider>
+            <HelmetProvider>
+                <QueryClientProvider client={queryClient}>
+                    <LoginPage />
+                </QueryClientProvider>
+            </HelmetProvider>
         );
 
         fireEvent.click(screen.getByRole("button", { name: "auth.login" }));
@@ -89,9 +94,11 @@ describe("LoginPage", () => {
             } as any); // Save report response
 
         render(
-            <QueryClientProvider client={queryClient}>
-                <LoginPage />
-            </QueryClientProvider>
+            <HelmetProvider>
+                <QueryClientProvider client={queryClient}>
+                    <LoginPage />
+                </QueryClientProvider>
+            </HelmetProvider>
         );
 
         fireEvent.change(screen.getByLabelText("auth.email"), { target: { value: "test@example.com" } });

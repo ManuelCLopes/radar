@@ -25,6 +25,8 @@ describe("Static Routes", () => {
             expect(res.text).toContain("User-agent: *");
             expect(res.text).toContain("Allow: /");
             expect(res.text).toContain("Allow: /support");
+            expect(res.text).not.toContain("Allow: /login");
+            expect(res.text).not.toContain("Allow: /register");
             expect(res.text).toContain("Disallow: /dashboard");
             expect(res.text).toContain("Disallow: /admin");
             expect(res.text).toContain("Disallow: /api/");
@@ -42,6 +44,9 @@ describe("Static Routes", () => {
             expect(res.text).toMatch(/<loc>https?:\/\/127\.0\.0\.1:\d+\/<\/loc>/);
             expect(res.text).toContain("/support</loc>");
             expect(res.text).toContain("/privacy-policy</loc>");
+            expect(res.text).not.toContain("/login</loc>");
+            expect(res.text).not.toContain("/register</loc>");
+            expect(res.text).toContain("<lastmod>2026-03-22</lastmod>");
             expect(res.text).toContain("/llms.txt</loc>");
         });
     });

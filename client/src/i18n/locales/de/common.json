@@ -785,6 +785,10 @@
     "madeWith": "Feito com",
     "forSmallBusinesses": "para pequenos negócios."
   },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "description": "Die gesuchte Seite existiert nicht oder wurde möglicherweise verschoben."
+  },
   "legal": {
     "privacy": {
       "title": "Política de Privacidade",

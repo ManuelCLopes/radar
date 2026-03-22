@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ForgotPasswordPage from '../ForgotPasswordPage';
 import * as queryClient from '@/lib/queryClient';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Mock hooks
 vi.mock('react-i18next', () => ({
@@ -32,12 +33,18 @@ vi.mock("@/components/LanguageSelector", () => ({
 }));
 
 describe('ForgotPasswordPage', () => {
+    const renderPage = () => render(
+        <HelmetProvider>
+            <ForgotPasswordPage />
+        </HelmetProvider>
+    );
+
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
     it('renders correctly', () => {
-        render(<ForgotPasswordPage />);
+        renderPage();
 
         expect(screen.getByText('auth.forgotPasswordTitle')).toBeInTheDocument();
         expect(screen.getByLabelText('auth.email')).toBeInTheDocument();
@@ -50,7 +57,7 @@ describe('ForgotPasswordPage', () => {
             json: async () => ({ message: 'Success' })
         } as Response);
 
-        render(<ForgotPasswordPage />);
+        renderPage();
 
         const emailInput = screen.getByLabelText('auth.email');
         fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
@@ -73,7 +80,7 @@ describe('ForgotPasswordPage', () => {
             json: async () => ({ error: 'Failed to send' })
         } as Response);
 
-        render(<ForgotPasswordPage />);
+        renderPage();
 
         const emailInput = screen.getByLabelText('auth.email');
         fireEvent.change(emailInput, { target: { value: 'test@example.com' } });

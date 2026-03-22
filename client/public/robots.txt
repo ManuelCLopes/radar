@@ -1,7 +1,5 @@
 User-agent: *
 Allow: /
-Allow: /login
-Allow: /register
 Allow: /support
 Allow: /privacy-policy
 Allow: /cookie-policy

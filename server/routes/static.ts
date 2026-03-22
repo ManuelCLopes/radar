@@ -4,8 +4,6 @@ import { getAppBaseUrl } from "../urls.js";
 function buildRobotsTxt(baseUrl: string): string {
     return `User-agent: *
 Allow: /
-Allow: /login
-Allow: /register
 Allow: /support
 Allow: /privacy-policy
 Allow: /cookie-policy
@@ -22,40 +20,37 @@ Sitemap: ${baseUrl}/sitemap.xml
 }
 
 function buildSitemapXml(baseUrl: string): string {
+    const lastModified = "2026-03-22";
+
     return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>${baseUrl}/</loc>
+    <lastmod>${lastModified}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>${baseUrl}/login</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/register</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>${baseUrl}/support</loc>
+    <lastmod>${lastModified}</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>${baseUrl}/privacy-policy</loc>
+    <lastmod>${lastModified}</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>${baseUrl}/cookie-policy</loc>
+    <lastmod>${lastModified}</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>${baseUrl}/llms.txt</loc>
+    <lastmod>${lastModified}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
