@@ -5,6 +5,7 @@ import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
+import { Seo } from "@/components/Seo";
 
 export default function VerifyEmail() {
     const [_, setLocation] = useLocation();
@@ -57,6 +58,12 @@ export default function VerifyEmail() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+            <Seo
+                title={`${t("verifyEmail.title")} | Competitor Watcher`}
+                description={message}
+                path={token ? `/verify-email?token=${token}` : "/verify-email"}
+                noIndex
+            />
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center">
                     <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">

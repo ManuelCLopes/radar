@@ -202,7 +202,7 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
                   <Button
                     onClick={() => {
                       onOpenChange(false);
-                      window.location.href = '/auth?mode=register';
+                      window.location.href = '/register';
                     }}
                     className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md"
                   >

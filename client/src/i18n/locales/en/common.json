@@ -791,6 +791,10 @@
     "madeWith": "Made with",
     "forSmallBusinesses": "for small businesses."
   },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or may have been moved."
+  },
   "legal": {
     "privacy": {
       "title": "Privacy Policy",
