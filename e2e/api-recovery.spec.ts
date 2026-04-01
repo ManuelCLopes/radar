@@ -21,6 +21,9 @@ test.describe('API Error Recovery', () => {
             await route.fulfill({ status: 401, json: { message: 'Not authenticated' } });
         });
 
+        await page.addInitScript(() => {
+            window.localStorage.setItem('onboarding_completed', 'true');
+        });
         await page.goto('/dashboard');
 
         // Should redirect to landing page
@@ -40,6 +43,9 @@ test.describe('API Error Recovery', () => {
             }
         });
 
+        await page.addInitScript(() => {
+            window.localStorage.setItem('onboarding_completed', 'true');
+        });
         await page.goto('/dashboard');
         await expect(page).toHaveURL(/\/dashboard/);
 
@@ -54,8 +60,12 @@ test.describe('API Error Recovery', () => {
         });
 
         await page.getByTestId('button-search-address').click();
-        await page.getByTestId('select-business-type').click();
-        await page.getByTestId('option-type-restaurant').click();
+        const businessTypeSelect = page.getByTestId('select-business-type');
+        await businessTypeSelect.click();
+        const restaurantOption = page.getByTestId('option-type-restaurant');
+        await expect(restaurantOption).toBeVisible();
+        await page.keyboard.press('Enter');
+        await expect(page.getByTestId('button-submit-business')).toBeEnabled();
 
         await page.getByTestId('button-submit-business').click();
 
