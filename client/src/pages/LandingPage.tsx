@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { Button } from "@/components/ui/button";
-import { Helmet } from "react-helmet-async";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadiusSelector } from "@/components/RadiusSelector";
@@ -21,6 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { fetchDisplayableAddressFromCoordinates } from "@/lib/location";
+import { Seo, toAbsoluteSeoUrl } from "@/components/Seo";
 
 import { usePricingModal } from "@/context/PricingModalContext";
 
@@ -31,22 +31,6 @@ export default function LandingPage() {
   const { toast } = useToast();
   const { t, i18n } = useTranslation();
   const { openPricing } = usePricingModal();
-  const language = i18n?.language ?? "en";
-  const siteName = t("landing.brandName");
-  const siteUrl = "https://competitorwatcher.pt";
-  const canonicalUrl = `${siteUrl}/`;
-  const seoTitle = `${siteName} - ${t("quickSearch.title")}`;
-  const seoDescription = t("quickSearch.subtitle");
-  const ogLocale =
-    language === "pt"
-      ? "pt_PT"
-      : language === "es"
-        ? "es_ES"
-        : language === "fr"
-          ? "fr_FR"
-          : language === "de"
-            ? "de_DE"
-            : "en_US";
 
   // Quick search state
   const [isSearching, setIsSearching] = useState(false);
@@ -222,64 +206,57 @@ export default function LandingPage() {
     }
   };
 
+  const landingStructuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": t("landing.brandName"),
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "url": toAbsoluteSeoUrl("/"),
+      "image": toAbsoluteSeoUrl("/logo.png"),
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      },
+      "description": t("quickSearch.seoIntent")
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": t("landing.brandName"),
+      "url": toAbsoluteSeoUrl("/"),
+      "description": t("quickSearch.seoIntent")
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [1, 2, 3, 4, 5].map((index) => ({
+        "@type": "Question",
+        "name": t(`landing.faq.q${index}.question`),
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": t(`landing.faq.q${index}.answer`)
+        }
+      }))
+    }
+  ];
+
   return (
     <div className="landing-page">
-      <Helmet>
-        <title>{seoTitle}</title>
-        <meta name="description" content={seoDescription} />
-        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-        <link rel="canonical" href={canonicalUrl} />
-
-        {/* Open Graph / Facebook */}
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content={siteName} />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:title" content={seoTitle} />
-        <meta property="og:description" content={seoDescription} />
-        <meta property="og:image" content={`${siteUrl}/og-image.png`} />
-        <meta property="og:locale" content={ogLocale} />
-
-        {/* Twitter */}
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content={canonicalUrl} />
-        <meta property="twitter:title" content={seoTitle} />
-        <meta property="twitter:description" content={seoDescription} />
-        <meta property="twitter:image" content={`${siteUrl}/og-image.png`} />
-
-        {/* Structured Data */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
-            "name": siteName,
-            "applicationCategory": "BusinessApplication",
-            "operatingSystem": "Web",
-            "url": canonicalUrl,
-            "offers": {
-              "@type": "Offer",
-              "price": "0",
-              "priceCurrency": "EUR"
-            },
-            "description": seoDescription
-          })}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "name": siteName,
-            "url": canonicalUrl,
-            "description": seoDescription,
-            "inLanguage": ["en", "pt", "es", "fr", "de"]
-          })}
-        </script>
-      </Helmet>
+      <Seo
+        title={`Competitor Watcher | ${t("quickSearch.title")}`}
+        description={t("quickSearch.seoIntent")}
+        path="/"
+        structuredData={landingStructuredData}
+      />
       {/* HEADER */}
       <header className={`landing-header ${isScrolled ? 'scrolled' : ''}`}>
         <div className="landing-container">
           <div className="landing-header-brand">
             <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-              <img src="/logo.png" alt={siteName} className="h-14 w-auto" />
+              <img src="/logo.png" alt={t("landing.brandName")} className="h-14 w-auto" />
             </Link>
           </div>
           <div className="landing-header-actions">

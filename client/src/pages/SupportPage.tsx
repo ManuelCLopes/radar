@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
+import { Seo } from "@/components/Seo";
 
 export default function SupportPage() {
     const { t } = useTranslation();
@@ -20,6 +21,11 @@ export default function SupportPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+            <Seo
+                title={`${t("support.title")} | Competitor Watcher`}
+                description={t("support.subtitle")}
+                path="/support"
+            />
             {/* Header */}
             <header className="border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm sticky top-0 z-50">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">

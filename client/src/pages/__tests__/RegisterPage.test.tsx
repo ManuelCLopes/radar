@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import RegisterPage from "../RegisterPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { HelmetProvider } from "react-helmet-async";
 
 // Mock hooks
 const mockMutateAsync = vi.fn().mockResolvedValue({});
@@ -40,9 +41,11 @@ const queryClient = new QueryClient({
 describe("RegisterPage", () => {
     it("renders registration form", () => {
         render(
-            <QueryClientProvider client={queryClient}>
-                <RegisterPage />
-            </QueryClientProvider>
+            <HelmetProvider>
+                <QueryClientProvider client={queryClient}>
+                    <RegisterPage />
+                </QueryClientProvider>
+            </HelmetProvider>
         );
 
         expect(screen.getAllByAltText("Competitor Watcher")[0]).toBeInTheDocument();
@@ -54,9 +57,11 @@ describe("RegisterPage", () => {
 
     it("shows 100% free badge", () => {
         render(
-            <QueryClientProvider client={queryClient}>
-                <RegisterPage />
-            </QueryClientProvider>
+            <HelmetProvider>
+                <QueryClientProvider client={queryClient}>
+                    <RegisterPage />
+                </QueryClientProvider>
+            </HelmetProvider>
         );
 
         expect(screen.getByText(/auth.freeBadge/i)).toBeInTheDocument();
@@ -64,9 +69,11 @@ describe("RegisterPage", () => {
 
     it("validates required fields", async () => {
         render(
-            <QueryClientProvider client={queryClient}>
-                <RegisterPage />
-            </QueryClientProvider>
+            <HelmetProvider>
+                <QueryClientProvider client={queryClient}>
+                    <RegisterPage />
+                </QueryClientProvider>
+            </HelmetProvider>
         );
 
         fireEvent.click(screen.getByRole("button", { name: "auth.signUp" }));
@@ -79,9 +86,11 @@ describe("RegisterPage", () => {
 
     it("submits registration on valid input", async () => {
         render(
-            <QueryClientProvider client={queryClient}>
-                <RegisterPage />
-            </QueryClientProvider>
+            <HelmetProvider>
+                <QueryClientProvider client={queryClient}>
+                    <RegisterPage />
+                </QueryClientProvider>
+            </HelmetProvider>
         );
 
         fireEvent.change(screen.getByLabelText("auth.firstName"), { target: { value: "Test" } });
@@ -127,9 +136,11 @@ describe("RegisterPage", () => {
             } as any); // Save report response
 
         render(
-            <QueryClientProvider client={queryClient}>
-                <RegisterPage />
-            </QueryClientProvider>
+            <HelmetProvider>
+                <QueryClientProvider client={queryClient}>
+                    <RegisterPage />
+                </QueryClientProvider>
+            </HelmetProvider>
         );
 
         fireEvent.change(screen.getByLabelText("auth.firstName"), { target: { value: "Test" } });
