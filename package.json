@@ -143,7 +143,7 @@
     "drizzle-kit": "^0.31.9",
     "esbuild": "^0.25.0",
     "husky": "^9.1.7",
-    "jsdom": "^27.0.1",
+    "jsdom": "^29.0.1",
     "postcss": "^8.5.8",
     "react-helmet-async": "^2.0.5",
     "supertest": "^7.2.2",
