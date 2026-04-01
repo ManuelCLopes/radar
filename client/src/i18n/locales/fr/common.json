@@ -784,6 +784,10 @@
     "madeWith": "Fait avec",
     "forSmallBusinesses": "pour les petites entreprises."
   },
+  "notFound": {
+    "title": "Page introuvable",
+    "description": "La page que vous recherchez n'existe pas ou a peut-être été déplacée."
+  },
   "legal": {
     "privacy": {
       "title": "Politique de Confidentialité",

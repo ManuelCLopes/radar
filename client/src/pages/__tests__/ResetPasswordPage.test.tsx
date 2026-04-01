@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ResetPasswordPage from '../ResetPasswordPage';
 import * as queryClient from '@/lib/queryClient';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Mock hooks
 vi.mock('react-i18next', () => ({
@@ -42,6 +43,12 @@ vi.mock('@/lib/queryClient', () => ({
 global.fetch = vi.fn();
 
 describe('ResetPasswordPage', () => {
+    const renderPage = () => render(
+        <HelmetProvider>
+            <ResetPasswordPage />
+        </HelmetProvider>
+    );
+
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -51,7 +58,7 @@ describe('ResetPasswordPage', () => {
             json: async () => ({ valid: true })
         } as Response);
 
-        const { container } = render(<ResetPasswordPage />);
+        const { container } = renderPage();
 
         // Should show loader initially
         expect(container.querySelector('.animate-spin')).toBeInTheDocument();
@@ -66,7 +73,7 @@ describe('ResetPasswordPage', () => {
             json: async () => ({ valid: false, error: 'auth.invalidToken' })
         } as Response);
 
-        render(<ResetPasswordPage />);
+        renderPage();
 
         await waitFor(() => {
             expect(screen.getByText('auth.invalidToken')).toBeInTheDocument();
@@ -79,7 +86,7 @@ describe('ResetPasswordPage', () => {
             json: async () => ({ valid: true })
         } as Response);
 
-        render(<ResetPasswordPage />);
+        renderPage();
 
         await waitFor(() => {
             expect(screen.getByLabelText('auth.newPassword')).toBeInTheDocument();
@@ -103,7 +110,7 @@ describe('ResetPasswordPage', () => {
             json: async () => ({ message: 'Success' })
         } as Response);
 
-        render(<ResetPasswordPage />);
+        renderPage();
 
         await waitFor(() => {
             expect(screen.getByLabelText('auth.newPassword')).toBeInTheDocument();

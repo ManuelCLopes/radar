@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { apiRequest } from "@/lib/queryClient";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { Seo } from "@/components/Seo";
 
 export default function ResetPasswordPage() {
     const { t } = useTranslation();
@@ -94,6 +95,12 @@ export default function ResetPasswordPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col">
+            <Seo
+                title={`${t("auth.resetPasswordTitle")} | Competitor Watcher`}
+                description={t("auth.resetPasswordDesc")}
+                path={token ? `/reset-password/${token}` : "/reset-password"}
+                noIndex
+            />
             {/* Header */}
             <header className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md h-16">
                 <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">

@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Seo } from "@/components/Seo";
 
 export default function RegisterPage() {
     const [, setLocation] = useLocation();
@@ -97,6 +98,12 @@ export default function RegisterPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center py-20 relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
+            <Seo
+                title={`${t("auth.createAccount")} | Competitor Watcher`}
+                description={t("auth.createAccount")}
+                path="/register"
+                noIndex
+            />
             {/* Theme and Language Toggle */}
             <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
                 <LanguageSelector />

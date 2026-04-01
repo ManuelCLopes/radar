@@ -6,6 +6,7 @@ import type { Report, Business } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Building2, Star, TrendingUp, Users, ArrowRight, ShieldAlert } from "lucide-react";
+import { Seo } from "@/components/Seo";
 
 function StatCard({ icon: Icon, label, value }: { icon: typeof Building2; label: string; value: string | number }) {
     return (
@@ -26,6 +27,7 @@ function StatCard({ icon: Icon, label, value }: { icon: typeof Building2; label:
 export default function PublicReportPage() {
     const { token } = useParams();
     const { t } = useTranslation();
+    const reportPath = token ? `/r/${token}` : "/r";
 
     const { data: report, isLoading, error } = useQuery<Report>({
         queryKey: [`/api/reports/public/${token}`],
@@ -39,40 +41,62 @@ export default function PublicReportPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-background flex items-center justify-center">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
-                    <p className="text-muted-foreground">{t("common.loading")}</p>
+            <>
+                <Seo
+                    title={`${t("report.view.title")} | Competitor Watcher`}
+                    description={t("report.public.ctaDesc")}
+                    path={reportPath}
+                    noIndex
+                />
+                <div className="min-h-screen bg-background flex items-center justify-center">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
+                        <p className="text-muted-foreground">{t("common.loading")}</p>
+                    </div>
                 </div>
-            </div>
+            </>
         );
     }
 
     if (error || !report) {
         return (
-            <div className="min-h-screen bg-background flex items-center justify-center p-4">
-                <Card className="max-w-md w-full">
-                    <CardHeader className="text-center">
-                        <div className="mx-auto w-12 h-12 bg-destructive/10 rounded-full flex items-center justify-center mb-4">
-                            <ShieldAlert className="h-6 w-6 text-destructive" />
-                        </div>
-                        <CardTitle>{t("report.public.notFoundTitle")}</CardTitle>
-                        <CardDescription>{t("report.public.notFoundDesc")}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-4">
-                        <Button asChild className="w-full">
-                            <Link href="/">
-                                {t("auth.backToHome")}
-                            </Link>
-                        </Button>
-                    </CardContent>
-                </Card>
-            </div>
+            <>
+                <Seo
+                    title={`${t("report.public.notFoundTitle")} | Competitor Watcher`}
+                    description={t("report.public.notFoundDesc")}
+                    path={reportPath}
+                    noIndex
+                />
+                <div className="min-h-screen bg-background flex items-center justify-center p-4">
+                    <Card className="max-w-md w-full">
+                        <CardHeader className="text-center">
+                            <div className="mx-auto w-12 h-12 bg-destructive/10 rounded-full flex items-center justify-center mb-4">
+                                <ShieldAlert className="h-6 w-6 text-destructive" />
+                            </div>
+                            <CardTitle>{t("report.public.notFoundTitle")}</CardTitle>
+                            <CardDescription>{t("report.public.notFoundDesc")}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-4">
+                            <Button asChild className="w-full">
+                                <Link href="/">
+                                    {t("auth.backToHome")}
+                                </Link>
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </div>
+            </>
         );
     }
 
     return (
         <div className="min-h-screen bg-muted/10">
+            <Seo
+                title={`${report.businessName} | ${t("report.view.title")}`}
+                description={t("report.public.ctaDesc")}
+                path={reportPath}
+                noIndex
+            />
             {/* Top Navigation Bar */}
             <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container flex h-14 items-center justify-between">

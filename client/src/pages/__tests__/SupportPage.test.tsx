@@ -3,6 +3,7 @@ import { render, screen, act } from '@testing-library/react';
 import SupportPage from '../SupportPage';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Mock hooks
 vi.mock('@/hooks/useAuth', () => ({
@@ -32,9 +33,11 @@ vi.mock("@/components/ThemeToggle", () => ({
 describe('SupportPage', () => {
     const renderSupportPage = () => {
         return render(
-            <I18nextProvider i18n={i18n}>
-                <SupportPage key={i18n.language} />
-            </I18nextProvider>
+            <HelmetProvider>
+                <I18nextProvider i18n={i18n}>
+                    <SupportPage key={i18n.language} />
+                </I18nextProvider>
+            </HelmetProvider>
         );
     };
 
