@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
-import { Heart, Github, Twitter, Linkedin, User } from "lucide-react";
+import { Heart, User } from "lucide-react";
+import { FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function Footer() {
@@ -23,13 +24,13 @@ export default function Footer() {
                         </p>
                         <div className="flex space-x-4">
                             <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                                <Github className="h-5 w-5" />
+                                <FaGithub className="h-5 w-5" />
                             </a>
                             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                                <Twitter className="h-5 w-5" />
+                                <FaXTwitter className="h-5 w-5" />
                             </a>
                             <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                                <Linkedin className="h-5 w-5" />
+                                <FaLinkedin className="h-5 w-5" />
                             </a>
                         </div>
                     </div>
