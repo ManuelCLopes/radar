@@ -1,4 +1,5 @@
-import { Heart, Github, Coffee, Gift, Star, Bug, Lightbulb, Share2 } from "lucide-react";
+import { Heart, Coffee, Gift, Star, Bug, Lightbulb, Share2 } from "lucide-react";
+import { FaGithub } from "react-icons/fa6";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -114,7 +115,7 @@ export default function SupportPage() {
                             >
                                 <div className="p-4 border-2 border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 rounded-lg transition-all hover:shadow-lg group text-center h-full flex flex-col">
                                     <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-full group-hover:scale-110 transition-transform mx-auto mb-3">
-                                        <Github className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                                        <FaGithub className="h-6 w-6 text-purple-600 dark:text-purple-400" />
                                     </div>
                                     <h3 className="font-bold mb-2">{t('support.platforms.github.name')}</h3>
                                     <p className="text-xs text-muted-foreground mb-4 flex-grow">{t('support.platforms.github.desc')}</p>
