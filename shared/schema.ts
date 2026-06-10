@@ -194,7 +194,7 @@ export const users = pgTable("users", {
   firstName: text("first_name"),
   lastName: text("last_name"),
   profileImageUrl: text("profile_image_url"),
-  plan: text("plan").notNull().default("free"), // All users are free now - donations only!
+  plan: text("plan").notNull().default("free"),
   role: text("role").notNull().default("user"), // 'admin' or 'user'
   language: text("language").notNull().default("pt"),
   isVerified: boolean("is_verified").default(false).notNull(),
@@ -239,6 +239,30 @@ export const searches = pgTable("searches", {
 export type InsertSearch = typeof searches.$inferInsert;
 export type Search = typeof searches.$inferSelect;
 
+export const billingWaitlistLeads = pgTable("billing_waitlist_leads", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "set null" }),
+  email: text("email").notNull(),
+  plan: text("plan").notNull(),
+  message: text("message"),
+  source: text("source").notNull().default("pricing_modal"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertBillingWaitlistLeadSchema = createInsertSchema(billingWaitlistLeads).omit({
+  id: true,
+  createdAt: true,
+}).extend({
+  email: z.string().email(),
+  plan: z.enum(["pro", "agency"]),
+  message: z.string().max(1000).optional().nullable(),
+  source: z.string().max(100).optional(),
+  userId: z.string().optional().nullable(),
+});
+
+export type InsertBillingWaitlistLead = z.infer<typeof insertBillingWaitlistLeadSchema>;
+export type BillingWaitlistLead = typeof billingWaitlistLeads.$inferSelect;
+
 
 export const rateLimits = pgTable("rate_limits", {
   ip: varchar("ip").primaryKey(),
@@ -258,5 +282,3 @@ export const apiUsage = pgTable("api_usage", {
 
 export type InsertApiUsage = typeof apiUsage.$inferInsert;
 export type ApiUsage = typeof apiUsage.$inferSelect;
-
-

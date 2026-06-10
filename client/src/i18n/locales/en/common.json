@@ -23,7 +23,8 @@
     "tabs": {
       "businesses": "Businesses",
       "newAnalysis": "New Analysis",
-      "history": "History"
+      "history": "History",
+      "map": "Map"
     },
     "analysis": {
       "title": "Run New Analysis",
@@ -569,8 +570,8 @@
       }
     },
     "support": {
-      "title": "Enjoy Competitor Watcher? Help keep it free",
-      "description": "Competitor Watcher is 100% free and open source. We need support to cover API costs, hosting, and infrastructure. Every contribution helps.",
+      "title": "Need a one-off report or want to support the project?",
+      "description": "Subscriptions fund ongoing monitoring, API costs, hosting, and product development. One-off support still helps us keep the free trial useful.",
       "cta": "Support the Project",
       "footer": "Thank you for your support"
     },
@@ -578,11 +579,11 @@
       "existingAccount": "Already have an account? Access your dashboard here"
     },
     "valueProp": {
-      "title": "Start for Free. Grow without Limits.",
-      "description": "We believe every business deserves access to market intelligence. That’s why our Free plan includes 2 detailed reports every month. Need more? The Pro plan removes all limits.",
+      "title": "Start free. Monitor your local market as you grow.",
+      "description": "Use the free plan to validate one location. Upgrade when you need more reports, larger search areas, weekly monitoring, or client-ready reports.",
       "cta": "View Pricing",
-      "supportCta": "Support the Project",
-      "footer": "Join hundreds of smart businesses."
+      "supportCta": "One-off Support",
+      "footer": "Built for local business owners, consultants, and agencies."
     }
   },
   "locationStatus": {
@@ -603,10 +604,10 @@
   "support": {
     "back": "Back",
     "title": "Support Competitor Watcher",
-    "subtitle": "Help keep Competitor Watcher open source for everyone",
+    "subtitle": "Help fund API costs, hosting, and ongoing product development",
     "whySupport": {
       "title": "Why Your Support Matters",
-      "description": "Competitor Watcher is a passion project built to help small businesses compete. Every donation keeps the lights on."
+      "description": "Competitor Watcher is built to help local businesses compete. Subscriptions are the main model, and one-off support helps keep the free trial useful."
     },
     "costs": {
       "maps": "Location Data & Maps",
@@ -650,30 +651,41 @@
       "shareWithFriendsDesc": "Spread the word"
     },
     "thankYou": "Thank You!",
-    "thankYouMessage": "Your support makes it possible to keep Competitor Watcher free for everyone"
+    "thankYouMessage": "Your support helps us keep improving Competitor Watcher"
   },
   "pricing": {
     "title": "Simple, Transparent Pricing",
-    "subtitle": "Choose the plan that's right for your business",
+    "subtitle": "Local competitor reports for business owners and agencies",
     "free": {
       "title": "Free",
-      "description": "Perfect for getting started",
+      "description": "Validate the value with one local business",
       "price": "$0"
     },
     "pro": {
       "title": "Pro",
-      "description": "For growing businesses",
-      "price": "$29.99",
-      "originalPrice": "$49.99",
+      "description": "For operators who monitor their own market",
+      "price": "$29",
       "period": "/mo",
       "recommended": "Recommended"
+    },
+    "agency": {
+      "title": "Agency",
+      "description": "For consultants managing client locations",
+      "price": "$99",
+      "period": "/mo"
     },
     "features": {
       "basicAnalysis": "Competitor Analysis",
       "oneBusiness": "1 Business Profile",
       "standardSupport": "Standard Support",
-      "advancedInsights": "Unlimited AI Reports",
-      "unlimitedBusinesses": "Unlimited Business Profiles",
+      "freeRadius": "Up to 5 km search radius",
+      "proReports": "30 AI reports per month",
+      "proBusinesses": "5 business profiles",
+      "proRadius": "Up to 20 km search radius",
+      "agencyReports": "250 AI reports per month",
+      "agencyBusinesses": "50 client business profiles",
+      "agencyRadius": "Up to 50 km search radius",
+      "clientReports": "Client-ready shared reports",
       "prioritySupport": "Priority Support",
       "exportPdf": "Export to PDF",
       "weeklyReport": "Weekly Email Report",
@@ -681,9 +693,22 @@
     },
     "buttons": {
       "currentPlan": "Current Plan",
-      "downgrade": "Downgrade",
+      "manageToDowngrade": "Manage to Downgrade",
       "upgrade": "Upgrade to Pro",
-      "manage": "Manage Subscription"
+      "upgradeAgency": "Upgrade to Agency",
+      "manage": "Manage Subscription",
+      "requestAccess": "Request Early Access"
+    },
+    "waitlist": {
+      "title": "Request early access",
+      "description": "Leave your email and we will contact you before opening {{plan}} subscriptions.",
+      "emailPlaceholder": "you@example.com",
+      "messagePlaceholder": "Optional: tell us what you need",
+      "submit": "Join Waitlist",
+      "successTitle": "You are on the list",
+      "successDescription": "We will contact you when paid access is ready.",
+      "errorTitle": "Could not join waitlist",
+      "errorDescription": "Please check your email and try again."
     }
   },
   "settings": {
@@ -696,6 +721,7 @@
       "accessPremium": "You have access to all premium features.",
       "upgradeUnlock": "Upgrade to unlock advanced analytics and more.",
       "proBadge": "PRO",
+      "agencyBadge": "AGENCY",
       "freeBadge": "FREE",
       "manage": "Manage Subscription",
       "upgrade": "Upgrade to Pro",
@@ -905,7 +931,11 @@
       "back": "Back",
       "finish": "Finish",
       "skip": "Skip Tour"
-    }
+    },
+    "previous": "Previous",
+    "next": "Next",
+    "skip": "Skip",
+    "finish": "Finish"
   },
   "reportNotification": {
     "title": "Report Ready",

@@ -58,7 +58,7 @@ export default function RegisterPage() {
                 password: data.password,
                 firstName: data.firstName,
                 lastName: data.lastName,
-                plan: "free", // Everyone is free!
+                plan: "free",
                 language: i18n.language || "pt",
             });
 

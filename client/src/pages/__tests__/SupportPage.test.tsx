@@ -54,7 +54,7 @@ describe('SupportPage', () => {
 
         it('should render the hero section', () => {
             renderSupportPage();
-            expect(screen.getByText(/Help keep Competitor Watcher open source/i)).toBeInTheDocument();
+            expect(screen.getByText(/Help fund API costs, hosting, and ongoing product development/i)).toBeInTheDocument();
         });
     });
 
@@ -132,7 +132,7 @@ describe('SupportPage', () => {
         it('should render thank you message', () => {
             renderSupportPage();
             expect(screen.getByText(/Thank You!/i)).toBeInTheDocument();
-            expect(screen.getByText(/Your support makes it possible to keep Competitor Watcher free/i)).toBeInTheDocument();
+            expect(screen.getByText(/Your support helps us keep improving Competitor Watcher/i)).toBeInTheDocument();
         });
     });
 

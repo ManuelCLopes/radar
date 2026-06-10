@@ -34,8 +34,6 @@ import { usePricingModal } from "@/context/PricingModalContext";
 import { ProWelcomeModal } from "@/components/ProWelcomeModal";
 import { resetCookieConsent } from "@/lib/consent";
 
-// Plans removed - app is now 100% free with donations
-
 export default function SettingsPage() {
     const { user, logoutMutation } = useAuth();
     const { t, i18n } = useTranslation();
@@ -51,6 +49,7 @@ export default function SettingsPage() {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [showProWelcome, setShowProWelcome] = useState(false);
+    const hasPaidPlan = user?.plan === 'pro' || user?.plan === 'agency';
     const [isExporting, setIsExporting] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -75,7 +74,7 @@ export default function SettingsPage() {
 
             // Show welcome modal after a short delay to allow user data to refresh
             setTimeout(() => {
-                if (user?.plan === 'pro') {
+                if (user?.plan === 'pro' || user?.plan === 'agency') {
                     setShowProWelcome(true);
                 }
             }, 500);
@@ -87,7 +86,7 @@ export default function SettingsPage() {
         const params = new URLSearchParams(window.location.search);
         const hadSessionId = params.has('session_id');
 
-        if (user?.plan === 'pro' && !showProWelcome && hadSessionId) {
+        if ((user?.plan === 'pro' || user?.plan === 'agency') && !showProWelcome && hadSessionId) {
             setShowProWelcome(true);
         }
     }, [user?.plan, showProWelcome]);
@@ -415,19 +414,23 @@ export default function SettingsPage() {
 
                                 {/* Show description based on subscription status */}
                                 <p className="text-sm text-muted-foreground">
-                                    {user?.plan === 'pro'
+                                    {hasPaidPlan
                                         ? user?.subscriptionStatus === 'canceled' && user?.subscriptionPeriodEnd
                                             ? `${t('settings.subscription.statusCanceled')} • ${t('settings.subscription.accessUntil')} ${new Date(user.subscriptionPeriodEnd).toLocaleDateString()}`
                                             : t('settings.subscription.accessPremium')
                                         : t('settings.subscription.upgradeUnlock')}
                                 </p>
                             </div>
-                            <Badge variant={user?.plan === 'pro' ? 'default' : 'secondary'}>
-                                {user?.plan === 'pro' ? t('settings.subscription.proBadge') : t('settings.subscription.freeBadge')}
+                            <Badge variant={hasPaidPlan ? 'default' : 'secondary'}>
+                                {user?.plan === 'agency'
+                                    ? t('settings.subscription.agencyBadge')
+                                    : user?.plan === 'pro'
+                                        ? t('settings.subscription.proBadge')
+                                        : t('settings.subscription.freeBadge')}
                             </Badge>
                         </div>
 
-                        {user?.plan === 'pro' ? (
+                        {hasPaidPlan ? (
                             <Button
                                 onClick={handleManageSubscription}
                                 disabled={isLoadingPortal}

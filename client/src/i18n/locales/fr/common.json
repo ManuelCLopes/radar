@@ -5,7 +5,10 @@
       "analysisStatus": "État de l'analyse",
       "uniqueLocations": "Emplacements Uniques",
       "businessTypes": "Types d'entreprises",
-      "active": "Actif"
+      "active": "Actif",
+      "analyzed": "Analysés",
+      "avgRating": "Note moyenne",
+      "marketActivity": "Activité du marché"
     },
     "user": {
       "guest": "Invité",
@@ -16,7 +19,8 @@
     "tabs": {
       "businesses": "Entreprises",
       "newAnalysis": "Nouvelle analyse",
-      "history": "Historique"
+      "history": "Historique",
+      "map": "Carte"
     },
     "analysis": {
       "title": "Lancer une nouvelle analyse",
@@ -43,6 +47,10 @@
       "allBusinesses": "Toutes les entreprises",
       "showingFirst": "Affichage de la carte pour : {{name}}",
       "noLocation": "Cette entreprise ne dispose pas de données de localisation valides."
+    },
+    "menu": {
+      "language": "Langue",
+      "theme": "Thème"
     }
   },
   "business": {
@@ -647,26 +655,37 @@
   },
   "pricing": {
     "title": "Tarification Simple et Transparente",
-    "subtitle": "Choisissez le plan adapté à votre entreprise",
+    "subtitle": "Rapports de concurrence locale pour entreprises et agences",
     "free": {
       "title": "Gratuit",
-      "description": "Parfait pour commencer",
+      "description": "Validez la valeur avec une entreprise locale",
       "price": "0€"
     },
     "pro": {
       "title": "Pro",
-      "description": "Pour les entreprises en croissance",
-      "price": "29,99€",
-      "originalPrice": "49,99€",
+      "description": "Pour les exploitants qui surveillent leur marché",
+      "price": "29€",
       "period": "/mois",
       "recommended": "Recommandé"
+    },
+    "agency": {
+      "title": "Agence",
+      "description": "Pour les consultants qui gèrent des clients",
+      "price": "99€",
+      "period": "/mois"
     },
     "features": {
       "basicAnalysis": "Analyse des Concurrents",
       "oneBusiness": "1 Profil d'Entreprise",
       "standardSupport": "Support Standard",
-      "advancedInsights": "Rapports IA Illimités",
-      "unlimitedBusinesses": "Profils d'Entreprise Illimités",
+      "freeRadius": "Rayon de recherche jusqu'à 5 km",
+      "proReports": "30 rapports IA par mois",
+      "proBusinesses": "5 profils d'entreprise",
+      "proRadius": "Rayon de recherche jusqu'à 20 km",
+      "agencyReports": "250 rapports IA par mois",
+      "agencyBusinesses": "50 profils clients",
+      "agencyRadius": "Rayon de recherche jusqu'à 50 km",
+      "clientReports": "Rapports partageables pour clients",
       "prioritySupport": "Support Prioritaire",
       "exportPdf": "Exporter en PDF",
       "weeklyReport": "Rapport Hebdomadaire par Email",
@@ -674,9 +693,22 @@
     },
     "buttons": {
       "currentPlan": "Plan Actuel",
-      "downgrade": "Downgrade",
+      "manageToDowngrade": "Gérer pour rétrograder",
       "upgrade": "Passer à Pro",
-      "manage": "Gérer l'Abonnement"
+      "upgradeAgency": "Passer à Agence",
+      "manage": "Gérer l'Abonnement",
+      "requestAccess": "Demander un accès anticipé"
+    },
+    "waitlist": {
+      "title": "Demander un accès anticipé",
+      "description": "Laissez votre email et nous vous contacterons avant d'ouvrir les abonnements {{plan}}.",
+      "emailPlaceholder": "vous@exemple.com",
+      "messagePlaceholder": "Optionnel : dites-nous ce dont vous avez besoin",
+      "submit": "Rejoindre la liste",
+      "successTitle": "Vous êtes sur la liste",
+      "successDescription": "Nous vous contacterons lorsque l'accès payant sera prêt.",
+      "errorTitle": "Impossible de rejoindre la liste",
+      "errorDescription": "Vérifiez votre email et réessayez."
     }
   },
   "settings": {
@@ -689,6 +721,7 @@
       "accessPremium": "Vous avez accès à toutes les fonctionnalités premium.",
       "upgradeUnlock": "Passez à Pro pour débloquer des analyses avancées et plus.",
       "proBadge": "PRO",
+      "agencyBadge": "AGENCE",
       "freeBadge": "GRATUIT",
       "manage": "Gérer l'Abonnement",
       "upgrade": "Passer à Pro",
@@ -896,7 +929,13 @@
     "skip": "Passer",
     "next": "Suivant",
     "previous": "Précédent",
-    "finish": "Commencer !"
+    "finish": "Commencer !",
+    "steps": {
+      "back": "Retour",
+      "next": "Suivant",
+      "skip": "Ignorer",
+      "finish": "Terminer"
+    }
   },
   "reportNotification": {
     "title": "Rapport Prêt !",
