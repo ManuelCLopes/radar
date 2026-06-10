@@ -570,8 +570,8 @@
       }
     },
     "support": {
-      "title": "Gosta do Competitor Watcher? Ajude a mantê-lo gratuito",
-      "description": "O Competitor Watcher é 100% gratuito e open source. Precisamos de apoio para cobrir custos de APIs, hosting e infraestrutura. Cada contribuição ajuda.",
+      "title": "Precisa de um relatório único ou quer apoiar o projeto?",
+      "description": "As subscrições financiam monitorização contínua, custos de API, alojamento e desenvolvimento. O apoio pontual ajuda a manter o teste gratuito útil.",
       "cta": "Apoiar o Projeto",
       "footer": "Obrigado pelo seu apoio"
     },
@@ -579,11 +579,11 @@
       "existingAccount": "Já tem conta? Aceda ao seu painel aqui"
     },
     "valueProp": {
-      "title": "Comece Gratuitamente. Cresça sem Limites.",
-      "description": "Acreditamos que todos os negócios merecem acesso a inteligência de mercado. Por isso, o nosso plano gratuito inclui 2 relatórios detalhados todos os meses. Precisa de mais? O plano Pro remove todos os limites.",
-      "cta": "Ver Planos",
-      "supportCta": "Apoiar o Projeto",
-      "footer": "Junte-se a centenas de empresas inteligentes."
+      "title": "Comece grátis. Monitorize o seu mercado local à medida que cresce.",
+      "description": "Use o plano gratuito para validar uma localização. Atualize quando precisar de mais relatórios, áreas maiores, monitorização semanal ou relatórios para clientes.",
+      "cta": "Ver Preços",
+      "supportCta": "Apoio pontual",
+      "footer": "Criado para negócios locais, consultores e agências."
     }
   },
   "locationStatus": {
@@ -604,10 +604,10 @@
   "support": {
     "back": "Voltar",
     "title": "Apoiar o Competitor Watcher",
-    "subtitle": "Ajude a manter o Competitor Watcher open source para todos",
+    "subtitle": "Ajude a financiar custos de API, alojamento e desenvolvimento contínuo",
     "whySupport": {
       "title": "Porquê Apoiar?",
-      "description": "O Competitor Watcher é um projeto de paixão construído para ajudar pequenos negócios a competir. Cada doação mantém as luzes acesas."
+      "description": "O Competitor Watcher foi criado para ajudar negócios locais a competir. As subscrições são o modelo principal, e o apoio pontual ajuda a manter o teste gratuito útil."
     },
     "costs": {
       "maps": "Dados de Localização & Mapas",
@@ -651,30 +651,41 @@
       "shareWithFriendsDesc": "Espalhe a palavra"
     },
     "thankYou": "Obrigado!",
-    "thankYouMessage": "O seu apoio torna possível manter o Competitor Watcher gratuito para todos"
+    "thankYouMessage": "O seu apoio ajuda-nos a continuar a melhorar o Competitor Watcher"
   },
   "pricing": {
     "title": "Preços Simples e Transparentes",
-    "subtitle": "Escolha o plano ideal para o seu negócio",
+    "subtitle": "Relatórios de concorrência local para negócios e agências",
     "free": {
       "title": "Gratuito",
-      "description": "Perfeito para começar",
+      "description": "Valide o valor com um negócio local",
       "price": "0€"
     },
     "pro": {
       "title": "Pro",
-      "description": "Para negócios em crescimento",
-      "price": "29,99€",
-      "originalPrice": "49,99€",
+      "description": "Para operadores que monitorizam o seu próprio mercado",
+      "price": "29€",
       "period": "/mês",
       "recommended": "Recomendado"
+    },
+    "agency": {
+      "title": "Agência",
+      "description": "Para consultores que gerem localizações de clientes",
+      "price": "99€",
+      "period": "/mês"
     },
     "features": {
       "basicAnalysis": "Análise de Concorrência",
       "oneBusiness": "1 Perfil de Negócio",
       "standardSupport": "Suporte Padrão",
-      "advancedInsights": "Relatórios IA Ilimitados",
-      "unlimitedBusinesses": "Perfis de Negócio Ilimitados",
+      "freeRadius": "Raio de pesquisa até 5 km",
+      "proReports": "30 relatórios de IA por mês",
+      "proBusinesses": "5 perfis de negócio",
+      "proRadius": "Raio de pesquisa até 20 km",
+      "agencyReports": "250 relatórios de IA por mês",
+      "agencyBusinesses": "50 perfis de clientes",
+      "agencyRadius": "Raio de pesquisa até 50 km",
+      "clientReports": "Relatórios partilháveis para clientes",
       "prioritySupport": "Suporte Prioritário",
       "exportPdf": "Exportar para PDF",
       "weeklyReport": "Relatório Semanal por Email",
@@ -682,9 +693,22 @@
     },
     "buttons": {
       "currentPlan": "Plano Atual",
-      "downgrade": "Downgrade",
+      "manageToDowngrade": "Gerir para downgrade",
       "upgrade": "Atualizar para Pro",
-      "manage": "Gerir Subscrição"
+      "upgradeAgency": "Atualizar para Agência",
+      "manage": "Gerir Subscrição",
+      "requestAccess": "Pedir acesso antecipado"
+    },
+    "waitlist": {
+      "title": "Pedir acesso antecipado",
+      "description": "Deixe o seu email e contactamos antes de abrir subscrições {{plan}}.",
+      "emailPlaceholder": "email@exemplo.com",
+      "messagePlaceholder": "Opcional: diga-nos o que precisa",
+      "submit": "Entrar na lista",
+      "successTitle": "Está na lista",
+      "successDescription": "Vamos contactar quando o acesso pago estiver pronto.",
+      "errorTitle": "Não foi possível entrar na lista",
+      "errorDescription": "Confirme o email e tente novamente."
     }
   },
   "settings": {
@@ -697,6 +721,7 @@
       "accessPremium": "Tem acesso a todas as funcionalidades premium.",
       "upgradeUnlock": "Atualize para desbloquear análises avançadas e mais.",
       "proBadge": "PRO",
+      "agencyBadge": "AGÊNCIA",
       "freeBadge": "GRÁTIS",
       "manage": "Gerir Subscrição",
       "upgrade": "Atualizar para Pro",
@@ -904,7 +929,13 @@
     "skip": "Saltar",
     "next": "Seguinte",
     "previous": "Anterior",
-    "finish": "Começar!"
+    "finish": "Começar!",
+    "steps": {
+      "back": "Voltar",
+      "next": "Seguinte",
+      "skip": "Saltar",
+      "finish": "Concluir"
+    }
   },
   "reportNotification": {
     "title": "Relatório Pronto!",

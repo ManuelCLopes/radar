@@ -50,6 +50,7 @@ vi.mock("../storage", () => ({
         createUser: vi.fn(),
         updateUser: vi.fn(),
         getUserByStripeCustomerId: vi.fn(),
+        createBillingWaitlistLead: vi.fn(),
         sessionStore: {
             get: vi.fn(),
             set: vi.fn(),
@@ -82,6 +83,8 @@ describe("Payments API", () => {
         // Setup environment variables
         process.env.STRIPE_SECRET_KEY = "test_secret_key";
         process.env.STRIPE_WEBHOOK_SECRET = "test_webhook_secret";
+        process.env.STRIPE_PRO_PRICE_ID = "price_pro_test";
+        process.env.BILLING_MODE = "live";
 
         app = express();
 
@@ -105,6 +108,9 @@ describe("Payments API", () => {
 
     afterEach(() => {
         vi.clearAllMocks();
+        process.env.BILLING_MODE = "live";
+        process.env.STRIPE_PRO_PRICE_ID = "price_pro_test";
+        delete process.env.STRIPE_AGENCY_PRICE_ID;
     });
 
     describe("POST /api/create-checkout-session", () => {
@@ -134,6 +140,114 @@ describe("Payments API", () => {
                 customer_email: mockUser.email,
                 client_reference_id: mockUser.id,
                 mode: "subscription",
+                line_items: [
+                    expect.objectContaining({
+                        price: "price_pro_test",
+                    }),
+                ],
+            }));
+        });
+
+        it("should create an agency checkout session with the agency price", async () => {
+            process.env.STRIPE_AGENCY_PRICE_ID = "price_agency_test";
+
+            const mockUser = { id: "1", email: "agency@example.com" };
+            const mockSession = { url: "https://stripe.com/checkout/agency" };
+            mockStripe.checkout.sessions.create.mockResolvedValue(mockSession);
+
+            const testApp = express();
+            testApp.use(express.json());
+            testApp.use((req: any, res, next) => {
+                req.user = mockUser;
+                next();
+            });
+            await registerRoutes(createServer(testApp), testApp);
+
+            const res = await request(testApp)
+                .post("/api/create-checkout-session")
+                .send({ plan: "agency" });
+
+            expect(res.status).toBe(200);
+            expect(res.body.url).toBe(mockSession.url);
+            expect(mockStripe.checkout.sessions.create).toHaveBeenCalledWith(expect.objectContaining({
+                line_items: [
+                    expect.objectContaining({
+                        price: "price_agency_test",
+                    }),
+                ],
+                metadata: expect.objectContaining({
+                    plan: "agency",
+                }),
+            }));
+
+        });
+
+        it("should block checkout when billing is in waitlist mode", async () => {
+            process.env.BILLING_MODE = "waitlist";
+
+            const mockUser = { id: "1", email: "test@example.com" };
+            const testApp = express();
+            testApp.use(express.json());
+            testApp.use((req: any, res, next) => {
+                req.user = mockUser;
+                next();
+            });
+            await registerRoutes(createServer(testApp), testApp);
+
+            const res = await request(testApp).post("/api/create-checkout-session");
+
+            expect(res.status).toBe(403);
+            expect(res.body.code).toBe("BILLING_WAITLIST_MODE");
+            expect(mockStripe.checkout.sessions.create).not.toHaveBeenCalled();
+        });
+
+        it("should return configuration error when agency price is missing in live mode", async () => {
+            const mockUser = { id: "1", email: "agency@example.com" };
+            const testApp = express();
+            testApp.use(express.json());
+            testApp.use((req: any, res, next) => {
+                req.user = mockUser;
+                next();
+            });
+            await registerRoutes(createServer(testApp), testApp);
+
+            const res = await request(testApp)
+                .post("/api/create-checkout-session")
+                .send({ plan: "agency" });
+
+            expect(res.status).toBe(503);
+            expect(res.body.code).toBe("STRIPE_PRICE_NOT_CONFIGURED");
+            expect(res.body.plan).toBe("agency");
+            expect(mockStripe.checkout.sessions.create).not.toHaveBeenCalled();
+        });
+    });
+
+    describe("POST /api/billing-waitlist", () => {
+        it("should capture a billing waitlist lead", async () => {
+            vi.spyOn(storage, "createBillingWaitlistLead").mockResolvedValue({
+                id: "lead_1",
+                userId: null,
+                email: "lead@example.com",
+                plan: "agency",
+                message: "Interested in client reporting",
+                source: "pricing_modal",
+                createdAt: new Date(),
+            } as any);
+
+            const res = await request(app)
+                .post("/api/billing-waitlist")
+                .send({
+                    email: "lead@example.com",
+                    plan: "agency",
+                    message: "Interested in client reporting",
+                });
+
+            expect(res.status).toBe(201);
+            expect(res.body.success).toBe(true);
+            expect(storage.createBillingWaitlistLead).toHaveBeenCalledWith(expect.objectContaining({
+                email: "lead@example.com",
+                plan: "agency",
+                message: "Interested in client reporting",
             }));
         });
     });

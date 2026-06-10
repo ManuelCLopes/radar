@@ -148,9 +148,11 @@ At minimum, set these in Project Settings > Environment Variables:
 - `CRON_SECRET`
 - `PUBLIC_APP_URL` (for sitemap/robots canonical URLs)
 - Stripe vars if billing is enabled:
+  - `BILLING_MODE` (`waitlist` by default; set to `live` only when you are ready to accept real payments)
   - `STRIPE_SECRET_KEY`
   - `STRIPE_PUBLISHABLE_KEY`
-  - `STRIPE_PRICE_ID`
+  - `STRIPE_PRO_PRICE_ID` (or legacy `STRIPE_PRICE_ID` for the Pro plan)
+  - `STRIPE_AGENCY_PRICE_ID`
   - `STRIPE_WEBHOOK_SECRET`
 
 ### 3. Update third-party callbacks/webhooks

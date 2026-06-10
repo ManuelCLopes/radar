@@ -1,4 +1,4 @@
-import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type Search, type PasswordResetToken, type InsertApiUsage, type ApiUsage, businesses, reports, users, searches, passwordResetTokens, rateLimits, apiUsage } from "../shared/schema.js";
+import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type Search, type PasswordResetToken, type InsertApiUsage, type ApiUsage, type InsertBillingWaitlistLead, type BillingWaitlistLead, businesses, reports, users, searches, passwordResetTokens, rateLimits, apiUsage, billingWaitlistLeads } from "../shared/schema.js";
 import { db } from "./db.js";
 import { eq, desc, sql, isNotNull, lt, and, gte, inArray, not, like, or } from "drizzle-orm";
 
@@ -39,6 +39,7 @@ export interface IStorage {
   trackSearch?(search: InsertSearch): Promise<void>;
   listRecentSearches?(): Promise<Search[]>;
   listSearchesByUserId(userId: string): Promise<Search[]>;
+  createBillingWaitlistLead(lead: InsertBillingWaitlistLead): Promise<BillingWaitlistLead>;
   getSearchStats?(): Promise<{
     typeDistribution: { type: string; count: number }[];
     topLocations: { address: string; count: number }[];
@@ -311,6 +312,18 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(searches.createdAt));
   }
 
+  async createBillingWaitlistLead(lead: InsertBillingWaitlistLead): Promise<BillingWaitlistLead> {
+    const [createdLead] = await db!
+      .insert(billingWaitlistLeads)
+      .values({
+        ...lead,
+        email: lead.email.toLowerCase(),
+        source: lead.source || "pricing_modal",
+      })
+      .returning();
+    return createdLead;
+  }
+
   // Password reset methods
   async findUserByEmail(email: string): Promise<User | undefined> {
     return this.getUserByEmail(email);
@@ -502,6 +515,7 @@ export class MemStorage implements IStorage {
   private businesses = new Map<string, Business>();
   private reports = new Map<string, Report>();
   private searches = new Map<string, any>();
+  private billingWaitlistLeads = new Map<string, BillingWaitlistLead>();
   private resetTokens = new Map<string, any>();
   private rateLimits = new Map<string, { hits: number, resetAt: Date }>();
   private apiUsage = new Map<string, ApiUsage>();
@@ -741,6 +755,21 @@ export class MemStorage implements IStorage {
     return Array.from(this.searches.values())
       .filter((search) => search.userId === userId)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async createBillingWaitlistLead(lead: InsertBillingWaitlistLead): Promise<BillingWaitlistLead> {
+    const id = String(this.currentId++);
+    const createdLead: BillingWaitlistLead = {
+      id,
+      userId: lead.userId || null,
+      email: lead.email.toLowerCase(),
+      plan: lead.plan,
+      message: lead.message || null,
+      source: lead.source || "pricing_modal",
+      createdAt: new Date(),
+    };
+    this.billingWaitlistLeads.set(id, createdLead);
+    return createdLead;
   }
 
   async getSearchStats() {

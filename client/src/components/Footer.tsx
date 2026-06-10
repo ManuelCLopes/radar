@@ -20,7 +20,7 @@ export default function Footer() {
                             <img src="/logo.png" alt="Competitor Watcher" className="h-8 w-auto mb-4 hidden dark:block" />
                         </Link>
                         <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xs mb-6 leading-relaxed">
-                            {t("footer.mission", { defaultValue: "Empowering local businesses with AI-driven competitor insights. 100% free and open source." })}
+                            {t("footer.mission", { defaultValue: "Empowering local businesses with AI-driven competitor insights and local market monitoring." })}
                         </p>
                         <div className="flex space-x-4">
                             <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">

@@ -15,6 +15,13 @@
       "when": 1773851122950,
       "tag": "0001_narrow_onslaught",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1781130477954,
+      "tag": "0002_lean_quasimodo",
+      "breakpoints": true
     }
   ]
 }

@@ -24,8 +24,6 @@ import { Seo, toAbsoluteSeoUrl } from "@/components/Seo";
 
 import { usePricingModal } from "@/context/PricingModalContext";
 
-// Pricing removed - app is 100% free with donations
-
 export default function LandingPage() {
   const { isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();

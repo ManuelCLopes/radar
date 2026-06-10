@@ -55,7 +55,7 @@ describe("RegisterPage", () => {
         expect(screen.getByLabelText("auth.password")).toBeInTheDocument();
     });
 
-    it("shows 100% free badge", () => {
+    it("shows start-free badge", () => {
         render(
             <HelmetProvider>
                 <QueryClientProvider client={queryClient}>
