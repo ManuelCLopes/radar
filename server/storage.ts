@@ -39,7 +39,9 @@ export interface IStorage {
   trackSearch?(search: InsertSearch): Promise<void>;
   listRecentSearches?(): Promise<Search[]>;
   listSearchesByUserId(userId: string): Promise<Search[]>;
+  getBillingWaitlistLead(email: string, plan: "pro" | "agency"): Promise<BillingWaitlistLead | undefined>;
   createBillingWaitlistLead(lead: InsertBillingWaitlistLead): Promise<BillingWaitlistLead>;
+  listBillingWaitlistLeads(): Promise<BillingWaitlistLead[]>;
   getSearchStats?(): Promise<{
     typeDistribution: { type: string; count: number }[];
     topLocations: { address: string; count: number }[];
@@ -322,6 +324,27 @@ export class DatabaseStorage implements IStorage {
       })
       .returning();
     return createdLead;
+  }
+
+  async getBillingWaitlistLead(email: string, plan: "pro" | "agency"): Promise<BillingWaitlistLead | undefined> {
+    const normalizedEmail = email.toLowerCase();
+    const [lead] = await db!
+      .select()
+      .from(billingWaitlistLeads)
+      .where(and(
+        sql`lower(${billingWaitlistLeads.email}) = ${normalizedEmail}`,
+        eq(billingWaitlistLeads.plan, plan)
+      ))
+      .orderBy(desc(billingWaitlistLeads.createdAt))
+      .limit(1);
+    return lead || undefined;
+  }
+
+  async listBillingWaitlistLeads(): Promise<BillingWaitlistLead[]> {
+    return await db!
+      .select()
+      .from(billingWaitlistLeads)
+      .orderBy(desc(billingWaitlistLeads.createdAt));
   }
 
   // Password reset methods
@@ -770,6 +793,19 @@ export class MemStorage implements IStorage {
     };
     this.billingWaitlistLeads.set(id, createdLead);
     return createdLead;
+  }
+
+  async getBillingWaitlistLead(email: string, plan: "pro" | "agency"): Promise<BillingWaitlistLead | undefined> {
+    const normalizedEmail = email.toLowerCase();
+    return Array.from(this.billingWaitlistLeads.values()).find(
+      (lead) => lead.email.toLowerCase() === normalizedEmail && lead.plan === plan
+    );
+  }
+
+  async listBillingWaitlistLeads(): Promise<BillingWaitlistLead[]> {
+    return Array.from(this.billingWaitlistLeads.values()).sort((a, b) =>
+      b.createdAt.getTime() - a.createdAt.getTime()
+    );
   }
 
   async getSearchStats() {

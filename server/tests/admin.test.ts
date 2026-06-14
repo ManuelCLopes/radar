@@ -11,6 +11,7 @@ vi.mock("../storage", () => ({
         listBusinesses: vi.fn(),
         listAllReports: vi.fn(),
         listUsers: vi.fn(),
+        listBillingWaitlistLeads: vi.fn(),
     },
 }));
 
@@ -76,5 +77,18 @@ describe("Admin API", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual(mockUsers);
+    });
+
+    it("should allow admin users to list billing waitlist leads", async () => {
+        const app = createApp("admin");
+        const mockLeads = [
+            { id: "lead_1", email: "lead@example.com", plan: "pro", message: null, source: "pricing_modal" },
+        ];
+        (storage.listBillingWaitlistLeads as any).mockResolvedValue(mockLeads);
+
+        const res = await request(app).get("/api/admin/billing-waitlist");
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual(mockLeads);
     });
 });

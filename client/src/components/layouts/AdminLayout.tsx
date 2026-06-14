@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Users, Activity, Settings, LogOut, Menu } from "lucide-react";
+import { LayoutDashboard, Users, Activity, LogOut, Menu, ClipboardList } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -14,6 +14,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const menuItems = [
         { href: "/admin", icon: LayoutDashboard, label: t("admin.layout.navigation.overview") },
         { href: "/admin/users", icon: Users, label: t("admin.layout.navigation.users") },
+        { href: "/admin/waitlist", icon: ClipboardList, label: t("admin.layout.navigation.waitlist") },
         { href: "/admin/activity", icon: Activity, label: t("admin.layout.navigation.activity") },
     ];
 

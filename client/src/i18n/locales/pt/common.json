@@ -707,6 +707,8 @@
       "submit": "Entrar na lista",
       "successTitle": "Está na lista",
       "successDescription": "Vamos contactar quando o acesso pago estiver pronto.",
+      "alreadyJoinedTitle": "Já está na lista",
+      "alreadyJoinedDescription": "Já recebemos o seu pedido e vamos contactar quando o acesso pago estiver pronto.",
       "errorTitle": "Não foi possível entrar na lista",
       "errorDescription": "Confirme o email e tente novamente."
     }
@@ -969,6 +971,7 @@
       "navigation": {
         "overview": "Visao geral",
         "users": "Utilizadores",
+        "waitlist": "Lista de espera",
         "activity": "Atividade"
       }
     },
@@ -1016,6 +1019,23 @@
         "roleUpdateError": "Falha ao atualizar a funcao",
         "userDeleted": "Utilizador eliminado com sucesso",
         "userDeleteError": "Falha ao eliminar o utilizador"
+      }
+    },
+    "waitlist": {
+      "title": "Lista de espera de billing",
+      "subtitle": "Veja os utilizadores que pediram acesso antecipado aos planos pagos.",
+      "table": {
+        "title": "Pedidos de waitlist",
+        "searchPlaceholder": "Pesquisar na lista...",
+        "empty": "Ainda nao existem pedidos na lista.",
+        "noMessage": "Sem mensagem",
+        "columns": {
+          "email": "Email",
+          "plan": "Plano",
+          "message": "Mensagem",
+          "source": "Origem",
+          "joined": "Entrada"
+        }
       }
     },
     "activity": {

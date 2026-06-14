@@ -707,6 +707,8 @@
       "submit": "Rejoindre la liste",
       "successTitle": "Vous êtes sur la liste",
       "successDescription": "Nous vous contacterons lorsque l'accès payant sera prêt.",
+      "alreadyJoinedTitle": "Vous êtes déjà sur la liste",
+      "alreadyJoinedDescription": "Nous avons déjà reçu votre demande et vous contacterons lorsque l'accès payant sera prêt.",
       "errorTitle": "Impossible de rejoindre la liste",
       "errorDescription": "Vérifiez votre email et réessayez."
     }
@@ -969,6 +971,7 @@
       "navigation": {
         "overview": "Vue d'ensemble",
         "users": "Utilisateurs",
+        "waitlist": "Liste d'attente",
         "activity": "Activite"
       }
     },
@@ -1016,6 +1019,23 @@
         "roleUpdateError": "Echec de la mise a jour du role",
         "userDeleted": "Utilisateur supprime avec succes",
         "userDeleteError": "Echec de la suppression de l'utilisateur"
+      }
+    },
+    "waitlist": {
+      "title": "Liste d'attente de facturation",
+      "subtitle": "Consultez les utilisateurs qui ont demande un acces anticipe aux offres payantes.",
+      "table": {
+        "title": "Demandes de liste d'attente",
+        "searchPlaceholder": "Rechercher dans la liste...",
+        "empty": "Aucune demande dans la liste pour le moment.",
+        "noMessage": "Aucun message",
+        "columns": {
+          "email": "Email",
+          "plan": "Offre",
+          "message": "Message",
+          "source": "Source",
+          "joined": "Inscription"
+        }
       }
     },
     "activity": {

@@ -50,6 +50,7 @@ vi.mock("../storage", () => ({
         createUser: vi.fn(),
         updateUser: vi.fn(),
         getUserByStripeCustomerId: vi.fn(),
+        getBillingWaitlistLead: vi.fn(),
         createBillingWaitlistLead: vi.fn(),
         sessionStore: {
             get: vi.fn(),
@@ -224,6 +225,7 @@ describe("Payments API", () => {
 
     describe("POST /api/billing-waitlist", () => {
         it("should capture a billing waitlist lead", async () => {
+            vi.spyOn(storage, "getBillingWaitlistLead").mockResolvedValue(undefined);
             vi.spyOn(storage, "createBillingWaitlistLead").mockResolvedValue({
                 id: "lead_1",
                 userId: null,
@@ -244,11 +246,67 @@ describe("Payments API", () => {
 
             expect(res.status).toBe(201);
             expect(res.body.success).toBe(true);
+            expect(res.body.alreadyJoined).toBe(false);
+            expect(storage.getBillingWaitlistLead).toHaveBeenCalledWith("lead@example.com", "agency");
             expect(storage.createBillingWaitlistLead).toHaveBeenCalledWith(expect.objectContaining({
                 email: "lead@example.com",
                 plan: "agency",
                 message: "Interested in client reporting",
             }));
+        });
+
+        it("should not reveal duplicate status for public waitlist requests", async () => {
+            vi.spyOn(storage, "getBillingWaitlistLead").mockResolvedValue({
+                id: "lead_1",
+                userId: null,
+                email: "lead@example.com",
+                plan: "pro",
+                message: null,
+                source: "pricing_modal",
+                createdAt: new Date(),
+            } as any);
+
+            const res = await request(app)
+                .post("/api/billing-waitlist")
+                .send({
+                    email: "lead@example.com",
+                    plan: "pro",
+                });
+
+            expect(res.status).toBe(201);
+            expect(res.body).toEqual({ success: true, alreadyJoined: false });
+            expect(storage.createBillingWaitlistLead).not.toHaveBeenCalled();
+        });
+
+        it("should reveal duplicate status when an authenticated user submits their own email", async () => {
+            vi.spyOn(storage, "getBillingWaitlistLead").mockResolvedValue({
+                id: "lead_1",
+                userId: "1",
+                email: "lead@example.com",
+                plan: "pro",
+                message: null,
+                source: "pricing_modal",
+                createdAt: new Date(),
+            } as any);
+
+            const testApp = express();
+            testApp.use(express.json());
+            testApp.use((req: any, res, next) => {
+                req.user = { id: "1", email: "lead@example.com" };
+                next();
+            });
+            await registerRoutes(createServer(testApp), testApp);
+
+            const res = await request(testApp)
+                .post("/api/billing-waitlist")
+                .send({
+                    email: "lead@example.com",
+                    plan: "pro",
+                });
+
+            expect(res.status).toBe(200);
+            expect(res.body).toEqual({ success: true, alreadyJoined: true });
+            expect(storage.createBillingWaitlistLead).not.toHaveBeenCalled();
         });
     });
 
