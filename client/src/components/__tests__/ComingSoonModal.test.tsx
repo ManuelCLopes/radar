@@ -23,7 +23,7 @@ describe("ComingSoonModal", () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        fetchMock.mockResolvedValue({ ok: true });
+        fetchMock.mockResolvedValue({ ok: true, json: async () => ({ success: true, alreadyJoined: false }) });
         vi.stubGlobal("fetch", fetchMock);
     });
 
@@ -53,6 +53,23 @@ describe("ComingSoonModal", () => {
         expect(mockToast).toHaveBeenCalledWith({
             title: "pricing.waitlist.successTitle",
             description: "pricing.waitlist.successDescription",
+        });
+        expect(onOpenChange).toHaveBeenCalledWith(false);
+    });
+
+    it("shows a different toast when the user is already on the waitlist", async () => {
+        fetchMock.mockResolvedValueOnce({ ok: true, json: async () => ({ success: true, alreadyJoined: true }) });
+        const onOpenChange = vi.fn();
+
+        render(<ComingSoonModal open onOpenChange={onOpenChange} />);
+
+        fireEvent.click(screen.getByRole("button", { name: "pricing.waitlist.submit" }));
+
+        await waitFor(() => {
+            expect(mockToast).toHaveBeenCalledWith({
+                title: "pricing.waitlist.alreadyJoinedTitle",
+                description: "pricing.waitlist.alreadyJoinedDescription",
+            });
         });
         expect(onOpenChange).toHaveBeenCalledWith(false);
     });

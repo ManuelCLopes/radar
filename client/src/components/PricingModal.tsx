@@ -100,13 +100,15 @@ export function PricingModal({ open, onOpenChange }: PricingModalProps) {
                 }),
             });
 
+            const result = await res.json();
+
             if (!res.ok) {
                 throw new Error("Failed to join waitlist");
             }
 
             toast({
-                title: t("pricing.waitlist.successTitle"),
-                description: t("pricing.waitlist.successDescription"),
+                title: result.alreadyJoined ? t("pricing.waitlist.alreadyJoinedTitle") : t("pricing.waitlist.successTitle"),
+                description: result.alreadyJoined ? t("pricing.waitlist.alreadyJoinedDescription") : t("pricing.waitlist.successDescription"),
             });
             setWaitlistPlan(null);
             setWaitlistMessage("");

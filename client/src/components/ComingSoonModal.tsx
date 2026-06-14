@@ -44,13 +44,15 @@ export function ComingSoonModal({ open, onOpenChange }: ComingSoonModalProps) {
                 }),
             });
 
+            const result = await response.json();
+
             if (!response.ok) {
                 throw new Error("Failed to join waitlist");
             }
 
             toast({
-                title: t("pricing.waitlist.successTitle"),
-                description: t("pricing.waitlist.successDescription"),
+                title: result.alreadyJoined ? t("pricing.waitlist.alreadyJoinedTitle") : t("pricing.waitlist.successTitle"),
+                description: result.alreadyJoined ? t("pricing.waitlist.alreadyJoinedDescription") : t("pricing.waitlist.successDescription"),
             });
             setMessage("");
             onOpenChange(false);
