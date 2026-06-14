@@ -15,6 +15,7 @@ import PublicReportPage from "@/pages/PublicReportPage";
 import AdminDashboard from "@/pages/AdminDashboard";
 import AdminUsers from "@/pages/AdminUsers";
 import AdminActivity from "@/pages/AdminActivity";
+import AdminWaitlist from "@/pages/AdminWaitlist";
 import SupportPage from "@/pages/SupportPage";
 import PrivacyPolicy from "@/pages/legal/PrivacyPolicy";
 import CookiePolicy from "@/pages/legal/CookiePolicy";
@@ -87,6 +88,7 @@ function Router() {
       <Route path="/settings" component={ProtectedSettings} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/users" component={AdminUsers} />
+      <Route path="/admin/waitlist" component={AdminWaitlist} />
       <Route path="/admin/activity" component={AdminActivity} />
       <Route component={NotFound} />
     </Switch>

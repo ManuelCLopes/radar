@@ -707,6 +707,8 @@
       "submit": "Join Waitlist",
       "successTitle": "You are on the list",
       "successDescription": "We will contact you when paid access is ready.",
+      "alreadyJoinedTitle": "You are already on the list",
+      "alreadyJoinedDescription": "We already have your request and will contact you when paid access is ready.",
       "errorTitle": "Could not join waitlist",
       "errorDescription": "Please check your email and try again."
     }
@@ -969,6 +971,7 @@
       "navigation": {
         "overview": "Overview",
         "users": "Users",
+        "waitlist": "Waitlist",
         "activity": "Activity"
       }
     },
@@ -1016,6 +1019,23 @@
         "roleUpdateError": "Failed to update role",
         "userDeleted": "User deleted successfully",
         "userDeleteError": "Failed to delete user"
+      }
+    },
+    "waitlist": {
+      "title": "Billing Waitlist",
+      "subtitle": "Review users who requested early access to paid plans.",
+      "table": {
+        "title": "Waitlist leads",
+        "searchPlaceholder": "Search waitlist...",
+        "empty": "No waitlist leads yet.",
+        "noMessage": "No message",
+        "columns": {
+          "email": "Email",
+          "plan": "Plan",
+          "message": "Message",
+          "source": "Source",
+          "joined": "Joined"
+        }
       }
     },
     "activity": {

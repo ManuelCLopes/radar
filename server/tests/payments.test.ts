@@ -50,6 +50,7 @@ vi.mock("../storage", () => ({
         createUser: vi.fn(),
         updateUser: vi.fn(),
         getUserByStripeCustomerId: vi.fn(),
+        getBillingWaitlistLead: vi.fn(),
         createBillingWaitlistLead: vi.fn(),
         sessionStore: {
             get: vi.fn(),
@@ -224,6 +225,7 @@ describe("Payments API", () => {
 
     describe("POST /api/billing-waitlist", () => {
         it("should capture a billing waitlist lead", async () => {
+            vi.spyOn(storage, "getBillingWaitlistLead").mockResolvedValue(undefined);
             vi.spyOn(storage, "createBillingWaitlistLead").mockResolvedValue({
                 id: "lead_1",
                 userId: null,
@@ -244,11 +246,36 @@ describe("Payments API", () => {
 
             expect(res.status).toBe(201);
             expect(res.body.success).toBe(true);
+            expect(res.body.alreadyJoined).toBe(false);
+            expect(storage.getBillingWaitlistLead).toHaveBeenCalledWith("lead@example.com", "agency");
             expect(storage.createBillingWaitlistLead).toHaveBeenCalledWith(expect.objectContaining({
                 email: "lead@example.com",
                 plan: "agency",
                 message: "Interested in client reporting",
             }));
+        });
+
+        it("should return an already joined response for duplicate leads", async () => {
+            vi.spyOn(storage, "getBillingWaitlistLead").mockResolvedValue({
+                id: "lead_1",
+                userId: null,
+                email: "lead@example.com",
+                plan: "pro",
+                message: null,
+                source: "pricing_modal",
+                createdAt: new Date(),
+            } as any);
+
+            const res = await request(app)
+                .post("/api/billing-waitlist")
+                .send({
+                    email: "lead@example.com",
+                    plan: "pro",
+                });
+
+            expect(res.status).toBe(200);
+            expect(res.body).toEqual({ success: true, alreadyJoined: true });
+            expect(storage.createBillingWaitlistLead).not.toHaveBeenCalled();
         });
     });
 

@@ -62,10 +62,19 @@ export function registerPaymentRoutes(app: Express) {
         }
 
         try {
+            const existingLead = await storage.getBillingWaitlistLead(parsedLead.data.email, parsedLead.data.plan);
+            if (existingLead) {
+                return res.status(200).json({ success: true, alreadyJoined: true });
+            }
+
             const lead = await storage.createBillingWaitlistLead(parsedLead.data);
             log(`Billing waitlist lead captured for ${lead.email} (${lead.plan})`, "billing");
-            res.status(201).json({ success: true });
+            res.status(201).json({ success: true, alreadyJoined: false });
         } catch (error: any) {
+            if (error?.code === "23505") {
+                return res.status(200).json({ success: true, alreadyJoined: true });
+            }
+
             log(`Error capturing billing waitlist lead: ${error.message}`, "billing");
             res.status(500).json({ error: "Failed to join waitlist" });
         }

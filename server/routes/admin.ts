@@ -36,6 +36,15 @@ export function registerAdminRoutes(app: Express) {
         }
     });
 
+    app.get("/api/admin/billing-waitlist", isAdmin, async (req, res) => {
+        try {
+            const leads = await storage.listBillingWaitlistLeads();
+            res.json(leads);
+        } catch (err) {
+            res.status(500).json({ message: "Internal Server Error" });
+        }
+    });
+
     app.patch("/api/admin/users/:id/role", isAdmin, async (req, res) => {
         try {
             const { role } = req.body;
