@@ -244,8 +244,8 @@ export default function LandingPage() {
   return (
     <div className="landing-page">
       <Seo
-        title={`Competitor Watcher | ${t("quickSearch.title")}`}
-        description={t("quickSearch.seoIntent")}
+        title={`${t("quickSearch.seoTitle")} | Competitor Watcher`}
+        description={t("quickSearch.seoDescription")}
         path="/"
         structuredData={landingStructuredData}
       />
