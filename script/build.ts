@@ -1,5 +1,6 @@
 import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
+import { prerender } from "../scripts/prerender";
 import { rm, readFile } from "fs/promises";
 
 // server deps to bundle to reduce openat(2) syscalls
@@ -37,6 +38,7 @@ async function buildAll() {
 
   console.log("building client...");
   await viteBuild();
+  await prerender();
 
   console.log("building server...");
   const pkg = JSON.parse(await readFile("package.json", "utf-8"));

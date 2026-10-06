@@ -13,8 +13,40 @@
       "destination": "/api?path=:path*"
     },
     {
-      "source": "/((?!api(?:/|$)|robots\\.txt|sitemap\\.xml|llms\\.txt).*)",
+      "source": "/",
       "destination": "/index.html"
+    },
+    {
+      "source": "/pt",
+      "destination": "/pt.html"
+    },
+    {
+      "source": "/local-competitor-analysis",
+      "destination": "/local-competitor-analysis.html"
+    },
+    {
+      "source": "/pt/local-competitor-analysis",
+      "destination": "/pt/local-competitor-analysis.html"
+    },
+    {
+      "source": "/competitor-tracker",
+      "destination": "/competitor-tracker.html"
+    },
+    {
+      "source": "/pt/competitor-tracker",
+      "destination": "/pt/competitor-tracker.html"
+    },
+    {
+      "source": "/competitor-analysis-report",
+      "destination": "/competitor-analysis-report.html"
+    },
+    {
+      "source": "/pt/competitor-analysis-report",
+      "destination": "/pt/competitor-analysis-report.html"
+    },
+    {
+      "source": "/((?!api(?:/|$)|robots\\.txt|sitemap\\.xml|llms\\.txt).*)",
+      "destination": "/app.html"
     }
   ],
   "crons": [

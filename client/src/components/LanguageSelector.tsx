@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'wouter';
 import { useAuth } from '@/hooks/useAuth';
 import { Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { getRouteLocale, isLocalizedPublicPath, localizePath } from '@/lib/localeRoutes';
 
 export const languages = [
   { code: 'en', abbr: 'EN' },
@@ -20,10 +22,20 @@ export const languages = [
 export function LanguageSelector() {
   const { i18n, t } = useTranslation();
   const { user } = useAuth();
+  const [location, navigate] = useLocation();
   const currentLang = languages.find((l) => i18n.language?.startsWith(l.code)) || languages[0];
 
   const handleLanguageChange = async (langCode: string) => {
     i18n.changeLanguage(langCode);
+
+    // Public marketing pages have a dedicated Portuguese URL (/pt/...), so
+    // keep the address bar in sync with the chosen language.
+    if (isLocalizedPublicPath(location)) {
+      const targetLocale = langCode === 'pt' ? 'pt' : 'en';
+      if (getRouteLocale(location) !== targetLocale) {
+        navigate(localizePath(location, targetLocale));
+      }
+    }
 
     // Persist to backend if user is logged in
     if (user) {

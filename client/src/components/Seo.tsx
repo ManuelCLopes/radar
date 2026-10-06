@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
+import { isLocalizedPublicPath, localizePath } from "@/lib/localeRoutes";
 
 // Primary production host. www 308-redirects here, so every canonical,
 // og:url and structured-data URL must use it to avoid conflicting signals.
@@ -36,7 +37,8 @@ export function toAbsoluteSeoUrl(value: string): string {
     return value;
   }
 
-  return `${getSeoBaseUrl()}${normalizePath(value)}`;
+  // The homepage keeps its trailing slash, matching the sitemap.
+  return `${getSeoBaseUrl()}${normalizePath(value) || "/"}`;
 }
 
 function getLocale(language?: string): string {
@@ -66,6 +68,13 @@ export function Seo({
   const { i18n } = useTranslation();
   const language = i18n.resolvedLanguage || i18n.language || "en";
   const canonicalUrl = toAbsoluteSeoUrl(path);
+  const alternates = isLocalizedPublicPath(path)
+    ? [
+        { hrefLang: "en", href: toAbsoluteSeoUrl(localizePath(path, "en")) },
+        { hrefLang: "pt", href: toAbsoluteSeoUrl(localizePath(path, "pt")) },
+        { hrefLang: "x-default", href: toAbsoluteSeoUrl(localizePath(path, "en")) },
+      ]
+    : [];
   const imageUrl = toAbsoluteSeoUrl(imagePath);
   const robotsContent = noIndex
     ? "noindex, nofollow"
@@ -82,6 +91,9 @@ export function Seo({
       <title>{title}</title>
       {description ? <meta name="description" content={description} /> : null}
       <link rel="canonical" href={canonicalUrl} />
+      {alternates.map((alternate) => (
+        <link key={alternate.hrefLang} rel="alternate" hrefLang={alternate.hrefLang} href={alternate.href} />
+      ))}
       <meta name="robots" content={robotsContent} />
       <meta name="googlebot" content={robotsContent} />
       <meta property="og:site_name" content={DEFAULT_SITE_NAME} />

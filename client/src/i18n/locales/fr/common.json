@@ -529,6 +529,7 @@
     "sampleSection": {
       "title": "Un petit aperçu de ce que vous recevrez",
       "description": "Découvrez l'exemple ci-contre pour voir les informations clés que vous recevrez : carte des concurrents, analyse SWOT, tendances du marché local et analyse du sentiment des clients. Chaque rapport est personnalisé pour votre entreprise et envoyé directement sur votre e-mail.",
+      "viewSample": "Voir un exemple de rapport complet",
       "features": {
         "keyPoints": {
           "map": "Carte interactive des concurrents",
@@ -813,6 +814,9 @@
       "legal": "Légal"
     },
     "links": {
+      "localAnalysis": "Analyse de la concurrence locale",
+      "competitorTracker": "Suivi des concurrents",
+      "sampleReport": "Exemple de rapport",
       "support": "Soutenez-nous",
       "home": "Accueil",
       "dashboard": "Tableau de bord"

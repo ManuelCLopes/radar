@@ -529,6 +529,7 @@
     "sampleSection": {
       "title": "Uma pequena amostra do que irá receber",
       "description": "Explore o exemplo ao lado para ver os principais insights que receberá: mapa de concorrentes, análise SWOT, tendências de mercado e análise de sentimento. Cada relatório é personalizado para o seu negócio e enviado diretamente para o seu email.",
+      "viewSample": "Ver un informe de ejemplo completo",
       "features": {
         "keyPoints": {
           "map": "Mapa Interativo de Concorrentes",
@@ -813,6 +814,9 @@
       "legal": "Legal"
     },
     "links": {
+      "localAnalysis": "Análisis de competencia local",
+      "competitorTracker": "Seguimiento de competidores",
+      "sampleReport": "Informe de ejemplo",
       "support": "Apoie-nos",
       "home": "Início",
       "dashboard": "Painel"
