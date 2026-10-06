@@ -1,9 +1,9 @@
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 
-// Primary production host. The apex domain redirects here, so every canonical,
+// Primary production host. www 308-redirects here, so every canonical,
 // og:url and structured-data URL must use it to avoid conflicting signals.
-export const CANONICAL_BASE_URL = "https://www.competitorwatcher.pt";
+export const CANONICAL_BASE_URL = "https://competitorwatcher.pt";
 const DEFAULT_SITE_NAME = "Competitor Watcher";
 const DEFAULT_IMAGE_PATH = "/logo.png";
 

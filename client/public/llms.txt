@@ -7,11 +7,11 @@
 - Core use cases: competitor research, local market analysis, review intelligence, and tactical recommendations.
 
 ## Public pages
-- Homepage: https://www.competitorwatcher.pt/
-- Support: https://www.competitorwatcher.pt/support
-- Privacy policy: https://www.competitorwatcher.pt/privacy-policy
-- Cookie policy: https://www.competitorwatcher.pt/cookie-policy
-- Sitemap: https://www.competitorwatcher.pt/sitemap.xml
+- Homepage: https://competitorwatcher.pt/
+- Support: https://competitorwatcher.pt/support
+- Privacy policy: https://competitorwatcher.pt/privacy-policy
+- Cookie policy: https://competitorwatcher.pt/cookie-policy
+- Sitemap: https://competitorwatcher.pt/sitemap.xml
 
 ## Access notes
 - Main product workflows require authentication in /dashboard.

@@ -11,4 +11,4 @@ Disallow: /admin/
 Disallow: /api/
 Disallow: /r/
 
-Sitemap: https://www.competitorwatcher.pt/sitemap.xml
+Sitemap: https://competitorwatcher.pt/sitemap.xml
