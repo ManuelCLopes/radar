@@ -1,7 +1,9 @@
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 
-const DEFAULT_BASE_URL = "https://competitorwatcher.pt";
+// Primary production host. The apex domain redirects here, so every canonical,
+// og:url and structured-data URL must use it to avoid conflicting signals.
+export const CANONICAL_BASE_URL = "https://www.competitorwatcher.pt";
 const DEFAULT_SITE_NAME = "Competitor Watcher";
 const DEFAULT_IMAGE_PATH = "/logo.png";
 
@@ -17,10 +19,6 @@ interface SeoProps {
   structuredData?: StructuredData;
 }
 
-function stripTrailingSlash(value: string): string {
-  return value.replace(/\/+$/, "");
-}
-
 function normalizePath(value: string): string {
   if (!value || value === "/") {
     return "";
@@ -30,16 +28,7 @@ function normalizePath(value: string): string {
 }
 
 export function getSeoBaseUrl(): string {
-  const configuredBaseUrl = import.meta.env.VITE_PUBLIC_APP_URL;
-  if (configuredBaseUrl) {
-    return stripTrailingSlash(configuredBaseUrl);
-  }
-
-  if (typeof window !== "undefined" && window.location.origin) {
-    return stripTrailingSlash(window.location.origin);
-  }
-
-  return DEFAULT_BASE_URL;
+  return CANONICAL_BASE_URL;
 }
 
 export function toAbsoluteSeoUrl(value: string): string {
