@@ -305,33 +305,46 @@
   }
 }
 
-/* Expandable Button Animation - Global */
+/* Expandable Button Animation - Global
+   Icon button that reveals its label on hover/focus. The layout stays the same
+   in both states (left-aligned, no flex gap, fixed side padding that centres
+   the 16px icon in the 36px button with its 1px border), so only padding and the label's
+   max-width/opacity animate and nothing snaps on the first frame. */
 .expandable-btn {
-  transition: all 0.3s ease;
-  overflow: hidden;
   width: auto !important;
   min-width: 2.25rem;
-  /* Match h-9 (36px) */
-  justify-content: center;
+  gap: 0;
+  justify-content: flex-start;
+  padding-left: 0.5625rem;
+  padding-right: 0.5625rem;
+  overflow: hidden;
+  transition: padding 0.25s ease, background-color 0.15s ease, color 0.15s ease;
 }
 
 .expandable-btn span:not(.sr-only) {
-  max-width: 0;
-  opacity: 0;
-  margin-left: 0;
-  white-space: nowrap;
-  transition: all 0.3s ease;
   display: inline-block;
+  max-width: 0;
+  margin-left: 0;
+  opacity: 0;
+  white-space: nowrap;
+  transition: max-width 0.25s ease, margin-left 0.25s ease, opacity 0.2s ease;
 }
 
-.expandable-btn:hover {
-  padding-right: 1rem !important;
-  padding-left: 0.5rem !important;
-  justify-content: flex-start;
+.expandable-btn:hover,
+.expandable-btn:focus-visible {
+  padding-right: 0.875rem;
 }
 
-.expandable-btn:hover span:not(.sr-only) {
-  max-width: 100px;
+.expandable-btn:hover span:not(.sr-only),
+.expandable-btn:focus-visible span:not(.sr-only) {
+  max-width: 10rem;
+  margin-left: 0.375rem;
   opacity: 1;
-  margin-left: 0.25rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .expandable-btn,
+  .expandable-btn span:not(.sr-only) {
+    transition: none;
+  }
 }
