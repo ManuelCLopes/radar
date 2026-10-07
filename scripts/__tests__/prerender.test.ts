@@ -3,10 +3,13 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { buildPageHtml, outputFileForRoute } from "../prerender";
-import { LOCALIZED_PUBLIC_PATHS, localizePath } from "../../client/src/lib/localeRoutes";
+import { ENGLISH_ONLY_PUBLIC_PATHS, LOCALIZED_PUBLIC_PATHS, localizePath } from "../../client/src/lib/localeRoutes";
 
 const rootDir = path.resolve(__dirname, "..", "..");
-const routes = LOCALIZED_PUBLIC_PATHS.flatMap((p) => [localizePath(p, "en"), localizePath(p, "pt")]);
+const routes = [
+  ...LOCALIZED_PUBLIC_PATHS.flatMap((p) => [localizePath(p, "en"), localizePath(p, "pt")]),
+  ...ENGLISH_ONLY_PUBLIC_PATHS,
+];
 
 describe("prerender", () => {
   it("maps routes to output files", () => {
