@@ -13,7 +13,10 @@ import { PricingModalProvider } from "@/context/PricingModalContext";
 import LandingPage from "@/pages/LandingPage";
 import MarketingPage from "@/pages/MarketingPage";
 import SampleReportPage from "@/pages/SampleReportPage";
-import { LOCALIZED_PUBLIC_PATHS, getRouteLocale, localizePath, stripLocalePrefix } from "@/lib/localeRoutes";
+import SupportPage from "@/pages/SupportPage";
+import PrivacyPolicy from "@/pages/legal/PrivacyPolicy";
+import CookiePolicy from "@/pages/legal/CookiePolicy";
+import { ENGLISH_ONLY_PUBLIC_PATHS, LOCALIZED_PUBLIC_PATHS, getRouteLocale, localizePath, stripLocalePrefix } from "@/lib/localeRoutes";
 
 import enTranslation from "@/i18n/locales/en/common.json";
 import ptTranslation from "@/i18n/locales/pt/common.json";
@@ -23,12 +26,15 @@ const PAGE_COMPONENTS: Record<string, ComponentType> = {
   "/local-competitor-analysis": MarketingPage,
   "/competitor-tracker": MarketingPage,
   "/competitor-analysis-report": SampleReportPage,
+  "/support": SupportPage,
+  "/privacy-policy": PrivacyPolicy,
+  "/cookie-policy": CookiePolicy,
 };
 
-export const PRERENDER_ROUTES: string[] = LOCALIZED_PUBLIC_PATHS.flatMap((path) => [
-  localizePath(path, "en"),
-  localizePath(path, "pt"),
-]);
+export const PRERENDER_ROUTES: string[] = [
+  ...LOCALIZED_PUBLIC_PATHS.flatMap((path) => [localizePath(path, "en"), localizePath(path, "pt")]),
+  ...ENGLISH_ONLY_PUBLIC_PATHS,
+];
 
 export interface PrerenderResult {
   html: string;

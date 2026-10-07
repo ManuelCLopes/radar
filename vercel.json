@@ -45,6 +45,18 @@
       "destination": "/pt/competitor-analysis-report.html"
     },
     {
+      "source": "/support",
+      "destination": "/support.html"
+    },
+    {
+      "source": "/privacy-policy",
+      "destination": "/privacy-policy.html"
+    },
+    {
+      "source": "/cookie-policy",
+      "destination": "/cookie-policy.html"
+    },
+    {
       "source": "/((?!api(?:/|$)|robots\\.txt|sitemap\\.xml|llms\\.txt).*)",
       "destination": "/app.html"
     }

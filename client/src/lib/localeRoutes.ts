@@ -8,6 +8,9 @@ export const LOCALIZED_PUBLIC_PATHS = [
   "/competitor-analysis-report",
 ] as const;
 
+// Public pages that only exist in English; prerendered but without a /pt twin.
+export const ENGLISH_ONLY_PUBLIC_PATHS = ["/support", "/privacy-policy", "/cookie-policy"] as const;
+
 export type LocalizedPublicPath = (typeof LOCALIZED_PUBLIC_PATHS)[number];
 export type RouteLocale = "en" | "pt";
 
