@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "NODE_ENV=development tsx watch server/index.ts",
     "build:vercel": "sh scripts/vercel-build.sh",
-    "build:client": "vite build",
+    "build:client": "vite build && tsx scripts/prerender.ts",
     "build": "tsx script/build.ts",
     "start": "NODE_ENV=production node dist/index.cjs",
     "check": "tsc",

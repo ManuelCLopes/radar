@@ -529,6 +529,7 @@
     "sampleSection": {
       "title": "A small sample of what you'll receive",
       "description": "Explore the example to the side to see the key insights you will receive: competitor map, SWOT analysis, market trends, and sentiment analysis. Each report is personalized for your business and sent directly to your email.",
+      "viewSample": "See a full sample report",
       "features": {
         "keyPoints": {
           "map": "Interactive Competitor Map",
@@ -813,6 +814,9 @@
       "legal": "Legal"
     },
     "links": {
+      "localAnalysis": "Local competitor analysis",
+      "competitorTracker": "Competitor tracker",
+      "sampleReport": "Sample report",
       "support": "Support Us",
       "home": "Home",
       "dashboard": "Dashboard"

@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -20,6 +20,9 @@ import SupportPage from "@/pages/SupportPage";
 import PrivacyPolicy from "@/pages/legal/PrivacyPolicy";
 import CookiePolicy from "@/pages/legal/CookiePolicy";
 import NotFound from "@/pages/not-found";
+import MarketingPage from "@/pages/MarketingPage";
+import SampleReportPage from "@/pages/SampleReportPage";
+import { getRouteLocale, isLocalizedPublicPath, localizePath } from "@/lib/localeRoutes";
 import ScrollToTop from "@/components/ScrollToTop";
 import { CookieConsent } from "@/components/CookieConsent";
 import './i18n';
@@ -71,10 +74,38 @@ function ProtectedSettings() {
   return <ProtectedRoute component={SettingsPage} />;
 }
 
+// Keeps the UI language and the /pt URL prefix of public pages in sync. Runs
+// only when the location changes, so a language picked in the selector (which
+// navigates itself) is never overridden.
+function RouteLanguageSync() {
+  const [location, navigate] = useLocation();
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    if (!isLocalizedPublicPath(location)) return;
+    const language = i18n.resolvedLanguage || i18n.language || "en";
+    if (getRouteLocale(location) === "pt") {
+      if (!language.startsWith("pt")) i18n.changeLanguage("pt");
+    } else if (language.startsWith("pt")) {
+      navigate(localizePath(location, "pt"), { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
+
+  return null;
+}
+
 function Router() {
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
+      <Route path="/pt" component={LandingPage} />
+      <Route path="/local-competitor-analysis" component={MarketingPage} />
+      <Route path="/pt/local-competitor-analysis" component={MarketingPage} />
+      <Route path="/competitor-tracker" component={MarketingPage} />
+      <Route path="/pt/competitor-tracker" component={MarketingPage} />
+      <Route path="/competitor-analysis-report" component={SampleReportPage} />
+      <Route path="/pt/competitor-analysis-report" component={SampleReportPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />
       <Route path="/verify-email" component={VerifyEmail} />
@@ -102,6 +133,7 @@ function App() {
         <PricingModalProvider>
           <Toaster />
           <ScrollToTop />
+          <RouteLanguageSync />
           <Router />
           <CookieConsent />
           <Analytics />

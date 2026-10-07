@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { MapPin, Star, Mail, Map, MessageSquare, Lightbulb, Utensils, Scissors, Dumbbell, Hotel, Store, LogIn, Search, Check, X, User, LayoutDashboard, ChevronLeft, ChevronRight, Heart, Sparkles, Rocket, Target, TrendingUp, Navigation, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -21,6 +21,7 @@ import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { fetchDisplayableAddressFromCoordinates } from "@/lib/location";
 import { Seo, toAbsoluteSeoUrl } from "@/components/Seo";
+import { getRouteLocale, localizePath } from "@/lib/localeRoutes";
 
 import { usePricingModal } from "@/context/PricingModalContext";
 
@@ -29,6 +30,9 @@ export default function LandingPage() {
   const { toast } = useToast();
   const { t, i18n } = useTranslation();
   const { openPricing } = usePricingModal();
+  const [location] = useLocation();
+  const routeLocale = getRouteLocale(location);
+  const seoPath = localizePath("/", routeLocale);
 
   // Quick search state
   const [isSearching, setIsSearching] = useState(false);
@@ -246,7 +250,7 @@ export default function LandingPage() {
       <Seo
         title={`${t("quickSearch.seoTitle")} | Competitor Watcher`}
         description={t("quickSearch.seoDescription")}
-        path="/"
+        path={seoPath}
         structuredData={landingStructuredData}
       />
       {/* HEADER */}
@@ -562,6 +566,13 @@ export default function LandingPage() {
               <p>
                 {t('landing.sampleSection.description')}
               </p>
+              <Link
+                href={localizePath("/competitor-analysis-report", i18n.language?.startsWith("pt") ? "pt" : routeLocale)}
+                className="inline-block mt-4 font-semibold text-primary hover:underline"
+                data-testid="link-sample-report"
+              >
+                {t('landing.sampleSection.viewSample')} →
+              </Link>
 
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 w-full max-w-lg" data-testid="sample-features-grid">
