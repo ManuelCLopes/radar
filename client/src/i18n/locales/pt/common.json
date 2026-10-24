@@ -425,6 +425,8 @@
     "title": "Análise de Concorrência para Negócios Locais",
     "subtitle": "Faça análise competitiva em qualquer localização em segundos",
     "seoIntent": "O Competitor Watcher é uma ferramenta gratuita de análise da concorrência e inteligência competitiva para negócios locais. Compare concorrentes próximos, acompanhe mudanças no mercado e obtenha recomendações acionáveis.",
+    "seoTitle": "Monitorização e Análise de Concorrentes para Negócios Locais",
+    "seoDescription": "Ferramenta gratuita para monitorizar e analisar a concorrência de negócios locais. Acompanhe concorrentes próximos, avaliações no Google e obtenha recomendações com IA.",
     "addressPlaceholder": "Introduza a morada do negócio",
     "selectType": "Tipo de negócio",
     "selectRadius": "Raio de pesquisa",
@@ -527,6 +529,7 @@
     "sampleSection": {
       "title": "Uma pequena amostra do que irá receber",
       "description": "Explore o exemplo ao lado para ver os principais insights que receberá: mapa de concorrentes, análise SWOT, tendências de mercado e análise de sentimento. Cada relatório é personalizado para o seu negócio e enviado diretamente para o seu email.",
+      "viewSample": "Ver um exemplo de relatório completo",
       "features": {
         "keyPoints": {
           "map": "Mapa Interativo de Concorrentes",
@@ -811,6 +814,9 @@
       "legal": "Legal"
     },
     "links": {
+      "localAnalysis": "Análise de concorrência local",
+      "competitorTracker": "Monitorização de concorrentes",
+      "sampleReport": "Exemplo de relatório",
       "support": "Apoie-nos",
       "home": "Início",
       "dashboard": "Painel"

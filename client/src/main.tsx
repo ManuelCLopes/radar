@@ -1,5 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
+import i18n from "./i18n";
+import { getRouteLocale } from "@/lib/localeRoutes";
 import "./index.css";
 import "leaflet/dist/leaflet.css";
 
@@ -65,6 +67,11 @@ if (typeof window !== "undefined") {
     });
 }
 
+// /pt pages are prerendered in Portuguese; switch before the first render so
+// the client doesn't flash another language over the prerendered markup.
+if (getRouteLocale(window.location.pathname) === "pt" && !i18n.language?.startsWith("pt")) {
+    i18n.changeLanguage("pt");
+}
 
 createRoot(document.getElementById("root")!).render(
     <HelmetProvider>

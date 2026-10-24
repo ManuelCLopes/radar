@@ -1,6 +1,10 @@
 User-agent: *
 Allow: /
 Allow: /support
+Allow: /pt
+Allow: /local-competitor-analysis
+Allow: /competitor-tracker
+Allow: /competitor-analysis-report
 Allow: /privacy-policy
 Allow: /cookie-policy
 Allow: /llms.txt

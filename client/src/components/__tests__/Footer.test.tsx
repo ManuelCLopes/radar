@@ -52,6 +52,14 @@ describe("Footer", () => {
             expect(screen.getByText("Support Us")).toBeInTheDocument();
         });
 
+        it("should link to the public marketing pages", () => {
+            render(<Footer />);
+
+            expect(screen.getByText("footer.links.localAnalysis").closest("a")).toHaveAttribute("href", "/local-competitor-analysis");
+            expect(screen.getByText("footer.links.competitorTracker").closest("a")).toHaveAttribute("href", "/competitor-tracker");
+            expect(screen.getByText("footer.links.sampleReport").closest("a")).toHaveAttribute("href", "/competitor-analysis-report");
+        });
+
         it("should render legal section links", () => {
             render(<Footer />);
 

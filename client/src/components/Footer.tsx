@@ -3,10 +3,17 @@ import { useTranslation } from "react-i18next";
 import { Heart, User } from "lucide-react";
 import { FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { useAuth } from "@/hooks/useAuth";
+import { localizePath } from "@/lib/localeRoutes";
 
 export default function Footer() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { isAuthenticated } = useAuth();
+    const linkLocale = i18n?.language?.startsWith("pt") ? "pt" : "en";
+    const resourceLinks = [
+        { path: "/local-competitor-analysis", label: t("footer.links.localAnalysis") },
+        { path: "/competitor-tracker", label: t("footer.links.competitorTracker") },
+        { path: "/competitor-analysis-report", label: t("footer.links.sampleReport") },
+    ];
     const currentYear = new Date().getFullYear();
 
     return (
@@ -48,10 +55,17 @@ export default function Footer() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                <Link href={localizePath("/", linkLocale)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                                     {t("footer.links.home", { defaultValue: "Home" })}
                                 </Link>
                             </li>
+                            {resourceLinks.map((link) => (
+                                <li key={link.path}>
+                                    <Link href={localizePath(link.path, linkLocale)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 
