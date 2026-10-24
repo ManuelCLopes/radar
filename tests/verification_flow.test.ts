@@ -33,8 +33,8 @@ describe("Email Verification System", () => {
         agent = request.agent(server);
     });
 
-    afterAll((done) => {
-        server.close(done);
+    afterAll(async () => {
+        await new Promise<void>((resolve) => server.close(() => resolve()));
     });
 
     it("should verify email with valid token", async () => {

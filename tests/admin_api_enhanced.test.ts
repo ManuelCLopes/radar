@@ -61,8 +61,8 @@ describe("Enhanced Admin API", () => {
         }
     });
 
-    afterAll((done) => {
-        server.close(done);
+    afterAll(async () => {
+        await new Promise<void>((resolve) => server.close(() => resolve()));
     });
 
     it("GET /api/admin/analytics returns user growth and report stats", async () => {
