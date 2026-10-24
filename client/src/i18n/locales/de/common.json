@@ -422,9 +422,11 @@
     "perMonth": "/mês"
   },
   "quickSearch": {
-    "title": "Descubra a Sua Concorrência Local",
+    "title": "Entdecke deine lokale Konkurrenz",
     "subtitle": "Analise concorrentes em qualquer localização instantaneamente",
     "seoIntent": "Competitor Watcher ist ein kostenloses Tool zur Wettbewerbsanalyse und eine Competitive-Intelligence-Plattform für lokale Unternehmen. Vergleiche nahegelegene Wettbewerber, verfolge Marktveränderungen und erhalte praktische Empfehlungen.",
+    "seoTitle": "Wettbewerbsbeobachtung & Analyse für lokale Unternehmen",
+    "seoDescription": "Kostenloses Tool zur Wettbewerbsbeobachtung für lokale Unternehmen. Verfolge Wettbewerber in der Nähe, ihre Google-Bewertungen und erhalte KI-gestützte Empfehlungen.",
     "addressPlaceholder": "Introduza a morada do negócio",
     "selectType": "Tipo de negócio",
     "selectRadius": "Raio de pesquisa",
@@ -527,6 +529,7 @@
     "sampleSection": {
       "title": "Uma pequena amostra do que irá receber",
       "description": "Explore o exemplo ao lado para ver os principais insights que receberá: mapa de concorrentes, análise SWOT, tendências de mercado e análise de sentimento. Cada relatório é personalizado para o seu negócio e enviado diretamente para o seu email.",
+      "viewSample": "Vollständigen Beispielbericht ansehen",
       "features": {
         "keyPoints": {
           "map": "Mapa Interativo de Concorrentes",
@@ -811,6 +814,9 @@
       "legal": "Legal"
     },
     "links": {
+      "localAnalysis": "Lokale Wettbewerbsanalyse",
+      "competitorTracker": "Wettbewerber-Tracking",
+      "sampleReport": "Beispielbericht",
       "support": "Apoie-nos",
       "home": "Início",
       "dashboard": "Painel"

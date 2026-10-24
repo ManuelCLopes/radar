@@ -8,6 +8,10 @@
 
 ## Public pages
 - Homepage: https://competitorwatcher.pt/
+- Local competitor analysis: https://competitorwatcher.pt/local-competitor-analysis
+- Competitor tracker: https://competitorwatcher.pt/competitor-tracker
+- Sample competitor analysis report: https://competitorwatcher.pt/competitor-analysis-report
+- Portuguese homepage: https://competitorwatcher.pt/pt
 - Support: https://competitorwatcher.pt/support
 - Privacy policy: https://competitorwatcher.pt/privacy-policy
 - Cookie policy: https://competitorwatcher.pt/cookie-policy
