@@ -56,8 +56,8 @@ describe("API Usage Monitor", () => {
         });
     });
 
-    afterAll((done) => {
-        server.close(done);
+    afterAll(async () => {
+        await new Promise<void>((resolve) => server.close(() => resolve()));
     });
 
     it("GET /api/admin/usage returns aggregated usage stats", async () => {
