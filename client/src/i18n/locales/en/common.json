@@ -826,8 +826,8 @@
     "forSmallBusinesses": "for small businesses."
   },
   "notFound": {
-    "title": "Page not found",
-    "description": "The page you are looking for does not exist or may have been moved."
+    "title": "404 Page Not Found",
+    "description": "The page you requested could not be found."
   },
   "legal": {
     "privacy": {
@@ -965,14 +965,13 @@
     "dashboard": "Go to Dashboard",
     "login": "Back to Login"
   },
-  "notFound": {
-    "title": "404 Page Not Found",
-    "description": "The page you requested could not be found."
-  },
   "admin": {
     "layout": {
       "brand": "Radar Admin",
       "subtitle": "Mission Control",
+      "badge": "Admin",
+      "backToApp": "Back to app",
+      "openAdmin": "Admin panel",
       "signOut": "Sign Out",
       "navigation": {
         "overview": "Overview",
@@ -984,16 +983,21 @@
     "dashboard": {
       "title": "Overview",
       "welcomeBack": "Welcome back, {{name}}.",
+      "refresh": "Refresh",
+      "loadError": "Could not load admin data. Try refreshing.",
       "cards": {
         "totalUsers": "Total Users",
-        "totalReports": "Total Reports",
-        "businesses": "Businesses",
-        "topActivity": "Top Activity",
-        "topActivityDesc": "Recent generated reports",
-        "conversionRate": "Conversion Rate",
-        "conversionRateDesc": "Searches to Reports",
+        "totalUsersDesc": "{{verified}} verified · +{{count}} in the last {{days}} days",
+        "proUsers": "Pro Users",
+        "proUsersDesc": "{{rate}}% of all users",
+        "totalReports": "Completed Reports",
+        "totalReportsDesc": "{{week}} in the last 7 days · {{guests}} guest previews",
+        "businesses": "Tracked Businesses",
+        "businessesDesc": "Saved by users for recurring reports",
         "marketDensity": "Market Density",
-        "marketDensityDesc": "Avg. competitors found"
+        "marketDensityDesc": "Avg. competitors found per report",
+        "reportHealth": "Failed Reports",
+        "reportHealthDesc": "{{pending}} still generating"
       }
     },
     "users": {
@@ -1002,9 +1006,11 @@
       "table": {
         "title": "Users",
         "searchPlaceholder": "Search users...",
+        "empty": "No users match your search.",
         "columns": {
           "user": "User",
           "email": "Email",
+          "plan": "Plan",
           "role": "Role",
           "status": "Status",
           "joined": "Joined",
@@ -1014,6 +1020,11 @@
           "verified": "Verified",
           "pending": "Pending"
         }
+      },
+      "actions": {
+        "makeAdmin": "Make admin",
+        "removeAdmin": "Remove admin role",
+        "delete": "Delete user"
       },
       "deleteDialog": {
         "title": "Are you absolutely sure?",
@@ -1045,33 +1056,40 @@
       }
     },
     "activity": {
-      "title": "Live Activity",
-      "subtitle": "Real-time stream of what users are searching for.",
-      "recentSearches": "Recent Searches",
+      "title": "Activity",
+      "subtitle": "What people are analysing, most recent first.",
+      "recentSearches": "Recent analyses",
+      "recentSearchesDesc": "Last 50 guest previews and member analyses.",
       "near": "near",
       "radius": "Radius: {{radius}}m",
       "found": "{{count}} found",
-      "empty": "No recent activity recorded."
+      "guestPreview": "Guest preview",
+      "memberAnalysis": "Member analysis",
+      "empty": "No activity recorded yet."
     },
     "charts": {
-      "apiUsage": "System API Usage & Costs (30 Days)",
+      "apiUsage": "External API calls (30 days)",
+      "apiUsageTotals": "{{google}} Google Places calls · {{openAi}} OpenAI calls · {{tokens}} tokens",
       "noUsage": "No usage data available.",
-      "apiUsageAxis": "Cost Units / Tokens",
-      "googlePlaces": "Google Places (Calls)",
-      "openAi": "OpenAI (Tokens)",
-      "userGrowth": "User Growth (30 Days)",
-      "reportsGenerated": "Reports Generated (30 Days)",
-      "searchTypeDistribution": "Search Type Distribution",
-      "topLocations": "Top Searched Locations"
+      "noData": "No data for this period yet.",
+      "googlePlaces": "Google Places",
+      "openAi": "OpenAI",
+      "userGrowth": "New users",
+      "reportsGenerated": "Reports generated",
+      "lastDays": "Last {{count}} days",
+      "businessTypes": "Business types analysed",
+      "businessTypesDesc": "Share of completed reports by business type."
     },
     "consumers": {
       "title": "Top API Consumers",
+      "description": "Users ranked by estimated API cost units.",
       "columns": {
         "user": "User",
         "requests": "Requests",
-        "cost": "Est. Cost Units"
+        "cost": "Cost units"
       },
-      "noData": "No consumer data available."
+      "noData": "No consumer data available.",
+      "deletedUser": "Deleted user"
     }
   }
 }

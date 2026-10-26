@@ -6,15 +6,13 @@ import request from "supertest";
 // Mock storage
 const { mockStorage } = vi.hoisted(() => ({
     mockStorage: {
-        listBusinesses: vi.fn(),
-        listAllReports: vi.fn(),
+        getAdminOverviewRows: vi.fn(),
         listUsers: vi.fn(),
         getUser: vi.fn(),
         updateUser: vi.fn(),
         deleteUser: vi.fn(),
-        getSearchStats: vi.fn(),
         listRecentSearches: vi.fn(),
-        getApiUsageStats: vi.fn(),
+        listApiUsageSince: vi.fn(),
         getApiUsageByUser: vi.fn()
     }
 }));
@@ -51,27 +49,25 @@ describe("Admin Routes", () => {
         vi.clearAllMocks();
     });
 
-    describe("GET /api/admin/stats", () => {
-        it("should return stats", async () => {
-            mockStorage.listBusinesses.mockResolvedValue([]);
-            mockStorage.listAllReports.mockResolvedValue([]);
-            mockStorage.listUsers.mockResolvedValue([]);
+    describe("GET /api/admin/overview", () => {
+        it("should return the overview built from storage rows", async () => {
+            mockStorage.getAdminOverviewRows.mockResolvedValue({ users: [], reports: [], businessCount: 0 });
 
-            const res = await request(app).get("/api/admin/stats");
+            const res = await request(app).get("/api/admin/overview");
 
             expect(res.status).toBe(200);
-            expect(res.body).toEqual({
-                totalUsers: 0,
-                totalBusinesses: 0,
-                totalReports: 0,
-                recentReports: []
+            expect(res.body).toMatchObject({
+                periodDays: 30,
+                users: { total: 0 },
+                reports: { total: 0 },
+                businesses: { total: 0 },
             });
         });
 
         it("should handle error", async () => {
-            mockStorage.listBusinesses.mockRejectedValue(new Error("DB error"));
+            mockStorage.getAdminOverviewRows.mockRejectedValue(new Error("DB error"));
 
-            const res = await request(app).get("/api/admin/stats");
+            const res = await request(app).get("/api/admin/overview");
 
             expect(res.status).toBe(500);
         });
@@ -109,6 +105,15 @@ describe("Admin Routes", () => {
             expect(res.status).toBe(400);
         });
 
+        it("should not let admins remove their own admin role", async () => {
+            const res = await request(app)
+                .patch("/api/admin/users/admin-1/role")
+                .send({ role: "user" });
+
+            expect(res.status).toBe(400);
+            expect(mockStorage.updateUser).not.toHaveBeenCalled();
+        });
+
         it("should return 404 if user not found", async () => {
             mockStorage.getUser.mockResolvedValue(null);
 
@@ -137,17 +142,30 @@ describe("Admin Routes", () => {
         });
     });
 
-    describe("GET /api/admin/analytics", () => {
-        it("should return analytics data", async () => {
-            mockStorage.listUsers.mockResolvedValue([]);
-            mockStorage.listAllReports.mockResolvedValue([]);
-            mockStorage.getSearchStats.mockResolvedValue({});
+    describe("GET /api/admin/usage", () => {
+        it("should summarise API usage by service", async () => {
+            mockStorage.listApiUsageSince.mockResolvedValue([
+                { createdAt: new Date(), service: "google_places", tokens: null },
+                { createdAt: new Date(), service: "openai", tokens: 1200 },
+            ]);
 
-            const res = await request(app).get("/api/admin/analytics");
+            const res = await request(app).get("/api/admin/usage");
 
             expect(res.status).toBe(200);
-            expect(res.body).toHaveProperty("userGrowth");
-            expect(res.body).toHaveProperty("reportStats");
+            expect(res.body.daily).toHaveLength(30);
+            expect(res.body.totals).toEqual({ googleCalls: 1, openAiCalls: 1, openAiTokens: 1200 });
+        });
+    });
+
+    describe("GET /api/admin/usage/users", () => {
+        it("should clamp the requested limit", async () => {
+            mockStorage.getApiUsageByUser.mockResolvedValue([]);
+
+            await request(app).get("/api/admin/usage/users?limit=5000");
+            expect(mockStorage.getApiUsageByUser).toHaveBeenLastCalledWith(100);
+
+            await request(app).get("/api/admin/usage/users?limit=abc");
+            expect(mockStorage.getApiUsageByUser).toHaveBeenLastCalledWith(10);
         });
     });
 
@@ -155,7 +173,7 @@ describe("Admin Routes", () => {
         it("should forbid non-admin users", async () => {
             mockUser.role = "user"; // Temporarily change role
 
-            const res = await request(app).get("/api/admin/stats");
+            const res = await request(app).get("/api/admin/overview");
 
             mockUser.role = "admin"; // Reset
             expect(res.status).toBe(403);

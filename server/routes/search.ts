@@ -4,6 +4,7 @@ import { searchPlacesByAddress, hasGoogleApiKey } from "../googlePlaces.js";
 import { runReportForBusiness } from "../reports.js";
 import { isAuthenticated } from "../auth.js";
 import { searchRateLimiter } from "../middleware/rate-limit.js";
+import { recordSearch } from "../searchTracking.js";
 
 const formatCoordinateAddress = (latitude: number, longitude: number) =>
     `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
@@ -245,6 +246,17 @@ export function registerSearchRoutes(app: Express) {
 
             // Generate report (this will use existing report logic)
             const report = await runReportForBusiness(tempBusiness.id, language, tempBusiness, undefined, radius);
+
+            await recordSearch({
+                userId: (req.user as { id?: string } | undefined)?.id ?? null,
+                address: address || formatCoordinateAddress(coordinates.latitude, coordinates.longitude),
+                type,
+                radius,
+                latitude: coordinates.latitude,
+                longitude: coordinates.longitude,
+                competitorsFound: report.competitors?.length ?? 0,
+                isPreview: true,
+            });
 
             // Return full report for the free preview (limit 1 per user handled on client)
             // Inject business details so they can be saved later

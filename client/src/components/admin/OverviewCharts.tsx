@@ -1,4 +1,3 @@
-
 import {
     AreaChart,
     Area,
@@ -7,167 +6,151 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
-    BarChart,
-    Bar,
     PieChart,
     Pie,
     Cell,
-    Legend
+    Legend,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 
-interface AnalyticsData {
-    userGrowth: { date: string; count: number }[];
-    reportStats: { date: string; count: number }[];
-    typeDistribution?: { type: string; count: number }[];
-    topLocations?: { address: string; count: number }[];
+export interface AdminSeriesPoint {
+    date: string;
+    users: number;
+    reports: number;
 }
 
-export function OverviewCharts({ data }: { data: AnalyticsData }) {
-    const { t } = useTranslation();
-    if (!data) return null;
+// Theme-aware chart styling shared by the admin charts.
+export const chartColor = (index: number) => `hsl(var(--chart-${(index % 5) + 1}))`;
+export const axisProps = {
+    stroke: "hsl(var(--muted-foreground))",
+    fontSize: 12,
+    tickLine: false,
+    axisLine: false,
+} as const;
+export const tooltipStyle = {
+    backgroundColor: "hsl(var(--popover))",
+    border: "1px solid hsl(var(--border))",
+    borderRadius: "8px",
+    color: "hsl(var(--popover-foreground))",
+} as const;
+export const formatDay = (value: string) => value.slice(5); // MM-DD
 
+export function EmptyChart({ message }: { message: string }) {
     return (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
-            <Card className="col-span-1 shadow-sm">
-                <CardHeader>
-                    <CardTitle>{t("admin.charts.userGrowth")}</CardTitle>
-                </CardHeader>
-                <CardContent className="pl-2">
-                    <ResponsiveContainer width="100%" height={350}>
-                        <AreaChart data={data.userGrowth}>
-                            <defs>
-                                <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
-                            <XAxis
-                                dataKey="date"
-                                stroke="#888888"
-                                fontSize={12}
-                                tickLine={false}
-                                axisLine={false}
-                                tickFormatter={(value) => value.slice(5)} // Show MM-DD
-                            />
-                            <YAxis
-                                stroke="#888888"
-                                fontSize={12}
-                                tickLine={false}
-                                axisLine={false}
-                                tickFormatter={(value) => `${value}`}
-                            />
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
-                            <Tooltip
-                                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                            />
-                            <Area
-                                type="monotone"
-                                dataKey="count"
-                                stroke="#8b5cf6"
-                                fillOpacity={1}
-                                fill="url(#colorUsers)"
-                            />
-                        </AreaChart>
-                    </ResponsiveContainer>
-                </CardContent>
-            </Card>
-
-            <Card className="col-span-1 shadow-sm">
-                <CardHeader>
-                    <CardTitle>{t("admin.charts.reportsGenerated")}</CardTitle>
-                </CardHeader>
-                <CardContent className="pl-2">
-                    <ResponsiveContainer width="100%" height={350}>
-                        <BarChart data={data.reportStats}>
-                            <XAxis
-                                dataKey="date"
-                                stroke="#888888"
-                                fontSize={12}
-                                tickLine={false}
-                                axisLine={false}
-                                tickFormatter={(value) => value.slice(5)}
-                            />
-                            <YAxis
-                                stroke="#888888"
-                                fontSize={12}
-                                tickLine={false}
-                                axisLine={false}
-                                tickFormatter={(value) => `${value}`}
-                            />
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
-                            <Tooltip
-                                cursor={{ fill: 'transparent' }}
-                                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                            />
-                            <Bar dataKey="count" fill="#10b981" radius={[4, 4, 0, 0]} />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </CardContent>
-            </Card>
-
-            {/* Extended Insights */}
-            {data.typeDistribution && (
-                <Card className="col-span-1 shadow-sm">
-                    <CardHeader>
-                        <CardTitle>{t("admin.charts.searchTypeDistribution")}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <ResponsiveContainer width="100%" height={350}>
-                            <PieChart>
-                                <Pie
-                                    data={data.typeDistribution}
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={60}
-                                    outerRadius={80}
-                                    paddingAngle={5}
-                                    dataKey="count"
-                                    nameKey="type"
-                                >
-                                    {data.typeDistribution.map((entry: any, index: number) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                                <Legend verticalAlign="bottom" height={36} />
-                            </PieChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
-            )}
-
-            {data.topLocations && (
-                <Card className="col-span-1 shadow-sm">
-                    <CardHeader>
-                        <CardTitle>{t("admin.charts.topLocations")}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="pl-2">
-                        <ResponsiveContainer width="100%" height={350}>
-                            <BarChart data={data.topLocations} layout="vertical" margin={{ left: 20 }}>
-                                <XAxis type="number" hide />
-                                <YAxis
-                                    dataKey="address"
-                                    type="category"
-                                    stroke="#888888"
-                                    fontSize={12}
-                                    tickLine={false}
-                                    axisLine={false}
-                                    width={100}
-                                />
-                                <Tooltip
-                                    cursor={{ fill: 'transparent' }}
-                                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                                />
-                                <Bar dataKey="count" fill="#f59e0b" radius={[0, 4, 4, 0]} barSize={20} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
-            )}
+        <div className="flex h-full items-center justify-center rounded-md border border-dashed bg-muted/20">
+            <p className="text-sm text-muted-foreground">{message}</p>
         </div>
     );
 }
 
-const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+function SeriesChart({ data, dataKey, color, title, description }: {
+    data: AdminSeriesPoint[];
+    dataKey: "users" | "reports";
+    color: string;
+    title: string;
+    description: string;
+}) {
+    const { t } = useTranslation();
+    const gradientId = `admin-gradient-${dataKey}`;
+    const hasData = data.some((point) => point[dataKey] > 0);
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="text-lg">{title}</CardTitle>
+                <CardDescription>{description}</CardDescription>
+            </CardHeader>
+            <CardContent className="h-[280px] pl-2">
+                {hasData ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={data}>
+                            <defs>
+                                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor={color} stopOpacity={0.5} />
+                                    <stop offset="95%" stopColor={color} stopOpacity={0} />
+                                </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+                            <XAxis dataKey="date" {...axisProps} tickFormatter={formatDay} minTickGap={16} />
+                            <YAxis {...axisProps} allowDecimals={false} width={32} />
+                            <Tooltip contentStyle={tooltipStyle} />
+                            <Area
+                                type="monotone"
+                                dataKey={dataKey}
+                                name={title}
+                                stroke={color}
+                                fill={`url(#${gradientId})`}
+                            />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                ) : (
+                    <EmptyChart message={t("admin.charts.noData")} />
+                )}
+            </CardContent>
+        </Card>
+    );
+}
+
+export function OverviewCharts({ series, typeDistribution, periodDays }: {
+    series: AdminSeriesPoint[];
+    typeDistribution: { type: string; count: number }[];
+    periodDays: number;
+}) {
+    const { t } = useTranslation();
+
+    return (
+        <div className="grid gap-6 lg:grid-cols-2">
+            <SeriesChart
+                data={series}
+                dataKey="users"
+                color={chartColor(0)}
+                title={t("admin.charts.userGrowth")}
+                description={t("admin.charts.lastDays", { count: periodDays })}
+            />
+            <SeriesChart
+                data={series}
+                dataKey="reports"
+                color={chartColor(3)}
+                title={t("admin.charts.reportsGenerated")}
+                description={t("admin.charts.lastDays", { count: periodDays })}
+            />
+            <Card className="lg:col-span-2">
+                <CardHeader>
+                    <CardTitle className="text-lg">{t("admin.charts.businessTypes")}</CardTitle>
+                    <CardDescription>{t("admin.charts.businessTypesDesc")}</CardDescription>
+                </CardHeader>
+                <CardContent className="h-[300px]">
+                    {typeDistribution.length > 0 ? (
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie
+                                    data={typeDistribution.map((entry) => ({
+                                        ...entry,
+                                        label: t(`businessTypes.${entry.type}`, entry.type),
+                                    }))}
+                                    cx="50%"
+                                    cy="45%"
+                                    innerRadius={60}
+                                    outerRadius={90}
+                                    paddingAngle={3}
+                                    dataKey="count"
+                                    nameKey="label"
+                                    stroke="hsl(var(--background))"
+                                >
+                                    {typeDistribution.map((entry, index) => (
+                                        <Cell key={entry.type} fill={chartColor(index)} />
+                                    ))}
+                                </Pie>
+                                <Tooltip contentStyle={tooltipStyle} />
+                                <Legend verticalAlign="bottom" />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        <EmptyChart message={t("admin.charts.noData")} />
+                    )}
+                </CardContent>
+            </Card>
+        </div>
+    );
+}

@@ -1,68 +1,48 @@
-
-import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-    Legend
-} from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
+import { axisProps, chartColor, EmptyChart, formatDay, tooltipStyle } from "./OverviewCharts";
 
-interface UsageData {
-    date: string;
-    google: number;
-    openAi: number;
+export interface ApiUsageSummary {
+    daily: { date: string; google: number; openAi: number }[];
+    totals: { googleCalls: number; openAiCalls: number; openAiTokens: number };
 }
 
-export function ApiUsageChart({ data }: { data: UsageData[] }) {
-    const { t } = useTranslation();
-    // if (!data || data.length === 0) return null; // Don't hide completely
+export function ApiUsageChart({ data }: { data?: ApiUsageSummary }) {
+    const { t, i18n } = useTranslation();
+    const hasData = !!data && (data.totals.googleCalls > 0 || data.totals.openAiCalls > 0);
+    const format = (value: number) => value.toLocaleString(i18n.language);
 
     return (
-        <Card className="col-span-1 md:col-span-2 shadow-sm border-l-4 border-l-orange-500">
+        <Card className="min-w-0 lg:col-span-2">
             <CardHeader>
-                <CardTitle>{t("admin.charts.apiUsage")}</CardTitle>
+                <CardTitle className="text-lg">{t("admin.charts.apiUsage")}</CardTitle>
+                <CardDescription>
+                    {data
+                        ? t("admin.charts.apiUsageTotals", {
+                            google: format(data.totals.googleCalls),
+                            openAi: format(data.totals.openAiCalls),
+                            tokens: format(data.totals.openAiTokens),
+                        })
+                        : t("admin.charts.noUsage")}
+                </CardDescription>
             </CardHeader>
-            <CardContent>
-                <div className="h-[350px] w-full">
-                    {(!data || data.length === 0) ? (
-                        <div className="flex bg-muted/20 h-full items-center justify-center rounded-md border border-dashed">
-                            <p className="text-muted-foreground text-sm">{t("admin.charts.noUsage")}</p>
-                        </div>
-                    ) : (
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
-                                <XAxis
-                                    dataKey="date"
-                                    stroke="#888888"
-                                    fontSize={12}
-                                    tickLine={false}
-                                    axisLine={false}
-                                    tickFormatter={(value) => value.slice(5)} // Show MM-DD
-                                />
-                                <YAxis
-                                    stroke="#888888"
-                                    fontSize={12}
-                                    tickLine={false}
-                                    axisLine={false}
-                                    label={{ value: t("admin.charts.apiUsageAxis"), angle: -90, position: 'insideLeft' }}
-                                />
-                                <Tooltip
-                                    cursor={{ fill: 'transparent' }}
-                                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                                />
-                                <Legend />
-                                <Bar dataKey="google" name={t("admin.charts.googlePlaces")} fill="#f97316" radius={[4, 4, 0, 0]} stackId="a" />
-                                <Bar dataKey="openAi" name={t("admin.charts.openAi")} fill="#8b5cf6" radius={[4, 4, 0, 0]} stackId="a" />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    )}
-                </div>
+            <CardContent className="h-[300px] pl-2">
+                {hasData ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={data!.daily}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+                            <XAxis dataKey="date" {...axisProps} tickFormatter={formatDay} minTickGap={16} />
+                            <YAxis {...axisProps} allowDecimals={false} width={32} />
+                            <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }} />
+                            <Legend />
+                            <Bar dataKey="google" name={t("admin.charts.googlePlaces")} fill={chartColor(1)} radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="openAi" name={t("admin.charts.openAi")} fill={chartColor(0)} radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                ) : (
+                    <EmptyChart message={t("admin.charts.noUsage")} />
+                )}
             </CardContent>
         </Card>
     );

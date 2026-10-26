@@ -1,5 +1,6 @@
 import { type Business, type InsertBusiness, type Report, type InsertReport, type User, type UpsertUser, type InsertSearch, type Search, type PasswordResetToken, type InsertApiUsage, type ApiUsage, type InsertBillingWaitlistLead, type BillingWaitlistLead, businesses, reports, users, searches, passwordResetTokens, rateLimits, apiUsage, billingWaitlistLeads } from "../shared/schema.js";
 import { db } from "./db.js";
+import { reportStatusFromAnalysis, type AdminOverviewRows, type AdminReportStatus, type ApiUsageRow } from "./adminStats.js";
 import { eq, desc, sql, isNotNull, lt, and, gte, inArray, not, like, or } from "drizzle-orm";
 
 export interface IStorage {
@@ -42,19 +43,14 @@ export interface IStorage {
   getBillingWaitlistLead(email: string, plan: "pro" | "agency"): Promise<BillingWaitlistLead | undefined>;
   createBillingWaitlistLead(lead: InsertBillingWaitlistLead): Promise<BillingWaitlistLead>;
   listBillingWaitlistLeads(): Promise<BillingWaitlistLead[]>;
-  getSearchStats?(): Promise<{
-    typeDistribution: { type: string; count: number }[];
-    topLocations: { address: string; count: number }[];
-    avgCompetitors: number;
-    conversionRate: number;
-  }>;
+  getAdminOverviewRows(): Promise<AdminOverviewRows>;
   deleteUser(id: string): Promise<void>;
   updateUserLanguage(userId: string, language: string): Promise<void>;
 
 
   // API Usage
   trackApiUsage(usage: InsertApiUsage): Promise<void>;
-  getApiUsageStats(days?: number): Promise<any>;
+  listApiUsageSince(since: Date): Promise<ApiUsageRow[]>;
   getApiUsageByUser(limit?: number): Promise<any>;
   listApiUsageByUserId(userId: string): Promise<ApiUsage[]>;
 
@@ -131,44 +127,33 @@ export class DatabaseStorage implements IStorage {
     return await db!.select().from(businesses).orderBy(desc(businesses.createdAt));
   }
 
-  async getSearchStats() {
-    // Type Distribution
-    const typedist = await db!.select({
-      type: searches.type,
-      count: sql<number>`count(*)`
-    })
-      .from(searches)
-      .groupBy(searches.type);
+  async getAdminOverviewRows(): Promise<AdminOverviewRows> {
+    const userRows = await db!
+      .select({ createdAt: users.createdAt, plan: users.plan, role: users.role, isVerified: users.isVerified })
+      .from(users);
 
-    // Top Locations (simplified by address string for now)
-    const toplocs = await db!.select({
-      address: searches.address,
-      count: sql<number>`count(*)`
-    })
-      .from(searches)
-      .groupBy(searches.address)
-      .orderBy(desc(sql`count(*)`))
-      .limit(5);
+    // Status and competitor count are derived in SQL so the large text/JSON
+    // columns never leave the database.
+    const reportRows = await db!
+      .select({
+        generatedAt: reports.generatedAt,
+        userId: reports.userId,
+        status: sql<AdminReportStatus>`CASE WHEN ${reports.aiAnalysis} = 'Generating...' THEN 'pending' WHEN ${reports.aiAnalysis} LIKE 'Error:%' THEN 'failed' ELSE 'completed' END`,
+        competitorCount: sql<number>`CASE WHEN jsonb_typeof(${reports.competitors}) = 'array' THEN jsonb_array_length(${reports.competitors}) ELSE 0 END`,
+        businessType: sql<string | null>`COALESCE(${reports.businessType}, ${businesses.type})`,
+      })
+      .from(reports)
+      .leftJoin(businesses, eq(reports.businessId, businesses.id));
 
-    // Avg Competitors
-    const [avgComp] = await db!.select({
-      avg: sql<number>`avg(${searches.competitorsFound})`
-    }).from(searches);
-
-    // Conversion Rate
-    const [totalSearches] = await db!.select({ count: sql<number>`count(*)` }).from(searches);
-    const [totalReports] = await db!.select({ count: sql<number>`count(*)` }).from(reports);
-
-    const searchCount = Number(totalSearches?.count || 0);
-    const reportCount = Number(totalReports?.count || 0);
+    const [businessCount] = await db!.select({ count: sql<number>`count(*)` }).from(businesses);
 
     return {
-      typeDistribution: typedist.map(t => ({ type: t.type, count: Number(t.count) })),
-      topLocations: toplocs.map(l => ({ address: l.address, count: Number(l.count) })),
-      avgCompetitors: Math.round(Number(avgComp?.avg || 0)),
-      conversionRate: searchCount > 0 ? (reportCount / searchCount) * 100 : 0
+      users: userRows,
+      reports: reportRows.map((r) => ({ ...r, competitorCount: Number(r.competitorCount) })),
+      businessCount: Number(businessCount?.count || 0),
     };
   }
+
 
   async addBusiness(insertBusiness: InsertBusiness): Promise<Business> {
     const [business] = await db!
@@ -398,41 +383,13 @@ export class DatabaseStorage implements IStorage {
     await db!.insert(apiUsage).values(usageToSave);
   }
 
-  async getApiUsageStats(days: number = 30): Promise<any> {
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-
-    const usage = await db!.select()
+  async listApiUsageSince(since: Date): Promise<ApiUsageRow[]> {
+    return await db!
+      .select({ createdAt: apiUsage.createdAt, service: apiUsage.service, tokens: apiUsage.tokens })
       .from(apiUsage)
-      .where(sql`${apiUsage.createdAt} >= ${startDate}`)
-      .orderBy(desc(apiUsage.createdAt));
-
-    // Group by date and service
-    const stats = new Map<string, { date: string, google: number, openAi: number }>();
-
-    // Initialize last 30 days
-    for (let i = 0; i < days; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().split('T')[0];
-      stats.set(dateStr, { date: dateStr, google: 0, openAi: 0 });
-    }
-
-    usage.forEach(record => {
-      const dateStr = record.createdAt.toISOString().split('T')[0];
-      const entry = stats.get(dateStr) || { date: dateStr, google: 0, openAi: 0 };
-
-      if (record.service === 'google_places') {
-        entry.google += (record.costUnits || 1);
-      } else if (record.service === 'openai') {
-        entry.openAi += (record.tokens || 0); // Or cost units
-      }
-
-      stats.set(dateStr, entry);
-    });
-
-    return Array.from(stats.values()).reverse();
+      .where(gte(apiUsage.createdAt, since));
   }
+
 
   async getApiUsageByUser(limit: number = 10): Promise<any> {
     const userUsage = await db!.select({
@@ -450,7 +407,12 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(sql`sum(${apiUsage.costUnits})`))
       .limit(limit);
 
-    return userUsage;
+    // count/sum come back from Postgres as strings.
+    return userUsage.map((u) => ({
+      ...u,
+      totalRequests: Number(u.totalRequests),
+      totalCost: Number(u.totalCost || 0),
+    }));
   }
 
   async listApiUsageByUserId(userId: string): Promise<ApiUsage[]> {
@@ -808,41 +770,25 @@ export class MemStorage implements IStorage {
     );
   }
 
-  async getSearchStats() {
-    const searchList = Array.from(this.searches.values());
-    const reportCount = this.reports.size;
-
-    // Type Distribution
-    const typeMap = new Map<string, number>();
-    searchList.forEach(s => {
-      typeMap.set(s.type, (typeMap.get(s.type) || 0) + 1);
-    });
-    const typeDistribution = Array.from(typeMap.entries()).map(([type, count]) => ({ type, count }));
-
-    // Top Locations
-    const locMap = new Map<string, number>();
-    searchList.forEach(s => {
-      locMap.set(s.address, (locMap.get(s.address) || 0) + 1);
-    });
-    const topLocations = Array.from(locMap.entries())
-      .map(([address, count]) => ({ address, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 5);
-
-    // Avg Competitors
-    const totalCompetitors = searchList.reduce((acc, s) => acc + (s.competitorsFound || 0), 0);
-    const avgCompetitors = searchList.length > 0 ? Math.round(totalCompetitors / searchList.length) : 0;
-
-    // Conversion Rate
-    const conversionRate = searchList.length > 0 ? (reportCount / searchList.length) * 100 : 0;
-
+  async getAdminOverviewRows(): Promise<AdminOverviewRows> {
     return {
-      typeDistribution,
-      topLocations,
-      avgCompetitors,
-      conversionRate
+      users: Array.from(this.users.values()).map((u) => ({
+        createdAt: u.createdAt,
+        plan: u.plan,
+        role: u.role,
+        isVerified: u.isVerified,
+      })),
+      reports: Array.from(this.reports.values()).map((r) => ({
+        generatedAt: r.generatedAt,
+        userId: r.userId,
+        status: reportStatusFromAnalysis(r.aiAnalysis),
+        competitorCount: Array.isArray(r.competitors) ? r.competitors.length : 0,
+        businessType: r.businessType ?? (r.businessId ? this.businesses.get(r.businessId)?.type ?? null : null),
+      })),
+      businessCount: this.businesses.size,
     };
   }
+
 
   // Password reset methods (in-memory)
   async findUserByEmail(email: string): Promise<User | undefined> {
@@ -961,36 +907,12 @@ export class MemStorage implements IStorage {
     });
   }
 
-  async getApiUsageStats(days: number = 30): Promise<any> {
-    const stats = new Map<string, { date: string, google: number, openAi: number }>();
-
-    // Initialize last 30 days
-    for (let i = 0; i < days; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().split('T')[0];
-      stats.set(dateStr, { date: dateStr, google: 0, openAi: 0 });
-    }
-
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-
-    this.apiUsage.forEach(usage => {
-      if (usage.createdAt >= startDate) {
-        const dateStr = usage.createdAt.toISOString().split('T')[0];
-        const entry = stats.get(dateStr);
-        if (entry) {
-          if (usage.service === 'google_places') {
-            entry.google += (usage.costUnits || 1);
-          } else if (usage.service === 'openai') {
-            entry.openAi += (usage.tokens || 0);
-          }
-        }
-      }
-    });
-
-    return Array.from(stats.values()).reverse();
+  async listApiUsageSince(since: Date): Promise<ApiUsageRow[]> {
+    return Array.from(this.apiUsage.values())
+      .filter((u) => u.createdAt >= since)
+      .map((u) => ({ createdAt: u.createdAt, service: u.service, tokens: u.tokens }));
   }
+
 
   async getApiUsageByUser(limit: number = 10): Promise<any> {
     // Aggregate in memory

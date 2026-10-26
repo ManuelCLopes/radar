@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { MapPin, Star, Plus, Edit, Trash2, LogOut, FileText, History, AlertCircle, Settings, Building2, Search, Loader2, TrendingUp, Navigation, Menu, X, Sun, Moon, Globe } from "lucide-react";
+import { MapPin, Star, Plus, Edit, Trash2, LogOut, FileText, History, AlertCircle, Settings, Building2, Search, Loader2, TrendingUp, Navigation, Menu, X, Sun, Moon, Globe, ShieldCheck } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { BusinessForm } from "@/components/BusinessForm";
 import { BusinessList } from "@/components/BusinessList";
@@ -491,6 +491,19 @@ export default function Dashboard() {
               <Star className="h-5 w-5 text-amber-500" />
               <span className="sr-only">{t("settings.subscription.title")}</span>
             </Button>
+            {user?.role === "admin" && (
+              <Link href="/admin">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  title={t("admin.layout.openAdmin")}
+                  data-testid="admin-link"
+                >
+                  <ShieldCheck className="h-5 w-5" />
+                  <span className="sr-only">{t("admin.layout.openAdmin")}</span>
+                </Button>
+              </Link>
+            )}
             <Link href="/settings">
               <Button
                 variant="ghost"
@@ -567,6 +580,14 @@ export default function Dashboard() {
                   <Star className="mr-2 h-4 w-4 text-amber-500" />
                   <span>{t("settings.subscription.title")}</span>
                 </DropdownMenuItem>
+                {user?.role === "admin" && (
+                  <Link href="/admin">
+                    <DropdownMenuItem className="h-10 cursor-pointer" data-testid="mobile-admin-link">
+                      <ShieldCheck className="mr-2 h-4 w-4" />
+                      <span>{t("admin.layout.openAdmin")}</span>
+                    </DropdownMenuItem>
+                  </Link>
+                )}
                 <Link href="/settings">
                   <DropdownMenuItem className="h-10 cursor-pointer">
                     <Settings className="mr-2 h-4 w-4" />

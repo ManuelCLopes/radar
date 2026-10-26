@@ -5,8 +5,12 @@ import request from "supertest";
 import { registerSearchRoutes } from "../routes/search";
 
 // Mock dependencies
+const { mockStorage } = vi.hoisted(() => ({
+    mockStorage: { trackSearch: vi.fn() } as Record<string, any>,
+}));
+
 vi.mock("../storage", () => ({
-    storage: {}
+    storage: mockStorage
 }));
 
 vi.mock("../googlePlaces", () => ({
@@ -88,7 +92,30 @@ describe("Search Routes", () => {
             expect(res.body.report).toBeDefined();
         });
 
+        it("records the search for the admin activity view", async () => {
+            await request(app)
+                .post("/api/quick-search")
+                .send({ latitude: 40.7, longitude: -74.0, type: "restaurant", radius: 1000 });
 
+            expect(mockStorage.trackSearch).toHaveBeenCalledWith(expect.objectContaining({
+                address: "40.700000, -74.000000",
+                type: "restaurant",
+                radius: 1000,
+                competitorsFound: 0,
+                isPreview: true,
+            }));
+        });
+
+        it("still returns the report when search tracking fails", async () => {
+            mockStorage.trackSearch.mockRejectedValueOnce(new Error("DB down"));
+
+            const res = await request(app)
+                .post("/api/quick-search")
+                .send({ address: "123 Test St", type: "restaurant", radius: 1000 });
+
+            expect(res.status).toBe(200);
+            expect(res.body.report).toBeDefined();
+        });
     });
 
     describe("GET /api/places/search", () => {

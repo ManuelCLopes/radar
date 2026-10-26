@@ -54,7 +54,8 @@ export async function analyzeCompetitors(
   business: Business,
   competitors: Competitor[],
   language: string = "en",
-  plan: string = "essential"
+  plan: string = "essential",
+  userId: string | null = null
 ): Promise<StructuredAnalysis> {
   // Normalize language code (e.g. "pt-BR" -> "pt")
   const normalizedLang = language.split('-')[0].toLowerCase();
@@ -160,6 +161,7 @@ export async function analyzeCompetitors(
       await storage.trackApiUsage({
         service: 'openai',
         endpoint: 'chatCompletions',
+        userId,
         tokens: response.usage.total_tokens,
         costUnits: Math.ceil((response.usage.total_tokens || 0) / 1000) // Rough cost approximation
       });

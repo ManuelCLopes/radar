@@ -826,8 +826,8 @@
     "forSmallBusinesses": "para pequenos negócios."
   },
   "notFound": {
-    "title": "Seite nicht gefunden",
-    "description": "Die gesuchte Seite existiert nicht oder wurde möglicherweise verschoben."
+    "title": "404 Seite nicht gefunden",
+    "description": "Die angeforderte Seite wurde nicht gefunden."
   },
   "legal": {
     "privacy": {
@@ -965,49 +965,55 @@
     "dashboard": "Zum Dashboard",
     "login": "Zurueck zum Login"
   },
-  "notFound": {
-    "title": "404 Seite nicht gefunden",
-    "description": "Die angeforderte Seite wurde nicht gefunden."
-  },
   "admin": {
     "layout": {
       "brand": "Radar Admin",
-      "subtitle": "Leitstand",
+      "subtitle": "Kontrollzentrum",
+      "badge": "Admin",
+      "backToApp": "Zurück zur App",
+      "openAdmin": "Admin-Bereich",
       "signOut": "Abmelden",
       "navigation": {
-        "overview": "Ueberblick",
+        "overview": "Übersicht",
         "users": "Benutzer",
         "waitlist": "Warteliste",
-        "activity": "Aktivitaet"
+        "activity": "Aktivität"
       }
     },
     "dashboard": {
-      "title": "Ueberblick",
-      "welcomeBack": "Willkommen zurueck, {{name}}.",
+      "title": "Übersicht",
+      "welcomeBack": "Willkommen zurück, {{name}}.",
+      "refresh": "Aktualisieren",
+      "loadError": "Admin-Daten konnten nicht geladen werden. Bitte aktualisieren.",
       "cards": {
         "totalUsers": "Benutzer gesamt",
-        "totalReports": "Berichte gesamt",
-        "businesses": "Unternehmen",
-        "topActivity": "Neueste Aktivitaet",
-        "topActivityDesc": "Zuletzt generierte Berichte",
-        "conversionRate": "Konversionsrate",
-        "conversionRateDesc": "Suchen zu Berichten",
+        "totalUsersDesc": "{{verified}} verifiziert · +{{count}} in den letzten {{days}} Tagen",
+        "proUsers": "Pro-Benutzer",
+        "proUsersDesc": "{{rate}} % aller Benutzer",
+        "totalReports": "Abgeschlossene Berichte",
+        "totalReportsDesc": "{{week}} in den letzten 7 Tagen · {{guests}} Gast-Vorschauen",
+        "businesses": "Verfolgte Unternehmen",
+        "businessesDesc": "Von Benutzern für wiederkehrende Berichte gespeichert",
         "marketDensity": "Marktdichte",
-        "marketDensityDesc": "Durchschnittlich gefundene Wettbewerber"
+        "marketDensityDesc": "Durchschnittlich gefundene Wettbewerber pro Bericht",
+        "reportHealth": "Fehlgeschlagene Berichte",
+        "reportHealthDesc": "{{pending}} werden noch erstellt"
       }
     },
     "users": {
       "title": "Benutzerverwaltung",
-      "subtitle": "Verwalten Sie Benutzer, Rollen und Berechtigungen.",
+      "subtitle": "Benutzer, Rollen und Berechtigungen verwalten.",
       "table": {
         "title": "Benutzer",
         "searchPlaceholder": "Benutzer suchen...",
+        "empty": "Keine Benutzer entsprechen der Suche.",
         "columns": {
           "user": "Benutzer",
           "email": "E-Mail",
+          "plan": "Tarif",
           "role": "Rolle",
           "status": "Status",
-          "joined": "Beitritt",
+          "joined": "Registriert",
           "actions": "Aktionen"
         },
         "status": {
@@ -1015,63 +1021,75 @@
           "pending": "Ausstehend"
         }
       },
+      "actions": {
+        "makeAdmin": "Zum Admin machen",
+        "removeAdmin": "Admin-Rolle entfernen",
+        "delete": "Benutzer löschen"
+      },
       "deleteDialog": {
         "title": "Sind Sie absolut sicher?",
-        "description": "Diese Aktion kann nicht rueckgaengig gemacht werden. Das Benutzerkonto wird dauerhaft geloescht und seine Daten werden von unseren Servern entfernt.",
-        "confirm": "Loeschen"
+        "description": "Diese Aktion kann nicht rückgängig gemacht werden. Das Benutzerkonto und alle zugehörigen Daten werden dauerhaft gelöscht.",
+        "confirm": "Löschen"
       },
       "toasts": {
         "roleUpdated": "Rolle erfolgreich aktualisiert",
         "roleUpdateError": "Rolle konnte nicht aktualisiert werden",
-        "userDeleted": "Benutzer erfolgreich geloescht",
-        "userDeleteError": "Benutzer konnte nicht geloescht werden"
+        "userDeleted": "Benutzer erfolgreich gelöscht",
+        "userDeleteError": "Benutzer konnte nicht gelöscht werden"
       }
     },
     "waitlist": {
-      "title": "Billing-Warteliste",
-      "subtitle": "Pruefen Sie Benutzer, die fruehen Zugang zu kostenpflichtigen Plaenen angefragt haben.",
+      "title": "Warteliste für Abrechnung",
+      "subtitle": "Sehen Sie, wer frühen Zugang zu bezahlten Tarifen angefragt hat.",
       "table": {
-        "title": "Wartelisten-Anfragen",
+        "title": "Wartelisten-Kontakte",
         "searchPlaceholder": "Warteliste durchsuchen...",
-        "empty": "Noch keine Wartelisten-Anfragen.",
+        "empty": "Noch keine Kontakte auf der Warteliste.",
         "noMessage": "Keine Nachricht",
         "columns": {
           "email": "E-Mail",
-          "plan": "Plan",
+          "plan": "Tarif",
           "message": "Nachricht",
           "source": "Quelle",
-          "joined": "Beitritt"
+          "joined": "Datum"
         }
       }
     },
     "activity": {
-      "title": "Live-Aktivitaet",
-      "subtitle": "Echtzeit-Stream dessen, wonach Benutzer suchen.",
-      "recentSearches": "Letzte Suchen",
-      "near": "in der Naehe von",
-      "radius": "Radius: {{radius}}m",
+      "title": "Aktivität",
+      "subtitle": "Was analysiert wird, neueste zuerst.",
+      "recentSearches": "Letzte Analysen",
+      "recentSearchesDesc": "Die letzten 50 Gast-Vorschauen und Mitglieder-Analysen.",
+      "near": "in der Nähe von",
+      "radius": "Radius: {{radius}} m",
       "found": "{{count}} gefunden",
-      "empty": "Keine aktuellen Aktivitaeten aufgezeichnet."
+      "guestPreview": "Gast-Vorschau",
+      "memberAnalysis": "Mitglieder-Analyse",
+      "empty": "Noch keine Aktivität erfasst."
     },
     "charts": {
-      "apiUsage": "System-API-Nutzung und Kosten (30 Tage)",
-      "noUsage": "Keine Nutzungsdaten verfuegbar.",
-      "apiUsageAxis": "Kosteneinheiten / Tokens",
-      "googlePlaces": "Google Places (Aufrufe)",
-      "openAi": "OpenAI (Tokens)",
-      "userGrowth": "Benutzerwachstum (30 Tage)",
-      "reportsGenerated": "Erstellte Berichte (30 Tage)",
-      "searchTypeDistribution": "Verteilung nach Suchtyp",
-      "topLocations": "Am haeufigsten gesuchte Orte"
+      "apiUsage": "Externe API-Aufrufe (30 Tage)",
+      "apiUsageTotals": "{{google}} Google-Places-Aufrufe · {{openAi}} OpenAI-Aufrufe · {{tokens}} Tokens",
+      "noUsage": "Keine Nutzungsdaten verfügbar.",
+      "noData": "Für diesen Zeitraum noch keine Daten.",
+      "googlePlaces": "Google Places",
+      "openAi": "OpenAI",
+      "userGrowth": "Neue Benutzer",
+      "reportsGenerated": "Erstellte Berichte",
+      "lastDays": "Letzte {{count}} Tage",
+      "businessTypes": "Analysierte Unternehmenstypen",
+      "businessTypesDesc": "Anteil der abgeschlossenen Berichte nach Unternehmenstyp."
     },
     "consumers": {
-      "title": "Top-API-Nutzer",
+      "title": "Größte API-Verbraucher",
+      "description": "Benutzer nach geschätzten API-Kosteneinheiten.",
       "columns": {
         "user": "Benutzer",
         "requests": "Anfragen",
-        "cost": "Gesch. Kosteneinheiten"
+        "cost": "Kosteneinheiten"
       },
-      "noData": "Keine Verbrauchsdaten verfuegbar."
+      "noData": "Keine Verbrauchsdaten verfügbar.",
+      "deletedUser": "Gelöschter Benutzer"
     }
   }
 }

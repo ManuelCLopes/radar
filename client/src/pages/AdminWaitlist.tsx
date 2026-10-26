@@ -11,17 +11,20 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Search } from "lucide-react";
-import AdminLayout from "@/components/layouts/AdminLayout";
+import { Search } from "lucide-react";
+import AdminLayout, { AdminLoading } from "@/components/layouts/AdminLayout";
+import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function AdminWaitlist() {
     const [searchTerm, setSearchTerm] = useState("");
     const { t } = useTranslation();
+    const { user } = useAuth();
 
     const { data: leads, isLoading } = useQuery<BillingWaitlistLead[]>({
         queryKey: ["/api/admin/billing-waitlist"],
+        enabled: user?.role === "admin",
     });
 
     const filteredLeads = leads?.filter((lead) => {
@@ -33,24 +36,9 @@ export default function AdminWaitlist() {
         );
     });
 
-    if (isLoading) {
-        return (
-            <AdminLayout>
-                <div className="flex h-full items-center justify-center">
-                    <Loader2 className="h-8 w-8 animate-spin" />
-                </div>
-            </AdminLayout>
-        );
-    }
-
     return (
-        <AdminLayout>
-            <div className="space-y-8 p-8">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">{t("admin.waitlist.title")}</h1>
-                    <p className="text-muted-foreground">{t("admin.waitlist.subtitle")}</p>
-                </div>
-
+        <AdminLayout title={t("admin.waitlist.title")} subtitle={t("admin.waitlist.subtitle")}>
+            {isLoading ? <AdminLoading /> : (
                 <Card>
                     <CardHeader>
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -109,7 +97,7 @@ export default function AdminWaitlist() {
                         </div>
                     </CardContent>
                 </Card>
-            </div>
+            )}
         </AdminLayout>
     );
 }

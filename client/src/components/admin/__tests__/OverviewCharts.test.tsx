@@ -26,41 +26,34 @@ vi.mock("recharts", () => ({
 }));
 
 describe("OverviewCharts", () => {
-    const mockData = {
-        userGrowth: [{ date: "2023-01-01", count: 10 }],
-        reportStats: [{ date: "2023-01-01", count: 5 }],
-        typeDistribution: [{ type: "restaurant", count: 20 }],
-        topLocations: [{ address: "123 Main St", count: 50 }]
-    };
+    const series = [
+        { date: "2023-01-01", users: 2, reports: 5 },
+        { date: "2023-01-02", users: 0, reports: 3 },
+    ];
 
-    it("renders nothing when data is null", () => {
-        const { container } = render(<OverviewCharts data={null as any} />);
-        expect(container).toBeEmptyDOMElement();
-    });
-
-    it("renders all charts when data is provided", () => {
-        render(<OverviewCharts data={mockData} />);
-
+    it("renders the user and report series charts", () => {
+        render(<OverviewCharts series={series} typeDistribution={[]} periodDays={30} />);
         expect(screen.getByText("admin.charts.userGrowth")).toBeInTheDocument();
         expect(screen.getByText("admin.charts.reportsGenerated")).toBeInTheDocument();
-        expect(screen.getByText("admin.charts.searchTypeDistribution")).toBeInTheDocument();
-        expect(screen.getByText("admin.charts.topLocations")).toBeInTheDocument();
-
-        expect(screen.getByTestId("area-chart")).toBeInTheDocument();
-        expect(screen.getAllByTestId("bar-chart")).toHaveLength(2);
-        expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
+        expect(screen.getAllByTestId("area-chart")).toHaveLength(2);
     });
 
-    it("renders without optional data", () => {
-        const partialData = {
-            userGrowth: mockData.userGrowth,
-            reportStats: mockData.reportStats
-        };
+    it("renders the business type distribution when present", () => {
+        render(
+            <OverviewCharts
+                series={series}
+                typeDistribution={[{ type: "restaurant", count: 20 }, { type: "cafe", count: 4 }]}
+                periodDays={30}
+            />,
+        );
+        expect(screen.getByText("admin.charts.businessTypes")).toBeInTheDocument();
+        expect(screen.getAllByTestId("cell")).toHaveLength(2);
+    });
 
-        render(<OverviewCharts data={partialData} />);
-
-        expect(screen.getByText("admin.charts.userGrowth")).toBeInTheDocument();
-        expect(screen.queryByText("admin.charts.searchTypeDistribution")).not.toBeInTheDocument();
-        expect(screen.queryByText("admin.charts.topLocations")).not.toBeInTheDocument();
+    it("shows empty states instead of blank charts", () => {
+        const empty = [{ date: "2023-01-01", users: 0, reports: 0 }];
+        render(<OverviewCharts series={empty} typeDistribution={[]} periodDays={30} />);
+        expect(screen.queryByTestId("area-chart")).not.toBeInTheDocument();
+        expect(screen.getAllByText("admin.charts.noData")).toHaveLength(3);
     });
 });

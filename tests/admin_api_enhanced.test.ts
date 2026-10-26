@@ -65,30 +65,22 @@ describe("Enhanced Admin API", () => {
         await new Promise<void>((resolve) => server.close(() => resolve()));
     });
 
-    it("GET /api/admin/analytics returns user growth and report stats", async () => {
-        const res = await agent.get("/api/admin/analytics");
+    it("GET /api/admin/overview returns reliable aggregates", async () => {
+        const res = await agent.get("/api/admin/overview");
         expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty("userGrowth");
-        expect(res.body).toHaveProperty("reportStats");
-        expect(Array.isArray(res.body.userGrowth)).toBe(true);
-
-        // Extended Stats verification
-        expect(res.body).toHaveProperty("typeDistribution");
-        expect(res.body).toHaveProperty("topLocations");
-        expect(res.body).toHaveProperty("avgCompetitors");
-        expect(res.body).toHaveProperty("conversionRate");
-
-        // Since we seeded one restaurant search with 5 competitors
-        const types = res.body.typeDistribution;
-        expect(types).toEqual(expect.arrayContaining([expect.objectContaining({ type: "restaurant" })]));
-
-        expect(typeof res.body.avgCompetitors).toBe('number');
+        expect(res.body.users.total).toBeGreaterThanOrEqual(1);
+        expect(Array.isArray(res.body.series)).toBe(true);
+        expect(res.body.series).toHaveLength(30);
+        expect(typeof res.body.avgCompetitors).toBe("number");
+        expect(typeof res.body.proConversionRate).toBe("number");
+        expect(Array.isArray(res.body.typeDistribution)).toBe(true);
     });
 
     it("GET /api/admin/searches returns recent searches", async () => {
         const res = await agent.get("/api/admin/searches");
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body).toEqual(expect.arrayContaining([expect.objectContaining({ type: "restaurant", address: "Lisbon" })]));
         // Might be empty if trackSearch didn't run or memory cleared, but structure should be correct
     });
 

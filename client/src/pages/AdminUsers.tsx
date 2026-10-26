@@ -25,8 +25,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Search, Trash2, Shield, ShieldOff } from "lucide-react";
-import AdminLayout from "@/components/layouts/AdminLayout";
+import { Search, Trash2, Shield, ShieldOff } from "lucide-react";
+import AdminLayout, { AdminLoading } from "@/components/layouts/AdminLayout";
+import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { useTranslation } from "react-i18next";
@@ -36,9 +37,11 @@ export default function AdminUsers() {
     const queryClient = useQueryClient();
     const [searchTerm, setSearchTerm] = useState("");
     const { t } = useTranslation();
+    const { user: currentUser } = useAuth();
 
     const { data: users, isLoading } = useQuery<User[]>({
         queryKey: ["/api/admin/users"],
+        enabled: currentUser?.role === "admin",
     });
 
     const updateRoleMutation = useMutation({
@@ -82,24 +85,9 @@ export default function AdminUsers() {
         (user.lastName && user.lastName.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
-    if (isLoading) {
-        return (
-            <AdminLayout>
-                <div className="flex justify-center items-center h-full">
-                    <Loader2 className="h-8 w-8 animate-spin" />
-                </div>
-            </AdminLayout>
-        );
-    }
-
     return (
-        <AdminLayout>
-            <div className="p-8 space-y-8">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">{t("admin.users.title")}</h1>
-                    <p className="text-muted-foreground">{t("admin.users.subtitle")}</p>
-                </div>
-
+        <AdminLayout title={t("admin.users.title")} subtitle={t("admin.users.subtitle")}>
+            {isLoading ? <AdminLoading /> : (
                 <Card>
                     <CardHeader>
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -117,11 +105,12 @@ export default function AdminUsers() {
                     </CardHeader>
                     <CardContent>
                         <div className="w-full overflow-x-auto">
-                            <Table className="min-w-[720px]">
+                            <Table className="min-w-[820px]">
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>{t("admin.users.table.columns.user")}</TableHead>
                                         <TableHead>{t("admin.users.table.columns.email")}</TableHead>
+                                        <TableHead>{t("admin.users.table.columns.plan")}</TableHead>
                                         <TableHead>{t("admin.users.table.columns.role")}</TableHead>
                                         <TableHead>{t("admin.users.table.columns.status")}</TableHead>
                                         <TableHead>{t("admin.users.table.columns.joined")}</TableHead>
@@ -129,19 +118,33 @@ export default function AdminUsers() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {filteredUsers?.map((user) => (
+                                    {filteredUsers?.length === 0 && (
+                                        <TableRow>
+                                            <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
+                                                {t("admin.users.table.empty")}
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                    {filteredUsers?.map((user) => {
+                                        const isSelf = user.id === currentUser?.id;
+                                        return (
                                         <TableRow key={user.id}>
                                             <TableCell className="font-medium">
-                                                {user.firstName} {user.lastName}
+                                                {[user.firstName, user.lastName].filter(Boolean).join(" ") || "—"}
                                             </TableCell>
                                             <TableCell>{user.email}</TableCell>
+                                            <TableCell>
+                                                <Badge variant={user.plan === "pro" ? "default" : "outline"}>
+                                                    {user.plan}
+                                                </Badge>
+                                            </TableCell>
                                             <TableCell>
                                                 <Badge variant={user.role === "admin" ? "default" : "secondary"}>
                                                     {user.role}
                                                 </Badge>
                                             </TableCell>
                                             <TableCell>
-                                                <Badge variant={user.isVerified ? "outline" : "destructive"} className={user.isVerified ? "border-green-500 text-green-700 bg-green-50" : ""}>
+                                                <Badge variant={user.isVerified ? "outline" : "destructive"} className={user.isVerified ? "border-green-500/50 text-green-700 bg-green-500/10 dark:text-green-400" : ""}>
                                                     {user.isVerified ? t("admin.users.table.status.verified") : t("admin.users.table.status.pending")}
                                                 </Badge>
                                             </TableCell>
@@ -152,13 +155,15 @@ export default function AdminUsers() {
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
+                                                    title={user.role === "admin" ? t("admin.users.actions.removeAdmin") : t("admin.users.actions.makeAdmin")}
+                                                    aria-label={user.role === "admin" ? t("admin.users.actions.removeAdmin") : t("admin.users.actions.makeAdmin")}
                                                     onClick={() =>
                                                         updateRoleMutation.mutate({
                                                             userId: user.id,
                                                             role: user.role === "admin" ? "user" : "admin",
                                                         })
                                                     }
-                                                    disabled={updateRoleMutation.isPending}
+                                                    disabled={isSelf || updateRoleMutation.isPending}
                                                 >
                                                     {user.role === "admin" ? (
                                                         <ShieldOff className="h-4 w-4" />
@@ -169,7 +174,14 @@ export default function AdminUsers() {
 
                                                 <AlertDialog>
                                                     <AlertDialogTrigger asChild>
-                                                        <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            disabled={isSelf}
+                                                            title={t("admin.users.actions.delete")}
+                                                            aria-label={t("admin.users.actions.delete")}
+                                                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20"
+                                                        >
                                                             <Trash2 className="h-4 w-4" />
                                                         </Button>
                                                     </AlertDialogTrigger>
@@ -193,13 +205,14 @@ export default function AdminUsers() {
                                                 </AlertDialog>
                                             </TableCell>
                                         </TableRow>
-                                    ))}
+                                        );
+                                    })}
                                 </TableBody>
                             </Table>
                         </div>
                     </CardContent>
                 </Card>
-            </div>
+            )}
         </AdminLayout>
     );
 }

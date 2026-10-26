@@ -5,6 +5,7 @@ import { TopConsumersTable } from "../TopConsumersTable";
 vi.mock("react-i18next", () => ({
     useTranslation: () => ({
         t: (key: string) => key,
+        i18n: { language: "en" },
     }),
 }));
 
@@ -51,7 +52,12 @@ describe("TopConsumersTable", () => {
 
         expect(screen.getByText("Jane Smith")).toBeInTheDocument();
         expect(screen.getByText("200")).toBeInTheDocument();
-        expect(screen.getByText("1000")).toBeInTheDocument();
+        expect(screen.getByText("1,000")).toBeInTheDocument();
+    });
+
+    it("falls back to the email when the user has no name", () => {
+        render(<TopConsumersTable data={[{ ...mockData[0], firstName: null, lastName: null }]} />);
+        expect(screen.getByText("john@example.com")).toBeInTheDocument();
     });
 
     it("handles null data gracefully", () => {

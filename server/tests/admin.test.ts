@@ -8,8 +8,7 @@ import { storage } from "../storage";
 // Mock storage
 vi.mock("../storage", () => ({
     storage: {
-        listBusinesses: vi.fn(),
-        listAllReports: vi.fn(),
+        getAdminOverviewRows: vi.fn(),
         listUsers: vi.fn(),
         listBillingWaitlistLeads: vi.fn(),
     },
@@ -40,42 +39,48 @@ describe("Admin API", () => {
 
     it("should deny access to unauthenticated users", async () => {
         const app = createApp(undefined); // No user
-        const res = await request(app).get("/api/admin/stats");
+        const res = await request(app).get("/api/admin/overview");
         expect(res.status).toBe(403);
     });
 
     it("should deny access to non-admin users", async () => {
         const app = createApp("user");
-        const res = await request(app).get("/api/admin/stats");
+        const res = await request(app).get("/api/admin/overview");
         expect(res.status).toBe(403);
     });
 
-    it("should allow access to admin users and return stats", async () => {
+    it("should allow access to admin users and return the overview", async () => {
         const app = createApp("admin");
 
-        (storage.listBusinesses as any).mockResolvedValue([{}, {}]); // 2 businesses
-        (storage.listAllReports as any).mockResolvedValue([{}, {}, {}]); // 3 reports
-        (storage.listUsers as any).mockResolvedValue([{}, {}, {}, {}]); // 4 users
+        (storage.getAdminOverviewRows as any).mockResolvedValue({
+            users: [{ createdAt: new Date(), plan: "pro", role: "admin", isVerified: true }],
+            reports: [
+                { generatedAt: new Date(), userId: null, status: "completed", competitorCount: 4, businessType: "cafe" },
+                { generatedAt: new Date(), userId: "u1", status: "failed", competitorCount: 0, businessType: null },
+            ],
+            businessCount: 2,
+        });
 
-        const res = await request(app).get("/api/admin/stats");
+        const res = await request(app).get("/api/admin/overview");
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual({
-            totalBusinesses: 2,
-            totalReports: 3,
-            totalUsers: 4,
-            recentReports: [{}, {}, {}], // mock returns 3, slice(0,5) returns all 3
-        });
+        expect(res.body.users.total).toBe(1);
+        expect(res.body.reports).toMatchObject({ total: 1, guestPreviews: 1, failed: 1 });
+        expect(res.body.businesses.total).toBe(2);
+        expect(res.body.series).toHaveLength(30);
     });
 
     it("should allow admin users to list users", async () => {
         const app = createApp("admin");
         const mockUsers = [{ id: 1, role: "user" }, { id: 2, role: "admin" }];
-        (storage.listUsers as any).mockResolvedValue(mockUsers);
+        (storage.listUsers as any).mockResolvedValue(
+            mockUsers.map((u) => ({ ...u, passwordHash: "secret-hash", verificationToken: "tok", stripeCustomerId: "cus" })),
+        );
 
         const res = await request(app).get("/api/admin/users");
 
         expect(res.status).toBe(200);
+        // Credentials and billing identifiers never reach the browser.
         expect(res.body).toEqual(mockUsers);
     });
 

@@ -1,15 +1,33 @@
-
+import { useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Users, Activity, LogOut, Menu, ClipboardList } from "lucide-react";
+import { LayoutDashboard, Users, Activity, LogOut, ClipboardList, ArrowLeft, Loader2, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-    const [location] = useLocation();
-    const { logoutMutation } = useAuth();
+interface AdminLayoutProps {
+    title: string;
+    subtitle?: string;
+    actions?: React.ReactNode;
+    children: React.ReactNode;
+}
+
+// Shared shell for every admin page: same header as the dashboard, tab-style
+// navigation between admin sections, and the admin-only guard.
+export default function AdminLayout({ title, subtitle, actions, children }: AdminLayoutProps) {
+    const [location, setLocation] = useLocation();
+    const { user, isLoading, logoutMutation } = useAuth();
     const { t } = useTranslation();
+    const isAdmin = user?.role === "admin";
+
+    useEffect(() => {
+        if (!isLoading && !isAdmin) {
+            setLocation(user ? "/dashboard" : "/login");
+        }
+    }, [isLoading, isAdmin, user, setLocation]);
 
     const menuItems = [
         { href: "/admin", icon: LayoutDashboard, label: t("admin.layout.navigation.overview") },
@@ -18,92 +36,95 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { href: "/admin/activity", icon: Activity, label: t("admin.layout.navigation.activity") },
     ];
 
+    if (isLoading || !isAdmin) {
+        return (
+            <div className="flex h-screen items-center justify-center bg-background">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+        );
+    }
+
     return (
-        <div className="min-h-screen bg-gray-50/50 flex flex-col md:flex-row">
-            {/* Mobile Header */}
-            <header className="bg-white border-b border-gray-200 p-4 flex items-center justify-between md:hidden">
-                <span className="font-bold text-lg">{t("admin.layout.brand")}</span>
-                <Sheet>
-                    <SheetTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                            <Menu className="h-6 w-6" />
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="left" className="w-64 p-0">
-                        <div className="p-6">
-                            <h2 className="text-xl font-bold tracking-tight text-gray-900">{t("admin.layout.brand")}</h2>
-                            <p className="text-sm text-gray-500">{t("admin.layout.subtitle")}</p>
-                        </div>
-                        <nav className="flex-1 px-4 space-y-1">
-                            {menuItems.map((item) => {
-                                const isActive = location === item.href;
-                                return (
-                                    <Link key={item.href} href={item.href}>
-                                        <a className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${isActive
-                                            ? "bg-primary/10 text-primary"
-                                            : "text-gray-700 hover:bg-gray-100/50 hover:text-gray-900"
-                                            }`}>
-                                            <item.icon className="w-4 h-4" />
-                                            {item.label}
-                                        </a>
-                                    </Link>
-                                );
-                            })}
-                        </nav>
-                        <div className="p-4 border-t border-gray-200 mt-auto">
-                            <Button
-                                variant="ghost"
-                                className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
-                                onClick={() => logoutMutation.mutate()}
-                            >
-                                <LogOut className="w-4 h-4 mr-2" />
-                                {t("admin.layout.signOut")}
+        <div className="min-h-screen bg-background">
+            <header className="border-b sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <div className="container mx-auto px-4 flex h-16 items-center justify-between gap-2">
+                    <div className="flex items-center gap-3 min-w-0">
+                        <Link href="/dashboard" className="flex items-center cursor-pointer transition-opacity hover:opacity-80 shrink-0">
+                            <img src="/logo-dark.png" alt="Competitor Watcher" className="h-10 w-auto dark:hidden" />
+                            <img src="/logo.png" alt="Competitor Watcher" className="h-10 w-auto hidden dark:block" />
+                        </Link>
+                        <span className="hidden sm:inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                            <ShieldCheck className="h-3.5 w-3.5" />
+                            {t("admin.layout.badge")}
+                        </span>
+                    </div>
+
+                    <div className="flex items-center gap-1 sm:gap-2">
+                        <Link href="/dashboard">
+                            <Button variant="ghost" size="sm" title={t("admin.layout.backToApp")}>
+                                <ArrowLeft className="h-4 w-4" />
+                                <span className="hidden sm:inline ml-2">{t("admin.layout.backToApp")}</span>
                             </Button>
-                        </div>
-                    </SheetContent>
-                </Sheet>
+                        </Link>
+                        <LanguageSelector />
+                        <ThemeToggle />
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => logoutMutation.mutate()}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20"
+                            title={t("admin.layout.signOut")}
+                        >
+                            <LogOut className="h-5 w-5" />
+                            <span className="sr-only">{t("admin.layout.signOut")}</span>
+                        </Button>
+                    </div>
+                </div>
             </header>
 
-            {/* Desktop Sidebar */}
-            <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col h-screen sticky top-0">
-                <div className="p-6">
-                    <h1 className="text-xl font-bold tracking-tight text-gray-900">{t("admin.layout.brand")}</h1>
-                    <p className="text-sm text-gray-500">{t("admin.layout.subtitle")}</p>
-                </div>
-
-                <nav className="flex-1 px-4 space-y-1">
+            <main className="container mx-auto px-4 py-8 space-y-6">
+                <nav
+                    aria-label={t("admin.layout.brand")}
+                    className="inline-flex max-w-full overflow-x-auto h-10 items-center rounded-md bg-muted p-1 text-muted-foreground"
+                >
                     {menuItems.map((item) => {
                         const isActive = location === item.href;
                         return (
-                            <Link key={item.href} href={item.href}>
-                                <a className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${isActive
-                                    ? "bg-primary/10 text-primary"
-                                    : "text-gray-700 hover:bg-gray-100/50 hover:text-gray-900"
-                                    }`}>
-                                    <item.icon className="w-4 h-4" />
-                                    {item.label}
-                                </a>
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                aria-current={isActive ? "page" : undefined}
+                                className={cn(
+                                    "inline-flex items-center gap-2 whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                                    isActive ? "bg-background text-foreground shadow-sm" : "hover:text-foreground",
+                                )}
+                            >
+                                <item.icon className="h-4 w-4" />
+                                {/* Same pattern as the dashboard tabs: icons only on small screens, except the active tab. */}
+                                <span className={cn(!isActive && "sr-only sm:not-sr-only")}>{item.label}</span>
                             </Link>
                         );
                     })}
                 </nav>
 
-                <div className="p-4 border-t border-gray-200">
-                    <Button
-                        variant="ghost"
-                        className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
-                        onClick={() => logoutMutation.mutate()}
-                    >
-                        <LogOut className="w-4 h-4 mr-2" />
-                        {t("admin.layout.signOut")}
-                    </Button>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
+                        {subtitle && <p className="text-muted-foreground">{subtitle}</p>}
+                    </div>
+                    {actions}
                 </div>
-            </aside>
 
-            {/* Main Content */}
-            <main className="flex-1 overflow-y-auto">
                 {children}
             </main>
+        </div>
+    );
+}
+
+export function AdminLoading() {
+    return (
+        <div className="flex justify-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
     );
 }

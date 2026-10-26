@@ -1,4 +1,3 @@
-
 import {
     Table,
     TableBody,
@@ -7,65 +6,66 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { User } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 
-interface ConsumerStats {
+export interface ConsumerStats {
     userId: string;
-    firstName: string;
-    lastName: string;
-    email: string;
+    firstName: string | null;
+    lastName: string | null;
+    email: string | null;
     totalRequests: number;
     totalCost: number;
 }
 
-export function TopConsumersTable({ data }: { data: ConsumerStats[] }) {
-    const { t } = useTranslation();
-    // if (!data || data.length === 0) return null; // Don't hide completely
+export function TopConsumersTable({ data }: { data?: ConsumerStats[] }) {
+    const { t, i18n } = useTranslation();
 
     return (
-        <Card className="col-span-1 md:col-span-2 shadow-sm border-l-4 border-l-indigo-500">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-lg font-medium">{t("admin.consumers.title")}</CardTitle>
-                <User className="h-4 w-4 text-muted-foreground" />
+        <Card className="min-w-0 lg:col-span-2">
+            <CardHeader>
+                <CardTitle className="text-lg">{t("admin.consumers.title")}</CardTitle>
+                <CardDescription>{t("admin.consumers.description")}</CardDescription>
             </CardHeader>
             <CardContent>
                 <div className="w-full overflow-x-auto">
                     <Table className="min-w-[480px]">
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>{t("admin.consumers.columns.user")}</TableHead>
-                            <TableHead className="text-right">{t("admin.consumers.columns.requests")}</TableHead>
-                            <TableHead className="text-right">{t("admin.consumers.columns.cost")}</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {(!data || data.length === 0) ? (
+                        <TableHeader>
                             <TableRow>
-                                <TableCell colSpan={3} className="h-24 text-center">
-                                    {t("admin.consumers.noData")}
-                                </TableCell>
+                                <TableHead>{t("admin.consumers.columns.user")}</TableHead>
+                                <TableHead className="text-right">{t("admin.consumers.columns.requests")}</TableHead>
+                                <TableHead className="text-right">{t("admin.consumers.columns.cost")}</TableHead>
                             </TableRow>
-                        ) : (
-                            data.map((user) => (
-                                <TableRow key={user.userId}>
-                                    <TableCell>
-                                        <div className="font-medium">
-                                            {user.firstName} {user.lastName}
-                                        </div>
-                                        <div className="text-xs text-muted-foreground">
-                                            {user.email}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="text-right">{user.totalRequests}</TableCell>
-                                    <TableCell className="text-right font-bold">
-                                        {user.totalCost}
+                        </TableHeader>
+                        <TableBody>
+                            {!data || data.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={3} className="h-24 text-center text-muted-foreground">
+                                        {t("admin.consumers.noData")}
                                     </TableCell>
                                 </TableRow>
-                            ))
-                        )}
-                    </TableBody>
+                            ) : (
+                                data.map((consumer) => {
+                                    const name = [consumer.firstName, consumer.lastName].filter(Boolean).join(" ");
+                                    return (
+                                        <TableRow key={consumer.userId}>
+                                            <TableCell>
+                                                <div className="font-medium">{name || consumer.email || t("admin.consumers.deletedUser")}</div>
+                                                {name && consumer.email && (
+                                                    <div className="text-xs text-muted-foreground">{consumer.email}</div>
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="text-right tabular-nums">
+                                                {Number(consumer.totalRequests).toLocaleString(i18n.language)}
+                                            </TableCell>
+                                            <TableCell className="text-right font-semibold tabular-nums">
+                                                {Number(consumer.totalCost).toLocaleString(i18n.language)}
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })
+                            )}
+                        </TableBody>
                     </Table>
                 </div>
             </CardContent>

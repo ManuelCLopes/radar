@@ -826,8 +826,8 @@
     "forSmallBusinesses": "para pequenos negócios."
   },
   "notFound": {
-    "title": "Página no encontrada",
-    "description": "La página que buscas no existe o puede haber sido movida."
+    "title": "404 Pagina no encontrada",
+    "description": "No se ha encontrado la pagina solicitada."
   },
   "legal": {
     "privacy": {
@@ -965,15 +965,14 @@
     "dashboard": "Ir al Dashboard",
     "login": "Volver al Login"
   },
-  "notFound": {
-    "title": "404 Pagina no encontrada",
-    "description": "No se ha encontrado la pagina solicitada."
-  },
   "admin": {
     "layout": {
       "brand": "Radar Admin",
       "subtitle": "Centro de control",
-      "signOut": "Cerrar sesion",
+      "badge": "Admin",
+      "backToApp": "Volver a la app",
+      "openAdmin": "Panel de administración",
+      "signOut": "Cerrar sesión",
       "navigation": {
         "overview": "Resumen",
         "users": "Usuarios",
@@ -984,30 +983,37 @@
     "dashboard": {
       "title": "Resumen",
       "welcomeBack": "Bienvenido de nuevo, {{name}}.",
+      "refresh": "Actualizar",
+      "loadError": "No se pudieron cargar los datos de administración. Intenta actualizar.",
       "cards": {
-        "totalUsers": "Total de Usuarios",
-        "totalReports": "Total de Informes",
-        "businesses": "Negocios",
-        "topActivity": "Actividad Reciente",
-        "topActivityDesc": "Informes generados recientemente",
-        "conversionRate": "Tasa de Conversion",
-        "conversionRateDesc": "Busquedas a informes",
-        "marketDensity": "Densidad del Mercado",
-        "marketDensityDesc": "Promedio de competidores encontrados"
+        "totalUsers": "Usuarios totales",
+        "totalUsersDesc": "{{verified}} verificados · +{{count}} en los últimos {{days}} días",
+        "proUsers": "Usuarios Pro",
+        "proUsersDesc": "{{rate}}% de todos los usuarios",
+        "totalReports": "Informes completados",
+        "totalReportsDesc": "{{week}} en los últimos 7 días · {{guests}} vistas previas de invitados",
+        "businesses": "Negocios seguidos",
+        "businessesDesc": "Guardados por los usuarios para informes recurrentes",
+        "marketDensity": "Densidad del mercado",
+        "marketDensityDesc": "Media de competidores encontrados por informe",
+        "reportHealth": "Informes fallidos",
+        "reportHealthDesc": "{{pending}} todavía generándose"
       }
     },
     "users": {
-      "title": "Gestion de Usuarios",
+      "title": "Gestión de usuarios",
       "subtitle": "Gestiona usuarios, roles y permisos.",
       "table": {
         "title": "Usuarios",
         "searchPlaceholder": "Buscar usuarios...",
+        "empty": "Ningún usuario coincide con la búsqueda.",
         "columns": {
           "user": "Usuario",
-          "email": "Correo",
+          "email": "Email",
+          "plan": "Plan",
           "role": "Rol",
           "status": "Estado",
-          "joined": "Alta",
+          "joined": "Registro",
           "actions": "Acciones"
         },
         "status": {
@@ -1015,9 +1021,14 @@
           "pending": "Pendiente"
         }
       },
+      "actions": {
+        "makeAdmin": "Hacer administrador",
+        "removeAdmin": "Quitar rol de administrador",
+        "delete": "Eliminar usuario"
+      },
       "deleteDialog": {
-        "title": "Estas completamente seguro?",
-        "description": "Esta accion no se puede deshacer. Esto eliminara permanentemente la cuenta del usuario y borrara sus datos de nuestros servidores.",
+        "title": "¿Estás completamente seguro?",
+        "description": "Esta acción no se puede deshacer. Se eliminará permanentemente la cuenta del usuario y sus datos.",
         "confirm": "Eliminar"
       },
       "toasts": {
@@ -1028,50 +1039,57 @@
       }
     },
     "waitlist": {
-      "title": "Lista de espera de facturacion",
-      "subtitle": "Revisa los usuarios que pidieron acceso anticipado a los planes de pago.",
+      "title": "Lista de espera de facturación",
+      "subtitle": "Revisa quién pidió acceso anticipado a los planes de pago.",
       "table": {
-        "title": "Solicitudes de lista de espera",
+        "title": "Contactos en lista de espera",
         "searchPlaceholder": "Buscar en la lista...",
-        "empty": "Aun no hay solicitudes en la lista.",
+        "empty": "Todavía no hay contactos en la lista de espera.",
         "noMessage": "Sin mensaje",
         "columns": {
-          "email": "Correo",
+          "email": "Email",
           "plan": "Plan",
           "message": "Mensaje",
           "source": "Origen",
-          "joined": "Alta"
+          "joined": "Fecha"
         }
       }
     },
     "activity": {
-      "title": "Actividad en vivo",
-      "subtitle": "Flujo en tiempo real de lo que buscan los usuarios.",
-      "recentSearches": "Busquedas recientes",
+      "title": "Actividad",
+      "subtitle": "Lo que la gente está analizando, lo más reciente primero.",
+      "recentSearches": "Análisis recientes",
+      "recentSearchesDesc": "Últimas 50 vistas previas de invitados y análisis de miembros.",
       "near": "cerca de",
       "radius": "Radio: {{radius}}m",
       "found": "{{count}} encontrados",
-      "empty": "No se ha registrado actividad reciente."
+      "guestPreview": "Vista previa de invitado",
+      "memberAnalysis": "Análisis de miembro",
+      "empty": "Todavía no hay actividad registrada."
     },
     "charts": {
-      "apiUsage": "Uso y Costes de API del Sistema (30 dias)",
+      "apiUsage": "Llamadas a APIs externas (30 días)",
+      "apiUsageTotals": "{{google}} llamadas a Google Places · {{openAi}} llamadas a OpenAI · {{tokens}} tokens",
       "noUsage": "No hay datos de uso disponibles.",
-      "apiUsageAxis": "Unidades de coste / tokens",
-      "googlePlaces": "Google Places (Llamadas)",
-      "openAi": "OpenAI (Tokens)",
-      "userGrowth": "Crecimiento de Usuarios (30 dias)",
-      "reportsGenerated": "Informes Generados (30 dias)",
-      "searchTypeDistribution": "Distribucion por Tipo de Busqueda",
-      "topLocations": "Ubicaciones Mas Buscadas"
+      "noData": "Todavía no hay datos en este periodo.",
+      "googlePlaces": "Google Places",
+      "openAi": "OpenAI",
+      "userGrowth": "Nuevos usuarios",
+      "reportsGenerated": "Informes generados",
+      "lastDays": "Últimos {{count}} días",
+      "businessTypes": "Tipos de negocio analizados",
+      "businessTypesDesc": "Reparto de los informes completados por tipo de negocio."
     },
     "consumers": {
-      "title": "Principales Consumidores de la API",
+      "title": "Mayores consumidores de API",
+      "description": "Usuarios ordenados por unidades de coste estimadas.",
       "columns": {
         "user": "Usuario",
         "requests": "Solicitudes",
-        "cost": "Unid. de coste est."
+        "cost": "Unidades de coste"
       },
-      "noData": "No hay datos de consumo disponibles."
+      "noData": "No hay datos de consumo disponibles.",
+      "deletedUser": "Usuario eliminado"
     }
   }
 }

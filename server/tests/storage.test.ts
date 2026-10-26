@@ -489,43 +489,25 @@ describe("Storage", () => {
             expect(mockLimit).toHaveBeenCalledWith(50);
         });
 
-        it("should get search stats", async () => {
-            // Mock type distribution
-            const mockTypeDist = [{ type: "restaurant", count: 10 }];
-            const mockGroupBy1 = vi.fn().mockResolvedValue(mockTypeDist);
-            const mockFrom1 = vi.fn().mockReturnValue({ groupBy: mockGroupBy1 });
+        it("should load admin overview rows without report payloads", async () => {
+            const userRows = [{ createdAt: new Date(), plan: "pro", role: "admin", isVerified: true }];
+            const reportRows = [{ generatedAt: new Date(), userId: null, status: "completed", competitorCount: "7", businessType: "cafe" }];
+            const mockLeftJoin = vi.fn().mockResolvedValue(reportRows);
 
-            // Mock top locations
-            const mockTopLocs = [{ address: "123 St", count: 5 }];
-            const mockLimit = vi.fn().mockResolvedValue(mockTopLocs);
-            const mockOrderBy = vi.fn().mockReturnValue({ limit: mockLimit });
-            const mockGroupBy2 = vi.fn().mockReturnValue({ orderBy: mockOrderBy });
-            const mockFrom2 = vi.fn().mockReturnValue({ groupBy: mockGroupBy2 });
-
-            // Mock avg competitors
-            const mockAvg = [{ avg: 3.5 }];
-            const mockFrom3 = vi.fn().mockResolvedValue(mockAvg);
-
-            // Mock counts
-            const mockSearchCount = [{ count: 100 }];
-            const mockReportCount = [{ count: 20 }];
-            const mockFrom4 = vi.fn().mockResolvedValue(mockSearchCount);
-            const mockFrom5 = vi.fn().mockResolvedValue(mockReportCount);
-
-            // We need to mock separate calls to db.select
             (db.select as any)
-                .mockImplementationOnce(() => ({ from: mockFrom1 })) // Type Dist
-                .mockImplementationOnce(() => ({ from: mockFrom2 })) // Top Locs
-                .mockImplementationOnce(() => ({ from: mockFrom3 })) // Avg Comp
-                .mockImplementationOnce(() => ({ from: mockFrom4 })) // Search Count
-                .mockImplementationOnce(() => ({ from: mockFrom5 })); // Report Count
+                .mockImplementationOnce(() => ({ from: vi.fn().mockResolvedValue(userRows) }))
+                .mockImplementationOnce(() => ({ from: vi.fn().mockReturnValue({ leftJoin: mockLeftJoin }) }))
+                .mockImplementationOnce(() => ({ from: vi.fn().mockResolvedValue([{ count: "3" }]) }));
 
-            const stats = await storage.getSearchStats!();
+            const rows = await storage.getAdminOverviewRows();
 
-            expect(stats.typeDistribution[0].count).toBe(10);
-            expect(stats.topLocations[0].count).toBe(5);
-            expect(stats.avgCompetitors).toBe(4); // 3.5 rounded
-            expect(stats.conversionRate).toBe(20); // 20/100 * 100
+            expect(rows.users).toEqual(userRows);
+            expect(rows.reports[0].competitorCount).toBe(7);
+            expect(rows.businessCount).toBe(3);
+            // Only lightweight columns are selected for reports.
+            const selected = Object.keys((db.select as any).mock.calls[1][0]);
+            expect(selected).not.toContain("html");
+            expect(selected).not.toContain("competitors");
         });
 
         it("should handle password reset tokens", async () => {
@@ -600,30 +582,19 @@ describe("Storage", () => {
 
 
 
-        it("should get api usage stats", async () => {
-            const usage1 = { service: "google_places", costUnits: 1, createdAt: new Date() };
-            const usage2 = { service: "openai", tokens: 100, createdAt: new Date() };
-            const mockUsages = [usage1, usage2];
-
-            const mockOrderBy = vi.fn().mockResolvedValue(mockUsages);
-            const mockWhere = vi.fn().mockReturnValue({ orderBy: mockOrderBy });
+        it("should list api usage rows since a date", async () => {
+            const rows = [{ service: "openai", tokens: 100, createdAt: new Date() }];
+            const mockWhere = vi.fn().mockResolvedValue(rows);
             const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
             (db.select as any).mockReturnValue({ from: mockFrom });
 
-            const stats = await storage.getApiUsageStats(30);
-            expect(stats.length).toBeGreaterThan(0);
-            // Check if today has data
-            const today = stats[0].date; // Reverse order, so index 0 is today or last entry? Code reverses.
-            // stats is array from map values reversed. map insertion order is chronological.
-            // so reversed means newest first?
-            // "Initialize last 30 days" loop goes 0 to 30.
-            // But map keys are strings.
-            // Anyway, let's just check length.
-            expect(stats).toBeDefined();
+            const result = await storage.listApiUsageSince(new Date(Date.now() - 1000));
+            expect(result).toEqual(rows);
+            expect(mockWhere).toHaveBeenCalled();
         });
 
         it("should get api usage by user", async () => {
-            const mockResult = [{ userId: "1", totalCost: 10 }];
+            const mockResult = [{ userId: "1", totalRequests: "4", totalCost: "10" }];
             const mockLimit = vi.fn().mockResolvedValue(mockResult);
             const mockOrderBy = vi.fn().mockReturnValue({ limit: mockLimit });
             const mockGroupBy = vi.fn().mockReturnValue({ orderBy: mockOrderBy });
@@ -633,7 +604,8 @@ describe("Storage", () => {
             (db.select as any).mockReturnValue({ from: mockFrom });
 
             const result = await storage.getApiUsageByUser(10);
-            expect(result).toEqual(mockResult);
+            // Postgres aggregates arrive as strings; they are returned as numbers.
+            expect(result).toEqual([{ userId: "1", totalRequests: 4, totalCost: 10 }]);
         });
     });
 });
