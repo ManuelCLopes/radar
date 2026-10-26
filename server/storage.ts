@@ -138,6 +138,7 @@ export class DatabaseStorage implements IStorage {
       .select({
         generatedAt: reports.generatedAt,
         userId: reports.userId,
+        businessId: reports.businessId,
         status: sql<AdminReportStatus>`CASE WHEN ${reports.aiAnalysis} = 'Generating...' THEN 'pending' WHEN ${reports.aiAnalysis} LIKE 'Error:%' THEN 'failed' ELSE 'completed' END`,
         competitorCount: sql<number>`CASE WHEN jsonb_typeof(${reports.competitors}) = 'array' THEN jsonb_array_length(${reports.competitors}) ELSE 0 END`,
         businessType: sql<string | null>`COALESCE(${reports.businessType}, ${businesses.type})`,
@@ -146,11 +147,16 @@ export class DatabaseStorage implements IStorage {
       .leftJoin(businesses, eq(reports.businessId, businesses.id));
 
     const [businessCount] = await db!.select({ count: sql<number>`count(*)` }).from(businesses);
+    const [previewSearches] = await db!
+      .select({ count: sql<number>`count(*)` })
+      .from(searches)
+      .where(eq(searches.isPreview, true));
 
     return {
       users: userRows,
       reports: reportRows.map((r) => ({ ...r, competitorCount: Number(r.competitorCount) })),
       businessCount: Number(businessCount?.count || 0),
+      previewSearches: Number(previewSearches?.count || 0),
     };
   }
 
@@ -781,11 +787,13 @@ export class MemStorage implements IStorage {
       reports: Array.from(this.reports.values()).map((r) => ({
         generatedAt: r.generatedAt,
         userId: r.userId,
+        businessId: r.businessId,
         status: reportStatusFromAnalysis(r.aiAnalysis),
         competitorCount: Array.isArray(r.competitors) ? r.competitors.length : 0,
         businessType: r.businessType ?? (r.businessId ? this.businesses.get(r.businessId)?.type ?? null : null),
       })),
       businessCount: this.businesses.size,
+      previewSearches: Array.from(this.searches.values()).filter((s) => s.isPreview).length,
     };
   }
 

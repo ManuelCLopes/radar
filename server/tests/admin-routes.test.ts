@@ -51,7 +51,7 @@ describe("Admin Routes", () => {
 
     describe("GET /api/admin/overview", () => {
         it("should return the overview built from storage rows", async () => {
-            mockStorage.getAdminOverviewRows.mockResolvedValue({ users: [], reports: [], businessCount: 0 });
+            mockStorage.getAdminOverviewRows.mockResolvedValue({ users: [], reports: [], businessCount: 0, previewSearches: 0 });
 
             const res = await request(app).get("/api/admin/overview");
 
