@@ -64,25 +64,15 @@ export async function createConfiguredServer(options: BootstrapOptions = {}) {
 
   app.use(express.urlencoded({ extended: false }));
 
+  // Request log: method, path, status and timing only. Response bodies contain
+  // personal data (users, reports) and must not end up in logs.
   app.use((req, res, next) => {
     const start = Date.now();
     const path = req.path;
-    let capturedJsonResponse: unknown;
-
-    const originalResJson = res.json;
-    res.json = function (bodyJson, ...args) {
-      capturedJsonResponse = bodyJson;
-      return originalResJson.apply(res, [bodyJson, ...args]);
-    };
 
     res.on("finish", () => {
-      const duration = Date.now() - start;
       if (path.startsWith("/api")) {
-        let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-        if (capturedJsonResponse !== undefined) {
-          logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-        }
-        log(logLine);
+        log(`${req.method} ${path} ${res.statusCode} in ${Date.now() - start}ms`);
       }
     });
 
@@ -113,8 +103,12 @@ export async function createConfiguredServer(options: BootstrapOptions = {}) {
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
+    // Client errors carry a meaningful message; server errors may leak internals.
+    const message = status < 500 && err.message ? err.message : "Internal Server Error";
 
+    if (status >= 500) {
+      console.error("Unhandled error:", err);
+    }
     res.status(status).json({ message });
 
     if (runtime === "standalone") {

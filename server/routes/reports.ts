@@ -2,11 +2,22 @@ import type { Express } from "express";
 import { storage } from "../storage.js";
 import { runReportForBusiness } from "../reports.js";
 import { isAuthenticated } from "../auth.js";
-import { type User as AppUser, type InsertReport } from "../../shared/schema.js";
+import { type User as AppUser, type InsertReport, type Report } from "../../shared/schema.js";
 import { searchPlacesByAddress, hasGoogleApiKey } from "../googlePlaces.js";
 import { getPlanLimits } from "../limits.js";
 import { log } from "../log.js";
 import { recordSearch } from "../searchTracking.js";
+import { runInBackground } from "../background.js";
+
+// A report belongs to its user; reports without one (scheduled runs, legacy
+// data) belong to the owner of their business. Guest previews have neither
+// and are not accessible through the authenticated report routes.
+async function canAccessReport(report: Report, userId: string): Promise<boolean> {
+    if (report.userId) return report.userId === userId;
+    if (!report.businessId) return false;
+    const business = await storage.getBusiness(report.businessId);
+    return business?.userId === userId;
+}
 
 export function registerReportRoutes(app: Express) {
     app.post("/api/reports/save-existing", isAuthenticated, async (req, res) => {
@@ -15,6 +26,13 @@ export function registerReportRoutes(app: Express) {
 
             if (!report) {
                 return res.status(400).json({ error: "Missing report data" });
+            }
+
+            if (businessId) {
+                const business = await storage.getBusiness(businessId);
+                if (!business || business.userId !== (req.user as AppUser).id) {
+                    return res.status(403).json({ error: "Unauthorized access to this business" });
+                }
             }
 
             // Save report linked to the current user
@@ -96,23 +114,17 @@ export function registerReportRoutes(app: Express) {
 
             const pendingReport = await storage.createReport(pendingReportData);
 
-            // Run report generation in background
-            runReportForBusiness(businessId, reportLanguage, undefined, (req.user as AppUser).id, 1500, pendingReport.id)
-                .then(async (completedReport) => {
-                })
-                .catch(async (err) => {
-                    console.error("Error generating report in background:", err);
-                    // Optionally update report to indicate failure
-                    try {
-                        // If we had a specific error status, we'd set it here.
-                        // For now, let's set aiAnalysis to an error message so polling stops and UI shows error
+            // Run report generation in background; failures mark the report so polling stops.
+            runInBackground(
+                runReportForBusiness(businessId, reportLanguage, undefined, (req.user as AppUser).id, 1500, pendingReport.id)
+                    .catch(async (err) => {
+                        console.error("Error generating report in background:", err);
                         await storage.updateReport(pendingReport.id, {
                             aiAnalysis: "Error: Failed to generate report. Please try again."
                         });
-                    } catch (updateErr) {
-                        console.error("Failed to update report with error status:", updateErr);
-                    }
-                });
+                    }),
+                "Business report generation",
+            );
 
             // Return the pending report immediately
             res.json(pendingReport);
@@ -137,7 +149,7 @@ export function registerReportRoutes(app: Express) {
             }
 
             // Verify ownership
-            if (report.userId && report.userId !== (req.user as AppUser).id) {
+            if (!(await canAccessReport(report, (req.user as AppUser).id))) {
                 return res.status(403).json({ error: "Unauthorized access to this report" });
             }
 
@@ -204,7 +216,7 @@ export function registerReportRoutes(app: Express) {
             }
 
             // Verify ownership
-            if (report.userId && report.userId !== (req.user as AppUser).id) {
+            if (!(await canAccessReport(report, (req.user as AppUser).id))) {
                 return res.status(403).json({ error: "Unauthorized access to this report" });
             }
 
@@ -225,7 +237,7 @@ export function registerReportRoutes(app: Express) {
                 return res.status(404).json({ error: "Report not found" });
             }
 
-            if (report.userId && report.userId !== (req.user as AppUser).id) {
+            if (!(await canAccessReport(report, (req.user as AppUser).id))) {
                 return res.status(403).json({ error: "Unauthorized access to this report" });
             }
 
@@ -274,7 +286,7 @@ export function registerReportRoutes(app: Express) {
             }
 
             // Verify ownership
-            if (report.userId && report.userId !== (req.user as AppUser).id) {
+            if (!(await canAccessReport(report, (req.user as AppUser).id))) {
                 return res.status(403).json({ error: "Unauthorized access to this report" });
             }
 
@@ -391,24 +403,27 @@ export function registerReportRoutes(app: Express) {
                 userRatingsTotal: null
             };
 
-            // Run analysis in background
-            runReportForBusiness(tempBusiness.id, language, tempBusiness, (req.user as AppUser).id, radius, savedReport.id)
-                .then((report) => recordSearch({
-                    userId: (req.user as AppUser).id,
-                    address: displayAddress,
-                    type,
-                    radius,
-                    latitude: coordinates.latitude,
-                    longitude: coordinates.longitude,
-                    competitorsFound: report.competitors?.length ?? 0,
-                    isPreview: false,
-                }))
-                .catch(async (err) => {
-                    console.error("Error generating ad-hoc report in background:", err);
-                    await storage.updateReport(savedReport.id, {
-                        aiAnalysis: "Error: Failed to generate report."
-                    });
-                });
+            // Run analysis in background; failures mark the report so polling stops.
+            runInBackground(
+                runReportForBusiness(tempBusiness.id, language, tempBusiness, (req.user as AppUser).id, radius, savedReport.id)
+                    .then((report) => recordSearch({
+                        userId: (req.user as AppUser).id,
+                        address: displayAddress,
+                        type,
+                        radius,
+                        latitude: coordinates.latitude,
+                        longitude: coordinates.longitude,
+                        competitorsFound: report.competitors?.length ?? 0,
+                        isPreview: false,
+                    }))
+                    .catch(async (err) => {
+                        console.error("Error generating ad-hoc report in background:", err);
+                        await storage.updateReport(savedReport.id, {
+                            aiAnalysis: "Error: Failed to generate report."
+                        });
+                    }),
+                "Address analysis",
+            );
 
         } catch (error) {
             console.error("Analysis error details:", error);

@@ -121,7 +121,8 @@ export async function runScheduledReports(): Promise<{
     // Generate all reports for this user first
     for (const business of businesses) {
       try {
-        const report = await runReportForBusiness(business.id, language);
+        // Pass the owner so their plan limits apply and the report shows in their history.
+        const report = await runReportForBusiness(business.id, language, undefined, user.id);
         userReports.push(report);
 
         results.push({

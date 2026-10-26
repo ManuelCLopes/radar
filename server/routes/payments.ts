@@ -2,6 +2,7 @@ import express, { type Express, type Request } from "express";
 import Stripe from "stripe";
 import { storage } from "../storage.js";
 import { log } from "../log.js";
+import { getAppBaseUrl } from "../urls.js";
 import { insertBillingWaitlistLeadSchema, type User } from "../../shared/schema.js";
 
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -133,8 +134,8 @@ export function registerPaymentRoutes(app: Express) {
                     },
                 ],
                 mode: "subscription",
-                success_url: `${req.protocol}://${req.get("host")}/settings?session_id={CHECKOUT_SESSION_ID}`,
-                cancel_url: `${req.protocol}://${req.get("host")}/settings`,
+                success_url: `${getAppBaseUrl(req)}/settings?session_id={CHECKOUT_SESSION_ID}`,
+                cancel_url: `${getAppBaseUrl(req)}/settings`,
                 automatic_tax: { enabled: true },
                 metadata: {
                     userId: user.id,
@@ -163,7 +164,7 @@ export function registerPaymentRoutes(app: Express) {
         try {
             const session = await stripe.billingPortal.sessions.create({
                 customer: user.stripeCustomerId,
-                return_url: `${req.protocol}://${req.get("host")}/settings`,
+                return_url: `${getAppBaseUrl(req)}/settings`,
             });
 
             res.json({ url: session.url });

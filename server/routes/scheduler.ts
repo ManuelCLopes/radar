@@ -1,6 +1,5 @@
-import type { Express, Request } from "express";
+import type { Express, Request, RequestHandler } from "express";
 import { getSchedulerStatus, runScheduledReports } from "../scheduler.js";
-import { isAuthenticated } from "../auth.js";
 import { storage } from "../storage.js";
 
 function isValidCronRequest(req: Request): boolean {
@@ -18,8 +17,17 @@ function isValidCronRequest(req: Request): boolean {
     return authHeader === `Bearer ${cronSecret}`;
 }
 
+// Running every user's reports costs API credits and emails everyone, so only
+// admins may trigger it manually.
+const isAdmin: RequestHandler = (req, res, next) => {
+    if (!req.isAuthenticated() || (req.user as { role?: string }).role !== "admin") {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+    next();
+};
+
 export function registerSchedulerRoutes(app: Express) {
-    app.get("/api/scheduler/status", isAuthenticated, async (req, res) => {
+    app.get("/api/scheduler/status", isAdmin, async (req, res) => {
         try {
             const status = getSchedulerStatus();
             res.json(status);
@@ -29,7 +37,7 @@ export function registerSchedulerRoutes(app: Express) {
         }
     });
 
-    app.post("/api/scheduler/run-all", isAuthenticated, async (req, res) => {
+    app.post("/api/scheduler/run-all", isAdmin, async (req, res) => {
         try {
             const results = await runScheduledReports();
             res.json(results);
@@ -39,8 +47,9 @@ export function registerSchedulerRoutes(app: Express) {
         }
     });
 
-    // External Cron Trigger Endpoint
-    app.post("/api/cron/trigger-reports", async (req, res) => {
+    // External Cron Trigger Endpoint. Vercel Cron calls with GET; POST is kept
+    // for external schedulers.
+    const triggerReports: RequestHandler = async (req, res) => {
         try {
             if (!isValidCronRequest(req)) {
                 return res.status(401).json({ error: "Unauthorized" });
@@ -71,10 +80,12 @@ export function registerSchedulerRoutes(app: Express) {
             console.error("[Cron] Error triggering reports:", error);
             res.status(500).json({ error: "Failed to trigger reports" });
         }
-    });
+    };
+    app.get("/api/cron/trigger-reports", triggerReports);
+    app.post("/api/cron/trigger-reports", triggerReports);
 
     // Cleanup Unverified Users Endpoint
-    app.post("/api/cron/cleanup-users", async (req, res) => {
+    const cleanupUsers: RequestHandler = async (req, res) => {
         try {
             if (!isValidCronRequest(req)) {
                 return res.status(401).json({ error: "Unauthorized" });
@@ -95,5 +106,7 @@ export function registerSchedulerRoutes(app: Express) {
             console.error("[Cron] Error cleaning up users:", error);
             res.status(500).json({ error: "Failed to cleanup users" });
         }
-    });
+    };
+    app.get("/api/cron/cleanup-users", cleanupUsers);
+    app.post("/api/cron/cleanup-users", cleanupUsers);
 }

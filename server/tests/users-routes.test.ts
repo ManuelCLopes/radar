@@ -170,7 +170,7 @@ describe("User Routes", () => {
                 .send({ ...passwordData, newPassword: "123", confirmPassword: "123" });
 
             expect(res.status).toBe(400);
-            expect(res.body.error).toBe("Password must be at least 6 characters");
+            expect(res.body.error).toBe("Password must be at least 8 characters");
         });
 
         it("should reject incorrect current password", async () => {
@@ -217,7 +217,7 @@ describe("User Routes", () => {
                 .send({});
 
             expect(res.status).toBe(400);
-            expect(res.body.error).toBe("Language is required");
+            expect(res.body.error).toBe("Unsupported language");
         });
 
         it("should handle error during language update", async () => {

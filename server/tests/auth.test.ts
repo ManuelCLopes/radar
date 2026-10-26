@@ -145,6 +145,19 @@ describe("Authentication API", () => {
             expect(res.status).toBe(400);
             expect(res.body.message).toMatch(/registered/i);
         });
+
+        it("should never grant a paid plan or return secrets on sign-up", async () => {
+            const email = `test_plan_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`;
+            const res = await request(app)
+                .post("/api/register")
+                .send({ email, password: "password123", plan: "pro" });
+
+            expect(res.status).toBe(200);
+            expect(res.body.user.plan).toBe("free");
+            expect(res.body.user).not.toHaveProperty("passwordHash");
+            expect(res.body.user).not.toHaveProperty("verificationToken");
+            expect((await storage.getUserByEmail(email))?.plan).toBe("free");
+        });
     });
 
     describe("POST /api/login", () => {
@@ -205,6 +218,16 @@ describe("Auth Coverage (Edge Cases)", () => {
     });
 
     describe("POST /api/register", () => {
+        it("should reject invalid emails and short passwords", async () => {
+            const badEmail = await request(localApp).post("/api/register").send({ email: "not-an-email", password: "password123" });
+            expect(badEmail.status).toBe(400);
+
+            const shortPassword = await request(localApp)
+                .post("/api/register")
+                .send({ email: `short_${Date.now()}@example.com`, password: "1234567" });
+            expect(shortPassword.status).toBe(400);
+        });
+
         it("should return 400 if email or password missing", async () => {
             const res = await request(localApp)
                 .post("/api/register")

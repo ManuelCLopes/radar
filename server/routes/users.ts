@@ -4,6 +4,8 @@ import { storage } from "../storage.js";
 import { type User as AppUser } from "../../shared/schema.js";
 import { isAuthenticated } from "../auth.js";
 import bcrypt from "bcrypt";
+import { toSafeUser } from "../safeUser.js";
+import { EMAIL_PATTERN, MIN_PASSWORD_LENGTH, SUPPORTED_LANGUAGES } from "../accountRules.js";
 
 export function registerUserRoutes(app: Express) {
     // Account Deletion
@@ -29,10 +31,11 @@ export function registerUserRoutes(app: Express) {
     app.patch("/api/user", isAuthenticated, async (req, res) => {
         try {
             const userId = (req.user as AppUser).id;
-            const { firstName, lastName, email } = req.body;
+            const { firstName, lastName } = req.body;
+            const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : undefined;
 
             // Basic validation
-            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            if (email && !EMAIL_PATTERN.test(email)) {
                 return res.status(400).json({ error: "Invalid email format" });
             }
 
@@ -56,7 +59,7 @@ export function registerUserRoutes(app: Express) {
                     console.error("Error re-logging in after update:", err);
                     return res.status(500).json({ error: "Profile updated but session refresh failed" });
                 }
-                res.json({ user: updatedUser });
+                res.json({ user: toSafeUser(updatedUser) });
             });
 
         } catch (error) {
@@ -80,8 +83,8 @@ export function registerUserRoutes(app: Express) {
                 return res.status(400).json({ error: "Passwords do not match" });
             }
 
-            if (newPassword.length < 6) {
-                return res.status(400).json({ error: "Password must be at least 6 characters" });
+            if (newPassword.length < MIN_PASSWORD_LENGTH) {
+                return res.status(400).json({ error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters` });
             }
 
             // Safety check for Google users without password
@@ -113,8 +116,8 @@ export function registerUserRoutes(app: Express) {
     app.post("/api/user/language", isAuthenticated, async (req, res) => {
         try {
             const { language } = req.body;
-            if (!language) {
-                return res.status(400).json({ error: "Language is required" });
+            if (!SUPPORTED_LANGUAGES.includes(language)) {
+                return res.status(400).json({ error: "Unsupported language" });
             }
 
             await storage.updateUserLanguage((req.user as any).id, language);

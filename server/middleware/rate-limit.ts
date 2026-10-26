@@ -9,7 +9,7 @@ export const getRateLimitMax = (req: Request | any) => {
         return 50;
     }
 
-    if (user.plan === "professional") {
+    if (user.plan === "pro" || user.plan === "agency") {
         // Pro: 1000 requests per hour
         return 1000;
     }

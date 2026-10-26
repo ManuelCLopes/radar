@@ -4,6 +4,12 @@ import { analyzeCompetitors, analysisJsonSchema } from '../ai';
 import { Business, Competitor } from '@shared/schema';
 
 // Mock OpenAI
+// A configured key makes analyzeCompetitors call the (mocked) API instead of
+// returning the local-development template.
+vi.hoisted(() => {
+    process.env.OPENAI_API_KEY = "test-key";
+});
+
 const { mockCreate } = vi.hoisted(() => {
     return { mockCreate: vi.fn() };
 });
@@ -89,31 +95,18 @@ describe('AI Analysis', () => {
         expect(result.executiveSummary).toBe('AI Analysis Result');
     });
 
-    it('should use fallback analysis when OpenAI fails', async () => {
+    it('should surface OpenAI failures so the report is marked as failed', async () => {
         mockCreate.mockRejectedValueOnce(new Error('API Error'));
 
-        const result = await analyzeCompetitors(mockBusiness, mockCompetitors);
-
-        expect(result.executiveSummary).toContain('fallback analysis');
+        await expect(analyzeCompetitors(mockBusiness, mockCompetitors)).rejects.toThrow('API Error');
     });
 
-    it('should use fallback analysis when OpenAI returns empty content', async () => {
+    it('should fail when OpenAI returns empty content', async () => {
         mockCreate.mockResolvedValueOnce({
             choices: [{ message: { content: null } }]
         });
 
-        const result = await analyzeCompetitors(mockBusiness, mockCompetitors);
-
-        expect(result.executiveSummary).toContain('fallback analysis');
-    });
-
-    it('should generate fallback in requested language (PT)', async () => {
-        mockCreate.mockRejectedValueOnce(new Error('API Error'));
-
-        const result = await analyzeCompetitors(mockBusiness, mockCompetitors, 'pt');
-
-        // Fallback is currently English
-        expect(result.executiveSummary).toContain('fallback analysis');
+        await expect(analyzeCompetitors(mockBusiness, mockCompetitors)).rejects.toThrow('No content');
     });
 
     describe('model configuration', () => {
@@ -149,18 +142,14 @@ describe('AI Analysis', () => {
         it('does not retry on transient errors such as rate limits', async () => {
             mockCreate.mockRejectedValueOnce(Object.assign(new Error('Rate limited'), { status: 429 }));
 
-            const result = await analyzeCompetitors(mockBusiness, mockCompetitors);
-
+            await expect(analyzeCompetitors(mockBusiness, mockCompetitors)).rejects.toThrow('Rate limited');
             expect(mockCreate).toHaveBeenCalledTimes(1);
-            expect(result.executiveSummary).toContain('fallback analysis');
         });
 
         it('treats a truncated response as a failure instead of parsing partial JSON', async () => {
             mockCreate.mockResolvedValueOnce({ choices: [{ message: { content: '{"executiveSummary": "cut' }, finish_reason: 'length' }] });
 
-            const result = await analyzeCompetitors(mockBusiness, mockCompetitors);
-
-            expect(result.executiveSummary).toContain('fallback analysis');
+            await expect(analyzeCompetitors(mockBusiness, mockCompetitors)).rejects.toThrow('cut off');
         });
 
         it('keeps the schema strict at every level', () => {

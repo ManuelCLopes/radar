@@ -14,6 +14,10 @@ import {
     createVerificationEmailRateLimiter,
 } from "./middleware/rate-limit.js";
 import { isProductionEnvironment } from "./runtime-config.js";
+import { toSafeUser } from "./safeUser.js";
+import { runInBackground } from "./background.js";
+
+import { EMAIL_PATTERN, MIN_PASSWORD_LENGTH, SUPPORTED_LANGUAGES } from "./accountRules.js";
 
 const SALT_ROUNDS = 10;
 
@@ -56,6 +60,8 @@ export async function verifyGoogle(accessToken: string, refreshToken: string, pr
                 firstName: profile.name?.givenName || null,
                 lastName: profile.name?.familyName || null,
                 profileImageUrl: profile.photos?.[0]?.value || null,
+                // Google has already verified this address.
+                isVerified: true,
             });
         } else {
             // Update existing user
@@ -125,7 +131,8 @@ export async function setupAuth(app: Express) {
     const registrationRateLimiter = createRegistrationRateLimiter();
     const verificationEmailRateLimiter = createVerificationEmailRateLimiter();
 
-    app.set("trust proxy", true);
+    // trust proxy is set to 1 hop in bootstrap. Trusting every hop would let
+    // clients spoof X-Forwarded-For and dodge the IP-based rate limiters.
     app.use(getSession());
     app.use(passport.initialize());
     app.use(passport.session());
@@ -196,7 +203,7 @@ export async function setupAuth(app: Express) {
                 if (err) {
                     return next(err);
                 }
-                return res.json({ user });
+                return res.json({ user: toSafeUser(user) });
             });
         })(req, res, next);
     });
@@ -204,14 +211,20 @@ export async function setupAuth(app: Express) {
     // Local registration
     app.post("/api/register", registrationRateLimiter, async (req, res) => {
         try {
-            const { password, firstName, lastName, plan, language } = req.body;
-            const email = req.body.email?.toLowerCase();
+            // plan is deliberately not read from the body: paid plans are only
+            // granted by the Stripe webhook.
+            const { password, firstName, lastName, language } = req.body;
+            const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
 
-            if (!email || !password) {
+            if (!email || typeof password !== "string" || !password) {
                 return res.status(400).json({ message: "Email and password are required" });
             }
 
-            if (password.length < 8) {
+            if (!EMAIL_PATTERN.test(email)) {
+                return res.status(400).json({ message: "Invalid email format" });
+            }
+
+            if (password.length < MIN_PASSWORD_LENGTH) {
                 return res.status(400).json({ message: "Password must be at least 8 characters long" });
             }
 
@@ -236,46 +249,27 @@ export async function setupAuth(app: Express) {
                 provider: "local",
                 firstName: firstName || null,
                 lastName: lastName || null,
-                plan: plan || "free",
-                language: language || "pt",
+                plan: "free",
+                language: SUPPORTED_LANGUAGES.includes(language) ? language : "pt",
                 isVerified: false,
                 verificationToken,
                 verificationTokenExpiresAt
             });
 
-            // Send welcome email and verification email
-            (async () => {
-                try {
-                    const { emailService } = await import("./email.js");
-                    const userLang = user.language || "pt";
-
-                    // Send Verification Email
-                    const verificationLink = `${getAppBaseUrl(req)}/verify-email?token=${verificationToken}`;
-                    await emailService.sendVerificationEmail(email, verificationLink, userLang);
-
-                    // Send Welcome Email
-                    // Note: We might want to hold off welcome email until verified, but for now sending both is fine.
-                    // Actually, let's keep welcome email.
-                    // But we need to use emailService to send welcome email if updated...
-                    // The current emailService interface doesn't have sendWelcomeEmail.
-                    // For now, I will use the legacy import for welcome email as it was before, 
-                    // or better, ignore welcome email for now to reduce noise/complexity? 
-                    // No, users expect welcome email. I'll leave the welcome email logic as is BUT
-                    // I need to import sendEmail legacy or just use my new service if I extend it.
-                    // Let's assume the previous code `import { sendEmail }` works for now, 
-                    // but wait, I didn't see `sendEmail` export in `server/email.ts` view!
-                    // I will check `server/email.ts` exports first.
-                } catch (error) {
-                    console.error("[Registration] Failed to send emails:", error);
-                }
-            })();
+            // Send the verification email without delaying the response.
+            const verificationLink = `${getAppBaseUrl(req)}/verify-email?token=${verificationToken}`;
+            runInBackground(
+                import("./email.js").then(({ emailService }) =>
+                    emailService.sendVerificationEmail(email, verificationLink, user.language || "pt")),
+                "Registration verification email",
+            );
 
             // Log in the user
             req.login(user, (err) => {
                 if (err) {
                     return res.status(500).json({ message: "Registration successful but login failed" });
                 }
-                res.json({ user });
+                res.json({ user: toSafeUser(user) });
             });
         } catch (error) {
             console.error("Registration error:", error);
@@ -427,9 +421,7 @@ export async function setupAuth(app: Express) {
 
         if (req.isAuthenticated()) {
             // Sanitize: strip sensitive fields before sending to client
-            const user = req.user as User;
-            const { passwordHash, verificationToken, verificationTokenExpiresAt, stripeCustomerId, stripeSubscriptionId, ...safeUser } = user;
-            res.json({ user: safeUser });
+            res.json({ user: toSafeUser(req.user as User) });
         } else {
             res.status(401).json({ message: "Not authenticated" });
         }

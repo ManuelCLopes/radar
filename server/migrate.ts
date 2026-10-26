@@ -1,7 +1,7 @@
 import { migrate } from "drizzle-orm/neon-serverless/migrator";
 import { db, pool } from "./db.js";
 
-export async function runMigrations() {
+export async function runMigrations(migrationsFolder = "dist/migrations") {
     if (!db || !pool) {
         console.warn("Database connection not available, skipping migrations");
         return;
@@ -10,7 +10,7 @@ export async function runMigrations() {
     console.log("Running database migrations...");
     try {
         // This will run migrations on the database, skipping the ones already applied
-        await migrate(db, { migrationsFolder: "dist/migrations" });
+        await migrate(db, { migrationsFolder });
         console.log("Migrations completed successfully");
     } catch (error) {
         console.error("Error running migrations:", error);

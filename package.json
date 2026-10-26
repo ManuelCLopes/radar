@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "db:push": "drizzle-kit push",
+    "db:migrate": "tsx scripts/migrate.ts",
     "seed": "tsx script/seed.ts",
     "prepare": "husky"
   },
@@ -60,6 +61,7 @@
     "@types/node-cron": "^3.0.11",
     "@types/passport-google-oauth20": "^2.0.17",
     "@vercel/analytics": "^1.6.1",
+    "@vercel/functions": "^2.2.13",
     "bcrypt": "^6.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

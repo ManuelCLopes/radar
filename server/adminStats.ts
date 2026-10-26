@@ -156,17 +156,3 @@ export function buildApiUsageSummary(rows: ApiUsageRow[], { now = new Date(), da
 
     return { daily: Array.from(daily.values()), totals };
 }
-
-const SENSITIVE_USER_FIELDS = [
-    "passwordHash",
-    "verificationToken",
-    "verificationTokenExpiresAt",
-    "stripeCustomerId",
-    "stripeSubscriptionId",
-] as const;
-
-export function toAdminUser<T extends Record<string, any>>(user: T) {
-    const safe: Record<string, any> = { ...user };
-    for (const field of SENSITIVE_USER_FIELDS) delete safe[field];
-    return safe as Omit<T, typeof SENSITIVE_USER_FIELDS[number]>;
-}

@@ -267,7 +267,9 @@ export class DatabaseStorage implements IStorage {
       .where(
         and(
           eq(reports.userId, userId),
-          gte(reports.generatedAt, startOfMonth)
+          gte(reports.generatedAt, startOfMonth),
+          // Failed generations must not use up the monthly allowance.
+          not(like(reports.aiAnalysis, "Error:%"))
         )
       );
     return Number(result?.count || 0);
@@ -461,6 +463,9 @@ export class DatabaseStorage implements IStorage {
       .where(
         and(
           eq(users.isVerified, false),
+          // Only accounts still waiting on an email verification link; OAuth
+          // accounts never get a token and must not be swept up here.
+          isNotNull(users.verificationToken),
           lt(users.createdAt, cutoffDate)
         )
       );
@@ -709,7 +714,7 @@ export class MemStorage implements IStorage {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     return Array.from(this.reports.values()).filter(r =>
-      r.userId === userId && r.generatedAt >= startOfMonth
+      r.userId === userId && r.generatedAt >= startOfMonth && !r.aiAnalysis?.startsWith("Error:")
     ).length;
   }
 

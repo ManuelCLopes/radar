@@ -381,7 +381,7 @@
     "haveAccount": "Já tem conta?",
     "passwordMismatch": "As palavras-passe não coincidem",
     "passwordTooShort": "A palavra-passe deve ter pelo menos 6 caracteres",
-    "passwordMinChars": "Mínimo de 6 caracteres",
+    "passwordMinChars": "Mínimo de 8 caracteres",
     "freeBadge": "✨ Comece Gratuitamente • Sem cartão de crédito",
     "forgotPassword": "Esqueceu a password?",
     "forgotPasswordTitle": "Recuperar Password",

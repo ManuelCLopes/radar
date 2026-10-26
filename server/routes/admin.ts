@@ -1,6 +1,7 @@
 import { type Express } from "express";
 import { storage } from "../storage.js";
-import { buildAdminOverview, buildApiUsageSummary, toAdminUser } from "../adminStats.js";
+import { buildAdminOverview, buildApiUsageSummary } from "../adminStats.js";
+import { toSafeUser } from "../safeUser.js";
 
 const USAGE_PERIOD_DAYS = 30;
 
@@ -26,7 +27,7 @@ export function registerAdminRoutes(app: Express) {
     app.get("/api/admin/users", isAdmin, async (req, res) => {
         try {
             const users = await storage.listUsers();
-            res.json(users.map(toAdminUser));
+            res.json(users.map(toSafeUser));
         } catch (err) {
             console.error("Error listing users:", err);
             res.status(500).json({ message: "Internal Server Error" });

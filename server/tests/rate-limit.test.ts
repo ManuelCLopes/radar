@@ -19,9 +19,9 @@ describe("Rate Limiting Logic", () => {
         expect(getRateLimitMax(req)).toBe(200);
     });
 
-    it("should return high limit for professional users", () => {
-        const req = { user: { plan: "professional" } } as any;
-        expect(getRateLimitMax(req)).toBe(1000);
+    it("should return high limit for paid plans", () => {
+        expect(getRateLimitMax({ user: { plan: "pro" } } as any)).toBe(1000);
+        expect(getRateLimitMax({ user: { plan: "agency" } } as any)).toBe(1000);
     });
 
     it("should return standard limit for users with unknown plan", () => {

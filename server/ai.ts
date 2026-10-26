@@ -3,6 +3,7 @@ import OpenAI from "openai";
 import { storage } from "./storage.js";
 
 const apiKey = process.env.OPENAI_API_KEY || process.env.AI_INTEGRATIONS_OPENAI_API_KEY || "dummy-key-for-local-dev";
+const hasApiKey = apiKey !== "dummy-key-for-local-dev";
 
 // gpt-6-luna is OpenAI's recommended replacement for gpt-4o-mini (shut down on
 // 2027-01-14): cheaper per token and a newer model. It is a reasoning model, so
@@ -20,7 +21,7 @@ const configuredEffort = process.env.OPENAI_REASONING_EFFORT as ReasoningEffort 
 export const AI_REASONING_EFFORT: ReasoningEffort =
   configuredEffort && REASONING_EFFORTS.includes(configuredEffort) ? configuredEffort : "low";
 
-console.log("[OpenAI] API Key configured:", apiKey !== "dummy-key-for-local-dev" ? "✅ YES" : "❌ NO - using fallback", "| model:", AI_MODEL, "| reasoning:", AI_REASONING_EFFORT);
+console.log("[OpenAI] API Key configured:", hasApiKey ? "✅ YES" : "❌ NO - using fallback", "| model:", AI_MODEL, "| reasoning:", AI_REASONING_EFFORT);
 
 const openai = new OpenAI({
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
@@ -82,7 +83,9 @@ export async function analyzeCompetitors(
     ? competitors.filter(c => c.rating).reduce((sum, c) => sum + (c.rating || 0), 0) / competitors.filter(c => c.rating).length
     : 0;
 
-  if (totalCompetitors === 0) {
+  // No competitors (a real result) or no API key (local development): the
+  // template analysis is the intended output.
+  if (totalCompetitors === 0 || !hasApiKey) {
     return generateFallbackAnalysis(business, competitors, language);
   }
 
@@ -216,8 +219,10 @@ export async function analyzeCompetitors(
     return aiAnalysis;
 
   } catch (error) {
+    // Surface the failure: callers mark the report as failed so the user can
+    // retry, instead of receiving a generic template presented as analysis.
     console.error("[OpenAI] ❌ Error calling OpenAI:", error);
-    return generateFallbackAnalysis(business, competitors, language);
+    throw error;
   }
 }
 

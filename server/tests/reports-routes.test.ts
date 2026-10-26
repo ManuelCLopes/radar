@@ -97,6 +97,7 @@ describe("Report Routes", () => {
                 html: "<p>Report</p>"
             };
             mockStorage.createReport.mockResolvedValue({ id: "rep-1", ...reportData });
+            mockStorage.getBusiness.mockResolvedValue({ id: "biz-1", userId: "user-1" });
 
             const res = await request(app)
                 .post("/api/reports/save-existing")
@@ -120,7 +121,19 @@ describe("Report Routes", () => {
             expect(res.body.error).toBe("Missing report data");
         });
 
+        it("should not attach reports to another user's business", async () => {
+            mockStorage.getBusiness.mockResolvedValue({ id: "biz-2", userId: "other-user" });
+
+            const res = await request(app)
+                .post("/api/reports/save-existing")
+                .send({ businessId: "biz-2", report: { businessName: "X", competitors: [] } });
+
+            expect(res.status).toBe(403);
+            expect(mockStorage.createReport).not.toHaveBeenCalled();
+        });
+
         it("should handle error during save", async () => {
+            mockStorage.getBusiness.mockResolvedValue({ id: "biz-1", userId: "user-1" });
             mockStorage.createReport.mockRejectedValue(new Error("DB error"));
 
             const res = await request(app)
@@ -314,6 +327,25 @@ describe("Report Routes", () => {
             const res = await request(app).get("/api/reports/rep-1");
 
             expect(res.status).toBe(403);
+        });
+
+        it("should deny ownerless reports that do not belong to the user's business", async () => {
+            // Guest previews have no owner and no business.
+            mockStorage.getReport.mockResolvedValue({ id: "rep-guest", userId: null, businessId: null });
+            expect((await request(app).get("/api/reports/rep-guest")).status).toBe(403);
+
+            mockStorage.getReport.mockResolvedValue({ id: "rep-2", userId: null, businessId: "biz-2" });
+            mockStorage.getBusiness.mockResolvedValue({ id: "biz-2", userId: "other-user" });
+            expect((await request(app).get("/api/reports/rep-2")).status).toBe(403);
+        });
+
+        it("should allow scheduled reports on the user's own business", async () => {
+            mockStorage.getReport.mockResolvedValue({ id: "rep-3", userId: null, businessId: "biz-1" });
+            mockStorage.getBusiness.mockResolvedValue({ id: "biz-1", userId: "user-1" });
+
+            const res = await request(app).get("/api/reports/rep-3");
+
+            expect(res.status).toBe(200);
         });
     });
 

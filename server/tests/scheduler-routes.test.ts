@@ -19,16 +19,6 @@ vi.mock("../scheduler", () => ({
     }))
 }));
 
-// Mock auth middleware
-vi.mock("../auth", () => ({
-    isAuthenticated: (req: any, res: any, next: any) => {
-        if (req.headers.authorization === "Bearer valid-token") {
-            req.user = { id: "1", email: "test@example.com" };
-            return next();
-        }
-        return res.status(401).json({ message: "Unauthorized" });
-    }
-}));
 
 // Mock storage
 vi.mock("../storage", () => ({
@@ -44,6 +34,16 @@ describe("Scheduler Routes", () => {
     beforeAll(() => {
         app = express();
         app.use(express.json());
+        // Stand-in for passport: tokens map to a regular user or an admin.
+        app.use((req: any, _res, next) => {
+            const users: Record<string, any> = {
+                "Bearer valid-token": { id: "1", email: "test@example.com", role: "user" },
+                "Bearer admin-token": { id: "2", email: "admin@example.com", role: "admin" },
+            };
+            req.user = users[req.headers.authorization as string];
+            req.isAuthenticated = () => !!req.user;
+            next();
+        });
         registerSchedulerRoutes(app);
     });
 
@@ -57,38 +57,41 @@ describe("Scheduler Routes", () => {
     });
 
     describe("GET /api/scheduler/status", () => {
-        it("should return scheduler status when authenticated", async () => {
+        it("should return scheduler status for admins", async () => {
             const res = await request(app)
                 .get("/api/scheduler/status")
-                .set("Authorization", "Bearer valid-token");
+                .set("Authorization", "Bearer admin-token");
 
             expect(res.status).toBe(200);
             expect(res.body.running).toBe(true);
             expect(res.body.schedule).toBe("0 6 * * 1");
         });
 
-        it("should return 401 when not authenticated", async () => {
-            const res = await request(app).get("/api/scheduler/status");
-
-            expect(res.status).toBe(401);
+        it("should forbid regular users and anonymous requests", async () => {
+            expect((await request(app).get("/api/scheduler/status").set("Authorization", "Bearer valid-token")).status).toBe(403);
+            expect((await request(app).get("/api/scheduler/status")).status).toBe(403);
         });
     });
 
     describe("POST /api/scheduler/run-all", () => {
-        it("should run all scheduled reports when authenticated", async () => {
+        it("should run all scheduled reports for admins", async () => {
             const res = await request(app)
                 .post("/api/scheduler/run-all")
-                .set("Authorization", "Bearer valid-token");
+                .set("Authorization", "Bearer admin-token");
 
             expect(res.status).toBe(200);
             expect(res.body.success).toBe(2);
             expect(res.body.failed).toBe(0);
         });
 
-        it("should return 401 when not authenticated", async () => {
-            const res = await request(app).post("/api/scheduler/run-all");
+        it("should not let regular users trigger reports for everyone", async () => {
+            const { runScheduledReports } = await import("../scheduler");
+            const res = await request(app)
+                .post("/api/scheduler/run-all")
+                .set("Authorization", "Bearer valid-token");
 
-            expect(res.status).toBe(401);
+            expect(res.status).toBe(403);
+            expect(runScheduledReports).not.toHaveBeenCalled();
         });
     });
 
@@ -132,6 +135,24 @@ describe("Scheduler Routes", () => {
 
             expect(res.status).toBe(202);
             expect(res.body.message).toContain("triggered successfully");
+        });
+
+        it("should accept GET requests, which is how Vercel Cron calls it", async () => {
+            process.env.CRON_SECRET = "valid-secret";
+
+            const res = await request(app)
+                .get("/api/cron/trigger-reports")
+                .set("Authorization", "Bearer valid-secret");
+
+            expect(res.status).toBe(202);
+        });
+
+        it("should reject GET requests without the secret", async () => {
+            process.env.CRON_SECRET = "valid-secret";
+
+            const res = await request(app).get("/api/cron/trigger-reports");
+
+            expect(res.status).toBe(401);
         });
 
         it("should accept Vercel bearer auth header", async () => {
@@ -180,6 +201,16 @@ describe("Scheduler Routes", () => {
 
             expect(res.status).toBe(200);
             expect(res.body.message).toContain("Cleanup completed");
+            expect(res.body.deletedCount).toBe(5);
+        });
+
+        it("should accept GET requests from Vercel Cron", async () => {
+            process.env.CRON_SECRET = "valid-secret";
+            const res = await request(app)
+                .get("/api/cron/cleanup-users")
+                .set("Authorization", "Bearer valid-secret");
+
+            expect(res.status).toBe(200);
             expect(res.body.deletedCount).toBe(5);
         });
     });

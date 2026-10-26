@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { buildAdminOverview, buildApiUsageSummary, reportStatusFromAnalysis, toAdminUser } from "../adminStats";
+import { buildAdminOverview, buildApiUsageSummary, reportStatusFromAnalysis } from "../adminStats";
+import { toSafeUser } from "../safeUser";
 
 const now = new Date("2026-10-26T22:00:00Z");
 const daysAgo = (n: number) => new Date(now.getTime() - n * 24 * 60 * 60 * 1000);
@@ -79,9 +80,9 @@ describe("buildApiUsageSummary", () => {
     });
 });
 
-describe("toAdminUser", () => {
+describe("toSafeUser", () => {
     it("strips credentials and billing identifiers", () => {
-        const safe = toAdminUser({
+        const safe = toSafeUser({
             id: "1",
             email: "a@b.c",
             passwordHash: "hash",
