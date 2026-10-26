@@ -4,7 +4,23 @@ import { storage } from "./storage.js";
 
 const apiKey = process.env.OPENAI_API_KEY || process.env.AI_INTEGRATIONS_OPENAI_API_KEY || "dummy-key-for-local-dev";
 
-console.log("[OpenAI] API Key configured:", apiKey !== "dummy-key-for-local-dev" ? "✅ YES (starts with " + apiKey.substring(0, 7) + "...)" : "❌ NO - using fallback");
+// gpt-6-luna is OpenAI's recommended replacement for gpt-4o-mini (shut down on
+// 2027-01-14): cheaper per token and a newer model. It is a reasoning model, so
+// it takes reasoning_effort/max_completion_tokens and no temperature.
+export const AI_MODEL = process.env.OPENAI_MODEL || "gpt-6-luna";
+// Used only if the primary model rejects the request (unknown model or
+// parameter), so a misconfiguration degrades to the previous model instead of
+// to the static fallback report.
+const LEGACY_AI_MODEL = "gpt-4o-mini";
+// "low" gives noticeably better analysis for ~$0.0005 more per report than
+// "none"; set OPENAI_REASONING_EFFORT=none for the cheapest option.
+const REASONING_EFFORTS = ["none", "low", "medium", "high"] as const;
+type ReasoningEffort = typeof REASONING_EFFORTS[number];
+const configuredEffort = process.env.OPENAI_REASONING_EFFORT as ReasoningEffort | undefined;
+export const AI_REASONING_EFFORT: ReasoningEffort =
+  configuredEffort && REASONING_EFFORTS.includes(configuredEffort) ? configuredEffort : "low";
+
+console.log("[OpenAI] API Key configured:", apiKey !== "dummy-key-for-local-dev" ? "✅ YES" : "❌ NO - using fallback", "| model:", AI_MODEL, "| reasoning:", AI_REASONING_EFFORT);
 
 const openai = new OpenAI({
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
@@ -137,24 +153,40 @@ export async function analyzeCompetitors(
   - 'swot' and 'marketTrends' items should follow "Title: Description" format for better readability.
   `;
 
+  const messages = [
+    {
+      role: "system" as const,
+      content: "You are a helpful assistant that outputs only valid JSON."
+    },
+    {
+      role: "user" as const,
+      content: prompt
+    }
+  ];
+
   try {
     console.log("[OpenAI] Making API call for business:", business.name);
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: "You are a helpful assistant that outputs only valid JSON."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      response_format: { type: "json_object" },
-      max_tokens: 4000,
-      temperature: 0.7,
-    });
+    let response;
+    try {
+      response = await openai.chat.completions.create({
+        model: AI_MODEL,
+        messages,
+        response_format: { type: "json_schema", json_schema: analysisJsonSchema },
+        reasoning_effort: AI_REASONING_EFFORT,
+        // Covers reasoning tokens plus the ~2-4k token report.
+        max_completion_tokens: 16000,
+      });
+    } catch (error) {
+      if (!isRejectedRequest(error) || AI_MODEL === LEGACY_AI_MODEL) throw error;
+      console.error(`[OpenAI] ${AI_MODEL} rejected the request, retrying with ${LEGACY_AI_MODEL}:`, error);
+      response = await openai.chat.completions.create({
+        model: LEGACY_AI_MODEL,
+        messages,
+        response_format: { type: "json_object" },
+        max_tokens: 4000,
+        temperature: 0.7,
+      });
+    }
 
     // Log API usage
     if (response.usage) {
@@ -167,7 +199,14 @@ export async function analyzeCompetitors(
       });
     }
 
-    const content = response.choices[0]?.message?.content;
+    const choice = response.choices[0];
+    if (choice?.finish_reason === "length") {
+      throw new Error("OpenAI response was cut off before the analysis was complete");
+    }
+    if (choice?.message?.refusal) {
+      throw new Error(`OpenAI refused the request: ${choice.message.refusal}`);
+    }
+    const content = choice?.message?.content;
     if (!content) {
       throw new Error("No content received from OpenAI");
     }
@@ -181,6 +220,79 @@ export async function analyzeCompetitors(
     return generateFallbackAnalysis(business, competitors, language);
   }
 }
+
+function isRejectedRequest(error: unknown): boolean {
+  const status = (error as { status?: number })?.status;
+  return status === 400 || status === 404;
+}
+
+const stringArray = { type: "array", items: { type: "string" } } as const;
+
+// Mirrors StructuredAnalysis. Strict mode guarantees every report has every
+// section with the right types, so the UI never has to guess.
+export const analysisJsonSchema = {
+  name: "competitor_analysis",
+  strict: true,
+  schema: {
+    type: "object",
+    additionalProperties: false,
+    required: ["executiveSummary", "swot", "marketTrends", "targetAudience", "marketingStrategy", "customerSentiment"],
+    properties: {
+      executiveSummary: { type: "string" },
+      swot: {
+        type: "object",
+        additionalProperties: false,
+        required: ["strengths", "weaknesses", "opportunities", "threats"],
+        properties: {
+          strengths: stringArray,
+          weaknesses: stringArray,
+          opportunities: stringArray,
+          threats: stringArray,
+        },
+      },
+      marketTrends: stringArray,
+      targetAudience: {
+        type: "object",
+        additionalProperties: false,
+        required: ["demographics", "psychographics", "painPoints"],
+        properties: {
+          demographics: {
+            type: "object",
+            additionalProperties: false,
+            required: ["ageRange", "gender", "incomeLevel"],
+            properties: {
+              ageRange: { type: "string" },
+              gender: { type: "string" },
+              incomeLevel: { type: "string" },
+            },
+          },
+          psychographics: { type: "string" },
+          painPoints: stringArray,
+        },
+      },
+      marketingStrategy: {
+        type: "object",
+        additionalProperties: false,
+        required: ["channels", "contentIdeas", "tactics"],
+        properties: {
+          channels: stringArray,
+          contentIdeas: { type: "string" },
+          tactics: stringArray,
+        },
+      },
+      customerSentiment: {
+        type: "object",
+        additionalProperties: false,
+        required: ["commonPraises", "recurringComplaints", "unmetNeeds"],
+        properties: {
+          commonPraises: stringArray,
+          recurringComplaints: stringArray,
+          unmetNeeds: stringArray,
+        },
+      },
+    },
+  },
+};
 
 function generateFallbackAnalysis(business: Business, competitors: Competitor[], language: string = "en"): StructuredAnalysis {
   const normalizedLang = language.split('-')[0].toLowerCase();
