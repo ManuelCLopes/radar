@@ -14,6 +14,7 @@ export interface AdminUserRow {
 export interface AdminReportRow {
     generatedAt: Date;
     userId: string | null;
+    businessId: string | null;
     status: AdminReportStatus;
     competitorCount: number;
     businessType: string | null;
@@ -23,12 +24,15 @@ export interface AdminOverviewRows {
     users: AdminUserRow[];
     reports: AdminReportRow[];
     businessCount: number;
+    // Guest previews are never saved as reports; they are counted from the
+    // searches tracked with isPreview.
+    previewSearches: number;
 }
 
 export interface AdminOverview {
     periodDays: number;
     users: { total: number; pro: number; verified: number; admins: number; newInPeriod: number };
-    reports: { total: number; inPeriod: number; last7Days: number; guestPreviews: number; pending: number; failed: number };
+    reports: { total: number; inPeriod: number; last7Days: number; scheduled: number; guestPreviews: number; pending: number; failed: number };
     businesses: { total: number };
     proConversionRate: number;
     avgCompetitors: number;
@@ -47,7 +51,7 @@ export function reportStatusFromAnalysis(aiAnalysis: string | null | undefined):
 const toUtcDate = (date: Date) => date.toISOString().slice(0, 10);
 
 export function buildAdminOverview(
-    { users, reports, businessCount }: AdminOverviewRows,
+    { users, reports, businessCount, previewSearches }: AdminOverviewRows,
     { now = new Date(), days = 30 }: { now?: Date; days?: number } = {},
 ): AdminOverview {
     // Series buckets are whole UTC days ending today, so "in period" means the
@@ -105,7 +109,9 @@ export function buildAdminOverview(
             total: completed.length,
             inPeriod,
             last7Days,
-            guestPreviews: completed.filter((r) => !r.userId).length,
+            // Reports with a business but no user come from the weekly scheduler.
+            scheduled: completed.filter((r) => !r.userId && r.businessId).length,
+            guestPreviews: previewSearches,
             pending: reports.filter((r) => r.status === "pending").length,
             failed: reports.filter((r) => r.status === "failed").length,
         },

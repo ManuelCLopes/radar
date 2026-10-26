@@ -21,13 +21,15 @@ describe("buildAdminOverview", () => {
             { createdAt: null, plan: "free", role: "user", isVerified: true },
         ],
         reports: [
-            { generatedAt: daysAgo(1), userId: "u1", status: "completed", competitorCount: 10, businessType: "cafe" },
-            { generatedAt: daysAgo(10), userId: null, status: "completed", competitorCount: 6, businessType: "cafe" },
-            { generatedAt: daysAgo(60), userId: null, status: "completed", competitorCount: 0, businessType: "gym" },
-            { generatedAt: daysAgo(0), userId: "u1", status: "pending", competitorCount: 0, businessType: "cafe" },
-            { generatedAt: daysAgo(2), userId: "u1", status: "failed", competitorCount: 0, businessType: null },
+            { generatedAt: daysAgo(1), userId: "u1", businessId: null, status: "completed", competitorCount: 10, businessType: "cafe" },
+            // Scheduled runs: business but no user.
+            { generatedAt: daysAgo(10), userId: null, businessId: "b1", status: "completed", competitorCount: 6, businessType: "cafe" },
+            { generatedAt: daysAgo(60), userId: null, businessId: "b2", status: "completed", competitorCount: 0, businessType: "gym" },
+            { generatedAt: daysAgo(0), userId: "u1", businessId: "b1", status: "pending", competitorCount: 0, businessType: "cafe" },
+            { generatedAt: daysAgo(2), userId: "u1", businessId: null, status: "failed", competitorCount: 0, businessType: null },
         ],
         businessCount: 5,
+        previewSearches: 4,
     }, { now, days: 30 });
 
     it("counts users", () => {
@@ -36,7 +38,7 @@ describe("buildAdminOverview", () => {
     });
 
     it("counts only completed reports and separates pending/failed", () => {
-        expect(overview.reports).toEqual({ total: 3, inPeriod: 2, last7Days: 1, guestPreviews: 2, pending: 1, failed: 1 });
+        expect(overview.reports).toEqual({ total: 3, inPeriod: 2, last7Days: 1, scheduled: 2, guestPreviews: 4, pending: 1, failed: 1 });
     });
 
     it("averages competitors over reports that found any", () => {
@@ -55,7 +57,7 @@ describe("buildAdminOverview", () => {
     });
 
     it("handles an empty system", () => {
-        const empty = buildAdminOverview({ users: [], reports: [], businessCount: 0 }, { now });
+        const empty = buildAdminOverview({ users: [], reports: [], businessCount: 0, previewSearches: 0 }, { now });
         expect(empty.proConversionRate).toBe(0);
         expect(empty.avgCompetitors).toBe(0);
         expect(empty.series.every((d) => d.users === 0 && d.reports === 0)).toBe(true);
