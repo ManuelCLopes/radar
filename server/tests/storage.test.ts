@@ -505,13 +505,15 @@ describe("Storage", () => {
             (db.select as any)
                 .mockImplementationOnce(() => ({ from: vi.fn().mockResolvedValue(userRows) }))
                 .mockImplementationOnce(() => ({ from: vi.fn().mockReturnValue({ leftJoin: mockLeftJoin }) }))
-                .mockImplementationOnce(() => ({ from: vi.fn().mockResolvedValue([{ count: "3" }]) }));
+                .mockImplementationOnce(() => ({ from: vi.fn().mockResolvedValue([{ count: "3" }]) }))
+                .mockImplementationOnce(() => ({ from: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue([{ count: "5" }]) }) }));
 
             const rows = await storage.getAdminOverviewRows();
 
             expect(rows.users).toEqual(userRows);
             expect(rows.reports[0].competitorCount).toBe(7);
             expect(rows.businessCount).toBe(3);
+            expect(rows.previewSearches).toBe(5);
             // Only lightweight columns are selected for reports.
             const selected = Object.keys((db.select as any).mock.calls[1][0]);
             expect(selected).not.toContain("html");

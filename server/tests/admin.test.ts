@@ -55,17 +55,18 @@ describe("Admin API", () => {
         (storage.getAdminOverviewRows as any).mockResolvedValue({
             users: [{ createdAt: new Date(), plan: "pro", role: "admin", isVerified: true }],
             reports: [
-                { generatedAt: new Date(), userId: null, status: "completed", competitorCount: 4, businessType: "cafe" },
-                { generatedAt: new Date(), userId: "u1", status: "failed", competitorCount: 0, businessType: null },
+                { generatedAt: new Date(), userId: null, businessId: "b1", status: "completed", competitorCount: 4, businessType: "cafe" },
+                { generatedAt: new Date(), userId: "u1", businessId: null, status: "failed", competitorCount: 0, businessType: null },
             ],
             businessCount: 2,
+            previewSearches: 7,
         });
 
         const res = await request(app).get("/api/admin/overview");
 
         expect(res.status).toBe(200);
         expect(res.body.users.total).toBe(1);
-        expect(res.body.reports).toMatchObject({ total: 1, guestPreviews: 1, failed: 1 });
+        expect(res.body.reports).toMatchObject({ total: 1, scheduled: 1, guestPreviews: 7, failed: 1 });
         expect(res.body.businesses.total).toBe(2);
         expect(res.body.series).toHaveLength(30);
     });

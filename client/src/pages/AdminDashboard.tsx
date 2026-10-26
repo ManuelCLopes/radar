@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 export interface AdminOverview {
     periodDays: number;
     users: { total: number; pro: number; verified: number; admins: number; newInPeriod: number };
-    reports: { total: number; inPeriod: number; last7Days: number; guestPreviews: number; pending: number; failed: number };
+    reports: { total: number; inPeriod: number; last7Days: number; scheduled: number; guestPreviews: number; pending: number; failed: number };
     businesses: { total: number };
     proConversionRate: number;
     avgCompetitors: number;
@@ -105,6 +105,7 @@ export default function AdminDashboard() {
                             value={format(data.reports.total)}
                             detail={t("admin.dashboard.cards.totalReportsDesc", {
                                 week: format(data.reports.last7Days),
+                                scheduled: format(data.reports.scheduled),
                                 guests: format(data.reports.guestPreviews),
                             })}
                             icon={FileText}

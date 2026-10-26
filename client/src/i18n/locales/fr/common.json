@@ -991,7 +991,7 @@
         "proUsers": "Utilisateurs Pro",
         "proUsersDesc": "{{rate}} % de tous les utilisateurs",
         "totalReports": "Rapports terminés",
-        "totalReportsDesc": "{{week}} sur les 7 derniers jours · {{guests}} aperçus invités",
+        "totalReportsDesc": "{{week}} sur les 7 derniers jours · {{scheduled}} planifiés · {{guests}} aperçus invités",
         "businesses": "Entreprises suivies",
         "businessesDesc": "Enregistrées par les utilisateurs pour des rapports récurrents",
         "marketDensity": "Densité du marché",

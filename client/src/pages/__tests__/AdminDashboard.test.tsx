@@ -37,7 +37,7 @@ vi.mock("@/components/admin/TopConsumersTable", () => ({
 const overview = {
     periodDays: 30,
     users: { total: 1234, pro: 7, verified: 900, admins: 1, newInPeriod: 12 },
-    reports: { total: 102, inPeriod: 40, last7Days: 9, guestPreviews: 87, pending: 1, failed: 3 },
+    reports: { total: 102, inPeriod: 40, last7Days: 9, scheduled: 87, guestPreviews: 12, pending: 1, failed: 3 },
     businesses: { total: 5 },
     proConversionRate: 0.6,
     avgCompetitors: 9,
