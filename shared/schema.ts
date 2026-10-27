@@ -67,6 +67,12 @@ export const insertBusinessSchema = createInsertSchema(businesses).omit({
   userId: z.string().optional(), // Optional in schema, enforced in backend
 });
 
+// Partial updates must not pick up creation defaults: zod 4 applies defaults
+// inside optional fields, so a name-only edit would reset locationStatus.
+export const updateBusinessSchema = insertBusinessSchema
+  .extend({ locationStatus: z.enum(locationStatusValues) })
+  .partial();
+
 export interface PlaceResult {
   placeId: string;
   name: string;

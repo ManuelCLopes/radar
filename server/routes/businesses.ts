@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { storage } from "../storage.js";
-import { insertBusinessSchema, type User as AppUser } from "../../shared/schema.js";
+import { insertBusinessSchema, updateBusinessSchema, type User as AppUser } from "../../shared/schema.js";
 import { isAuthenticated } from "../auth.js";
 import { getPlanLimits } from "../limits.js";
 
@@ -128,7 +128,7 @@ export function registerBusinessRoutes(app: Express) {
 
     app.put("/api/businesses/:id", isAuthenticated, async (req, res) => {
         try {
-            const validationResult = insertBusinessSchema.partial().safeParse(req.body);
+            const validationResult = updateBusinessSchema.safeParse(req.body);
 
             if (!validationResult.success) {
                 return res.status(400).json({
