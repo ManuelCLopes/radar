@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "@tanstack/react-query";
@@ -87,7 +87,9 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
   });
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    // The schema lets `type` be empty while the wizard is filled in; it is
+    // required at submit time, so the form is typed with the final shape.
+    resolver: zodResolver(formSchema) as unknown as Resolver<FormValues>,
     defaultValues: {
       name: initialValues?.name || "",
       type: initialValues?.type || undefined,
