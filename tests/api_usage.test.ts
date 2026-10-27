@@ -63,17 +63,17 @@ describe("API Usage Monitor", () => {
     it("GET /api/admin/usage returns aggregated usage stats", async () => {
         const res = await agent.get("/api/admin/usage");
         expect(res.status).toBe(200);
-        expect(Array.isArray(res.body)).toBe(true);
+        expect(Array.isArray(res.body.daily)).toBe(true);
 
         // Find today's entry
         const todayStr = new Date().toISOString().split('T')[0];
-        const todayEntry = res.body.find((e: any) => e.date === todayStr);
+        const todayEntry = res.body.daily.find((e: any) => e.date === todayStr);
 
         expect(todayEntry).toBeDefined();
-        // Google calls: 1 + 3 = 4 cost units
-        expect(todayEntry.google).toBeGreaterThanOrEqual(4);
-        // OpenAI: 1500 tokens
-        expect(todayEntry.openAi).toBeGreaterThanOrEqual(1500);
+        // Requests are counted per service, never mixed with token counts.
+        expect(todayEntry.google).toBeGreaterThanOrEqual(2);
+        expect(todayEntry.openAi).toBeGreaterThanOrEqual(1);
+        expect(res.body.totals.openAiTokens).toBeGreaterThanOrEqual(1500);
     });
 
     it("GET /api/admin/usage/users returns top consumers", async () => {

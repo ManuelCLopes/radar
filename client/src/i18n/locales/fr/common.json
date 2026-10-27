@@ -826,8 +826,8 @@
     "forSmallBusinesses": "pour les petites entreprises."
   },
   "notFound": {
-    "title": "Page introuvable",
-    "description": "La page que vous recherchez n'existe pas ou a peut-être été déplacée."
+    "title": "404 Page introuvable",
+    "description": "La page demandee est introuvable."
   },
   "legal": {
     "privacy": {
@@ -965,113 +965,131 @@
     "dashboard": "Aller au tableau de bord",
     "login": "Retour au login"
   },
-  "notFound": {
-    "title": "404 Page introuvable",
-    "description": "La page demandee est introuvable."
-  },
   "admin": {
     "layout": {
       "brand": "Radar Admin",
-      "subtitle": "Centre de controle",
-      "signOut": "Se deconnecter",
+      "subtitle": "Centre de contrôle",
+      "badge": "Admin",
+      "backToApp": "Retour à l'app",
+      "openAdmin": "Panneau d'administration",
+      "signOut": "Se déconnecter",
       "navigation": {
         "overview": "Vue d'ensemble",
         "users": "Utilisateurs",
         "waitlist": "Liste d'attente",
-        "activity": "Activite"
+        "activity": "Activité"
       }
     },
     "dashboard": {
       "title": "Vue d'ensemble",
       "welcomeBack": "Bon retour, {{name}}.",
+      "refresh": "Actualiser",
+      "loadError": "Impossible de charger les données d'administration. Essayez d'actualiser.",
       "cards": {
-        "totalUsers": "Total Utilisateurs",
-        "totalReports": "Total Rapports",
-        "businesses": "Entreprises",
-        "topActivity": "Activite Recente",
-        "topActivityDesc": "Rapports generes recemment",
-        "conversionRate": "Taux de Conversion",
-        "conversionRateDesc": "Recherches vers rapports",
-        "marketDensity": "Densite du Marche",
-        "marketDensityDesc": "Moyenne de concurrents trouves"
+        "totalUsers": "Utilisateurs",
+        "totalUsersDesc": "{{verified}} vérifiés · +{{count}} sur les {{days}} derniers jours",
+        "proUsers": "Utilisateurs Pro",
+        "proUsersDesc": "{{rate}} % de tous les utilisateurs",
+        "totalReports": "Rapports terminés",
+        "totalReportsDesc": "{{week}} sur les 7 derniers jours · {{scheduled}} planifiés · {{guests}} aperçus invités",
+        "businesses": "Entreprises suivies",
+        "businessesDesc": "Enregistrées par les utilisateurs pour des rapports récurrents",
+        "marketDensity": "Densité du marché",
+        "marketDensityDesc": "Nombre moyen de concurrents trouvés par rapport",
+        "reportHealth": "Rapports en échec",
+        "reportHealthDesc": "{{pending}} encore en génération"
       }
     },
     "users": {
-      "title": "Gestion des Utilisateurs",
-      "subtitle": "Gerez les utilisateurs, roles et permissions.",
+      "title": "Gestion des utilisateurs",
+      "subtitle": "Gérez les utilisateurs, les rôles et les permissions.",
       "table": {
         "title": "Utilisateurs",
         "searchPlaceholder": "Rechercher des utilisateurs...",
+        "empty": "Aucun utilisateur ne correspond à la recherche.",
         "columns": {
           "user": "Utilisateur",
           "email": "Email",
-          "role": "Role",
+          "plan": "Offre",
+          "role": "Rôle",
           "status": "Statut",
           "joined": "Inscription",
           "actions": "Actions"
         },
         "status": {
-          "verified": "Verifie",
+          "verified": "Vérifié",
           "pending": "En attente"
         }
       },
+      "actions": {
+        "makeAdmin": "Nommer administrateur",
+        "removeAdmin": "Retirer le rôle d'administrateur",
+        "delete": "Supprimer l'utilisateur"
+      },
       "deleteDialog": {
-        "title": "Etes-vous absolument sur ?",
-        "description": "Cette action est irreversible. Elle supprimera definitivement le compte utilisateur et retirera ses donnees de nos serveurs.",
+        "title": "Êtes-vous absolument sûr ?",
+        "description": "Cette action est irréversible. Le compte de l'utilisateur et ses données seront définitivement supprimés.",
         "confirm": "Supprimer"
       },
       "toasts": {
-        "roleUpdated": "Role mis a jour avec succes",
-        "roleUpdateError": "Echec de la mise a jour du role",
-        "userDeleted": "Utilisateur supprime avec succes",
-        "userDeleteError": "Echec de la suppression de l'utilisateur"
+        "roleUpdated": "Rôle mis à jour",
+        "roleUpdateError": "Échec de la mise à jour du rôle",
+        "userDeleted": "Utilisateur supprimé",
+        "userDeleteError": "Échec de la suppression de l'utilisateur"
       }
     },
     "waitlist": {
-      "title": "Liste d'attente de facturation",
-      "subtitle": "Consultez les utilisateurs qui ont demande un acces anticipe aux offres payantes.",
+      "title": "Liste d'attente facturation",
+      "subtitle": "Consultez les demandes d'accès anticipé aux offres payantes.",
       "table": {
-        "title": "Demandes de liste d'attente",
+        "title": "Contacts en liste d'attente",
         "searchPlaceholder": "Rechercher dans la liste...",
-        "empty": "Aucune demande dans la liste pour le moment.",
+        "empty": "Aucun contact en liste d'attente pour l'instant.",
         "noMessage": "Aucun message",
         "columns": {
           "email": "Email",
           "plan": "Offre",
           "message": "Message",
           "source": "Source",
-          "joined": "Inscription"
+          "joined": "Date"
         }
       }
     },
     "activity": {
-      "title": "Activite en direct",
-      "subtitle": "Flux en temps reel de ce que recherchent les utilisateurs.",
-      "recentSearches": "Recherches recentes",
-      "near": "pres de",
-      "radius": "Rayon : {{radius}}m",
-      "found": "{{count}} trouves",
-      "empty": "Aucune activite recente enregistree."
+      "title": "Activité",
+      "subtitle": "Ce que les gens analysent, du plus récent au plus ancien.",
+      "recentSearches": "Analyses récentes",
+      "recentSearchesDesc": "Les 50 derniers aperçus invités et analyses de membres.",
+      "near": "près de",
+      "radius": "Rayon : {{radius}} m",
+      "found": "{{count}} trouvés",
+      "guestPreview": "Aperçu invité",
+      "memberAnalysis": "Analyse membre",
+      "empty": "Aucune activité enregistrée pour l'instant."
     },
     "charts": {
-      "apiUsage": "Utilisation et Couts des API du Systeme (30 jours)",
-      "noUsage": "Aucune donnee d'utilisation disponible.",
-      "apiUsageAxis": "Unites de cout / tokens",
-      "googlePlaces": "Google Places (Appels)",
-      "openAi": "OpenAI (Tokens)",
-      "userGrowth": "Croissance des Utilisateurs (30 jours)",
-      "reportsGenerated": "Rapports Generes (30 jours)",
-      "searchTypeDistribution": "Repartition par Type de Recherche",
-      "topLocations": "Lieux les Plus Recherches"
+      "apiUsage": "Appels aux API externes (30 jours)",
+      "apiUsageTotals": "{{google}} appels Google Places · {{openAi}} appels OpenAI · {{tokens}} jetons",
+      "noUsage": "Aucune donnée d'utilisation disponible.",
+      "noData": "Pas encore de données sur cette période.",
+      "googlePlaces": "Google Places",
+      "openAi": "OpenAI",
+      "userGrowth": "Nouveaux utilisateurs",
+      "reportsGenerated": "Rapports générés",
+      "lastDays": "{{count}} derniers jours",
+      "businessTypes": "Types d'entreprise analysés",
+      "businessTypesDesc": "Répartition des rapports terminés par type d'entreprise."
     },
     "consumers": {
-      "title": "Principaux Consommateurs d'API",
+      "title": "Plus gros consommateurs d'API",
+      "description": "Utilisateurs classés par unités de coût estimées.",
       "columns": {
         "user": "Utilisateur",
-        "requests": "Requetes",
-        "cost": "Unites de cout est."
+        "requests": "Requêtes",
+        "cost": "Unités de coût"
       },
-      "noData": "Aucune donnee de consommation disponible."
+      "noData": "Aucune donnée de consommation disponible.",
+      "deletedUser": "Utilisateur supprimé"
     }
   }
 }

@@ -1,5 +1,8 @@
 import { type Express } from "express";
 import { storage } from "../storage.js";
+import { buildAdminOverview, buildApiUsageSummary, toAdminUser } from "../adminStats.js";
+
+const USAGE_PERIOD_DAYS = 30;
 
 // Middleware to check if user is admin
 const isAdmin = (req: any, res: any, next: any) => {
@@ -10,19 +13,12 @@ const isAdmin = (req: any, res: any, next: any) => {
 };
 
 export function registerAdminRoutes(app: Express) {
-    app.get("/api/admin/stats", isAdmin, async (req, res) => {
+    app.get("/api/admin/overview", isAdmin, async (req, res) => {
         try {
-            const businesses = await storage.listBusinesses();
-            const reports = await storage.listAllReports();
-            const users = await storage.listUsers();
-
-            res.json({
-                totalUsers: users.length,
-                totalBusinesses: businesses.length,
-                totalReports: reports.length,
-                recentReports: reports.slice(0, 5),
-            });
+            const rows = await storage.getAdminOverviewRows();
+            res.json(buildAdminOverview(rows));
         } catch (err) {
+            console.error("Error building admin overview:", err);
             res.status(500).json({ message: "Internal Server Error" });
         }
     });
@@ -30,8 +26,9 @@ export function registerAdminRoutes(app: Express) {
     app.get("/api/admin/users", isAdmin, async (req, res) => {
         try {
             const users = await storage.listUsers();
-            res.json(users);
+            res.json(users.map(toAdminUser));
         } catch (err) {
+            console.error("Error listing users:", err);
             res.status(500).json({ message: "Internal Server Error" });
         }
     });
@@ -41,6 +38,7 @@ export function registerAdminRoutes(app: Express) {
             const leads = await storage.listBillingWaitlistLeads();
             res.json(leads);
         } catch (err) {
+            console.error("Error listing billing waitlist:", err);
             res.status(500).json({ message: "Internal Server Error" });
         }
     });
@@ -51,6 +49,10 @@ export function registerAdminRoutes(app: Express) {
             if (role !== "admin" && role !== "user") {
                 return res.status(400).json({ message: "Invalid role" });
             }
+            // Demoting yourself could leave the app without any admin.
+            if (req.params.id === (req.user as any)?.id && role !== "admin") {
+                return res.status(400).json({ message: "Cannot remove your own admin role" });
+            }
             const user = await storage.getUser(req.params.id);
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
@@ -58,6 +60,7 @@ export function registerAdminRoutes(app: Express) {
             await storage.updateUser(req.params.id, { role });
             res.json({ message: "Role updated" });
         } catch (err) {
+            console.error("Error updating user role:", err);
             res.status(500).json({ message: "Internal Server Error" });
         }
     });
@@ -72,42 +75,7 @@ export function registerAdminRoutes(app: Express) {
             await storage.deleteUser(req.params.id);
             res.sendStatus(200);
         } catch (err) {
-            res.status(500).json({ message: "Internal Server Error" });
-        }
-    });
-
-
-
-    app.get("/api/admin/analytics", isAdmin, async (req, res) => {
-        try {
-            const users = await storage.listUsers();
-            const reports = await storage.listAllReports();
-
-            // Prepare simple time-series data (grouped by date)
-            const last30Days = [...Array(30)].map((_, i) => {
-                const d = new Date();
-                d.setDate(d.getDate() - i);
-                return d.toISOString().split("T")[0];
-            }).reverse();
-
-            const userGrowth = last30Days.map(date => ({
-                date,
-                count: users.filter(u => u.createdAt && u.createdAt.toISOString().startsWith(date)).length
-            }));
-
-            const reportStats = last30Days.map(date => ({
-                date,
-                count: reports.filter(r => r.generatedAt.toISOString().startsWith(date)).length
-            }));
-
-            // Get extended insights
-            let searchStats = {};
-            if (storage.getSearchStats) {
-                searchStats = await storage.getSearchStats();
-            }
-
-            res.json({ userGrowth, reportStats, ...searchStats });
-        } catch (err) {
+            console.error("Error deleting user:", err);
             res.status(500).json({ message: "Internal Server Error" });
         }
     });
@@ -121,14 +89,16 @@ export function registerAdminRoutes(app: Express) {
                 res.json([]);
             }
         } catch (err) {
+            console.error("Error listing searches:", err);
             res.status(500).json({ message: "Internal Server Error" });
         }
     });
 
     app.get("/api/admin/usage", isAdmin, async (req, res) => {
         try {
-            const stats = await storage.getApiUsageStats(30);
-            res.json(stats);
+            const since = new Date(Date.now() - USAGE_PERIOD_DAYS * 24 * 60 * 60 * 1000);
+            const rows = await storage.listApiUsageSince(since);
+            res.json(buildApiUsageSummary(rows, { days: USAGE_PERIOD_DAYS }));
         } catch (err) {
             console.error("Error fetching usage stats:", err);
             res.status(500).json({ message: "Internal Server Error" });
@@ -137,7 +107,8 @@ export function registerAdminRoutes(app: Express) {
 
     app.get("/api/admin/usage/users", isAdmin, async (req, res) => {
         try {
-            const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+            const requested = parseInt(req.query.limit as string, 10);
+            const limit = Number.isFinite(requested) ? Math.min(Math.max(requested, 1), 100) : 10;
             const stats = await storage.getApiUsageByUser(limit);
             res.json(stats);
         } catch (err) {

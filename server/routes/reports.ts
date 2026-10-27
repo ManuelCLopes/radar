@@ -6,6 +6,7 @@ import { type User as AppUser, type InsertReport } from "../../shared/schema.js"
 import { searchPlacesByAddress, hasGoogleApiKey } from "../googlePlaces.js";
 import { getPlanLimits } from "../limits.js";
 import { log } from "../log.js";
+import { recordSearch } from "../searchTracking.js";
 
 export function registerReportRoutes(app: Express) {
     app.post("/api/reports/save-existing", isAuthenticated, async (req, res) => {
@@ -347,12 +348,16 @@ export function registerReportRoutes(app: Express) {
                 return res.status(400).json({ error: "Location not found" });
             }
 
+            // Coordinate-only requests have no address text to name the report after.
+            const displayAddress = address || `${Number(coordinates.latitude).toFixed(6)}, ${Number(coordinates.longitude).toFixed(6)}`;
+            const displayName = displayAddress.split(',')[0];
+
             // Create pending report immediately
             const savedReport = await storage.createReport({
                 businessId: null, // Explicitly set to null for ad-hoc analysis
-                businessName: address.split(',')[0],
+                businessName: displayName,
                 businessType: type,
-                businessAddress: address,
+                businessAddress: displayAddress,
                 competitors: [],
                 aiAnalysis: "Generating...",
                 userId: (req.user as AppUser).id,
@@ -378,9 +383,9 @@ export function registerReportRoutes(app: Express) {
             // Create temp business object for the background process
             const tempBusiness = {
                 id: 'analysis-' + Date.now(),
-                name: address.split(',')[0],
+                name: displayName,
                 type,
-                address,
+                address: displayAddress,
                 latitude: coordinates.latitude,
                 longitude: coordinates.longitude,
                 locationStatus: 'validated' as const,
@@ -393,8 +398,16 @@ export function registerReportRoutes(app: Express) {
 
             // Run analysis in background
             runReportForBusiness(tempBusiness.id, language, tempBusiness, (req.user as AppUser).id, radius, savedReport.id)
-                .then(async (report) => {
-                })
+                .then((report) => recordSearch({
+                    userId: (req.user as AppUser).id,
+                    address: displayAddress,
+                    type,
+                    radius,
+                    latitude: coordinates.latitude,
+                    longitude: coordinates.longitude,
+                    competitorsFound: report.competitors?.length ?? 0,
+                    isPreview: false,
+                }))
                 .catch(async (err) => {
                     console.error("Error generating ad-hoc report in background:", err);
                     await storage.updateReport(savedReport.id, {

@@ -71,7 +71,8 @@ export async function searchNearby(
   radius: number = 1500,
   includeReviews: boolean = true,
   language: string = "en",
-  limit: number = 10
+  limit: number = 10,
+  userId: string | null = null
 ): Promise<Competitor[]> {
   if (!API_KEY) {
     console.log("Google API Key not configured");
@@ -83,6 +84,7 @@ export async function searchNearby(
     await storage.trackApiUsage({
       service: 'google_places',
       endpoint: 'nearbySearch',
+      userId,
       costUnits: 3 // Nearby Search + Fields is more expensive
     });
 

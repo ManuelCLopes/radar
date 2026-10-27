@@ -46,7 +46,8 @@ export async function runReportForBusiness(
       radius,
       true, // Always include reviews
       language,
-      limits.maxCompetitors
+      limits.maxCompetitors,
+      userId || null
     );
 
     /*
@@ -55,7 +56,7 @@ export async function runReportForBusiness(
      * However, for temporary display or legacy compatibility in other parts of the system,
      * we might need to handle it.
      */
-    aiAnalysis = await analyzeCompetitors(business, competitors, language, userPlan);
+    aiAnalysis = await analyzeCompetitors(business, competitors, language, userPlan, userId || null);
 
     // Attempt to fetch and update the business's own rating for trends
 

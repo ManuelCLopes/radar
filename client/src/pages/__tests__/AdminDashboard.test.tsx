@@ -1,28 +1,28 @@
-
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import AdminDashboard from "../AdminDashboard";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
-import { useLocation } from "wouter";
 import { vi, describe, it, expect, beforeEach, Mock } from "vitest";
 
-// Mock hooks
 vi.mock("@/hooks/useAuth");
 vi.mock("@tanstack/react-query", () => ({
     useQuery: vi.fn(),
     QueryClient: vi.fn(),
     QueryClientProvider: ({ children }: { children: React.ReactNode }) => children,
 }));
-vi.mock("wouter", () => ({
-    useLocation: vi.fn(),
-    Link: ({ children, href }: { children: React.ReactNode; href: string }) => <a href={href}>{children}</a>,
-}));
-// Mock translation
 vi.mock("react-i18next", () => ({
-    useTranslation: () => ({ t: (key: string) => key }),
+    useTranslation: () => ({ t: (key: string) => key, i18n: { language: "en" } }),
 }));
+// The layout (guard, header, navigation) is covered by its own test.
 vi.mock("@/components/layouts/AdminLayout", () => ({
-    default: ({ children }: { children: React.ReactNode }) => <div data-testid="admin-layout">{children}</div>,
+    default: ({ title, actions, children }: any) => (
+        <div data-testid="admin-layout">
+            <h1>{title}</h1>
+            {actions}
+            {children}
+        </div>
+    ),
+    AdminLoading: () => <div data-testid="admin-loading" />,
 }));
 vi.mock("@/components/admin/OverviewCharts", () => ({
     OverviewCharts: () => <div data-testid="overview-charts" />,
@@ -34,117 +34,63 @@ vi.mock("@/components/admin/TopConsumersTable", () => ({
     TopConsumersTable: () => <div data-testid="top-consumers-table" />,
 }));
 
-describe("AdminDashboard", () => {
-    const mockSetLocation = vi.fn();
+const overview = {
+    periodDays: 30,
+    users: { total: 1234, pro: 7, verified: 900, admins: 1, newInPeriod: 12 },
+    reports: { total: 102, inPeriod: 40, last7Days: 9, scheduled: 87, guestPreviews: 12, pending: 1, failed: 3 },
+    businesses: { total: 5 },
+    proConversionRate: 0.6,
+    avgCompetitors: 9,
+    typeDistribution: [],
+    series: [],
+};
 
+const mockQueries = (overviewResult: Record<string, unknown>) => {
+    (useQuery as Mock).mockImplementation(({ queryKey }) => {
+        if (queryKey[0] === "/api/admin/overview") return { refetch: vi.fn(), ...overviewResult };
+        return { data: undefined, isLoading: false, refetch: vi.fn() };
+    });
+};
+
+describe("AdminDashboard", () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        (useLocation as Mock).mockReturnValue(["/admin", mockSetLocation]);
+        (useAuth as Mock).mockReturnValue({ user: { role: "admin", firstName: "Ana" }, isLoading: false });
     });
 
-    it("should redirect non-admin users", () => {
-        (useAuth as Mock).mockReturnValue({
-            user: { role: "user" },
-            isLoading: false,
-        });
-
-        // useQuery should not be enabled/called effectively or return nothing relevant
-        (useQuery as Mock).mockReturnValue({
-            data: null,
-            isLoading: false,
-        });
-
-        const { container } = render(<AdminDashboard />);
-
-        expect(mockSetLocation).toHaveBeenCalledWith("/");
-        expect(container).toBeEmptyDOMElement();
-    });
-
-    it("should show loading state while fetching stats", () => {
-        (useAuth as Mock).mockReturnValue({
-            user: { role: "admin" },
-            isLoading: false,
-        });
-
-        (useQuery as Mock).mockReturnValue({
-            data: null,
-            isLoading: true,
-        });
-
+    it("shows a loader while the overview loads", () => {
+        mockQueries({ data: undefined, isLoading: true });
         render(<AdminDashboard />);
-
-        // Should find loader (we can look for role="status" or class depending on Loader2 implementation, 
-        // but simplest is to check if it's NOT empty and maybe check for a known element if we added one, 
-        // or just check that it didn't redirect).
-        // Loader2 usually is an svg.
-        expect(mockSetLocation).not.toHaveBeenCalled();
-        expect(document.querySelector(".animate-spin")).toBeInTheDocument();
+        expect(screen.getByTestId("admin-loading")).toBeInTheDocument();
     });
 
-    it("should render stats when data is loaded", () => {
-        (useAuth as Mock).mockReturnValue({
-            user: { role: "admin" },
-            isLoading: false,
-        });
+    it("shows an error instead of zeros when the overview fails", () => {
+        mockQueries({ data: undefined, isLoading: false, isError: true });
+        render(<AdminDashboard />);
+        expect(screen.getByText("admin.dashboard.loadError")).toBeInTheDocument();
+        expect(screen.queryByText("admin.dashboard.cards.totalUsers")).not.toBeInTheDocument();
+    });
 
-        const mockStats = {
-            totalUsers: 100,
-            totalReports: 50,
-            totalBusinesses: 20,
-            recentReports: [],
-        };
-
-        (useQuery as Mock).mockImplementation(({ queryKey }) => {
-            if (queryKey[0] === "/api/admin/stats") return { data: mockStats, isLoading: false };
-            if (queryKey[0] === "/api/admin/usage") return { data: [], isLoading: false };
-            if (queryKey[0] === "/api/admin/usage/users") return { data: [], isLoading: false };
-            return { data: null, isLoading: false };
-        });
-
+    it("renders the overview figures", () => {
+        mockQueries({ data: overview, isLoading: false });
         render(<AdminDashboard />);
 
         expect(screen.getByRole("heading", { name: "admin.dashboard.title" })).toBeInTheDocument();
-        expect(screen.getByText("admin.dashboard.cards.totalUsers")).toBeInTheDocument();
-        expect(screen.getByText("100")).toBeInTheDocument();
-        expect(screen.getByText("50")).toBeInTheDocument();
-        expect(screen.getByText("20")).toBeInTheDocument();
+        expect(screen.getByText("1,234")).toBeInTheDocument();
+        expect(screen.getByText("102")).toBeInTheDocument();
+        expect(screen.getByText("admin.dashboard.cards.reportHealth")).toBeInTheDocument();
+        expect(screen.getByText("3")).toBeInTheDocument();
         expect(screen.getByTestId("overview-charts")).toBeInTheDocument();
         expect(screen.getByTestId("api-usage-chart")).toBeInTheDocument();
         expect(screen.getByTestId("top-consumers-table")).toBeInTheDocument();
     });
 
-    it("should render recent reports table", () => {
-        (useAuth as Mock).mockReturnValue({
-            user: { role: "admin" },
-            isLoading: false,
-        });
-
-        const mockReports = [
-            { id: "1", businessName: "Biz A", generatedAt: new Date().toISOString() },
-        ];
-
-        const mockStats = {
-            totalUsers: 0,
-            totalReports: 0,
-            totalBusinesses: 0,
-            recentReports: mockReports,
-        };
-
-        (useQuery as Mock).mockImplementation(({ queryKey }) => {
-            if (queryKey[0] === "/api/admin/stats") return { data: mockStats, isLoading: false };
-            if (queryKey[0] === "/api/admin/usage") return { data: [], isLoading: false };
-            if (queryKey[0] === "/api/admin/usage/users") return { data: [], isLoading: false };
-            return { data: null, isLoading: false };
-        });
-
+    it("only queries admin endpoints for admins", () => {
+        (useAuth as Mock).mockReturnValue({ user: { role: "user" }, isLoading: false });
+        mockQueries({ data: undefined, isLoading: false });
         render(<AdminDashboard />);
-
-        expect(screen.getByText("admin.dashboard.cards.topActivity")).toBeInTheDocument();
-        // Check for count in Top Activity card
-        expect(screen.getByText("1")).toBeInTheDocument();
-
-        // Check for new metric cards
-        expect(screen.getByText("admin.dashboard.cards.conversionRate")).toBeInTheDocument();
-        expect(screen.getByText("admin.dashboard.cards.marketDensity")).toBeInTheDocument();
+        for (const [options] of (useQuery as Mock).mock.calls) {
+            expect(options.enabled).toBe(false);
+        }
     });
 });
