@@ -5,6 +5,12 @@ import { insertBusinessSchema } from "@shared/schema";
 import OpenAI from "openai";
 
 // Mock OpenAI
+// A configured key makes analyzeCompetitors call the (mocked) API instead of
+// returning the local-development template.
+vi.hoisted(() => {
+    process.env.OPENAI_API_KEY = "test-key";
+});
+
 const { createMock } = vi.hoisted(() => {
     return {
         createMock: vi.fn().mockResolvedValue({

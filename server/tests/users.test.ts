@@ -176,7 +176,7 @@ describe("User Routes", () => {
                 });
 
             expect(res.status).toBe(400);
-            expect(res.body.error).toBe("Password must be at least 6 characters");
+            expect(res.body.error).toBe("Password must be at least 8 characters");
         });
 
         it("should fail for google auth users (no passwordHash)", async () => {

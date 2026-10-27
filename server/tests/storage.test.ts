@@ -22,6 +22,14 @@ describe("Storage", () => {
             storage = new MemStorage();
         });
 
+        it("should not count failed reports against the monthly allowance", async () => {
+            const base = { businessName: "B", competitors: [], userId: "u1", generatedAt: new Date() };
+            await storage.createReport({ ...base, aiAnalysis: "Structured Analysis" } as any);
+            await storage.createReport({ ...base, aiAnalysis: "Error: Failed to generate report." } as any);
+
+            expect(await storage.countReportsCurrentMonth("u1")).toBe(1);
+        });
+
         describe("User Operations", () => {
             it("should create and retrieve a user", async () => {
                 const email = `test_${Date.now()}_${Math.floor(Math.random() * 1000)}@example.com`;

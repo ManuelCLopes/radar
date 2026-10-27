@@ -24,7 +24,7 @@ export default function RegisterPage() {
         firstName: z.string().optional(),
         lastName: z.string().optional(),
         email: z.string().min(1, t("validation.required")).email(t("validation.emailInvalid")),
-        password: z.string().min(6, t("validation.passwordMin", { min: 6 })),
+        password: z.string().min(8, t("validation.passwordMin", { min: 8 })),
     });
 
     type RegisterFormValues = z.infer<typeof registerSchema>;

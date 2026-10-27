@@ -110,6 +110,8 @@ describe("Scheduler", () => {
 
             expect(storage.listBusinesses).toHaveBeenCalled();
             expect(reports.runReportForBusiness).toHaveBeenCalledTimes(1);
+            // The owner is passed so plan limits apply and the report appears in their history.
+            expect(reports.runReportForBusiness).toHaveBeenCalledWith("1", "pt", undefined, "user1");
 
             // Verify sendWeeklyReport is called with an array
             expect(emailService.sendWeeklyReport).toHaveBeenCalledTimes(1);
