@@ -719,6 +719,7 @@
   "settings": {
     "title": "Paramètres",
     "subtitle": "Gérer votre compte et vos préférences",
+    "backToDashboard": "Retour au tableau de bord",
     "subscription": {
       "title": "Abonnement",
       "description": "Gérez votre plan et vos détails de facturation",

@@ -719,6 +719,7 @@
   "settings": {
     "title": "Definições",
     "subtitle": "Gerir a sua conta e preferências",
+    "backToDashboard": "Voltar ao painel",
     "subscription": {
       "title": "Subscrição",
       "description": "Gerir o seu plano e detalhes de faturação",

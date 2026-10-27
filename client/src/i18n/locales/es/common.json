@@ -719,6 +719,7 @@
   "settings": {
     "title": "Configuración",
     "subtitle": "Administrar su cuenta y preferencias",
+    "backToDashboard": "Volver al panel",
     "subscription": {
       "title": "Suscripción",
       "description": "Administre su plan y detalles de facturación",

@@ -471,7 +471,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="border-b sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center cursor-pointer transition-opacity hover:opacity-80">
             <img src="/logo-dark.png" alt="Competitor Watcher" className="h-10 w-auto dark:hidden" />

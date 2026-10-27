@@ -717,8 +717,9 @@
     }
   },
   "settings": {
-    "title": "Definições",
+    "title": "Einstellungen",
     "subtitle": "Gerir a sua conta e preferências",
+    "backToDashboard": "Zurück zum Dashboard",
     "subscription": {
       "title": "Abonnement",
       "description": "Verwalten Sie Ihr Abo und Rechnungsdaten",

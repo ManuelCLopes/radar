@@ -719,6 +719,7 @@
   "settings": {
     "title": "Settings",
     "subtitle": "Manage your account and preferences",
+    "backToDashboard": "Back to dashboard",
     "subscription": {
       "title": "Subscription",
       "description": "Manage your plan and billing details",
