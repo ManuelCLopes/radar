@@ -49,7 +49,35 @@ export function stopScheduler() {
 
 import type { Business, User, Report } from "../shared/schema.js";
 
-export async function runScheduledReports(): Promise<{
+// Generates one business's report. In-process by default; on Vercel the cron
+// route passes a runner that hands each report to its own function invocation
+// so the whole run is not bound by a single function's time limit.
+export type BusinessReportRunner = (business: Business, language: string, userId: string) => Promise<Report>;
+
+const runReportInProcess: BusinessReportRunner = (business, language, userId) =>
+  // Pass the owner so their plan limits apply and the report shows in their history.
+  runReportForBusiness(business.id, language, undefined, userId);
+
+export const SCHEDULED_REPORT_CONCURRENCY = 10;
+
+// Runs `task` over `items` with at most `limit` in flight, keeping input order.
+async function mapWithConcurrency<T, R>(items: T[], limit: number, task: (item: T) => Promise<R>): Promise<R[]> {
+  const output = new Array<R>(items.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      const index = next++;
+      output[index] = await task(items[index]);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return output;
+}
+
+export async function runScheduledReports({
+  runReport = runReportInProcess,
+  concurrency = SCHEDULED_REPORT_CONCURRENCY,
+}: { runReport?: BusinessReportRunner; concurrency?: number } = {}): Promise<{
   success: number;
   failed: number;
   results: { businessId: string; businessName: string; success: boolean; error?: string }[]
@@ -113,47 +141,47 @@ export async function runScheduledReports(): Promise<{
     }
   }
 
-  // Pass 2: Generate reports and send emails per user
-  for (const [userId, { user, businesses }] of Array.from(userBusinessMap.entries())) {
-    const userReports: Report[] = [];
-    const language = user.language || "pt";
+  // Pass 2: Generate every report, a bounded number at a time.
+  const jobs = Array.from(userBusinessMap.values()).flatMap(({ user, businesses }) =>
+    businesses.map((business) => ({ user, business })));
 
-    // Generate all reports for this user first
-    for (const business of businesses) {
-      try {
-        // Pass the owner so their plan limits apply and the report shows in their history.
-        const report = await runReportForBusiness(business.id, language, undefined, user.id);
-        userReports.push(report);
-
-        results.push({
-          businessId: business.id,
-          businessName: business.name,
-          success: true
-        });
-        success++;
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        console.error(`[Scheduler] Failed to generate report for ${business.name}:`, errorMessage);
-        results.push({
-          businessId: business.id,
-          businessName: business.name,
-          success: false,
-          error: errorMessage
-        });
-        failed++;
-      }
+  const outcomes = await mapWithConcurrency(jobs, concurrency, async ({ user, business }) => {
+    try {
+      const report = await runReport(business, user.language || "pt", user.id);
+      return { user, business, report };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      console.error(`[Scheduler] Failed to generate report for ${business.name}:`, errorMessage);
+      return { user, business, error: errorMessage };
     }
+  });
 
-    // Send consolidated email if we have at least one report
-    if (userReports.length > 0) {
-      try {
-        await emailService.sendWeeklyReport(user, userReports);
-      } catch (emailError) {
-        console.error(`[Scheduler] Failed to send email to ${user.email}:`, emailError);
-        // Note: We already marked individual reports as "success" (generated), 
-        // but maybe we should log this failure separately? 
-        // For now, sticking to the existing pattern where generate = success.
-      }
+  // Pass 3: Record results and send one consolidated email per user.
+  const reportsByUser = new Map<string, { user: User; reports: Report[] }>();
+  for (const outcome of outcomes) {
+    if ("report" in outcome && outcome.report) {
+      results.push({ businessId: outcome.business.id, businessName: outcome.business.name, success: true });
+      success++;
+      const entry = reportsByUser.get(outcome.user.id) ?? { user: outcome.user, reports: [] };
+      entry.reports.push(outcome.report);
+      reportsByUser.set(outcome.user.id, entry);
+    } else {
+      results.push({
+        businessId: outcome.business.id,
+        businessName: outcome.business.name,
+        success: false,
+        error: outcome.error,
+      });
+      failed++;
+    }
+  }
+
+  for (const { user, reports } of Array.from(reportsByUser.values())) {
+    try {
+      await emailService.sendWeeklyReport(user, reports);
+    } catch (emailError) {
+      // Reports are already generated and saved; only the email failed.
+      console.error(`[Scheduler] Failed to send email to ${user.email}:`, emailError);
     }
   }
 

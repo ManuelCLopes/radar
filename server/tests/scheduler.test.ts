@@ -143,4 +143,64 @@ describe("Scheduler", () => {
             expect(result.results[0].error).toBe("Analysis failed");
         });
     });
+
+    describe("runScheduledReports with a custom runner", () => {
+        const validBusiness = (id: string, userId: string) =>
+            ({ id, name: `Business ${id}`, locationStatus: "validated", latitude: 1, longitude: 1, userId });
+
+        beforeEach(() => {
+            (storage.getUser as any).mockImplementation(async (id: string) => ({ id, email: `${id}@example.com`, language: "en" }));
+        });
+
+        it("never runs more reports at once than the concurrency limit", async () => {
+            (storage.listBusinesses as any).mockResolvedValue(
+                Array.from({ length: 7 }, (_, i) => validBusiness(String(i), "user1")),
+            );
+            let inFlight = 0;
+            let peak = 0;
+            const runReport = vi.fn(async (business: any) => {
+                inFlight++;
+                peak = Math.max(peak, inFlight);
+                await new Promise((resolve) => setTimeout(resolve, 5));
+                inFlight--;
+                return { businessName: business.name } as any;
+            });
+
+            const result = await runScheduledReports({ runReport, concurrency: 3 });
+
+            expect(runReport).toHaveBeenCalledTimes(7);
+            expect(peak).toBe(3);
+            expect(result.success).toBe(7);
+            expect(reports.runReportForBusiness).not.toHaveBeenCalled();
+        });
+
+        it("sends one email per owner with only that owner's successful reports", async () => {
+            (storage.listBusinesses as any).mockResolvedValue([
+                validBusiness("a", "user1"),
+                validBusiness("b", "user2"),
+                validBusiness("c", "user1"),
+            ]);
+            const runReport = vi.fn(async (business: any, language: string, userId: string) => {
+                if (business.id === "c") throw new Error("Timed out");
+                return { businessName: business.name, userId, language } as any;
+            });
+
+            const result = await runScheduledReports({ runReport });
+
+            expect(runReport).toHaveBeenCalledWith(expect.objectContaining({ id: "a" }), "en", "user1");
+            expect(result).toMatchObject({ success: 2, failed: 1 });
+            expect(result.results.find((r) => r.businessId === "c")).toMatchObject({ success: false, error: "Timed out" });
+            expect(emailService.sendWeeklyReport).toHaveBeenCalledTimes(2);
+            const sentToUser1 = (emailService.sendWeeklyReport as any).mock.calls.find((call: any[]) => call[0].id === "user1");
+            expect(sentToUser1[1].map((r: any) => r.businessName)).toEqual(["Business a"]);
+        });
+
+        it("skips the email for an owner whose reports all failed", async () => {
+            (storage.listBusinesses as any).mockResolvedValue([validBusiness("a", "user1")]);
+
+            await runScheduledReports({ runReport: vi.fn().mockRejectedValue(new Error("boom")) });
+
+            expect(emailService.sendWeeklyReport).not.toHaveBeenCalled();
+        });
+    });
 });

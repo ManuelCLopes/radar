@@ -1,5 +1,8 @@
 import type { Express, Request, RequestHandler } from "express";
-import { getSchedulerStatus, runScheduledReports } from "../scheduler.js";
+import { getSchedulerStatus, runScheduledReports, type BusinessReportRunner } from "../scheduler.js";
+import { runReportForBusiness } from "../reports.js";
+import { getAppBaseUrl } from "../urls.js";
+import type { Report } from "../../shared/schema.js";
 import { storage } from "../storage.js";
 
 function isValidCronRequest(req: Request): boolean {
@@ -25,6 +28,25 @@ const isAdmin: RequestHandler = (req, res, next) => {
     }
     next();
 };
+
+// On Vercel each report runs in its own function invocation (via the
+// business-report endpoint below), so the cron run only waits on them in
+// parallel instead of generating every report inside one 300s function.
+function createHttpReportRunner(baseUrl: string, cronSecret: string): BusinessReportRunner {
+    return async (business, language, userId) => {
+        const response = await fetch(`${baseUrl}/api/cron/business-report`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${cronSecret}` },
+            body: JSON.stringify({ businessId: business.id, language, userId }),
+        });
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok || !body.report) {
+            throw new Error(body.error || `Report request failed with status ${response.status}`);
+        }
+        const report = body.report as Report;
+        return { ...report, generatedAt: new Date(report.generatedAt) };
+    };
+}
 
 export function registerSchedulerRoutes(app: Express) {
     app.get("/api/scheduler/status", isAdmin, async (req, res) => {
@@ -61,7 +83,9 @@ export function registerSchedulerRoutes(app: Express) {
             // because work scheduled after the response can be dropped.
             const shouldRunInline = process.env.VERCEL === "1";
             if (shouldRunInline) {
-                const results = await runScheduledReports();
+                const results = await runScheduledReports({
+                    runReport: createHttpReportRunner(getAppBaseUrl(req), process.env.CRON_SECRET!),
+                });
                 return res.status(200).json({
                     message: "Scheduled reports completed",
                     ...results,
@@ -83,6 +107,31 @@ export function registerSchedulerRoutes(app: Express) {
     };
     app.get("/api/cron/trigger-reports", triggerReports);
     app.post("/api/cron/trigger-reports", triggerReports);
+
+    // Generates a single scheduled report; called by the cron run above.
+    app.post("/api/cron/business-report", async (req, res) => {
+        if (!isValidCronRequest(req)) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const { businessId, language, userId } = req.body ?? {};
+        if (typeof businessId !== "string" || typeof userId !== "string") {
+            return res.status(400).json({ error: "businessId and userId are required" });
+        }
+
+        try {
+            const report = await runReportForBusiness(
+                businessId,
+                typeof language === "string" ? language : "pt",
+                undefined,
+                userId,
+            );
+            res.json({ report });
+        } catch (error) {
+            console.error(`[Cron] Failed to generate report for business ${businessId}:`, error);
+            res.status(500).json({ error: error instanceof Error ? error.message : "Failed to generate report" });
+        }
+    });
 
     // Cleanup Unverified Users Endpoint
     const cleanupUsers: RequestHandler = async (req, res) => {
