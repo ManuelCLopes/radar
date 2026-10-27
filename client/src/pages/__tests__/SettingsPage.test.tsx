@@ -132,6 +132,12 @@ describe('SettingsPage', () => {
             const logoutButton = screen.getByTitle('dashboard.user.logout');
             expect(logoutButton).toBeInTheDocument();
         });
+
+        it('should link back to the dashboard', () => {
+            renderSettingsPage();
+            const backButton = screen.getByTestId('back-to-dashboard');
+            expect(backButton.closest('a')).toHaveAttribute('href', '/dashboard');
+        });
     });
 
     describe('Subscription Section', () => {

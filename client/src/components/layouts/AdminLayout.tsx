@@ -46,7 +46,7 @@ export default function AdminLayout({ title, subtitle, actions, children }: Admi
 
     return (
         <div className="min-h-screen bg-background">
-            <header className="border-b sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <header className="border-b sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container mx-auto px-4 flex h-16 items-center justify-between gap-2">
                     <div className="flex items-center gap-3 min-w-0">
                         <Link href="/dashboard" className="flex items-center cursor-pointer transition-opacity hover:opacity-80 shrink-0">

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation, Trans } from "react-i18next";
-import { User, LogOut, CreditCard, Eye, EyeOff, Trash2, Shield, Loader2, Download, RefreshCcw } from "lucide-react";
+import { ArrowLeft, User, LogOut, CreditCard, Eye, EyeOff, Trash2, Shield, Loader2, Download, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -228,13 +228,21 @@ export default function SettingsPage() {
     return (
         <div className="min-h-screen bg-background">
             {/* Header */}
-            <header className="border-b sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <header className="border-b sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                     <Link href="/dashboard" className="flex items-center cursor-pointer transition-opacity hover:opacity-80">
-                        <img src="/logo.png" alt="Competitor Watcher" className="h-10 w-auto dark:invert-0 invert" />
+                        <img src="/logo-dark.png" alt="Competitor Watcher" className="h-10 w-auto dark:hidden" />
+                        <img src="/logo.png" alt="Competitor Watcher" className="h-10 w-auto hidden dark:block" />
                     </Link>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                        <Link href="/dashboard">
+                            <Button variant="ghost" size="sm" title={t("settings.backToDashboard")} data-testid="back-to-dashboard">
+                                <ArrowLeft className="h-4 w-4" />
+                                <span className="hidden sm:inline ml-2">{t("settings.backToDashboard")}</span>
+                                <span className="sr-only sm:hidden">{t("settings.backToDashboard")}</span>
+                            </Button>
+                        </Link>
                         <LanguageSelector />
                         <ThemeToggle />
                         <Button
