@@ -18,7 +18,7 @@ test.describe('Authentication Form Validation', () => {
         // Test Short Password
         await page.getByLabel(/Password|Senha/i).fill('123');
         await signupBtn.click();
-        await expect(page.getByText(/at least 6 characters|pelo menos 6 caracteres/i)).toBeVisible();
+        await expect(page.getByText(/at least 8 characters|pelo menos 8 caracteres/i)).toBeVisible();
     });
 
     test('Login shows error on failed authentication', async ({ page }) => {
