@@ -6,7 +6,7 @@ import { isLocalizedPublicPath, localizePath } from "@/lib/localeRoutes";
 // og:url and structured-data URL must use it to avoid conflicting signals.
 export const CANONICAL_BASE_URL = "https://competitorwatcher.pt";
 const DEFAULT_SITE_NAME = "Competitor Watcher";
-const DEFAULT_IMAGE_PATH = "/logo.png";
+const DEFAULT_IMAGE_PATH = "/social-preview-local.png";
 
 type StructuredData = Record<string, unknown> | Array<Record<string, unknown>>;
 
