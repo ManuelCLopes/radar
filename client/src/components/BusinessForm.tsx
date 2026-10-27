@@ -87,8 +87,9 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
   });
 
   const form = useForm<FormValues>({
-    // The schema lets `type` be empty while the wizard is filled in; it is
-    // required at submit time, so the form is typed with the final shape.
+    // The form lets `type` stay empty: on submit it is inferred from the Google
+    // place type where possible, and the API rejects a business without one.
+    // The cast keeps FormValues' stricter shape, as the zod 3 resolver allowed.
     resolver: zodResolver(formSchema) as unknown as Resolver<FormValues>,
     defaultValues: {
       name: initialValues?.name || "",
