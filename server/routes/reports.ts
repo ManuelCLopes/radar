@@ -191,8 +191,13 @@ export function registerReportRoutes(app: Express) {
     // Get User's Report History
     app.get("/api/reports/history", async (req, res) => {
         if (!req.isAuthenticated()) return res.sendStatus(401);
-        const reports = await storage.getReportsByUserId((req.user as AppUser).id);
-        res.json(reports);
+        try {
+            const reports = await storage.getReportsByUserId((req.user as AppUser).id);
+            res.json(reports);
+        } catch (error) {
+            console.error("Error getting report history:", error);
+            res.status(500).json({ error: "Failed to get report history" });
+        }
     });
 
     app.get("/api/reports/:id", isAuthenticated, async (req, res) => {
