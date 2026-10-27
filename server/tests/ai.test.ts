@@ -1,12 +1,14 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { analyzeCompetitors } from '../ai';
+import { analyzeCompetitors, analysisJsonSchema } from '../ai';
 import { Business, Competitor } from '@shared/schema';
 
 // Mock OpenAI
 const { mockCreate } = vi.hoisted(() => {
     return { mockCreate: vi.fn() };
 });
+
+vi.mock('../storage', () => ({ storage: { trackApiUsage: vi.fn() } }));
 
 vi.mock('openai', () => {
     return {
@@ -112,5 +114,66 @@ describe('AI Analysis', () => {
 
         // Fallback is currently English
         expect(result.executiveSummary).toContain('fallback analysis');
+    });
+
+    describe('model configuration', () => {
+        const validAnalysis = JSON.stringify({ executiveSummary: 'ok' });
+
+        it('calls gpt-6-luna with reasoning-model parameters and a strict schema', async () => {
+            mockCreate.mockResolvedValueOnce({ choices: [{ message: { content: validAnalysis }, finish_reason: 'stop' }] });
+
+            await analyzeCompetitors(mockBusiness, mockCompetitors);
+
+            const request = mockCreate.mock.calls[0][0];
+            expect(request.model).toBe('gpt-6-luna');
+            expect(request.reasoning_effort).toBe('low');
+            expect(request.max_completion_tokens).toBeGreaterThanOrEqual(8000);
+            // Reasoning models reject these.
+            expect(request).not.toHaveProperty('temperature');
+            expect(request).not.toHaveProperty('max_tokens');
+            expect(request.response_format).toEqual({ type: 'json_schema', json_schema: analysisJsonSchema });
+        });
+
+        it('retries once on the legacy model when the request is rejected', async () => {
+            mockCreate
+                .mockRejectedValueOnce(Object.assign(new Error('Unsupported parameter'), { status: 400 }))
+                .mockResolvedValueOnce({ choices: [{ message: { content: validAnalysis }, finish_reason: 'stop' }] });
+
+            const result = await analyzeCompetitors(mockBusiness, mockCompetitors);
+
+            expect(mockCreate).toHaveBeenCalledTimes(2);
+            expect(mockCreate.mock.calls[1][0]).toMatchObject({ model: 'gpt-4o-mini', temperature: 0.7, max_tokens: 4000 });
+            expect(result.executiveSummary).toBe('ok');
+        });
+
+        it('does not retry on transient errors such as rate limits', async () => {
+            mockCreate.mockRejectedValueOnce(Object.assign(new Error('Rate limited'), { status: 429 }));
+
+            const result = await analyzeCompetitors(mockBusiness, mockCompetitors);
+
+            expect(mockCreate).toHaveBeenCalledTimes(1);
+            expect(result.executiveSummary).toContain('fallback analysis');
+        });
+
+        it('treats a truncated response as a failure instead of parsing partial JSON', async () => {
+            mockCreate.mockResolvedValueOnce({ choices: [{ message: { content: '{"executiveSummary": "cut' }, finish_reason: 'length' }] });
+
+            const result = await analyzeCompetitors(mockBusiness, mockCompetitors);
+
+            expect(result.executiveSummary).toContain('fallback analysis');
+        });
+
+        it('keeps the schema strict at every level', () => {
+            const visit = (node: any) => {
+                if (node?.type === 'object') {
+                    expect(node.additionalProperties).toBe(false);
+                    expect([...node.required].sort()).toEqual(Object.keys(node.properties).sort());
+                    Object.values(node.properties).forEach(visit);
+                }
+                if (node?.type === 'array') visit(node.items);
+            };
+            expect(analysisJsonSchema.strict).toBe(true);
+            visit(analysisJsonSchema.schema);
+        });
     });
 });
