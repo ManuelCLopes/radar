@@ -301,6 +301,15 @@ describe("Report Routes", () => {
             expect(res.status).toBe(200);
             expect(res.body).toHaveLength(1);
         });
+
+        it("should return 500 instead of hanging when storage fails", async () => {
+            mockStorage.getReportsByUserId.mockRejectedValue(new Error("DB error"));
+
+            const res = await request(app).get("/api/reports/history");
+
+            expect(res.status).toBe(500);
+            expect(res.body.error).toBe("Failed to get report history");
+        });
     });
 
     describe("GET /api/reports/:id", () => {
