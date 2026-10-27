@@ -195,6 +195,24 @@ describe("Scheduler", () => {
             expect(sentToUser1[1].map((r: any) => r.businessName)).toEqual(["Business a"]);
         });
 
+        it("emails an owner as soon as their reports are done, without waiting for other owners", async () => {
+            (storage.listBusinesses as any).mockResolvedValue([validBusiness("a", "user1"), validBusiness("b", "user2")]);
+            let finishSlowReport!: () => void;
+            const slowReport = new Promise<void>((resolve) => { finishSlowReport = resolve; });
+            const runReport = vi.fn(async (business: any) => {
+                if (business.id === "b") await slowReport;
+                return { businessName: business.name } as any;
+            });
+
+            const run = runScheduledReports({ runReport, concurrency: 2 });
+            await vi.waitFor(() => expect(emailService.sendWeeklyReport).toHaveBeenCalledTimes(1));
+            expect((emailService.sendWeeklyReport as any).mock.calls[0][0].id).toBe("user1");
+
+            finishSlowReport();
+            await run;
+            expect(emailService.sendWeeklyReport).toHaveBeenCalledTimes(2);
+        });
+
         it("skips the email for an owner whose reports all failed", async () => {
             (storage.listBusinesses as any).mockResolvedValue([validBusiness("a", "user1")]);
 

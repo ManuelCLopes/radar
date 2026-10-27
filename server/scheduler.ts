@@ -58,7 +58,7 @@ const runReportInProcess: BusinessReportRunner = (business, language, userId) =>
   // Pass the owner so their plan limits apply and the report shows in their history.
   runReportForBusiness(business.id, language, undefined, userId);
 
-export const SCHEDULED_REPORT_CONCURRENCY = 10;
+export const SCHEDULED_REPORT_CONCURRENCY = 20;
 
 // Runs `task` over `items` with at most `limit` in flight, keeping input order.
 async function mapWithConcurrency<T, R>(items: T[], limit: number, task: (item: T) => Promise<R>): Promise<R[]> {
@@ -141,30 +141,46 @@ export async function runScheduledReports({
     }
   }
 
-  // Pass 2: Generate every report, a bounded number at a time.
+  // Pass 2: Generate every report, a bounded number at a time. Jobs are grouped
+  // by owner and each owner's email goes out as soon as their last report is
+  // done, so a run cut short by a time limit still delivers to the owners it
+  // finished instead of nobody.
+  const pending = new Map<string, { user: User; remaining: number; reports: Report[] }>();
+  for (const { user, businesses } of Array.from(userBusinessMap.values())) {
+    pending.set(user.id, { user, remaining: businesses.length, reports: [] });
+  }
   const jobs = Array.from(userBusinessMap.values()).flatMap(({ user, businesses }) =>
     businesses.map((business) => ({ user, business })));
 
   const outcomes = await mapWithConcurrency(jobs, concurrency, async ({ user, business }) => {
+    let outcome: { user: User; business: Business; report?: Report; error?: string };
     try {
       const report = await runReport(business, user.language || "pt", user.id);
-      return { user, business, report };
+      outcome = { user, business, report };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
       console.error(`[Scheduler] Failed to generate report for ${business.name}:`, errorMessage);
-      return { user, business, error: errorMessage };
+      outcome = { user, business, error: errorMessage };
     }
+
+    const owner = pending.get(user.id)!;
+    if (outcome.report) owner.reports.push(outcome.report);
+    owner.remaining--;
+    if (owner.remaining === 0 && owner.reports.length > 0) {
+      try {
+        await emailService.sendWeeklyReport(owner.user, owner.reports);
+      } catch (emailError) {
+        // Reports are already generated and saved; only the email failed.
+        console.error(`[Scheduler] Failed to send email to ${owner.user.email}:`, emailError);
+      }
+    }
+    return outcome;
   });
 
-  // Pass 3: Record results and send one consolidated email per user.
-  const reportsByUser = new Map<string, { user: User; reports: Report[] }>();
   for (const outcome of outcomes) {
-    if ("report" in outcome && outcome.report) {
+    if (outcome.report) {
       results.push({ businessId: outcome.business.id, businessName: outcome.business.name, success: true });
       success++;
-      const entry = reportsByUser.get(outcome.user.id) ?? { user: outcome.user, reports: [] };
-      entry.reports.push(outcome.report);
-      reportsByUser.set(outcome.user.id, entry);
     } else {
       results.push({
         businessId: outcome.business.id,
@@ -173,15 +189,6 @@ export async function runScheduledReports({
         error: outcome.error,
       });
       failed++;
-    }
-  }
-
-  for (const { user, reports } of Array.from(reportsByUser.values())) {
-    try {
-      await emailService.sendWeeklyReport(user, reports);
-    } catch (emailError) {
-      // Reports are already generated and saved; only the email failed.
-      console.error(`[Scheduler] Failed to send email to ${user.email}:`, emailError);
     }
   }
 
