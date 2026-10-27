@@ -304,6 +304,16 @@ describe("Business Routes", () => {
             expect(res.body.name).toBe("New Name");
         });
 
+        it("should only update the fields that were sent", async () => {
+            // A pending business renamed must stay pending: no creation defaults on update.
+            mockStorage.getBusiness.mockResolvedValue({ id: "biz-1", name: "Old", userId: "user-1", locationStatus: "pending" });
+            mockStorage.updateBusiness.mockResolvedValue({ id: "biz-1", name: "New Name", userId: "user-1", locationStatus: "pending" });
+
+            await request(app).put("/api/businesses/biz-1").send({ name: "New Name" });
+
+            expect(mockStorage.updateBusiness).toHaveBeenCalledWith("biz-1", { name: "New Name" });
+        });
+
         it("should reject invalid schema data", async () => {
             const res = await request(app)
                 .put("/api/businesses/biz-1")

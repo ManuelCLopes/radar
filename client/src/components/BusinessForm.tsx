@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "@tanstack/react-query";
@@ -87,7 +87,10 @@ export function BusinessForm({ onSubmit, isPending = false, initialValues }: Bus
   });
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    // The form lets `type` stay empty: on submit it is inferred from the Google
+    // place type where possible, and the API rejects a business without one.
+    // The cast keeps FormValues' stricter shape, as the zod 3 resolver allowed.
+    resolver: zodResolver(formSchema) as unknown as Resolver<FormValues>,
     defaultValues: {
       name: initialValues?.name || "",
       type: initialValues?.type || undefined,
