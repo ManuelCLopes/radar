@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import nodemailer, { type Transporter } from "nodemailer";
 import { Resend } from "resend";
 import type { Report, User } from "../shared/schema.js";
 import { log } from "./log.js";
@@ -118,7 +118,7 @@ export class ResendEmailService implements EmailService {
 }
 
 export class NodemailerEmailService implements EmailService {
-  private transporter: nodemailer.Transporter;
+  private transporter: Transporter;
 
   constructor() {
     const service = process.env.EMAIL_SERVICE;

@@ -58,7 +58,7 @@ export const insertBusinessSchema = createInsertSchema(businesses).omit({
   id: true,
   createdAt: true,
 }).extend({
-  type: z.enum(businessTypes, { required_error: "Business type is required" }),
+  type: z.enum(businessTypes, { error: "Business type is required" }),
   name: z.string().min(1, "Business name is required").max(100),
   latitude: z.number().min(-90).max(90).nullable().optional(),
   longitude: z.number().min(-180).max(180).nullable().optional(),
@@ -66,6 +66,12 @@ export const insertBusinessSchema = createInsertSchema(businesses).omit({
   locationStatus: z.enum(locationStatusValues).default("validated"),
   userId: z.string().optional(), // Optional in schema, enforced in backend
 });
+
+// Partial updates must not pick up creation defaults: zod 4 applies defaults
+// inside optional fields, so a name-only edit would reset locationStatus.
+export const updateBusinessSchema = insertBusinessSchema
+  .extend({ locationStatus: z.enum(locationStatusValues) })
+  .partial();
 
 export interface PlaceResult {
   placeId: string;
@@ -168,11 +174,11 @@ export const insertReportSchema = z.object({
   aiAnalysis: z.string(),
   executiveSummary: z.string().optional(),
   html: z.string().optional(),
-  swotAnalysis: z.record(z.any()).optional(),
+  swotAnalysis: z.record(z.string(), z.any()).optional(),
   marketTrends: z.array(z.string()).optional(),
-  targetAudience: z.record(z.any()).optional(),
-  marketingStrategy: z.record(z.any()).optional(),
-  customerSentiment: z.record(z.any()).optional(),
+  targetAudience: z.record(z.string(), z.any()).optional(),
+  marketingStrategy: z.record(z.string(), z.any()).optional(),
+  customerSentiment: z.record(z.string(), z.any()).optional(),
   businessRating: z.number().optional().nullable(),
   businessUserRatingsTotal: z.number().optional().nullable(),
   radius: z.number().optional(),
