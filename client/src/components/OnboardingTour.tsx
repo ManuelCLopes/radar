@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { X, ChevronRight, ChevronLeft, Rocket } from "lucide-react";
+import type { User } from "@shared/schema";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 interface TourStep {
     target: string; // data-tour attribute selector
@@ -43,31 +45,86 @@ const TOUR_STEPS: TourStep[] = [
     },
 ];
 
-const STORAGE_KEY = "onboarding_completed";
+const STORAGE_KEY_PREFIX = "onboarding_completed";
 
-interface OnboardingTourProps {
-    isNewUser: boolean;
+function storageKey(userId: string) {
+    return `${STORAGE_KEY_PREFIX}:${userId}`;
 }
 
-export function OnboardingTour({ isNewUser }: OnboardingTourProps) {
+function hasLocalFlag(userId: string): boolean {
+    try {
+        // Legacy (pre per-user) flag also counts as "already seen"
+        return !!localStorage.getItem(storageKey(userId)) || !!localStorage.getItem(STORAGE_KEY_PREFIX);
+    } catch {
+        return false;
+    }
+}
+
+function setLocalFlag(userId: string) {
+    try {
+        localStorage.setItem(storageKey(userId), "true");
+    } catch {
+        // Storage may be unavailable (e.g. private mode) — server flag still applies
+    }
+}
+
+interface OnboardingTourProps {
+    /** Authenticated user; tour never runs without one */
+    user: Pick<User, "id" | "onboardingCompletedAt"> | null | undefined;
+    /** True once businesses and report history have finished loading */
+    dataReady: boolean;
+    /** True when the user has no businesses and no reports */
+    hasNoData: boolean;
+}
+
+function isVisible(el: Element | null): el is HTMLElement {
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0;
+}
+
+export function OnboardingTour({ user, dataReady, hasNoData }: OnboardingTourProps) {
     const { t } = useTranslation();
     const [currentStep, setCurrentStep] = useState(-1); // -1 = not started
     const [tooltipStyle, setTooltipStyle] = useState<React.CSSProperties>({});
     const [spotlightStyle, setSpotlightStyle] = useState<React.CSSProperties>({});
     const tooltipRef = useRef<HTMLDivElement>(null);
+    const startedRef = useRef(false);
 
     const isActive = currentStep >= 0;
 
-    // Check if tour should start
+    const markSeen = useCallback(() => {
+        if (!user) return;
+        setLocalFlag(user.id);
+        if (user.onboardingCompletedAt) return;
+        const now = new Date();
+        queryClient.setQueryData(["/api/auth/user"], (prev: any) =>
+            prev ? { ...prev, onboardingCompletedAt: now } : prev
+        );
+        apiRequest("POST", "/api/user/onboarding-complete").catch(() => {
+            // Non-critical: local flag still prevents re-showing on this device
+        });
+    }, [user]);
+
+    // Start the tour only once, for genuinely new accounts, after data has loaded.
     useEffect(() => {
-        if (!isNewUser) return;
-        const completed = localStorage.getItem(STORAGE_KEY);
-        if (!completed) {
-            // Delay start to let the dashboard render
-            const timer = setTimeout(() => setCurrentStep(0), 800);
-            return () => clearTimeout(timer);
+        if (startedRef.current || !user || !dataReady) return;
+        if (user.onboardingCompletedAt || hasLocalFlag(user.id)) return;
+        if (!hasNoData) {
+            // Returning user with data on a fresh device: never show, remember it.
+            startedRef.current = true;
+            markSeen();
+            return;
         }
-    }, [isNewUser]);
+        const timer = setTimeout(() => {
+            startedRef.current = true;
+            // Mark as seen as soon as it is shown, so reloading or closing the tab
+            // mid-tour doesn't bring it back.
+            markSeen();
+            setCurrentStep(0);
+        }, 800);
+        return () => clearTimeout(timer);
+    }, [user, dataReady, hasNoData, markSeen]);
 
     const positionTooltip = useCallback(() => {
         if (currentStep < 0 || currentStep >= TOUR_STEPS.length) return;
@@ -76,7 +133,15 @@ export function OnboardingTour({ isNewUser }: OnboardingTourProps) {
         const target = document.querySelector(step.target);
         const tooltip = tooltipRef.current;
 
-        if (!target || !tooltip) return;
+        if (!tooltip) return;
+        if (!isVisible(target)) {
+            // Target not rendered (e.g. hidden on this screen size): skip the step
+            setCurrentStep((s) => {
+                const next = s + 1;
+                return next >= TOUR_STEPS.length ? -1 : next;
+            });
+            return;
+        }
 
         const rect = target.getBoundingClientRect();
         const tooltipRect = tooltip.getBoundingClientRect();
@@ -135,7 +200,6 @@ export function OnboardingTour({ isNewUser }: OnboardingTourProps) {
     }, [isActive, positionTooltip]);
 
     const completeTour = useCallback(() => {
-        localStorage.setItem(STORAGE_KEY, "true");
         setCurrentStep(-1);
     }, []);
 

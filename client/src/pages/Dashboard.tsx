@@ -190,11 +190,11 @@ export default function Dashboard() {
     },
   });
 
-  const { data: businesses = [], isLoading } = useQuery<Business[]>({
+  const { data: businesses = [], isLoading, isSuccess: businessesLoaded } = useQuery<Business[]>({
     queryKey: ["/api/businesses"],
   });
 
-  const { data: reportHistory = [], isLoading: isLoadingHistory } = useQuery<Report[]>({
+  const { data: reportHistory = [], isLoading: isLoadingHistory, isSuccess: historyLoaded } = useQuery<Report[]>({
     queryKey: ["/api/reports/history"],
   });
 
@@ -1188,7 +1188,11 @@ export default function Dashboard() {
       </AlertDialog>
 
       {/* Onboarding Tour */}
-      <OnboardingTour isNewUser={businesses.length === 0 && reportHistory.length === 0} />
+      <OnboardingTour
+        user={user}
+        dataReady={businessesLoaded && historyLoaded}
+        hasNoData={businesses.length === 0 && reportHistory.length === 0}
+      />
 
       {/* Report Notification FAB */}
       <ReportNotification
