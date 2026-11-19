@@ -17,6 +17,19 @@ interface ReportContentProps {
 }
 
 // Sub-components (copied from ReportView)
+// Splits AI-generated items like "Perfil Google Business: Atualizar horários…"
+// into a short label and its detail so they can wrap as normal text.
+export function splitLabel(text: string): { label: string | null; detail: string } {
+    const value = typeof text === "string" ? text.trim() : String(text ?? "");
+    const idx = value.indexOf(":");
+    if (idx > 0 && idx <= 60) {
+        const label = value.slice(0, idx).trim();
+        const detail = value.slice(idx + 1).trim();
+        if (label && detail) return { label, detail };
+    }
+    return { label: null, detail: value };
+}
+
 function CompetitorCard({ competitor, index, t }: { competitor: Competitor; index: number; t: (key: string, options?: Record<string, unknown>) => string }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const hasReviews = competitor.reviews && competitor.reviews.length > 0;
@@ -308,35 +321,35 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                     {/* Demographics Grid - Polished UI */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <Card className="bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-                            <CardContent className="p-4 flex items-center gap-3">
+                            <CardContent className="p-4 flex items-start gap-3">
                                 <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center shrink-0">
                                     <Calendar className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                                 </div>
                                 <div className="min-w-0">
                                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("report.audience.age")}</p>
-                                    <p className="text-sm font-semibold truncate">{targetAudience.demographics?.ageRange || "N/A"}</p>
+                                    <p className="text-sm font-semibold break-words">{targetAudience.demographics?.ageRange || "N/A"}</p>
                                 </div>
                             </CardContent>
                         </Card>
                         <Card className="bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-                            <CardContent className="p-4 flex items-center gap-3">
+                            <CardContent className="p-4 flex items-start gap-3">
                                 <div className="h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center shrink-0">
                                     <Users className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                                 </div>
                                 <div className="min-w-0">
                                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("report.audience.gender")}</p>
-                                    <p className="text-sm font-semibold truncate">{targetAudience.demographics?.gender || "N/A"}</p>
+                                    <p className="text-sm font-semibold break-words">{targetAudience.demographics?.gender || "N/A"}</p>
                                 </div>
                             </CardContent>
                         </Card>
                         <Card className="bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-                            <CardContent className="p-4 flex items-center gap-3">
+                            <CardContent className="p-4 flex items-start gap-3">
                                 <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center shrink-0">
                                     <Wallet className="h-5 w-5 text-green-600 dark:text-green-400" />
                                 </div>
                                 <div className="min-w-0">
                                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("report.audience.income")}</p>
-                                    <p className="text-sm font-semibold truncate">{targetAudience.demographics?.incomeLevel || "N/A"}</p>
+                                    <p className="text-sm font-semibold break-words">{targetAudience.demographics?.incomeLevel || "N/A"}</p>
                                 </div>
                             </CardContent>
                         </Card>
@@ -365,18 +378,25 @@ export function ReportContent({ report, business, isGuest = false }: ReportConte
                         <h3 className="font-semibold text-lg">{t("report.sections.marketingStrategy")}</h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Card className="bg-blue-50/50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-800 overflow-hidden">
+                        <Card className="bg-blue-50/50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-800">
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">{t("report.marketingStrategy.channels")}</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="flex flex-wrap gap-2">
-                                    {Array.isArray(marketingStrategy.channels) && marketingStrategy.channels.map((channel: string, i: number) => (
-                                        <Badge key={i} variant="secondary" className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 hover:bg-blue-200">
-                                            {channel}
-                                        </Badge>
-                                    ))}
-                                </div>
+<ul className="space-y-2 text-sm text-muted-foreground">
+                                    {Array.isArray(marketingStrategy.channels) && marketingStrategy.channels.map((channel: string, i: number) => {
+                                        const { label, detail } = splitLabel(channel);
+                                        return (
+                                            <li key={i} className="flex items-start gap-2 min-w-0" data-testid={`marketing-channel-${i}`}>
+                                                <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-500 dark:bg-blue-400 shrink-0" aria-hidden="true" />
+                                                <span className="min-w-0 break-words">
+                                                    {label && <span className="font-medium text-blue-700 dark:text-blue-300">{label}: </span>}
+                                                    {detail}
+                                                </span>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
                             </CardContent>
                         </Card>
                         <Card className="bg-green-50/50 dark:bg-green-900/10 border-green-100 dark:border-green-800">

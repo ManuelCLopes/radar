@@ -212,6 +212,7 @@ export const users = pgTable("users", {
   stripeSubscriptionId: text("stripe_subscription_id"),
   subscriptionStatus: text("subscription_status"),
   subscriptionPeriodEnd: timestamp("subscription_period_end"),
+  onboardingCompletedAt: timestamp("onboarding_completed_at"),
 });
 
 export const passwordResetTokens = pgTable("password_reset_tokens", {

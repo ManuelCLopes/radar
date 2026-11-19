@@ -129,6 +129,21 @@ export function registerUserRoutes(app: Express) {
         }
     });
 
+    // Mark the dashboard onboarding tour as seen (persisted per account, not per device)
+    app.post("/api/user/onboarding-complete", isAuthenticated, async (req, res) => {
+        try {
+            const userId = (req.user as any).id;
+            const current = req.user as any;
+            if (!current.onboardingCompletedAt) {
+                await storage.updateUser(userId, { onboardingCompletedAt: new Date() });
+            }
+            res.json({ success: true });
+        } catch (error) {
+            console.error("Failed to mark onboarding complete:", error);
+            res.status(500).json({ error: "Failed to mark onboarding complete" });
+        }
+    });
+
     // GDPR: Data export (Right to Data Portability)
     app.get("/api/user/export", isAuthenticated, async (req, res) => {
         try {

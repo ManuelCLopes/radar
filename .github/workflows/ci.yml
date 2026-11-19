@@ -34,7 +34,7 @@ jobs:
 
   e2e:
     needs: validate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Playwright browsers are not yet available for ubuntu-latest (26.04)
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v7

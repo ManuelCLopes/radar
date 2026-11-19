@@ -177,9 +177,9 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-4xl h-[90vh] flex flex-col p-0 gap-0">
           <DialogHeader className="p-6 pb-2 border-b shrink-0">
-            <div className="flex items-center justify-between">
-              <div>
-                <DialogTitle className="text-xl font-bold flex items-center gap-2" data-testid="report-title">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pr-8">
+              <div className="min-w-0">
+                <DialogTitle className="text-xl font-bold flex flex-wrap items-center gap-2 break-words" data-testid="report-title">
                   {reportTitle}
                   {showHeaderMeta && (
                     <Badge variant="outline" className="ml-2 font-normal">
@@ -193,11 +193,11 @@ export function ReportView({ report, open, onOpenChange, onPrint, isGuest }: Rep
                     </Badge>
                   )}
                 </DialogTitle>
-                <DialogDescription className="mt-1">
+                <DialogDescription className="mt-1 break-words">
                   {reportLocation}
                 </DialogDescription>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 shrink-0">
                 {isGuest ? (
                   <Button
                     onClick={() => {
